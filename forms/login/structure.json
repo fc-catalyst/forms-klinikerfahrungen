@@ -1,0 +1,39 @@
+{
+    "options" : {
+        "method" : "post",
+        "print_method" : "server",
+        "json_validate" : 0,
+        "before" : "<div class=\"fcp-form-login\">",
+        "after" : "</div>"
+    },
+    "fields" : [
+        {
+            "type" : "text",
+            "placeholder" : "Username",
+            "name" : "log",
+            "validate" : {
+                "notEmpty" : true
+            }
+        },
+        {
+            "type" : "password",
+            "placeholder" : "Password",
+            "name" : "pwd",
+            "validate" : {
+                "notEmpty" : true
+            }
+        },
+        {
+            "type" : "checkbox",
+            "name" : "rememberme",
+            "options" : {
+                    "forever" : "Remember me"
+            }
+        },
+        {
+            "type" : "Submit",
+            "name" : "user-submit",
+            "value" : "Login"
+        }
+    ]
+}
