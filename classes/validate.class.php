@@ -14,13 +14,13 @@ $structure = @file_get_contents( $path );
 
 class FCP_Forms__Validate {
 
-    private $s, $v; // is for structure, json
+    private $s, $v; // is for structure, json; $_POST; $_FILES
     public $result; // filtered and marked content
 
-    public function __construct($s, $v) {
+    public function __construct($s, $v, $f = []) {
         $this->s = $s;
-        $this->v = $v;
-        $this->result = $this->checkValues();
+        $this->v = $v + $f;
+        $this->checkValues();
     }
 
 
@@ -32,8 +32,16 @@ class FCP_Forms__Validate {
     }
 
     private function test_notEmpty($rule, $a) {
+        if ( !$rule ) {
+            return false;
+        }
+        // for checkboxes ++can add for files later
+        if ( is_array( $a ) && empty( $a ) ) {
+            return 'Please pick at least one option';
+        }
+    
         $a = trim( $a );
-        if ( $rule == true && $a != '' ) {
+        if ( $a != '' ) {
             return false;
         }
         return 'The field is empty';
@@ -62,10 +70,42 @@ class FCP_Forms__Validate {
         return 'Must contain only letters, nubers or the following symbols: "-", "_"';
     }
     
+// -----____--____FILES OPERATIONS____----____---____
+
+    private function test_file_maxSize($rule, $a) {
+        if ( is_numeric( $rule ) && $a['size'] < $rule ) {
+            return false;
+        }
+        return 'The file <em>'.$a['name'].'</em> is too big. Max size is '.$rule;
+    }
+    
+    private function test_file_extension($rule, $a) {
+        $ext = pathinfo( $a['name'], PATHINFO_EXTENSION );
+        if ( is_array( $rule ) && in_array( $ext, $rule ) ) {
+            return false;
+        }
+        return 'The file <em>'.$a['name'].'</em> extension doesn\'t fit the allowed list: ' . implode( ', ', $rule );
+    }
+    
+    private function test_file($a) {
+        if ( $a['error'] ) {
+            return [
+                0 => 'There is no error, the file uploaded with success', // doesn't count anyways
+                1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
+                2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
+                3 => 'The uploaded file was only partially uploaded',
+                4 => 'No file was uploaded',
+                6 => 'Missing a temporary folder',
+                7 => 'Failed to write file to disk.',
+                8 => 'A PHP extension stopped the file upload.',
+            ][ $a['error'] ];
+        }
+        return false;
+    }
+
 // ---________---___--__________---
 
     private function checkValues() {
-        $result = [];
 
         foreach ( $this->s->fields as $f ) {
 
@@ -74,16 +114,43 @@ class FCP_Forms__Validate {
             }
 
             foreach ( $f->validate as $mname => $rule ) {
-                $method = 'test_' . $mname;
+                $method = 'test_' . ( $f->type == 'file' ? 'file_' : '' ) . $mname;
                 $test = false;
 
-                if ( method_exists( $this, $method ) && $test = $this->{ $method }( $rule, $this->v[ $f->name ] ) ) {
-                    $result[ $f->name ][] = $test;
+                if ( !method_exists( $this, $method ) ) {
+                    continue;
                 }
+
+                // multiple files
+                if ( $f->type == 'file' && $f->multiple ) {
+                
+                    // flip the array, so that we have a number of uploaded single files
+                    $mfile = $this->v[ $f->name ];
+                    $mflip = [];
+                    for ( $i = 0, $j = count( $mfile['name'] ); $i < $j; $i++ ) {
+                        foreach ( $mfile as $k => $v ) {
+                            $mflip[$i][$k] = $mfile[$k][$i];
+                        }
+                        $this->addResult( $method, $f->name, $rule, $mflip[$i] );
+                    }
+
+                    continue;
+                }
+                
+                // text data && single file
+                $this->addResult( $method, $f->name, $rule, $this->v[ $f->name ] );
             }
         }
-        
-        return $result;
     }
     
+    private function addResult($method, $name, $rule, $a) {
+        if ( $test = $this->test_file($a) ) {
+            $this->result[$name][] = $test;
+            return;
+        }
+        if ( $test = $this->{ $method }( $rule, $a ) ) {
+            $this->result[$name][] = $test;
+        }
+    }
+
 }

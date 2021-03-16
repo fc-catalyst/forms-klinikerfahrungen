@@ -65,7 +65,7 @@ class FCP_Forms {
         $json = json_decode( $cont, false );
         
         // get the array of errors
-        $warns = new FCP_Forms__Validate( $json, $_POST );
+        $warns = new FCP_Forms__Validate( $json, $_POST, $_FILES );
         if ( !empty( $warns->result ) ) {
             $_POST['fcp-form-warning'] = 'Some fields are not filled correctly:';
             $_POST['fcp-form-warnings'] = $warns->result;
@@ -122,8 +122,11 @@ class FCP_Forms {
         $json = json_decode( $cont, false );
         $json->options->form_name = $dir;
 
+        // test what we have & git push
         // then expand the amount of possible fields OR make the rest of the simple forms: upload, autofill, map, recaptcha
+        // complex form with login and uploading
         // front-end validation
+        // ++include the modify values file before the validator for converting numbers and resizing images, maybe, renaming files, adding smilies
         
         if ( $json->options->print_method == 'client' ) {
             return '<form class="fcp-form" data-structure="'.$dir.'">Loading..</form>';

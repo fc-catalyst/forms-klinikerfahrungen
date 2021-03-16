@@ -1,6 +1,6 @@
 <?php
 /*
-Print instead of the form
+Print something else instead of the form
 */
 
 return;

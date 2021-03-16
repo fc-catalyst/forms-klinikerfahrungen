@@ -4,19 +4,22 @@
         "print_method" : "server",
         "json_validate" : 0,
         "before" : "<div class=\"fcp-form-login\">",
-        "after" : "</div>"
+        "after" : "</div>",
+        "enctype" : "multipart/form-data"
     },
     "fields" : [
         {
             "type" : "text",
             "placeholder" : "Username",
             "name" : "log",
+            "value" : "!!",
             "validate" : {
-                "notEmpty" : true
+                "notEmpty" : true,
+                "name" : true
             }
         },
         {
-            "type" : "password",
+            "type" : "text",
             "placeholder" : "Password",
             "name" : "pwd",
             "validate" : {
@@ -27,7 +30,27 @@
             "type" : "checkbox",
             "name" : "rememberme",
             "options" : {
-                    "forever" : "Remember me"
+                "forever" : "Remember me",
+                "sometime" : "Sometime"
+            },
+            "validate" : {
+                "notEmpty" : true
+            }
+        },
+        {
+            "type" : "file",
+            "title" : "The logo",
+            "description" : "",
+            "name" : "logo",
+            "multiple" : true,
+            "validate" : {
+                "maxSize" : 50000,
+                "extension" : [
+                    "jpg",
+                    "jpeg",
+                    "png",
+                    "gif"
+                ]
             }
         },
         {

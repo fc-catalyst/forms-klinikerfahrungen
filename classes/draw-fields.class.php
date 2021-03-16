@@ -132,6 +132,18 @@ class FCP_Forms__Draw {
         </select>
         <?php
     }
+    
+    private function field_file($a) {
+        ?>
+        <input
+            type="file"
+            name="<?php echo $a->name; echo $a->multiple ? '[]' : '' ?>"
+            id="<?php echo $a->name ?>"
+            <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
+            <?php echo $a->multiple ? 'multiple' : '' ?>
+        />
+        <?php
+    }
 
     private function field_submit($a) {
         ?>
@@ -192,7 +204,11 @@ class FCP_Forms__Draw {
 
         
         <?php echo $o->before ?>
-        <form class="fcp-form" method="<?php echo $o->method ? $o->method : 'post' ?>">
+        <form
+            class="fcp-form"
+            method="<?php echo $o->method ? $o->method : 'post' ?>"
+            <?php echo $o->enctype ? 'enctype="'.$o->enctype.'"' : '' ?>
+        >
         
         <?php
             if ( $o->warning ) {
