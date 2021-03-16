@@ -69,12 +69,12 @@ class FCP_Forms {
         if ( !empty( $warns->result ) ) {
             $_POST['fcp-form-warning'] = 'Some fields are not filled correctly:';
             $_POST['fcp-form-warnings'] = $warns->result;
-            return;
+            // return; // used the lower one to allow uploading successful files
         }
 
         // custom validation & processing
         @include_once( $this->forms_path . $_POST['fcp-form-name'] . '/process.php' );
-        if ( $warning ) {
+        if ( $warning || !empty( $warns->result ) ) {
             $_POST['fcp-form-warning'] = $warning;
             return;
         }
@@ -122,7 +122,8 @@ class FCP_Forms {
         $json = json_decode( $cont, false );
         $json->options->form_name = $dir;
 
-        // test what we have & git push
+        // method to fast access and flattern the fields structure
+        // hidden field for uploaded images (only single for now)
         // then expand the amount of possible fields OR make the rest of the simple forms: upload, autofill, map, recaptcha
         // complex form with login and uploading
         // front-end validation

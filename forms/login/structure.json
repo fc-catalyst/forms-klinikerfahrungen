@@ -30,8 +30,7 @@
             "type" : "checkbox",
             "name" : "rememberme",
             "options" : {
-                "forever" : "Remember me",
-                "sometime" : "Sometime"
+                "forever" : "Remember me"
             },
             "validate" : {
                 "notEmpty" : true
@@ -42,8 +41,8 @@
             "title" : "The logo",
             "description" : "",
             "name" : "logo",
-            "multiple" : true,
             "validate" : {
+                "default" : true,
                 "maxSize" : 50000,
                 "extension" : [
                     "jpg",

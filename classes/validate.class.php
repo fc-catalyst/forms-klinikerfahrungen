@@ -35,13 +35,9 @@ class FCP_Forms__Validate {
         if ( !$rule ) {
             return false;
         }
-        // for checkboxes ++can add for files later
-        if ( is_array( $a ) && empty( $a ) ) {
-            return 'Please pick at least one option';
-        }
-    
-        $a = trim( $a );
-        if ( $a != '' ) {
+        
+        $a = is_string( $a ) ? trim( $a ) : $a;
+        if ( !empty( $a ) ) {
             return false;
         }
         return 'The field is empty';
@@ -87,17 +83,17 @@ class FCP_Forms__Validate {
         return 'The file <em>'.$a['name'].'</em> extension doesn\'t fit the allowed list: ' . implode( ', ', $rule );
     }
     
-    private function test_file($a) {
+    private function test_file_default($a) {
         if ( $a['error'] ) {
             return [
                 0 => 'There is no error, the file uploaded with success', // doesn't count anyways
-                1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
-                2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
-                3 => 'The uploaded file was only partially uploaded',
+                1 => 'The uploaded file '.$a['name'].' exceeds the upload_max_filesize directive in php.ini',
+                2 => 'The uploaded file '.$a['name'].' exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
+                3 => 'The uploaded file '.$a['name'].' was only partially uploaded',
                 4 => 'No file was uploaded',
                 6 => 'Missing a temporary folder',
-                7 => 'Failed to write file to disk.',
-                8 => 'A PHP extension stopped the file upload.',
+                7 => 'Failed to write file '.$a['name'].' to disk.',
+                8 => 'A PHP extension stopped the file '.$a['name'].' upload.',
             ][ $a['error'] ];
         }
         return false;
@@ -144,10 +140,6 @@ class FCP_Forms__Validate {
     }
     
     private function addResult($method, $name, $rule, $a) {
-        if ( $test = $this->test_file($a) ) {
-            $this->result[$name][] = $test;
-            return;
-        }
         if ( $test = $this->{ $method }( $rule, $a ) ) {
             $this->result[$name][] = $test;
         }
