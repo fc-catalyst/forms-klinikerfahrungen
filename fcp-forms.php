@@ -69,7 +69,7 @@ class FCP_Forms {
         if ( !empty( $warns->result ) ) {
             $_POST['fcp-form-warning'] = 'Some fields are not filled correctly:';
             $_POST['fcp-form-warnings'] = $warns->result;
-            // return; // used the lower one to allow uploading successful files
+            // return; // avoided here to allow uploading successful files from the multiple array on the next step
         }
 
         // custom validation & processing
@@ -78,6 +78,7 @@ class FCP_Forms {
             $_POST['fcp-form-warning'] = $warning;
             return;
         }
+
         // custom redirect
         if ( $redirect ) {
             wp_redirect( $redirect );
@@ -122,11 +123,16 @@ class FCP_Forms {
         $json = json_decode( $cont, false );
         $json->options->form_name = $dir;
 
-        // method to fast access and flattern the fields structure
-        // hidden field for uploaded images (only single for now)
+        // default filter for single file doesn't work and multiple still works strange
+        // finish the upload engine simplified
+        // maps + report
+        // private method using a public static one to not repeat
+        // Y do I use $_POST['fcp-form-warning']??? because they r global?
         // then expand the amount of possible fields OR make the rest of the simple forms: upload, autofill, map, recaptcha
         // complex form with login and uploading
         // front-end validation
+        // ++hidden field for uploaded images (only single for now)
+        // ++warns to array with the source of multiple uploads OR recheck in process.php
         // ++include the modify values file before the validator for converting numbers and resizing images, maybe, renaming files, adding smilies
         
         if ( $json->options->print_method == 'client' ) {

@@ -17,37 +17,76 @@ if( !$_FILES ) {
     return;
 }
 
-// ++improve for the multiple files case
+/*
+echo '<pre>';
+print_r( $warns->mFilesFailed );
+echo '</pre>';
+//*/
+
+// ++move it to validate.class.php?
 $upload = [];
 foreach ( $json->fields as $v ) {
-    if ( $v->type == 'file' ) {
-        if ( $warns->result[ $v->name ] ) {
+    if ( $v->type != 'file' ) {
+        continue;
+    }
+
+    if ( $warns->result[ $v->name ] ) {
+        // continue;
+
+        // multiple files exception
+        if ( !$v->multiple ) {
             continue;
         }
+
+        $mflip = FCP_Forms__Validate::flipFiles( $_FILES[$v->name] );
+        foreach ( $mflip as $w ) {
+            if ( in_array( $w['name'], $warns->mFilesFailed[ $v->name ] ) ) {
+                continue;
+            }
+            $w['field'] = $v->name;
+            $upload[] = $w;
+        }
         
-        $upload[] = $v->name;
+        continue;
     }
+    
+    $upload[] = $_FILES[ $v->name ] + [ 'field' => $v->name ];
 }
 
 if ( empty( $upload ) ) {
     return;
 }
 
+// upload to wordpress media library
+
+$tmp_FILES = $_FILES;
+$_FILES = $upload;
+/*
+echo '<pre>';
+print_r( $_FILES );
+echo '</pre>';
+return;
+//*/
 if ( !function_exists( 'wp_generate_attachment_metadata' ) ) {
     require_once( ABSPATH . 'wp-admin' . '/includes/image.php' );
     require_once( ABSPATH . 'wp-admin' . '/includes/file.php' );
     require_once( ABSPATH . 'wp-admin' . '/includes/media.php' );
 }
 
-foreach ( $upload as $v ) {
+foreach ( $_FILES as $k => $v ) {
     if ( $v['error'] !== UPLOAD_ERR_OK ){
         continue;
     }
-    $attach_id = media_handle_upload( $v, 0 );
-    if ( is_wp_error( $attach_id ) ) {
-        $warns->result[ $v ][] = 'WordPress upload error for ' . $_FILES[$v]['name'];
+
+    $aid = media_handle_upload( $k, 0 );
+    echo $aid;
+    if ( is_wp_error( $aid ) ) {
+        $warns->result[ $v['field'] ][] = 'WordPress upload error for <em>' . $v['name'] . '</em>';
         continue;
     }
-    
-    $warns->result[ $v ][] = '<img src="' . wp_get_attachment_url( $attach_id ) . '" />';
+    // ++replace with goodies
+    $warns->result[ $v['field'] ][] = '<img src="' . wp_get_attachment_url( $aid ) . '" />';
+
 }
+
+$_FILES = $tmp_FILES;

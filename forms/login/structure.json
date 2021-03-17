@@ -41,6 +41,23 @@
             "title" : "The logo",
             "description" : "",
             "name" : "logo",
+            "multiple" : true,
+            "validate" : {
+                "default" : true,
+                "maxSize" : 50000,
+                "extension" : [
+                    "jpg",
+                    "jpeg",
+                    "png",
+                    "gif"
+                ]
+            }
+        },
+        {
+            "type" : "file",
+            "title" : "The logo",
+            "description" : "",
+            "name" : "logo1",
             "validate" : {
                 "default" : true,
                 "maxSize" : 50000,

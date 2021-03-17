@@ -14,8 +14,8 @@ $structure = @file_get_contents( $path );
 
 class FCP_Forms__Validate {
 
-    private $s, $v; // is for structure, json; $_POST; $_FILES
-    public $result; // filtered and marked content
+    private $s, $v; // is for structure, json; $_POST; $_FILES (concat with $_POST here)
+    public $result, $mFilesFailed; // filtered and marked content; filtered files from the list of multiples
 
     public function __construct($s, $v, $f = []) {
         $this->s = $s;
@@ -25,10 +25,7 @@ class FCP_Forms__Validate {
 
 
     private function test_name($rule, $a) {
-        if ( $rule == true && preg_match( '/^[a-zA-Z0-9-_]+$/', $a ) ) {
-            return false;
-        }
-        return 'Must contain only letters, nubers or the following symbols: "-", "_"';
+        return self::name( $rule, $a );
     }
 
     private function test_notEmpty($rule, $a) {
@@ -59,13 +56,26 @@ class FCP_Forms__Validate {
     
 // __-----___---___--_________
 
-    public static function name($rule, $a) { // the static copy of test_name
+    public static function name($rule, $a) {
         if ( $rule == true && preg_match( '/^[a-zA-Z0-9-_]+$/', $a ) ) {
             return false;
         }
         return 'Must contain only letters, nubers or the following symbols: "-", "_"';
     }
-    
+
+    public static function flipFiles($mfile = []) {
+        if ( !is_array( $mfile['name'] ) ) {
+            return $mfile;
+        }
+        $mflip = [];
+        for ( $i = 0, $j = count( $mfile['name'] ); $i < $j; $i++ ) {
+            foreach ( $mfile as $k => $v ) {
+                $mflip[$i][$k] = $mfile[$k][$i];
+            }
+        }
+        return $mflip;
+    }
+
 // -----____--____FILES OPERATIONS____----____---____
 
     private function test_file_maxSize($rule, $a) {
@@ -85,7 +95,7 @@ class FCP_Forms__Validate {
     
     private function test_file_default($a) {
         if ( $a['error'] ) {
-            return [
+            return [ // taken from the php reference for uploading errors
                 0 => 'There is no error, the file uploaded with success', // doesn't count anyways
                 1 => 'The uploaded file '.$a['name'].' exceeds the upload_max_filesize directive in php.ini',
                 2 => 'The uploaded file '.$a['name'].' exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
@@ -120,14 +130,11 @@ class FCP_Forms__Validate {
                 // multiple files
                 if ( $f->type == 'file' && $f->multiple ) {
                 
-                    // flip the array, so that we have a number of uploaded single files
-                    $mfile = $this->v[ $f->name ];
-                    $mflip = [];
-                    for ( $i = 0, $j = count( $mfile['name'] ); $i < $j; $i++ ) {
-                        foreach ( $mfile as $k => $v ) {
-                            $mflip[$i][$k] = $mfile[$k][$i];
+                    $mflip = self::flipFiles( $this->v[ $f->name ] );
+                    foreach ( $mflip as $v ) {
+                        if ( $this->addResult( $method, $f->name, $rule, $v ) ) {
+                            $this->mFilesFailed[ $f->name ][] = $v['name'];
                         }
-                        $this->addResult( $method, $f->name, $rule, $mflip[$i] );
                     }
 
                     continue;
@@ -142,6 +149,7 @@ class FCP_Forms__Validate {
     private function addResult($method, $name, $rule, $a) {
         if ( $test = $this->{ $method }( $rule, $a ) ) {
             $this->result[$name][] = $test;
+            return true;
         }
     }
 
