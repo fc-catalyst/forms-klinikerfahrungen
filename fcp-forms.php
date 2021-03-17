@@ -67,15 +67,14 @@ class FCP_Forms {
         // get the array of errors
         $warns = new FCP_Forms__Validate( $json, $_POST, $_FILES );
         if ( !empty( $warns->result ) ) {
-            $_POST['fcp-form-warning'] = 'Some fields are not filled correctly:';
-            $_POST['fcp-form-warnings'] = $warns->result;
-            // return; // avoided here to allow uploading successful files from the multiple array on the next step
+            $warning = 'Some fields are not filled correctly:';
         }
 
         // custom validation & processing
         @include_once( $this->forms_path . $_POST['fcp-form-name'] . '/process.php' );
         if ( $warning || !empty( $warns->result ) ) {
             $_POST['fcp-form-warning'] = $warning;
+            $_POST['fcp-form-warnings'] = $warns->result;
             return;
         }
 
@@ -124,7 +123,7 @@ class FCP_Forms {
         $json->options->form_name = $dir;
 
         // default filter for single file doesn't work and multiple still works strange
-        // finish the upload engine simplified
+        // finish the upload engine
         // maps + report
         // private method using a public static one to not repeat
         // Y do I use $_POST['fcp-form-warning']??? because they r global?

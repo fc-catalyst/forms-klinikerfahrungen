@@ -79,6 +79,9 @@ class FCP_Forms__Validate {
 // -----____--____FILES OPERATIONS____----____---____
 
     private function test_file_maxSize($rule, $a) {
+        if ( !$a['name'] ) {
+            return false;
+        }
         if ( is_numeric( $rule ) && $a['size'] < $rule ) {
             return false;
         }
@@ -86,6 +89,9 @@ class FCP_Forms__Validate {
     }
     
     private function test_file_extension($rule, $a) {
+        if ( !$a['name'] ) {
+            return false;
+        }
         $ext = pathinfo( $a['name'], PATHINFO_EXTENSION );
         if ( is_array( $rule ) && in_array( $ext, $rule ) ) {
             return false;

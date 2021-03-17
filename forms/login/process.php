@@ -3,6 +3,7 @@
 Process the form data
 */
 
+/*
 if ( is_user_logged_in() ) {
     return;
 }
@@ -19,7 +20,7 @@ if( !$_FILES ) {
 
 /*
 echo '<pre>';
-print_r( $warns->mFilesFailed );
+print_r( $_FILES );
 echo '</pre>';
 //*/
 
@@ -79,13 +80,15 @@ foreach ( $_FILES as $k => $v ) {
     }
 
     $aid = media_handle_upload( $k, 0 );
-    echo $aid;
+    echo $aid . '  ' . wp_get_attachment_image( $aid, 'thumbnail' );
     if ( is_wp_error( $aid ) ) {
         $warns->result[ $v['field'] ][] = 'WordPress upload error for <em>' . $v['name'] . '</em>';
         continue;
     }
-    // ++replace with goodies
-    $warns->result[ $v['field'] ][] = '<img src="' . wp_get_attachment_url( $aid ) . '" />';
+    // ++replace with goodies?
+    $warns->result[ $v['field'] ][] =
+        wp_get_attachment_image( $aid, 'thumbnail', false, ['class'=>'fcp-upload-preview'] ).
+        '<em>' . $v['name'] . '</em> is uploaded';
 
 }
 
