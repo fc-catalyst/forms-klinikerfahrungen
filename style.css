@@ -1,0 +1,64 @@
+.fcp-form {
+}
+
+/* GROUPS */
+.fcp-form-group {
+}
+
+.fcp-form-group > .fcp-form-group-w {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+}
+.fcp-form-group > .fcp-form-group-w > * {
+    flex-basis:100%;
+}
+.fcp-form-group.fcp-form-cols-2 > .fcp-form-group-w > * {
+    flex-basis:calc(50% - 15px);
+}
+
+/* section */
+.fcp-form-group-section > .fcp-form-group-h {
+    margin-bottom:30px;
+}
+.fcp-form-group-section > .fcp-form-group-w {
+    margin-bottom:50px;
+}
+
+/* row */
+.fcp-form-group-row > * {
+    margin-bottom:0;
+}
+
+/* insides */
+.fcp-form-group-h > *:first-child,
+.fcp-form-group-d > *:first-child {
+    margin-top:0;
+}
+.fcp-form-group-h > *:last-child,
+.fcp-form-group-d > *:last-child {
+    margin-bottom:0;
+}
+
+/* FIELDS */
+.fcp-form-field-w {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-bottom:15px;
+    flex-wrap:wrap;
+}
+.fcp-form-field-w > * {
+    flex-basis:100%;
+}
+.fcp-form-field-w > span {
+    flex-basis:calc(40% - 15px);
+    margin-right:15px;
+}
+.fcp-form-field-w > span + * {
+    flex-basis:calc(60% - 15px);
+}
+.fcp-form-field-w > span::after {
+    content:':';
+}
