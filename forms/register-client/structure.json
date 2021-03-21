@@ -1,0 +1,381 @@
+{
+    "options" : {
+        "method" : "post",
+        "print_method" : "server",
+        "json_validate" : 1,
+        "before" : "<div class=\"fcp-form-register-client\">",
+        "after" : "</div>",
+        "enctype" : "multipart/form-data",
+        "required_mark" : "*",
+        "slide" : "section"
+    },
+    "fields" : [
+        {
+            "gtype" : "section",
+            "title" : "1. Account Erstellen",
+            "title_tag" : "h3",
+            "description" : "<p>Einen Account bei uns zu erstellen, ist einfach. Fügen Sie Ihren Eintrag einfach unter “Klinik eintragen” hinzu und tragen Sie Ihre E-Mail ein.Die Zugangsdaten senden wir Ihnen nach der Eintragung separat zu.Dadurch haben Sie die Möglichkeit, die eingetragenen Daten jederzeit zu verändern. Außerdem können unter einem Account mehrere Standorte oder Ärzte eingetragen werden.</p>",
+            "fields" : [
+                {
+                    "type" : "text",
+                    "placeholder" : "Email",
+                    "title" : "For testing purpose For testing purpose For testing purpose For testing purpose For testing purpose For testing purpose For testing purpose",
+                    "name" : "create-account-email",
+                    "validate" : {
+                        "notEmpty" : true,
+                        "email" : true
+                    }
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "password",
+                            "placeholder" : "Passwort",
+                            "title" : "Passwort",
+                            "name" : "create-account-password",
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        },
+                        {
+                            "type" : "password",
+                            "placeholder" : "Passwort bestätigen",
+                            "title" : "Passwort bestätigen Passwort bestätigen",
+                            "name" : "password-repeat",
+                            "validate" : {
+                                "notEmpty" : true,
+                                "equals" : "create-account-password"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "password",
+                            "placeholder" : "Passwort bestätigen",
+                            "title" : "Passwort bestätigen",
+                            "name" : "password-repeat",
+                            "validate" : {
+                                "notEmpty" : true,
+                                "equals" : "create-account-password"
+                            }
+                        },
+                        {
+                            "type" : "password",
+                            "placeholder" : "Passwort",
+                            "title" : "Passwort",
+                            "name" : "create-account-password",
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "password",
+                            "placeholder" : "Passwort",
+                            "name" : "create-account-password",
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        },
+                        {
+                            "type" : "password",
+                            "placeholder" : "Passwort bestätigen",
+                            "name" : "password-repeat",
+                            "validate" : {
+                                "notEmpty" : true,
+                                "equals" : "create-account-password"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "gtype" : "section",
+            "title" : "2. Unternehmen eintragen",
+            "title_tag" : "h3",
+            "description" : "<p>Wir stellen Ihnen im Formular einige Fragen zu Ihrer Person. Wie ausführlich Sie diese beantworten, liegt ganz bei Ihnen. In Ihrem eigenen Interesse empfehlen wir, so viel Informationen und Inhalt wie möglich über Ihre Person oder Klinik bereitzustellen. Schließlich soll Ihren Patienten ein Mehrwert geboten werden. Kopierte Texte werden durch uns abgelehnt. Schließlich soll unser Ärzteverzeichnis seine hohe Qualität beibehalten.</p>",
+            "fields" : [
+                {
+                    "type" : "text",
+                    "title" : "Name der Klinik / Praxis",
+                    "name" : "company-name",
+                    "validate" : {
+                        "notEmpty" : true
+                    }
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "title" : "Adresse",
+                            "name" : "company-address",
+                            "validate" : {
+                                "notEmpty" : true
+                            },
+                            "autocomplete" : [
+                                "google-maps",
+                                "address"
+                            ]
+                        },
+                        {
+                            "type" : "text",
+                            "title" : "Bundesland / Region",
+                            "name" : "company-region",
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "company-location",
+                            "validate" : {
+                                "regExp" : "^(\\d+\\.?\\d* \\d+\\.?\\d*)+$"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "select",
+                            "title" : "Branche",
+                            "placeholder" : "Select an Option…",
+                            "name" : "company-specialty",
+                            "options" : {
+                                "857" : "Allergologen",
+                                "858" : "Allgemein- &amp; Hausärzte",
+                                "860" : "Augenärzte",
+                                "861" : "Chirurgen",
+                                "863" : "Dermatologen",
+                                "859" : "Gynäkologen",
+                                "864" : "HNO-Ärzte",
+                                "1862" : "Innere Medizin",
+                                "1863" : "&nbsp;&nbsp;&nbsp;Endokrinologen",
+                                "1864" : "&nbsp;&nbsp;&nbsp;Gastroenterologen",
+                                "865" : "&nbsp;&nbsp;&nbsp;Kardiologen",
+                                "2071" : "&nbsp;&nbsp;&nbsp;Pneumologen",
+                                "866" : "Kinderärzte",
+                                "867" : "Neurologen",
+                                "868" : "Orthopäden",
+                                "862" : "Plastische und Ästhetische Chirurgen",
+                                "1022" : "Psychologen &amp; Psychotherapeuten",
+                                "869" : "Psychologen &amp; Psychotherapie",
+                                "1861" : "Radiologen",
+                                "870" : "Urologen",
+                                "871" : "Zahnärzte"
+                            },
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        },
+                        {
+                            "type" : "text",
+                            "title" : "Video zum Profil hinzufügen",
+                            "name" : "company-video",
+                            "validate" : {
+                                "notEmpty" : true,
+                                "url" : true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "file",
+                            "title" : "Logo Ihrer Klinik",
+                            "name" : "company-logo",
+                            "validate" : {
+                                "default" : true,
+                                "maxSize" : 1000000,
+                                "extension" : [
+                                    "jpg",
+                                    "jpeg",
+                                    "png",
+                                    "gif"
+                                ]
+                            }
+                        },
+                        {
+                            "type" : "file",
+                            "title" : "Titelbild für Ihre Praxis",
+                            "name" : "company-image",
+                            "validate" : {
+                                "default" : true,
+                                "maxSize" : 1000000,
+                                "extension" : [
+                                    "jpg"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type" : "textarea",
+                    "title" : "Unternehmens Beschreibung",
+                    "name" : "company-description"
+                }
+            ]
+        },
+        {
+            "gtype" : "section",
+            "title" : "3. Rechnungsdaten",
+            "title_tag" : "h3",
+            "description" : "<p>Nach der Bestätigung Ihrer Zahlung und der Kontrolle Ihrer gemachten Angaben schalten wir Ihren Eintrag für 365 Tage auf unserer Plattform frei. Da wir nur aktuelle Ergebnisse in unseren Unternehmenskatalog anzeigen wollen, ist dieser Schritt nötig, um kontrollieren zu können, welche Unternehmen geschlossen und aktiv sind.Der gemachte Backlink und die Adressdaten sollten Ihrer Praxis / Klinik bei der Positionierung in den Google-Ergebnissen helfen. Diesen Umstand können Sie unterstützen, in dem Sie Ihren Eintrag auf unserer Plattform so relevant wie möglich halten.</p>",
+            "fields" : [
+                {
+                    "type" : "radio",
+                    "title" : "Ich wähle einen:",
+                    "name" : "payment-rate",
+                    "options" : {
+                        "" : "Standardeintrag",
+                        "" : "Premiumeintrag",
+                        "" : "Kostenloser Eintrag"
+                    },
+                    "validate" : {
+                        "notEmpty" : true
+                    }
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "title" : "Name des Unternehmens",
+                            "name" : "payment-company",
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        },
+                        {
+                            "type" : "text",
+                            "title" : "Name der Klinik",
+                            "name" : "payment-clinic",
+                            "autofill" : "company-name",
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "title" : "Rechnungsadresse",
+                            "name" : "payment-address",
+                            "autofill" : "company-address",
+                            "autocomplete" : [
+                                "google-maps",
+                                "address"
+                            ],
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        },
+                        {
+                            "type" : "text",
+                            "title" : "Email",
+                            "name" : "payment-email",
+                            "autofill" : "create-account-email",
+                            "validate" : {
+                                "notEmpty" : true,
+                                "email" : true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "title" : "Webseite",
+                            "name" : "company-website",
+                            "validate" : {
+                                "notEmpty" : true,
+                                "url" : true
+                            }
+                        },
+                        {
+                            "type" : "text",
+                            "title" : "Telefonnummer",
+                            "name" : "company-phone",
+                            "validate" : {
+                                "notEmpty" : true,
+                                "phone" : true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "checkbox",
+                            "name" : "datenschutzhinweise",
+                            "options" : {
+                                "confirmed" : "Datenschutzhinweise"
+                            },
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        },
+                        {
+                            "type" : "checkbox",
+                            "name" : "nutzungsbedingungen",
+                            "options" : {
+                                "confirmed" : "Nutzungsbedingungen"
+                            },
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        },
+                        {
+                            "type" : "checkbox",
+                            "name" : "agb",
+                            "options" : {
+                                "confirmed" : "AGB"
+                            },
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type" : "recaptcha",
+                    "version" : "invisible"
+                },
+                {
+                    "type" : "Submit",
+                    "name" : "user-submit",
+                    "value" : "Login"
+                }
+            ]
+        }
+    ]
+}

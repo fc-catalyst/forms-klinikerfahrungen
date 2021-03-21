@@ -168,12 +168,12 @@ class FCP_Forms__Draw {
         
         ?>
         <?php echo $a->before ?>
-        <div class="fcp-form-field-wrap">
+        <div class="fcp-form-field-w">
         <?php
         
         if ( $a->title ) {
             ?>
-            <div class="fcp-form-field-h"><?php echo $a->title ?></div>
+            <span class="fcp-form-field-h"><?php echo $a->title ?></span>
             <?php
         }
     
@@ -211,19 +211,21 @@ class FCP_Forms__Draw {
         >
         
         <?php
-            if ( $o->warning ) {
-                ?>
-                <div class="fcp-form-field-w"><?php echo $o->warning ?></div>
-                <?php
+        if ( $o->warning ) {
+            ?>
+            <div class="fcp-form-field-w"><?php echo $o->warning ?></div>
+            <?php
+        }
+        foreach ( $this->s->fields as $f ) {
+            if ( $f->type ) { // common field print
+                $this->printField( $f );
+                continue;
             }
-        
-            foreach ( $this->s->fields as $f ) {
-                $method = 'field_' . $f->type;
-                if ( method_exists( $this, $method ) ) {
-                    $this->field__wrap( $f, $method );
-                }
+            if ( $f->gtype ) { // group of fields print
+                $this->printGroup( $f );
             }
-            wp_nonce_field( 'fcp-form-a-nonce', 'fcp-form-' . $o->form_name );
+        }
+        wp_nonce_field( 'fcp-form-a-nonce', 'fcp-form-' . $o->form_name );
         ?>
         
         <input type="hidden" name="fcp-form-name" value="<?php echo $o->form_name ?>">
@@ -239,6 +241,62 @@ class FCP_Forms__Draw {
         $content = preg_replace( '/\s+/', ' ', $content );
         $content = preg_replace( '/ </', "\n<", $content );
         return $content;
+    }
+    
+    private function printField($f) {
+        $method = 'field_' . $f->type;
+        if ( !method_exists( $this, $method ) ) {
+            return;
+        }
+        $this->field__wrap( $f, $method );
+    }
+    
+    private function printGroup($f) {
+        echo $o->before;
+        ?>
+        <div class="fcp-form-group fcp-form-group-<?php echo $f->gtype ?><?php echo $f->cols ? ' fcp-form-cols-'.$f->cols : '' ?>">
+        <?php
+            if ( $f->title || $f->description ) {
+                ?>
+                <div class="fcp-form-group-h">
+                <?php
+                if ( $f->title ) {
+                    ?>
+                    <<?php echo $f->title_tag ? $f->title_tag : 'h2' ?>>
+                        <?php echo $f->title ?>
+                    </<?php echo $f->title_tag ? $f->title_tag : 'h2' ?>>
+                    <?php
+                }
+
+                if ( $f->description ) {
+                    ?>
+                    <div class="fcp-form-group-d"><?php echo $f->description ?></div>
+                    <?php
+                }
+                ?>
+                </div>
+                <?php
+            }
+        ?>
+            <div class="fcp-form-group-w">
+        <?php
+        if ( is_array( $f->fields ) ) {
+            foreach ( $f->fields as $gf ) {
+                if ( $gf->type ) { // common field print
+                    $this->printField( $gf );
+                    continue;
+                }
+                if ( $gf->gtype ) { // group of fields print
+                    $this->printGroup( $gf );
+                }
+            }
+        }
+        ?>
+            </div>
+        </div>
+        <?php
+        
+        echo $o->after;
     }
 
 }

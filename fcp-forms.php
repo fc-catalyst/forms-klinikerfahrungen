@@ -22,10 +22,11 @@ class FCP_Forms {
 	
 	private function plugin_setup() {
 
-		$this->self_url = plugins_url( '/', __FILE__ );
+		$this->self_url  = plugins_url( '/', __FILE__ );
 		$this->self_path = plugin_dir_path( __FILE__ );
 		
-		$this->forms_path = __DIR__ . '/forms/';
+		$this->forms_url  = $this->self_url . 'forms/';
+		$this->forms_path = $this->self_path . 'forms/';
 
 		$this->css_ver = '1.0.7' . ( self::$dev ? '.'.time() : '' );
 		$this->js_ver = '1.1.0' . ( self::$dev ? '.'.time() : '' );
@@ -98,13 +99,23 @@ class FCP_Forms {
 			return '';
         }
 
-        $this->add_styles_scripts();
+        $this->add_styles_scripts( $atts['dir'] );
         return $this->generate_form( $atts['dir'] );
 
 	}
 
-	private function add_styles_scripts() {
+	private function add_styles_scripts($dir) {
 
+        wp_enqueue_style( 'fcp-forms', $this->self_url . 'style.css', [], $this->css_ver );
+	
+        if ( is_file( $this->forms_path . $dir . '/style.css' ) ) {
+            wp_enqueue_style(
+                'fcp-forms-'.$dir,
+                $this->forms_url . $dir . '/style.css',
+                ['fcp-forms'],
+                $this->css_ver
+            );
+        }
 		//wp_enqueue_style( 'fcp-forms', plugins_url( 'style.css', __FILE__ ), [], $this->css_ver );
 		//wp_enqueue_script( 'fcp-forms', plugins_url( 'forms.js', __FILE__ ), [], $this->js_ver, 1 );
 
@@ -122,11 +133,9 @@ class FCP_Forms {
         $json = json_decode( $cont, false );
         $json->options->form_name = $dir;
 
-        // default filter for single file doesn't work and multiple still works strange
-        // finish the upload engine
+        // start front-end
+        // add files with examples to pickers
         // maps + report
-        // private method using a public static one to not repeat
-        // Y do I use $_POST['fcp-form-warning']??? because they r global?
         // then expand the amount of possible fields OR make the rest of the simple forms: upload, autofill, map, recaptcha
         // complex form with login and uploading
         // front-end validation
