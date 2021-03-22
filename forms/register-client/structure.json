@@ -19,62 +19,11 @@
                 {
                     "type" : "text",
                     "placeholder" : "Email",
-                    "title" : "For testing purpose For testing purpose For testing purpose For testing purpose For testing purpose For testing purpose For testing purpose",
                     "name" : "create-account-email",
                     "validate" : {
                         "notEmpty" : true,
                         "email" : true
                     }
-                },
-                {
-                    "gtype" : "row",
-                    "cols" : 2,
-                    "fields" : [
-                        {
-                            "type" : "password",
-                            "placeholder" : "Passwort",
-                            "title" : "Passwort",
-                            "name" : "create-account-password",
-                            "validate" : {
-                                "notEmpty" : true
-                            }
-                        },
-                        {
-                            "type" : "password",
-                            "placeholder" : "Passwort bestätigen",
-                            "title" : "Passwort bestätigen Passwort bestätigen",
-                            "name" : "password-repeat",
-                            "validate" : {
-                                "notEmpty" : true,
-                                "equals" : "create-account-password"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "gtype" : "row",
-                    "cols" : 2,
-                    "fields" : [
-                        {
-                            "type" : "password",
-                            "placeholder" : "Passwort bestätigen",
-                            "title" : "Passwort bestätigen",
-                            "name" : "password-repeat",
-                            "validate" : {
-                                "notEmpty" : true,
-                                "equals" : "create-account-password"
-                            }
-                        },
-                        {
-                            "type" : "password",
-                            "placeholder" : "Passwort",
-                            "title" : "Passwort",
-                            "name" : "create-account-password",
-                            "validate" : {
-                                "notEmpty" : true
-                            }
-                        }
-                    ]
                 },
                 {
                     "gtype" : "row",
@@ -108,12 +57,24 @@
             "description" : "<p>Wir stellen Ihnen im Formular einige Fragen zu Ihrer Person. Wie ausführlich Sie diese beantworten, liegt ganz bei Ihnen. In Ihrem eigenen Interesse empfehlen wir, so viel Informationen und Inhalt wie möglich über Ihre Person oder Klinik bereitzustellen. Schließlich soll Ihren Patienten ein Mehrwert geboten werden. Kopierte Texte werden durch uns abgelehnt. Schließlich soll unser Ärzteverzeichnis seine hohe Qualität beibehalten.</p>",
             "fields" : [
                 {
-                    "type" : "text",
-                    "title" : "Name der Klinik / Praxis",
-                    "name" : "company-name",
-                    "validate" : {
-                        "notEmpty" : true
-                    }
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                    {
+                        "type" : "text",
+                        "title" : "Name der Klinik / Praxis",
+                        "name" : "company-name",
+                        "validate" : {
+                            "notEmpty" : true
+                        }
+                    },
+                    {
+                        "type" : "text",
+                        "title" : "EMail Adresse für Kontaktanfrage",
+                        "name" : "company-email",
+                        "validate" : {
+                            "email" : true
+                        }
                 },
                 {
                     "gtype" : "row",
@@ -140,7 +101,7 @@
                             }
                         },
                         {
-                            "type" : "text",
+                            "type" : "hidden",
                             "name" : "company-location",
                             "validate" : {
                                 "regExp" : "^(\\d+\\.?\\d* \\d+\\.?\\d*)+$"
