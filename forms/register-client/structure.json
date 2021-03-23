@@ -223,9 +223,9 @@
                     "title" : "Ich wähle einen:",
                     "name" : "payment-rate",
                     "options" : {
-                        "" : "Standardeintrag",
-                        "" : "Premiumeintrag",
-                        "" : "Kostenloser Eintrag"
+                        "standardeintrag" : "Standardeintrag",
+                        "premiumeintrag" : "Premiumeintrag",
+                        "kostenloser-eintrag" : "Kostenloser Eintrag"
                     },
                     "validate" : {
                         "notEmpty" : true

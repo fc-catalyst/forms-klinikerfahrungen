@@ -39,7 +39,7 @@ class FCP_Forms__Draw {
         <input
             type="text"
             name="<?php echo $a->name ?>"
-            id="fcp-<?php echo $a->name ?>"
+            id="fcp-f-<?php echo $a->name ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             placeholder="<?php echo $a->placeholder ?>"
             value="<?php echo esc_attr( $a->savedValue ? $a->savedValue : $a->value ) ?>"
@@ -52,7 +52,7 @@ class FCP_Forms__Draw {
         <input
             type="password"
             name="<?php echo $a->name ?>"
-            id="fcp-<?php echo $a->name ?>"
+            id="fcp-f-<?php echo $a->name ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             placeholder="<?php echo $a->placeholder ?>"
         />
@@ -64,7 +64,7 @@ class FCP_Forms__Draw {
         <input
             type="hidden"
             name="<?php echo $a->name ?>"
-            id="fcp-<?php echo $a->name ?>"
+            id="fcp-f-<?php echo $a->name ?>"
             value="<?php echo esc_attr( $a->value ) ?>"
         />
         <?php
@@ -74,7 +74,7 @@ class FCP_Forms__Draw {
         ?>
         <textarea
             name="<?php echo $a->name ?>"
-            id="fcp-<?php echo $a->name ?>"
+            id="fcp-f-<?php echo $a->name ?>"
             rows="<?php echo $a->rows ? $a->rows : '10' ?>" cols="<?php echo $a->cols ? $a->cols : '50' ?>"
             placeholder="<?php echo $a->placeholder ?>"
         ><?php echo esc_textarea( $a->savedValue ? $a->savedValue : $a->value ) ?></textarea>
@@ -84,7 +84,7 @@ class FCP_Forms__Draw {
     private function field_checkbox($a) {
         ?>
         
-        <fieldset>
+        <fieldset id="fcp-f-<?php echo $a->name ?>">
         
         <?php
         $single = count( (array) $a->options ) == 1 ? true : false;
@@ -109,12 +109,41 @@ class FCP_Forms__Draw {
         <?php
         
     }
+
+    private function field_radio($a) {
+        ?>
+        
+        <fieldset id="fcp-f-<?php echo $a->name ?>">
+        
+        <?php
+        $single = count( (array) $a->options ) == 1 ? true : false;
+        foreach ( $a->options as $k => $b ) :
+        ?>
+            <label>
+                <input type="radio"
+                    name="<?php echo $a->name ?><?php echo $single ? '' : '[]' ?>"
+                    value="<?php echo $k ?>"
+                    <?php echo $single && $k == $a->savedValue || in_array( $k, $a->savedValue ) ? 'checked' : '' ?>
+                >
+                <span><?php echo $b ?></span>
+            </label>
+
+        <?php
+        endforeach;
+
+        ?>
+        
+        </fieldset>
+        
+        <?php
+        
+    }
     
     private function field_select($a) {
         ?>
         <select
             name="<?php echo $a->name ?><?php echo $a->multiple ? '[]' : '' ?>"
-            id="fcp-<?php echo $a->name ?>"
+            id="fcp-f-<?php echo $a->name ?>"
             <?php echo $a->multiple ? 'multiple' : '' ?>
         >
             <?php
@@ -138,11 +167,11 @@ class FCP_Forms__Draw {
         <input
             type="file"
             name="<?php echo $a->name; echo $a->multiple ? '[]' : '' ?>"
-            id="fcp-<?php echo $a->name ?>"
+            id="fcp-f-<?php echo $a->name ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             <?php echo $a->multiple ? 'multiple' : '' ?>
         />
-        <label for="fcp-<?php echo $a->name ?>">Choose File</label>
+        <label for="fcp-f-<?php echo $a->name ?>">Choose File</label>
         <?php
     }
 
@@ -151,7 +180,7 @@ class FCP_Forms__Draw {
         <input
             type="submit"
             name="<?php echo $a->name ?>"
-            id="fcp-<?php echo $a->name ?>"
+            id="fcp-f-<?php echo $a->name ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             value="<?php echo esc_attr( $a->value ) ?>"
         />
