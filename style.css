@@ -31,6 +31,11 @@
     margin-bottom:0;
 }
 
+/* hidden */
+.fcp-form-group-hidden {
+    display:none;
+}
+
 /* insides */
 .fcp-form-group-h > *:first-child,
 .fcp-form-group-d > *:first-child {

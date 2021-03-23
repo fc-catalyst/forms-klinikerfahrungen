@@ -2,12 +2,14 @@
     "options" : {
         "method" : "post",
         "print_method" : "server",
+        "autocomplete" : "off",
+        "enctype" : "multipart/form-data",
         "json_validate" : 1,
         "before" : "<div class=\"fcp-form-register-client\">",
         "after" : "</div>",
-        "enctype" : "multipart/form-data",
         "required_mark" : "*",
-        "slide" : "section"
+        "slide" : "section",
+        "reduce_font_after" : 25
     },
     "fields" : [
         {
@@ -60,21 +62,24 @@
                     "gtype" : "row",
                     "cols" : 2,
                     "fields" : [
-                    {
-                        "type" : "text",
-                        "title" : "Name der Klinik / Praxis",
-                        "name" : "company-name",
-                        "validate" : {
-                            "notEmpty" : true
+                        {
+                            "type" : "text",
+                            "title" : "Name der Klinik / Praxis",
+                            "name" : "company-name",
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        },
+                        {
+                            "type" : "text",
+                            "title" : "EMail Adresse für Kontaktanfrage",
+                            "name" : "company-email",
+                            "autofill" : "create-account-email",
+                            "validate" : {
+                                "email" : true
+                            }
                         }
-                    },
-                    {
-                        "type" : "text",
-                        "title" : "EMail Adresse für Kontaktanfrage",
-                        "name" : "company-email",
-                        "validate" : {
-                            "email" : true
-                        }
+                    ]
                 },
                 {
                     "gtype" : "row",
@@ -99,6 +104,16 @@
                             "validate" : {
                                 "notEmpty" : true
                             }
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "hidden",
+                    "description" : "<div class=\"gmaps-specify-map\"></div>",
+                    "fields" : [
+                        {
+                            "type" : "notice",
+                            "text" : "<div class=\"gmaps-specify-markers\"></div>"
                         },
                         {
                             "type" : "hidden",
@@ -192,7 +207,8 @@
                 {
                     "type" : "textarea",
                     "title" : "Unternehmens Beschreibung",
-                    "name" : "company-description"
+                    "name" : "company-description",
+                    "rows" : 2
                 }
             ]
         },
@@ -324,6 +340,133 @@
                             "validate" : {
                                 "notEmpty" : true
                             }
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "hidden",
+                    "title" : "Öffnungszeiten",
+                    "id" : "oeffnungszeiten",
+                    "description" : "<p>Keep empty if days are not work-days</p>",
+                    "fields" : [
+                        {
+                            "gtype" : "row",
+                            "cols" : 2,
+                            "fields" : [
+                                {
+                                    "type" : "text",
+                                    "name" : "monday-open",
+                                    "title" : "Montag",
+                                    "placeholder" : "Geöffnet"
+                                },
+                                {
+                                    "type" : "text",
+                                    "name" : "monday-close",
+                                    "placeholder" : "Geschlossen"
+                                }
+                            ]
+                        },
+                        {
+                            "gtype" : "row",
+                            "cols" : 2,
+                            "fields" : [
+                                {
+                                    "type" : "text",
+                                    "name" : "tuesday-open",
+                                    "title" : "Dienstag",
+                                    "placeholder" : "Geöffnet"
+                                },
+                                {
+                                    "type" : "text",
+                                    "name" : "tuesday-close",
+                                    "placeholder" : "Geschlossen"
+                                }
+                            ]
+                        },
+                        {
+                            "gtype" : "row",
+                            "cols" : 2,
+                            "fields" : [
+                                {
+                                    "type" : "text",
+                                    "name" : "wednesday-open",
+                                    "title" : "Mittwoch",
+                                    "placeholder" : "Geöffnet"
+                                },
+                                {
+                                    "type" : "text",
+                                    "name" : "wednesday-close",
+                                    "placeholder" : "Geschlossen"
+                                }
+                            ]
+                        },
+                        {
+                            "gtype" : "row",
+                            "cols" : 2,
+                            "fields" : [
+                                {
+                                    "type" : "text",
+                                    "name" : "thursday-open",
+                                    "title" : "Donnerstag",
+                                    "placeholder" : "Geöffnet"
+                                },
+                                {
+                                    "type" : "text",
+                                    "name" : "thursday-close",
+                                    "placeholder" : "Geschlossen"
+                                }
+                            ]
+                        },
+                        {
+                            "gtype" : "row",
+                            "cols" : 2,
+                            "fields" : [
+                                {
+                                    "type" : "text",
+                                    "name" : "friday-open",
+                                    "title" : "Freitag",
+                                    "placeholder" : "Geöffnet"
+                                },
+                                {
+                                    "type" : "text",
+                                    "name" : "friday-close",
+                                    "placeholder" : "Geschlossen"
+                                }
+                            ]
+                        },
+                        {
+                            "gtype" : "row",
+                            "cols" : 2,
+                            "fields" : [
+                                {
+                                    "type" : "text",
+                                    "name" : "saturday-open",
+                                    "title" : "Samstag",
+                                    "placeholder" : "Geöffnet"
+                                },
+                                {
+                                    "type" : "text",
+                                    "name" : "saturday-close",
+                                    "placeholder" : "Geschlossen"
+                                }
+                            ]
+                        },
+                        {
+                            "gtype" : "row",
+                            "cols" : 2,
+                            "fields" : [
+                                {
+                                    "type" : "text",
+                                    "name" : "sunday-open",
+                                    "title" : "Sonntag",
+                                    "placeholder" : "Geöffnet"
+                                },
+                                {
+                                    "type" : "text",
+                                    "name" : "sunday-close",
+                                    "placeholder" : "Geschlossen"
+                                }
+                            ]
                         }
                     ]
                 },
