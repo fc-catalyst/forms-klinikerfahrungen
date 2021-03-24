@@ -7,6 +7,11 @@
     align-items:center;
     margin-bottom:20px;
 }
+@media (max-width:650px) {
+    .fcp-form-register-client .fcp-form-group-section {
+        flex-direction:column;
+    }
+}
 .fcp-form-register-client .fcp-form-group-section > * {
     flex-basis:calc(50% - 15px);
     flex-grow:0;
@@ -14,11 +19,10 @@
 }
 
 .fcp-form-register-client .fcp-form-group-section > .fcp-form-group-h,
-.fcp-form-register-client .fcp-form-group-section > .fcp-form-group-w,
-.fcp-form-register-client .fcp-form-group-section > .fcp-form-group-w > .fcp-form-field-w:last-child,
-.fcp-form-register-client .fcp-form-group-section > .fcp-form-group-w > .fcp-form-group:last-child > .fcp-form-group-w > * {
+.fcp-form-register-client .fcp-form-group-section > .fcp-form-group-w {
     margin-bottom:0;
 }
+
 .fcp-form-register-client .fcp-form-group-section > .fcp-form-group-w {
     padding-top:10px;
 }
@@ -41,6 +45,28 @@
 }
 .fcp-form-register-client .fcp-form-field-w > span + * {
     flex-basis:100%;
+}
+
+@media (min-width:992px) {
+    .fcp-form-register-client .fcp-form-group-section > .fcp-form-group-w > .fcp-form-field-w:last-child,
+    .fcp-form-register-client .fcp-form-group-section > .fcp-form-group-w > .fcp-form-group:last-child > .fcp-form-group-w > * {
+        margin-bottom:0;
+    }
+}
+
+@media (max-width:991px) {
+    .fcp-form-register-client .fcp-form-group.fcp-form-cols-2 > .fcp-form-group-w > * {
+        flex-basis:100%;
+        width:100%;
+    }
+    .fcp-form-register-client .fcp-form-group-section > .fcp-form-group-h {
+        margin-bottom:auto;
+    }
+}
+@media (max-width:650px) {
+    .fcp-form-register-client .fcp-form-group-section > .fcp-form-group-h {
+        margin-bottom:30px;
+    }
 }
 
 /* STYLING */
@@ -89,6 +115,11 @@
 .fcp-form-register-client textarea {
     font-size:12px;
 }
+.fcp-form-register-client option {
+    font-weight:400;
+    text-transform:none;
+    color:#0b4562;
+}
 .fcp-form-register-client select,
 .fcp-form-register-client input[type=file] + label {
     cursor:pointer;
@@ -105,6 +136,7 @@
 .fcp-form-register-client input[type=file]:focus-visible + label {
   outline:none;
   background-color:#fff;
+  color:#0b4562!important;
 }
 
 .fcp-form-register-client input:-webkit-autofill,
@@ -117,11 +149,12 @@
 .fcp-form-register-client input:-webkit-autofill:focus,
 .fcp-form-register-client  input:-internal-autofill-selected:focus {
     background-color:#fff;
+    color:#0b4562!important;
     -webkit-box-shadow:0 0 0 50px #fff inset;
 }
 
 .fcp-form-register-client input::-webkit-input-placeholder,
-.fcp-form-register-client textarea::-webkit-input-placeholder{
+.fcp-form-register-client textarea::-webkit-input-placeholder,{
     text-transform:uppercase;
     color:#fff;
     font-weight:700;
@@ -134,6 +167,12 @@
 }
 .fcp-form-register-client input::placeholder,
 .fcp-form-register-client textarea::placeholder{
+    text-transform:uppercase;
+    color:#fff;
+    font-weight:700;
+}
+.fcp-form-register-client select.fcp-form-empty,
+.fcp-form-register-client input[type=file].fcp-form-empty + label {
     text-transform:uppercase;
     color:#fff;
     font-weight:700;
@@ -235,6 +274,14 @@
 }
 
 /* a very CUSTOM */
-#fcp-f-agb {
-    margin-top:-29px;
+@media (min-width:992px) {
+    .fcp-form-register-client #fcp-f-agb {
+        margin-top:-29px;
+    }
+}
+@media (max-width:991px) {
+    .fcp-form-register-client #fcp-f-agb,
+    .fcp-form-register-client #fcp-f-nutzungsbedingungen {
+        margin-top:-29px;
+    }
 }

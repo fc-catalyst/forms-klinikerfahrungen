@@ -147,6 +147,12 @@ class FCP_Forms__Draw {
             <?php echo $a->multiple ? 'multiple' : '' ?>
         >
             <?php
+                if ( $a->placeholder ) {
+            ?>
+                <option value=""><?php echo $a->placeholder ?></option>
+            <?php
+                }
+            
                 foreach ( $a->options as $k => $b ) :
             ?>
                 <option
@@ -171,7 +177,8 @@ class FCP_Forms__Draw {
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             <?php echo $a->multiple ? 'multiple' : '' ?>
         />
-        <label for="fcp-f-<?php echo $a->name ?>">Choose File</label>
+        <label for="fcp-f-<?php echo $a->name ?>">Datei Auswählen</label>
+        <input type="hidden" value="<?php echo $a->value ?>" />
         <?php
     }
 

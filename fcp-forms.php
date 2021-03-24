@@ -116,8 +116,14 @@ class FCP_Forms {
                 $this->css_ver
             );
         }
-		//wp_enqueue_style( 'fcp-forms', plugins_url( 'style.css', __FILE__ ), [], $this->css_ver );
-		//wp_enqueue_script( 'fcp-forms', plugins_url( 'forms.js', __FILE__ ), [], $this->js_ver, 1 );
+        if ( is_file( $this->forms_path . $dir . '/scripts.js' ) ) {
+            wp_enqueue_script(
+                'fcp-forms-'.$dir,
+                $this->forms_url . $dir . '/scripts.js',
+                ['jquery'],
+                $this->js_ver
+            );
+        }
 
 	}
 	
@@ -133,10 +139,9 @@ class FCP_Forms {
         $json = json_decode( $cont, false );
         $json->options->form_name = $dir;
 
-        // start front-end
-        // add files with examples to pickers
-        // maps + report
-        // then expand the amount of possible fields OR make the rest of the simple forms: upload, autofill, map, recaptcha
+        // new user https://wp-kama.ru/function/wp_insert_user
+        // autopick + maps + report
+        // register, upload, autofill, map, recaptcha
         // complex form with login and uploading
         // front-end validation
         // ++hidden field for uploaded images (only single for now)

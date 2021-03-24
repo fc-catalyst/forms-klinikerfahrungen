@@ -13,6 +13,7 @@ if ( wp_signon() instanceof WP_Error ) { // ++use is_wp_error( wp_signon() ) her
     return;
 }
 //*/
+return;
 // upload media files to media library
 if( !$_FILES ) {
     return;
