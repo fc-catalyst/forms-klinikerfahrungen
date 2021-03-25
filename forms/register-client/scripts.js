@@ -57,7 +57,7 @@
             }
             $self.removeClass( s.empty );
         }
-        function empty_select() {
+        function empty_select($self) {
             if ( $self.children( 'option:selected' ).val() === '' ) {
                 $self.addClass( s.empty );
                 return;

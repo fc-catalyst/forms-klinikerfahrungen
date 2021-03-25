@@ -107,6 +107,7 @@ class FCP_Forms {
 	private function add_styles_scripts($dir) {
 
         wp_enqueue_style( 'fcp-forms', $this->self_url . 'style.css', [], $this->css_ver );
+        wp_enqueue_script( 'fcp-forms', $this->self_url . '/scripts.js', ['jquery'], $this->js_ver );
 	
         if ( is_file( $this->forms_path . $dir . '/style.css' ) ) {
             wp_enqueue_style(
@@ -120,7 +121,7 @@ class FCP_Forms {
             wp_enqueue_script(
                 'fcp-forms-'.$dir,
                 $this->forms_url . $dir . '/scripts.js',
-                ['jquery'],
+                ['jquery', 'fcp-forms'],
                 $this->js_ver
             );
         }

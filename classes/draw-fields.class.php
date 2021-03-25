@@ -43,6 +43,7 @@ class FCP_Forms__Draw {
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             placeholder="<?php echo $a->placeholder ?>"
             value="<?php echo esc_attr( $a->savedValue ? $a->savedValue : $a->value ) ?>"
+            <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
         />
         <?php
     }
@@ -66,6 +67,7 @@ class FCP_Forms__Draw {
             name="<?php echo $a->name ?>"
             id="fcp-f-<?php echo $a->name ?>"
             value="<?php echo esc_attr( $a->value ) ?>"
+            <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
         />
         <?php
     }
@@ -77,6 +79,7 @@ class FCP_Forms__Draw {
             id="fcp-f-<?php echo $a->name ?>"
             rows="<?php echo $a->rows ? $a->rows : '10' ?>" cols="<?php echo $a->cols ? $a->cols : '50' ?>"
             placeholder="<?php echo $a->placeholder ?>"
+            <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
         ><?php echo esc_textarea( $a->savedValue ? $a->savedValue : $a->value ) ?></textarea>
         <?php
     }

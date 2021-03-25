@@ -32,7 +32,7 @@
                     "cols" : 2,
                     "fields" : [
                         {
-                            "type" : "password",
+                            "type" : "text",
                             "placeholder" : "Passwort",
                             "name" : "create-account-password",
                             "validate" : {
@@ -40,7 +40,7 @@
                             }
                         },
                         {
-                            "type" : "password",
+                            "type" : "text",
                             "placeholder" : "Passwort bestätigen",
                             "name" : "password-repeat",
                             "validate" : {
@@ -103,23 +103,6 @@
                             "name" : "company-region",
                             "validate" : {
                                 "notEmpty" : true
-                            }
-                        }
-                    ]
-                },
-                {
-                    "gtype" : "hidden",
-                    "description" : "<div class=\"gmaps-specify-map\"></div>",
-                    "fields" : [
-                        {
-                            "type" : "notice",
-                            "text" : "<div class=\"gmaps-specify-markers\"></div>"
-                        },
-                        {
-                            "type" : "hidden",
-                            "name" : "company-location",
-                            "validate" : {
-                                "regExp" : "^(\\d+\\.?\\d* \\d+\\.?\\d*)+$"
                             }
                         }
                     ]
@@ -467,6 +450,23 @@
                                     "placeholder" : "Geschlossen"
                                 }
                             ]
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "hidden",
+                    "description" : "<div class=\"gmaps-specify-map\"></div>",
+                    "fields" : [
+                        {
+                            "type" : "notice",
+                            "text" : "<div class=\"gmaps-specify-markers\"></div>"
+                        },
+                        {
+                            "type" : "hidden",
+                            "name" : "company-location",
+                            "validate" : {
+                                "regExp" : "^(\\d+\\.?\\d* \\d+\\.?\\d*)+$"
+                            }
                         }
                     ]
                 },
