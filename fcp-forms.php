@@ -45,7 +45,7 @@ class FCP_Forms {
     }
 
     public function process() {
-    
+
         if ( !$_POST['fcp-form-name'] ) { // handle only the fcp-forms
             return;
         }
@@ -135,11 +135,17 @@ class FCP_Forms {
         if ( $override ) {
             return $override;
         }
-	
+
         $cont = file_get_contents( $this->forms_path . $dir . '/structure.json' );
         $json = json_decode( $cont, false );
         $json->options->form_name = $dir;
 
+        // add warnings and not empty markers
+        // add the rest by the json not used prefs
+        // try to avoid !important
+        // -n to -w, -w to -c
+        // ++use something else for global warnings passing, not _POST
+        // reorganize the classes names
         // new user https://wp-kama.ru/function/wp_insert_user
         // autopick + maps + report
         // register, upload, autofill, map, recaptcha
@@ -154,7 +160,7 @@ class FCP_Forms {
         }
 
         include_once $this->self_path . 'classes/draw-fields.class.php';
-        $draw = new FCP_Forms__Draw( $json, $_POST );
+        $draw = new FCP_Forms__Draw( $json, $_POST, $_FILES );
         return $draw->result;
 
 	}

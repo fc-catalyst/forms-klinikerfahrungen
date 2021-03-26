@@ -18,9 +18,12 @@ class FCP_Forms__Validate {
     public $result, $mFilesFailed; // filtered and marked content; filtered files from the list of multiples
 
     public function __construct($s, $v, $f = []) {
+
         $this->s = $s;
+        $this->s->fields = self::flatten( $s->fields );
         $this->v = $v + $f;
         $this->checkValues();
+
     }
 
 
@@ -40,15 +43,15 @@ class FCP_Forms__Validate {
         return 'The field is empty';
     }
     
-    function test_regExp($rule, $a) {
-        if ( preg_match( '/'.$rule[0].'/', $a ) ) {
+    private function test_regExp($rule, $a) {
+        if ( !$a || $a && preg_match( '/'.$rule[0].'/', $a ) ) {
             return false;
         }
         return 'Doesn\'t fit the pattern '.$rule[1];
     }
 
-    function test_email($rule, $a) {
-        if ( $rule == true && filter_var( $a, FILTER_VALIDATE_EMAIL ) ) {
+    private function test_email($rule, $a) {
+        if ( !$a || $a && $rule == true && filter_var( $a, FILTER_VALIDATE_EMAIL ) ) {
             return false;
         }
         return 'The email format is incorrect';
@@ -57,7 +60,7 @@ class FCP_Forms__Validate {
 // __-----___---___--_________
 
     public static function name($rule, $a) {
-        if ( $rule == true && preg_match( '/^[a-zA-Z0-9-_]+$/', $a ) ) {
+        if ( !$a || $a && $rule == true && preg_match( '/^[a-zA-Z0-9-_]+$/', $a ) ) {
             return false;
         }
         return 'Must contain only letters, nubers or the following symbols: "-", "_"';
@@ -74,6 +77,22 @@ class FCP_Forms__Validate {
             }
         }
         return $mflip;
+    }
+
+    public static function flatten($f, &$return = []) {
+        foreach ( $f as $add ) {
+
+            if ( $add->type ) {
+                $return[] = $add;
+                continue;
+            }
+
+            if ( $add->gtype ) {
+                self::flatten( $add->fields, $return );
+            }
+
+        }
+        return $return;
     }
 
 // -----____--____FILES OPERATIONS____----____---____

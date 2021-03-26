@@ -2,32 +2,36 @@
 
 class FCP_Forms__Draw {
 
-    private $s; // s is for structure, json; v is for values; $w is for warnings
+    private $s; // $s is for structure, json
     public $result; // contains the final form html
 
-    public function __construct($s, $v = []) {
+    public function __construct($s, $v = [], $f = []) {
 
-        if ( !empty( $v ) ) {
+        $s->options->warning = $v['fcp-form-warning'];
+        
+        $this->s = $s;
+        $this->s->fields = $this->attach_dynamics( $s->fields, $v + $f );
+        $this->result = $this->printFields();
 
-            // $v contains $_POST values, including newly added warnings
-            $w = $v['fcp-form-warnings'];
-            $s->options->warning = $v['fcp-form-warning'];
+    }
 
-            // add the values and warnings to the existing structure
-            foreach ( $s->fields as &$f ) {
-                $f->savedValue = $v[ $f->name ];
-                if ( $w[ $f->name ] ) {
-                    $f->warning = $w[ $f->name ];
-                }
+    private function attach_dynamics(&$f, $v) {
+        foreach ( $f as &$add ) {
+
+            if ( $add->type ) {
+                $add->savedValue = $v[ $add->name ];
+                $add->warning = $v['fcp-form-warnings'][ $add->name ];
+                continue;
+            }
+
+            if ( $add->gtype ) {
+                $this->attach_dynamics( $add->fields, $v );
             }
 
         }
-
-        $this->s = $s;        
-        $this->result = $this->printFields();
-    
+        return $f;
     }
-
+    
     private function field_notice($a) {
         ?>
         <p><?php echo $a->text ?></p>
@@ -181,7 +185,7 @@ class FCP_Forms__Draw {
             <?php echo $a->multiple ? 'multiple' : '' ?>
         />
         <label for="fcp-f-<?php echo $a->name ?>">Datei Auswählen</label>
-        <input type="hidden" value="<?php echo $a->value ?>" />
+        <input type="hidden" value="<?php echo $a->savedValue ?>" />
         <?php
     }
 
@@ -232,7 +236,7 @@ class FCP_Forms__Draw {
 
         if ( $a->warning ) {
             ?>
-            <div class="fcp-form-field-w"><?php echo implode( '<br>', $a->warning ) ?></div>
+            <div class="fcp-form-field-n"><?php echo implode( '<br />', $a->warning ) ?></div>
             <?php
         }
 
