@@ -45,8 +45,9 @@ class FCP_Forms__Draw {
             name="<?php echo $a->name ?>"
             id="fcp-f-<?php echo $a->name ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
-            placeholder="<?php echo $a->placeholder ?>"
+            placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty ? '*' : '' ?>"
             value="<?php echo esc_attr( $a->savedValue ? $a->savedValue : $a->value ) ?>"
+            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
             <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
         />
         <?php
@@ -59,7 +60,8 @@ class FCP_Forms__Draw {
             name="<?php echo $a->name ?>"
             id="fcp-f-<?php echo $a->name ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
-            placeholder="<?php echo $a->placeholder ?>"
+            placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty ? '*' : '' ?>"
+            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
         />
         <?php
     }
@@ -82,7 +84,8 @@ class FCP_Forms__Draw {
             name="<?php echo $a->name ?>"
             id="fcp-f-<?php echo $a->name ?>"
             rows="<?php echo $a->rows ? $a->rows : '10' ?>" cols="<?php echo $a->cols ? $a->cols : '50' ?>"
-            placeholder="<?php echo $a->placeholder ?>"
+            placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty ? '*' : '' ?>"
+            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
             <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
         ><?php echo esc_textarea( $a->savedValue ? $a->savedValue : $a->value ) ?></textarea>
         <?php
@@ -91,7 +94,10 @@ class FCP_Forms__Draw {
     private function field_checkbox($a) {
         ?>
         
-        <fieldset id="fcp-f-<?php echo $a->name ?>">
+        <fieldset
+            id="fcp-f-<?php echo $a->name ?>"
+            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
+        >
         
         <?php
         $single = count( (array) $a->options ) == 1 ? true : false;
@@ -120,7 +126,10 @@ class FCP_Forms__Draw {
     private function field_radio($a) {
         ?>
         
-        <fieldset id="fcp-f-<?php echo $a->name ?>">
+        <fieldset 
+            id="fcp-f-<?php echo $a->name ?>"
+            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
+        >
         
         <?php
         $single = count( (array) $a->options ) == 1 ? true : false;
@@ -151,12 +160,13 @@ class FCP_Forms__Draw {
         <select
             name="<?php echo $a->name ?><?php echo $a->multiple ? '[]' : '' ?>"
             id="fcp-f-<?php echo $a->name ?>"
+            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
             <?php echo $a->multiple ? 'multiple' : '' ?>
         >
             <?php
                 if ( $a->placeholder ) {
             ?>
-                <option value=""><?php echo $a->placeholder ?></option>
+                <option value=""><?php echo $a->placeholder ?><?php echo $a->validate->notEmpty ? '*' : '' ?></option>
             <?php
                 }
             
@@ -181,6 +191,7 @@ class FCP_Forms__Draw {
             type="file"
             name="<?php echo $a->name; echo $a->multiple ? '[]' : '' ?>"
             id="fcp-f-<?php echo $a->name ?>"
+            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             <?php echo $a->multiple ? 'multiple' : '' ?>
         />
@@ -222,7 +233,11 @@ class FCP_Forms__Draw {
                 $smaller = true;
             }
             ?>
-            <span class="fcp-form-field-h<?php echo $smaller ? ' fcp-form-small' : ''?>"><?php echo $a->title ?></span>
+            <span class="fcp-form-field-h<?php echo $smaller ? ' fcp-form-small' : ''?>">
+                <?php echo $a->title ?><?php
+                    echo $a->validate->notEmpty ? ( $o->required_mark ? $o->required_mark : '*' ) : ''
+                ?>
+            </span>
             <?php
         }
     
@@ -236,7 +251,7 @@ class FCP_Forms__Draw {
 
         if ( $a->warning ) {
             ?>
-            <div class="fcp-form-field-n"><?php echo implode( '<br />', $a->warning ) ?></div>
+            <div class="fcp-form-field-warn"><?php echo implode( '<br />', $a->warning ) ?></div>
             <?php
         }
 
@@ -263,7 +278,7 @@ class FCP_Forms__Draw {
         <?php
         if ( $o->warning ) {
             ?>
-            <div class="fcp-form-field-w"><?php echo $o->warning ?></div>
+            <div class="fcp-form-warning"><?php echo $o->warning ?></div>
             <?php
         }
         foreach ( $this->s->fields as $f ) {

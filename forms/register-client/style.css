@@ -27,13 +27,13 @@
     padding-top:10px;
 }
 
-.fcp-form-group.fcp-form-cols-2 > .fcp-form-group-w > * {
+.fcp-form-register-client .fcp-form-group.fcp-form-cols-2 > .fcp-form-group-w > * {
     flex-basis:calc(50% - 12px);
     width:calc(50% - 12px);
 }
 
 /* FIELDS */
-.fcp-form-field-w {
+.fcp-form-register-client .fcp-form-field-w {
     margin-bottom:20px;
 }
 .fcp-form-register-client .fcp-form-field-w > * {
@@ -121,6 +121,8 @@
     color:#0b4562;
 }
 .fcp-form-register-client select,
+.fcp-form-register-client button,
+.fcp-form-register-client input[type=submit],
 .fcp-form-register-client input[type=file] + label {
     cursor:pointer;
 }
@@ -143,8 +145,8 @@
 .fcp-form-register-client  input:-internal-autofill-selected {
     background-color:#c8ebf6;
     -webkit-box-shadow:0 0 0 50px #c8ebf6 inset;
-    color:#000;
-    -webkit-text-fill-color: #000;
+    color:#0b4562;
+    -webkit-text-fill-color:#0b4562;
 }
 .fcp-form-register-client input:-webkit-autofill:focus,
 .fcp-form-register-client  input:-internal-autofill-selected:focus {
@@ -185,12 +187,16 @@
     max-width:1px;
     overflow:hidden;
 }
+.fcp-form-register-client input[type=file] + label {
+    display:block;
+}
 
 /* checkbox & radio */
 .fcp-form-register-client fieldset {
-    margin:6px 0 12px;
+    margin:6px 0 0;
     border:none;
-    padding:0;
+    border-radius:6px;
+    padding:0 0 8px 0;
 }
 .fcp-form-register-client fieldset label {
     position:relative;
@@ -273,15 +279,25 @@
     transform:scale(1, 1);
 }
 
-/* a very CUSTOM */
+.fcp-form-register-client .fcp-f-invalid,
+.fcp-form-register-client input[type=file].fcp-f-invalid + label {
+    border-bottom:2px solid #f67575;
+}
+
+/* a very CUSTOM for this form */
 @media (min-width:992px) {
-    .fcp-form-register-client #fcp-f-agb {
-        margin-top:-29px;
+    .fcp-form-register-client .fcp-form-cols-2 .fcp-form-field-w:nth-child(1n+3) fieldset {
+        margin-top:-27px;
+    }
+    .fcp-form-register-client .fcp-form-cols-2 .fcp-form-field-w:nth-child(1n+3) fieldset.fcp-f-invalid {
+        margin-top:-12px;
     }
 }
 @media (max-width:991px) {
-    .fcp-form-register-client #fcp-f-agb,
-    .fcp-form-register-client #fcp-f-nutzungsbedingungen {
-        margin-top:-29px;
+    .fcp-form-register-client .fcp-form-field-w:nth-child(1n+2) fieldset {
+        margin-top:-27px;
+    }
+    .fcp-form-register-client .fcp-form-field-w:nth-child(1n+2) fieldset.fcp-f-invalid {
+        margin-top:-12px;
     }
 }

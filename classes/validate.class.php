@@ -56,6 +56,20 @@ class FCP_Forms__Validate {
         }
         return 'The email format is incorrect';
     }
+
+    private function test_url($rule, $a) {
+        if ( !$a || $a && $rule == true && filter_var( $a, FILTER_VALIDATE_URL ) ) {
+            return false;
+        }
+        return 'Please, start the link with https:// or http://';
+    }
+
+    private function test_equals($rule, $a) {
+        if ( !$a || $a && $a === $this->v[ $rule ] ) {
+            return false;
+        }
+        return 'The value has to match the previous field';
+    }
     
 // __-----___---___--_________
 
@@ -96,6 +110,10 @@ class FCP_Forms__Validate {
     }
 
 // -----____--____FILES OPERATIONS____----____---____
+
+    private function test_file_notEmpty($rule, $a) {
+        return $this->test_notEmpty( $rule, $a['name'] );
+    }
 
     private function test_file_maxSize($rule, $a) {
         if ( !$a['name'] ) {

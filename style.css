@@ -64,6 +64,11 @@
 .fcp-form-field-w > span + * {
     flex-basis:calc(60% - 15px);
 }
-.fcp-form-field-w > span::after {
-    content:':';
+
+.fcp-form-field-warn {
+    font-size:12px;
+}
+
+input[type=file] + label {
+    display:none;
 }

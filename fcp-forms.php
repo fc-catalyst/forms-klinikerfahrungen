@@ -140,20 +140,21 @@ class FCP_Forms {
         $json = json_decode( $cont, false );
         $json->options->form_name = $dir;
 
-        // add warnings and not empty markers
-        // add the rest by the json not used prefs
-        // try to avoid !important
-        // -n to -w, -w to -c
+        // complex form with login and uploading
+            // new user https://wp-kama.ru/function/wp_insert_user
+            // hidden field for uploaded images (only single for now)
+            // file default validation with no mentioning in json, notEmpry
+        // remember about the worktime for the kliniks
         // ++use something else for global warnings passing, not _POST
-        // reorganize the classes names
-        // new user https://wp-kama.ru/function/wp_insert_user
+        // reorganize the css classes names
         // autopick + maps + report
         // register, upload, autofill, map, recaptcha
-        // complex form with login and uploading
         // front-end validation
-        // ++hidden field for uploaded images (only single for now)
+            // autofill only if the value is correct
         // ++warns to array with the source of multiple uploads OR recheck in process.php
         // ++include the modify values file before the validator for converting numbers and resizing images, maybe, renaming files, adding smilies
+        // ++aria
+        // ++multiple text and other fields
         
         if ( $json->options->print_method == 'client' ) {
             return '<form class="fcp-form" data-structure="'.$dir.'">Loading..</form>';
