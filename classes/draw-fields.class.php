@@ -7,7 +7,7 @@ class FCP_Forms__Draw {
 
     public function __construct($s, $v = [], $f = []) {
 
-        $s->options->warning = $v['fcp-form-warning'];
+        $s->options->warning = $v['fcp-form--warning'];
         
         $this->s = $s;
         $this->s->fields = $this->attach_dynamics( $s->fields, $v + $f );
@@ -19,8 +19,8 @@ class FCP_Forms__Draw {
         foreach ( $f as &$add ) {
 
             if ( $add->type ) {
-                $add->savedValue = $v[ $add->name ];
-                $add->warning = $v['fcp-form-warnings'][ $add->name ];
+                $add->savedValue = $add->type == 'file' ? $v['fcp-form--uploads'][ $add->name ] : $v[ $add->name ];
+                $add->warning = $v['fcp-form--warnings'][ $add->name ];
                 continue;
             }
 
@@ -196,7 +196,8 @@ class FCP_Forms__Draw {
             <?php echo $a->multiple ? 'multiple' : '' ?>
         />
         <label for="fcp-f-<?php echo $a->name ?>">Datei Auswählen</label>
-        <input type="hidden" value="<?php echo $a->savedValue ?>" />
+        <input type="hidden" name="--<?php echo $a->name ?>--old" value="<?php echo $a->savedValue ?>" />
+        <input type="hidden" name="--<?php echo $a->name ?>--new" value="<?php echo $a->savedValue ?>" />
         <?php
     }
 

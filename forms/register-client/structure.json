@@ -162,6 +162,7 @@
                             "type" : "file",
                             "title" : "Logo Ihrer Klinik",
                             "name" : "company-logo",
+                            "multiple" : true,
                             "validate" : {
                                 "default" : true,
                                 "maxSize" : 1000000,

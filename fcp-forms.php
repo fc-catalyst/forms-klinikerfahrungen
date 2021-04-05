@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
 
 class FCP_Forms {
 
-	public static $dev = true;
+	public static $dev = true, $tmp_dir = 'fcp-forms-tmp';
 	
 	private function plugin_setup() {
 
@@ -41,15 +41,37 @@ class FCP_Forms {
 
         add_shortcode( 'fcp-form', [ $this, 'add_shortcode' ] );
         add_action( 'template_redirect', [ $this, 'process' ] );
+        
+        register_activation_hook( __FILE__, [ $this, 'install' ] );
+        register_deactivation_hook( __FILE__, array( $this, 'uninstall' ) );
 
     }
+    
+    public function install() {
+    
+        // create tmp dir for the files uploading
+        $dir = wp_get_upload_dir()['basedir'];
+        $perm = substr( sprintf( '%o', fileperms( $dir ) ), -4 );
+        mkdir( $dir . '/' . self::$tmp_dir, $perm );
 
+    }
+    
+    public function uninstall() {
+    
+        // remove tmp dir
+        include_once $this->self_path . 'classes/files.class.php';
+        $dir = wp_get_upload_dir()['basedir'];
+        FCP_Forms__Files::rm_dir( $dir . '/' . self::$tmp_dir );
+    }
+    
     public function process() {
 
         if ( !$_POST['fcp-form-name'] ) { // handle only the fcp-forms
             return;
         }
-
+        if ( !empty( $_FILES ) ) {
+            include_once $this->self_path . 'classes/files.class.php';
+        }
         include_once $this->self_path . 'classes/validate.class.php';
 
         // only correct symbols for the form name
@@ -71,11 +93,22 @@ class FCP_Forms {
             $warning = 'Some fields are not filled correctly:';
         }
 
+        // files processing
+        if ( !empty( $_FILES ) ) {
+            $uploads = new FCP_Forms__Files( $json, $_FILES, $warns->mFilesFailed );
+/*
+            if ( !empty( $uploads->result ) ) {
+                $_POST['fcp-form--uploads'] = $uploads->result;
+            }
+//*/
+        }
+
         // custom validation & processing
         @include_once( $this->forms_path . $_POST['fcp-form-name'] . '/process.php' );
+
         if ( $warning || !empty( $warns->result ) ) {
-            $_POST['fcp-form-warning'] = $warning;
-            $_POST['fcp-form-warnings'] = $warns->result;
+            $_POST['fcp-form--warning'] = $warning; // passing to the printing hook via globals
+            $_POST['fcp-form--warnings'] = $warns->result;
             return;
         }
 
@@ -98,7 +131,7 @@ class FCP_Forms {
 		if ( !$atts['dir'] || !is_file( $this->forms_path . $atts['dir'] . '/structure.json' ) ) {
 			return '';
         }
-
+        
         $this->add_styles_scripts( $atts['dir'] );
         return $this->generate_form( $atts['dir'] );
 
@@ -130,22 +163,27 @@ class FCP_Forms {
 	
 	private function generate_form( $dir ) {
 
+        $cont = file_get_contents( $this->forms_path . $dir . '/structure.json' );
+        $json = json_decode( $cont, false );
+        $json->options->form_name = $dir;
+
         // custom handler
         @include_once( $this->forms_path . $dir . '/override.php' );
         if ( $override ) {
             return $override;
         }
 
-        $cont = file_get_contents( $this->forms_path . $dir . '/structure.json' );
-        $json = json_decode( $cont, false );
-        $json->options->form_name = $dir;
-
+        // ++ uploading only multiple field files brings an error
+        // ++ Y does it allow uploading pdf??
+        // ++ filter out error too
+        // !!++default filter if multiple upload is not allowed by json
+        // prefix to static value?
         // complex form with login and uploading
             // new user https://wp-kama.ru/function/wp_insert_user
-            // hidden field for uploaded images (only single for now)
+            // hidden field for uploaded images
             // file default validation with no mentioning in json, notEmpry
         // remember about the worktime for the kliniks
-        // ++use something else for global warnings passing, not _POST
+        // --use something else for global warnings passing, not _POST
         // reorganize the css classes names
         // autopick + maps + report
         // register, upload, autofill, map, recaptcha
@@ -155,6 +193,8 @@ class FCP_Forms {
         // ++include the modify values file before the validator for converting numbers and resizing images, maybe, renaming files, adding smilies
         // ++aria
         // ++multiple text and other fields
+        // use array_map instead of circles where can?
+        // aa_aa for public and aaAa for privates?
         
         if ( $json->options->print_method == 'client' ) {
             return '<form class="fcp-form" data-structure="'.$dir.'">Loading..</form>';
@@ -165,6 +205,25 @@ class FCP_Forms {
         return $draw->result;
 
 	}
+	
+// -----______---___---_____HELPING FUNCITONS______---____--___
+
+
+    public static function flatten($f, &$return = []) {
+        foreach ( $f as $add ) {
+
+            if ( $add->type ) {
+                $return[] = $add;
+                continue;
+            }
+
+            if ( $add->gtype ) {
+                self::flatten( $add->fields, $return );
+            }
+
+        }
+        return $return;
+    }
 
 }
 

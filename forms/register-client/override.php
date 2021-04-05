@@ -3,11 +3,24 @@
 Print something else instead of the form
 */
 
-return;
-
 if ( !is_user_logged_in() ) {
     return;
 }
+/*
+echo '<pre>';
+print_r( $json );
+echo '</pre>';
+//*/
+
+unset( $json->fields[0]->description );
+$json->fields[0]->fields = [
+    (object) [
+        'type' => 'notice',
+        'text' => 'TEXT'
+    ]
+];
+
+return;
 
 $user = wp_get_current_user();
 

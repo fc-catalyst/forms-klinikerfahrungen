@@ -14,13 +14,13 @@ $structure = @file_get_contents( $path );
 
 class FCP_Forms__Validate {
 
-    private $s, $v; // is for structure, json; $_POST; $_FILES (concat with $_POST here)
+    private $s, $v; // structure - json; $_POST; $_FILES (concat with $_POST here)
     public $result, $mFilesFailed; // filtered and marked content; filtered files from the list of multiples
 
     public function __construct($s, $v, $f = []) {
 
         $this->s = $s;
-        $this->s->fields = self::flatten( $s->fields );
+        $this->s->fields = FCP_Forms::flatten( $s->fields );
         $this->v = $v + $f;
         $this->checkValues();
 
@@ -29,6 +29,12 @@ class FCP_Forms__Validate {
 
     private function test_name($rule, $a) {
         return self::name( $rule, $a );
+    }
+    public static function name($rule, $a) {
+        if ( !$a || $a && $rule == true && preg_match( '/^[a-zA-Z0-9-_]+$/', $a ) ) {
+            return false;
+        }
+        return 'Must contain only letters, nubers or the following symbols: "-", "_"';
     }
 
     private function test_notEmpty($rule, $a) {
@@ -71,45 +77,7 @@ class FCP_Forms__Validate {
         return 'The value has to match the previous field';
     }
     
-// __-----___---___--_________
-
-    public static function name($rule, $a) {
-        if ( !$a || $a && $rule == true && preg_match( '/^[a-zA-Z0-9-_]+$/', $a ) ) {
-            return false;
-        }
-        return 'Must contain only letters, nubers or the following symbols: "-", "_"';
-    }
-
-    public static function flipFiles($mfile = []) {
-        if ( !is_array( $mfile['name'] ) ) {
-            return $mfile;
-        }
-        $mflip = [];
-        for ( $i = 0, $j = count( $mfile['name'] ); $i < $j; $i++ ) {
-            foreach ( $mfile as $k => $v ) {
-                $mflip[$i][$k] = $mfile[$k][$i];
-            }
-        }
-        return $mflip;
-    }
-
-    public static function flatten($f, &$return = []) {
-        foreach ( $f as $add ) {
-
-            if ( $add->type ) {
-                $return[] = $add;
-                continue;
-            }
-
-            if ( $add->gtype ) {
-                self::flatten( $add->fields, $return );
-            }
-
-        }
-        return $return;
-    }
-
-// -----____--____FILES OPERATIONS____----____---____
+// -----____--____FILES VALIDATION____----____---____
 
     private function test_file_notEmpty($rule, $a) {
         return $this->test_notEmpty( $rule, $a['name'] );
@@ -136,7 +104,7 @@ class FCP_Forms__Validate {
         return 'The file <em>'.$a['name'].'</em> extension doesn\'t fit the allowed list: ' . implode( ', ', $rule );
     }
     
-    private function test_file_default($a) {
+    private function test_file_default($a) { // ++move to files.class?
         if ( $a['error'] ) {
             return [ // taken from the php reference for uploading errors
                 0 => 'There is no error, the file uploaded with success', // doesn't count anyways
@@ -173,7 +141,8 @@ class FCP_Forms__Validate {
                 // multiple files
                 if ( $f->type == 'file' && $f->multiple ) {
                 
-                    $mflip = self::flipFiles( $this->v[ $f->name ] );
+                    // ++can move to __construct, as in files.class.php
+                    $mflip = FCP_Forms__Files::flip_files( $this->v[ $f->name ] );
                     foreach ( $mflip as $v ) {
                         if ( $this->addResult( $method, $f->name, $rule, $v ) ) {
                             $this->mFilesFailed[ $f->name ][] = $v['name'];
