@@ -95,6 +95,11 @@ class FCP_Forms {
 
         // files processing
         if ( !empty( $_FILES ) ) {
+            // dir for temporary files of current form
+            if ( strlen( $_POST['fcp-form--tmpdir'] ) == 13 ) {
+                $_POST['fcp-form--tmpdir'] .= '_' . time();
+            }
+
             $uploads = new FCP_Forms__Files( $json, $_FILES, $warns->mFilesFailed );
 /*
             if ( !empty( $uploads->result ) ) {
@@ -102,7 +107,13 @@ class FCP_Forms {
             }
 //*/
         }
-
+/*
+        echo '<pre>';
+        print_r( $uploads->for_hiddens() );
+        print_r( $uploads->files );
+        echo '</pre>';
+        exit;
+//*/
         // custom validation & processing
         @include_once( $this->forms_path . $_POST['fcp-form-name'] . '/process.php' );
 
@@ -173,9 +184,17 @@ class FCP_Forms {
             return $override;
         }
 
-        // ++ uploading only multiple field files brings an error
-        // ++ Y does it allow uploading pdf??
-        // ++ filter out error too
+        /*
+            pass tmp dir to the class, create uploading and etc methods
+            check the nonce or add the hash for uploading to the speciffic dir
+            upload if no warnings about them as time-md5(rand).ext
+            replace, if hidden value is provided & file exists, else ^ OR add more if is multiple and not repeating name, delete if empty or "delete" checkbox is clicked??
+            fill in the hidden field
+
+            remove all 10 minutes outdated - place to the main class
+
+        */
+        // install-uninstall - for every single form (creating folders, for example)
         // !!++default filter if multiple upload is not allowed by json
         // prefix to static value?
         // complex form with login and uploading
@@ -195,6 +214,8 @@ class FCP_Forms {
         // ++multiple text and other fields
         // use array_map instead of circles where can?
         // aa_aa for public and aaAa for privates?
+        // fcp-form-a-nonce to some semi-random ting
+        // nonce goes only after init, and works only for logged in users
         
         if ( $json->options->print_method == 'client' ) {
             return '<form class="fcp-form" data-structure="'.$dir.'">Loading..</form>';

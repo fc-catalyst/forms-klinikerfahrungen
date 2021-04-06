@@ -148,12 +148,16 @@ class FCP_Forms__Validate {
                             $this->mFilesFailed[ $f->name ][] = $v['name'];
                         }
                     }
-
                     continue;
                 }
                 
                 // text data && single file
-                $this->addResult( $method, $f->name, $rule, $this->v[ $f->name ] );
+                if ( $this->addResult( $method, $f->name, $rule, $this->v[ $f->name ] ) ){
+                    if ( $f->type != 'file' ) {
+                        continue;
+                    }
+                    $this->mFilesFailed[ $f->name ][] = $this->v[ $f->name ]['name'];
+                }
             }
         }
     }

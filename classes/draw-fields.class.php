@@ -295,6 +295,9 @@ class FCP_Forms__Draw {
         ?>
         
         <input type="hidden" name="fcp-form-name" value="<?php echo $o->form_name ?>">
+        <input type="hidden" name="fcp-form--tmpdir"
+            value="<?php echo $_POST['fcp-form--tmpdir'] ? $_POST['fcp-form--tmpdir'] : uniqid() ?>"
+        >
         </form>
         <?php echo $o->after ?>
 
