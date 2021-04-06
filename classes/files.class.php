@@ -4,7 +4,7 @@
 */
 class FCP_Forms__Files {
 
-    private $s, $f, $w, $t; // structure - json; $_FILES; warnings; dir for temporary files
+    private $s, $f, $w; // structure - json; $_FILES; warnings; dir for temporary files
     public $files; // [ single file array + post field name ]
 
     public function __construct($s, $f, $w = []) {
@@ -13,11 +13,64 @@ class FCP_Forms__Files {
         $this->s->fields = FCP_Forms::flatten( $s->fields );
         $this->w = $w;
         $this->f = array_map( 'self::flip_files', $f );
-        $this->t = wp_get_upload_dir()['basedir'] . '/' . FCP_Forms::$tmp_dir;
         $this->proceed();
 
     }
 
+    public static function tmp_dir() {
+        return [
+            0 => wp_get_upload_dir()['basedir'] . '/' . FCP_Forms::$tmp_dir,
+            1 => wp_get_upload_dir()['basedir'] . '/' . FCP_Forms::$tmp_dir . '/' . $_POST['fcp-form--tmpdir']
+        ];
+    }
+    
+    public function tmp_upload() {
+        if ( !count( $this->files ) ) {
+            return;
+        }
+        
+        $result = [];
+        
+        // mk tmp dir
+        $dir = self::tmp_dir()[1];
+        if ( !is_dir( $dir ) ) {
+            if ( !mkdir( $dir ) ) {
+                $result[] = ' tmp folder not created';
+            }
+        }
+
+        // upload accepted files
+        foreach ( $this->files as $k => $v ) {
+            if ( !move_uploaded_file( $v['tmp_name'], $dir . '/' . $v['name'] ) ) {
+                unlink( $this->files[$k] );
+                $result[] = $v['name'] . ' not uploaded to tmp';
+            }
+        }
+        
+        $this->files = array_values( $this->files );
+        
+        return $result[0] ? $result : true;
+    }
+    
+    public function move_tmp($to = '') {
+        if ( !count( $this->files ) || !$to ) {
+            return;
+        }
+        
+        $result = [];
+        
+        $dir = self::tmp_dir();
+        foreach ( $this->files as $k => $v ) {
+            if ( is_file( $dir . '/' . $v['name'] ) && is_dir( $dir[0] . '/' . $to ) ) {
+                if ( !rename( $dir[1] . '/' . $v['name'], $dir[0] . '/' . $to . '/' . $v['name'] ) ) {
+                    $result[] = $v['name'] . ' not moved from tmp';
+                }
+            }
+        }
+        
+        return $result[0] ? $result : true;
+    }
+    
     public function for_hiddens() {
         $result = [];
         foreach ( $this->files as $v ) {

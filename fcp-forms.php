@@ -51,8 +51,8 @@ class FCP_Forms {
     
         // create tmp dir for the files uploading
         $dir = wp_get_upload_dir()['basedir'];
-        $perm = substr( sprintf( '%o', fileperms( $dir ) ), -4 );
-        mkdir( $dir . '/' . self::$tmp_dir, $perm );
+        mkdir( $dir . '/' . self::$tmp_dir );
+        mkdir( $dir . '/' . 'clients' ); // ++ TEMPORARY MEASURE - move to the form
 
     }
     
@@ -69,6 +69,7 @@ class FCP_Forms {
         if ( !$_POST['fcp-form-name'] ) { // handle only the fcp-forms
             return;
         }
+
         if ( !empty( $_FILES ) ) {
             include_once $this->self_path . 'classes/files.class.php';
         }
@@ -79,7 +80,7 @@ class FCP_Forms {
             return;
         }
 
-        // common wp nonce check
+        // common wp nonce check for logged in users
         if ( !wp_verify_nonce( $_POST[ 'fcp-form-' . $_POST['fcp-form-name'] ], 'fcp-form-a-nonce' ) ){
             return;
         }
@@ -95,6 +96,7 @@ class FCP_Forms {
 
         // files processing
         if ( !empty( $_FILES ) ) {
+
             // dir for temporary files of current form
             if ( strlen( $_POST['fcp-form--tmpdir'] ) == 13 ) {
                 $_POST['fcp-form--tmpdir'] .= '_' . time();
@@ -107,14 +109,8 @@ class FCP_Forms {
             }
 //*/
         }
-/*
-        echo '<pre>';
-        print_r( $uploads->for_hiddens() );
-        print_r( $uploads->files );
-        echo '</pre>';
-        exit;
-//*/
-        // custom validation & processing
+
+        // main validation & processing
         @include_once( $this->forms_path . $_POST['fcp-form-name'] . '/process.php' );
 
         if ( $warning || !empty( $warns->result ) ) {
@@ -185,17 +181,11 @@ class FCP_Forms {
         }
 
         /*
-            pass tmp dir to the class, create uploading and etc methods
-            check the nonce or add the hash for uploading to the speciffic dir
-            upload if no warnings about them as time-md5(rand).ext
-            replace, if hidden value is provided & file exists, else ^ OR add more if is multiple and not repeating name, delete if empty or "delete" checkbox is clicked??
-            fill in the hidden field
-
-            remove all 10 minutes outdated - place to the main class
-
+            ++!! time() creates new every time on update without the hidden field - is that ok :)
+            ++!!behave somehow with the hidden values??
+            create clearing method to remove all 10 minutes outdated - place to the main class
         */
         // install-uninstall - for every single form (creating folders, for example)
-        // !!++default filter if multiple upload is not allowed by json
         // prefix to static value?
         // complex form with login and uploading
             // new user https://wp-kama.ru/function/wp_insert_user
@@ -216,6 +206,7 @@ class FCP_Forms {
         // aa_aa for public and aaAa for privates?
         // fcp-form-a-nonce to some semi-random ting
         // nonce goes only after init, and works only for logged in users
+        // delete the form file if empty or "delete" checkbox is clicked??
         
         if ( $json->options->print_method == 'client' ) {
             return '<form class="fcp-form" data-structure="'.$dir.'">Loading..</form>';
