@@ -98,19 +98,22 @@ class FCP_Forms {
         if ( !empty( $_FILES ) ) {
 
             // dir for temporary files of current form
-            if ( strlen( $_POST['fcp-form--tmpdir'] ) == 13 ) {
-                $_POST['fcp-form--tmpdir'] .= '_' . time();
+            if ( !self::unique( $_POST['fcp-form--tmpdir'] ) ) {
+                return;
             }
+            FCP_Forms__Files::tmp_clean();
 
             $uploads = new FCP_Forms__Files( $json, $_FILES, $warns->mFilesFailed );
+
 /*
             if ( !empty( $uploads->result ) ) {
                 $_POST['fcp-form--uploads'] = $uploads->result;
             }
 //*/
         }
+        
 
-        // main validation & processing
+        // main & custom validation & processing
         @include_once( $this->forms_path . $_POST['fcp-form-name'] . '/process.php' );
 
         if ( $warning || !empty( $warns->result ) ) {
@@ -181,11 +184,11 @@ class FCP_Forms {
         }
 
         /*
-            ++!! time() creates new every time on update without the hidden field - is that ok :)
+            ++!!critical error on adding more files on second upload to multiple field
             ++!!behave somehow with the hidden values??
-            create clearing method to remove all 10 minutes outdated - place to the main class
+            ++!!file not empty validation works wrong - gotta mention hiddens!!
         */
-        // install-uninstall - for every single form (creating folders, for example)
+        // install-uninstall - for every single form (creating folders, for example) OR better make on the fly!!
         // prefix to static value?
         // complex form with login and uploading
             // new user https://wp-kama.ru/function/wp_insert_user
@@ -207,6 +210,7 @@ class FCP_Forms {
         // fcp-form-a-nonce to some semi-random ting
         // nonce goes only after init, and works only for logged in users
         // delete the form file if empty or "delete" checkbox is clicked??
+        // ++if same files are uploaded via different fields - don't upload twice
         
         if ( $json->options->print_method == 'client' ) {
             return '<form class="fcp-form" data-structure="'.$dir.'">Loading..</form>';
@@ -235,6 +239,19 @@ class FCP_Forms {
 
         }
         return $return;
+    }
+    
+    public static function unique($match = '', $length = 9) {
+        $rnds = [ md5( rand() ), uniqid() ];
+
+        $crop = array_map( function($v) use ($length) {
+            return substr( $v, 0 - ceil( $length / 2 ) );
+        }, $rnds );
+        
+        if ( $match ) {
+            return preg_match( '/^[0-9a-f]{'.$length.'}$/', $match );
+        }
+        return substr( implode( '', $crop ), 0 - $length );
     }
 
 }

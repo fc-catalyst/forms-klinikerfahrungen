@@ -19,7 +19,7 @@ class FCP_Forms__Draw {
         foreach ( $f as &$add ) {
 
             if ( $add->type ) {
-                $add->savedValue = $add->type == 'file' ? $v['fcp-form--uploads'][ $add->name ] : $v[ $add->name ];
+                $add->savedValue = $add->type == 'file' ? $v[ '--'.$add->name ] : $v[ $add->name ];
                 $add->warning = $v['fcp-form--warnings'][ $add->name ];
                 continue;
             }
@@ -106,7 +106,7 @@ class FCP_Forms__Draw {
             <label>
                 <input type="checkbox"
                     name="<?php echo $a->name ?><?php echo $single ? '' : '[]' ?>"
-                    value="<?php echo $k ?>"
+                    value="<?php echo esc_attr( $k ) ?>"
                     <?php echo $single && $k == $a->savedValue || in_array( $k, $a->savedValue ) ? 'checked' : '' ?>
                 >
                 <span><?php echo $b ?></span>
@@ -138,7 +138,7 @@ class FCP_Forms__Draw {
             <label>
                 <input type="radio"
                     name="<?php echo $a->name ?><?php echo $single ? '' : '[]' ?>"
-                    value="<?php echo $k ?>"
+                    value="<?php echo esc_attr( $k ) ?>"
                     <?php echo $single && $k == $a->savedValue || in_array( $k, $a->savedValue ) ? 'checked' : '' ?>
                 >
                 <span><?php echo $b ?></span>
@@ -173,7 +173,7 @@ class FCP_Forms__Draw {
                 foreach ( $a->options as $k => $b ) :
             ?>
                 <option
-                    value="<?php echo $k ?>"
+                    value="<?php echo esc_attr( $k ) ?>"
                     <?php echo in_array( $k, $a->savedValue ) ? 'selected' : '' ?>
                     >
                         <?php echo $b ?>
@@ -196,8 +196,7 @@ class FCP_Forms__Draw {
             <?php echo $a->multiple ? 'multiple' : '' ?>
         />
         <label for="fcp-f-<?php echo $a->name ?>">Datei Auswählen</label>
-        <input type="hidden" name="--<?php echo $a->name ?>--old" value="<?php echo $a->savedValue ?>" />
-        <input type="hidden" name="--<?php echo $a->name ?>--new" value="<?php echo $a->savedValue ?>" />
+        <input type="hidden" name="--<?php echo $a->name ?>" value="<?php echo esc_attr( stripslashes( $a->savedValue ) ) ?>" />
         <?php
     }
 
@@ -296,7 +295,7 @@ class FCP_Forms__Draw {
         
         <input type="hidden" name="fcp-form-name" value="<?php echo $o->form_name ?>">
         <input type="hidden" name="fcp-form--tmpdir"
-            value="<?php echo $_POST['fcp-form--tmpdir'] ? $_POST['fcp-form--tmpdir'] : uniqid() ?>"
+            value="<?php echo $_POST['fcp-form--tmpdir'] ? $_POST['fcp-form--tmpdir'] : FCP_Forms::unique() ?>"
         >
         </form>
         <?php echo $o->after ?>

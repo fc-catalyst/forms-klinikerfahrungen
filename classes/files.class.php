@@ -52,7 +52,7 @@ class FCP_Forms__Files {
         return $result[0] ? $result : true;
     }
     
-    public function move_tmp($to = '') {
+    public function tmp_move($to = '') {
         if ( !count( $this->files ) || !$to ) {
             return;
         }
@@ -71,13 +71,32 @@ class FCP_Forms__Files {
         return $result[0] ? $result : true;
     }
     
-    public function for_hiddens() {
+    public static function tmp_clean() {
+        $dir = self::tmp_dir()[0];
+        $files = array_diff( scandir( $dir ), [ '.', '..' ] );
+        foreach ( $files as $file ) {
+            $rm = $dir . '/' . $file;
+            if ( is_dir( $rm ) ) {
+                // ++create the file inside with the timestamp name on the dir creation action, or use timestamp in dir name
+                if ( time() - filectime( $rm ) > 15 * 60 ) {
+                    self::rm_dir( $rm );
+                }
+            }
+        }
+    }
+    
+    public function for_hiddens() { // use after tmp_upload, as it makes the final list of uploaded files
         $result = [];
         foreach ( $this->files as $v ) {
             $result[ $v['field'] ][] = $v['name'];
         }
-        foreach ( $result as &$v ) {
-            $v = implode( ', ', $v );
+        foreach ( $result as $k => &$v ) {
+            if ( $_POST[ '--' . $k ] ) {
+                 $hidden = json_decode( $_POST[ '--' . $k ], true );
+                 $v = array_unique( $hidden + $v );
+            }
+            $v = json_encode( $v );
+            $_POST[ '--' . $k ] = $v;
         }
         return $result;
     }
