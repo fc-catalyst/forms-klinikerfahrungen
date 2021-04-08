@@ -183,11 +183,6 @@ class FCP_Forms {
             return $override;
         }
 
-        /*
-            ++!!critical error on adding more files on second upload to multiple field
-            ++!!behave somehow with the hidden values??
-            ++!!file not empty validation works wrong - gotta mention hiddens!!
-        */
         // install-uninstall - for every single form (creating folders, for example) OR better make on the fly!!
         // prefix to static value?
         // complex form with login and uploading
@@ -211,6 +206,10 @@ class FCP_Forms {
         // nonce goes only after init, and works only for logged in users
         // delete the form file if empty or "delete" checkbox is clicked??
         // ++if same files are uploaded via different fields - don't upload twice
+        /*
+            ++file not empty validation works wrong - gotta mention hiddens!!
+            ++commaspace is not a good separator, as can be containd by a file
+        */
         
         if ( $json->options->print_method == 'client' ) {
             return '<form class="fcp-form" data-structure="'.$dir.'">Loading..</form>';

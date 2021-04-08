@@ -87,21 +87,28 @@ class FCP_Forms__Files {
     
     public function for_hiddens() { // use after tmp_upload, as it makes the final list of uploaded files
         $result = [];
+        $dir = self::tmp_dir();
+        
         foreach ( $this->files as $v ) {
             $result[ $v['field'] ][] = $v['name'];
         }
         foreach ( $result as $k => &$v ) {
             if ( $_POST[ '--' . $k ] ) {
-                 $hidden = json_decode( $_POST[ '--' . $k ], true );
-                 $v = array_unique( $hidden + $v );
+                 $hidden = explode( ', ', $_POST[ '--' . $k ] );
+                 foreach ( $hidden as $l => $w ) {
+                    if ( !is_file( $dir[1] . '/' . $w ) ) {
+                        unset( $hidden[$l] );
+                    }
+                 }
+                 $v = array_unique( array_merge( $hidden, $v ) );
             }
-            $v = json_encode( $v );
+            $v = implode( ', ', $v );
             $_POST[ '--' . $k ] = $v;
         }
         return $result;
     }
     
-    private function proceed() { // ++brush it up later
+    private function proceed() { // ++brush it and all the loops up later
 
         // filter by structure (field, multiple)
         $fields = [];

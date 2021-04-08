@@ -186,7 +186,15 @@ class FCP_Forms__Draw {
     }
     
     private function field_file($a) {
+        if ( $a->savedValue ) {
+            $label = $a->savedValue;
+            if ( strpos( $a->savedValue, ', ' ) !== false ) {
+                $label = count( explode( ', ', $a->savedValue ) ) . ' Files Uploaded';
+            }
+
+        }
         ?>
+        <input type="hidden" name="--<?php echo $a->name ?>" value="<?php echo esc_attr( $a->savedValue ) ?>" />
         <input
             type="file"
             name="<?php echo $a->name; echo $a->multiple ? '[]' : '' ?>"
@@ -195,8 +203,7 @@ class FCP_Forms__Draw {
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             <?php echo $a->multiple ? 'multiple' : '' ?>
         />
-        <label for="fcp-f-<?php echo $a->name ?>">Datei Auswählen</label>
-        <input type="hidden" name="--<?php echo $a->name ?>" value="<?php echo esc_attr( stripslashes( $a->savedValue ) ) ?>" />
+        <label for="fcp-f-<?php echo $a->name ?>"><?php echo $label ? $label : 'Datei Auswählen' ?></label>
         <?php
     }
 
