@@ -174,7 +174,7 @@
     font-weight:700;
 }
 .fcp-form-register-client select.fcp-form-empty,
-.fcp-form-register-client input[type=file].fcp-form-empty + label {
+.fcp-form-register-client input[type=hidden][value=''] + input[type=file].fcp-form-empty + label {
     text-transform:uppercase;
     color:#fff;
     font-weight:700;

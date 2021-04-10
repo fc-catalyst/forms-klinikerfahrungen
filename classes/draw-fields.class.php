@@ -374,4 +374,35 @@ class FCP_Forms__Draw {
         echo $o->after;
     }
 
+    public function print_meta_boxes() {
+        ob_start();
+        $o = $this->s->options;
+        ?>
+
+        <?php
+        if ( $o->warning ) {
+            ?>
+            <div class="fcp-form-warning"><?php echo $o->warning ?></div>
+            <?php
+        }
+        foreach ( $this->s->fields as $f ) {
+            if ( $f->type ) { // common field print
+                $this->printField( $f );
+                continue;
+            }
+            if ( $f->gtype ) { // group of fields print
+                $this->printGroup( $f );
+            }
+        }
+        wp_nonce_field( $o->form_name.'_nonce', 'meta_box_nonce' );
+
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        $content = trim( $content );
+        $content = preg_replace( '/\s+/', ' ', $content );
+        $content = preg_replace( '/ </', "\n<", $content );
+        echo $content;
+    }
+    
 }

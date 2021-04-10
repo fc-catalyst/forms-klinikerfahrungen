@@ -18,7 +18,10 @@ defined( 'ABSPATH' ) || exit;
 
 class FCP_Forms {
 
-	public static $dev = true, $tmp_dir = 'fcp-forms-tmp';
+	public static $dev = true,
+                  $tmp_dir = 'fcp-forms-tmp',
+                  $text_domain = 'fcp-forms',
+                  $prefix = 'fcpf_';
 	
 	private function plugin_setup() {
 
@@ -45,6 +48,15 @@ class FCP_Forms {
         register_activation_hook( __FILE__, [ $this, 'install' ] );
         register_deactivation_hook( __FILE__, array( $this, 'uninstall' ) );
 
+        // init forms settings
+        $files = array_diff( scandir( $this->forms_path ), [ '.', '..' ] );
+        foreach ( $files as $file ) {
+            $index = $this->forms_path . $file . '/' . 'index.php';
+            if ( is_file( $index ) ) {
+                include_once $index;
+            }
+        }
+
     }
     
     public function install() {
@@ -52,7 +64,6 @@ class FCP_Forms {
         // create tmp dir for the files uploading
         $dir = wp_get_upload_dir()['basedir'];
         mkdir( $dir . '/' . self::$tmp_dir );
-        mkdir( $dir . '/' . 'clients' ); // ++ TEMPORARY MEASURE - move to the form
 
     }
     
@@ -105,13 +116,7 @@ class FCP_Forms {
 
             $uploads = new FCP_Forms__Files( $json, $_FILES, $warns->mFilesFailed );
 
-/*
-            if ( !empty( $uploads->result ) ) {
-                $_POST['fcp-form--uploads'] = $uploads->result;
-            }
-//*/
         }
-        
 
         // main & custom validation & processing
         @include_once( $this->forms_path . $_POST['fcp-form-name'] . '/process.php' );
@@ -150,7 +155,7 @@ class FCP_Forms {
 	private function add_styles_scripts($dir) {
 
         wp_enqueue_style( 'fcp-forms', $this->self_url . 'style.css', [], $this->css_ver );
-        wp_enqueue_script( 'fcp-forms', $this->self_url . '/scripts.js', ['jquery'], $this->js_ver );
+        wp_enqueue_script( 'fcp-forms', $this->self_url . 'scripts.js', ['jquery'], $this->js_ver );
 	
         if ( is_file( $this->forms_path . $dir . '/style.css' ) ) {
             wp_enqueue_style(
@@ -183,33 +188,27 @@ class FCP_Forms {
             return $override;
         }
 
-        // install-uninstall - for every single form (creating folders, for example) OR better make on the fly!!
-        // prefix to static value?
-        // complex form with login and uploading
-            // new user https://wp-kama.ru/function/wp_insert_user
-            // hidden field for uploaded images
-            // file default validation with no mentioning in json, notEmpry
-        // remember about the worktime for the kliniks
-        // --use something else for global warnings passing, not _POST
+        // new user https://wp-kama.ru/function/wp_insert_user
+        // remember about the worktime for the kliniks && location
         // reorganize the css classes names
-        // autopick + maps + report
-        // register, upload, autofill, map, recaptcha
+        // recaptcha
         // front-end validation
-            // autofill only if the value is correct
-        // ++warns to array with the source of multiple uploads OR recheck in process.php
+            // autofill with front-end validation
         // ++include the modify values file before the validator for converting numbers and resizing images, maybe, renaming files, adding smilies
         // ++aria
         // ++multiple text and other fields
         // use array_map instead of circles where can?
         // aa_aa for public and aaAa for privates?
-        // fcp-form-a-nonce to some semi-random ting
-        // nonce goes only after init, and works only for logged in users
+        // fcp-form-a-nonce to some semi-random thing
+            // nonce goes only after init, and works only for logged in users
         // delete the form file if empty or "delete" checkbox is clicked??
         // ++if same files are uploaded via different fields - don't upload twice
+        // file default validation with no mentioning in json, notEmpry
         /*
             ++file not empty validation works wrong - gotta mention hiddens!!
             ++commaspace is not a good separator, as can be containd by a file
         */
+        // prefix to static values?
         
         if ( $json->options->print_method == 'client' ) {
             return '<form class="fcp-form" data-structure="'.$dir.'">Loading..</form>';
