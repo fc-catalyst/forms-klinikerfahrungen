@@ -5,7 +5,7 @@
 class FCP_Forms__Files {
 
     private $s, $f, $w; // structure - json; $_FILES; warnings; dir for temporary files
-    public $files, $tmps; // [ single file array ] + [ post field name ], uploaded to [ tmp field => [ files_names ] ]
+    public $files, $tmps; // [ single file array ] + [ post field name ], [ name, field ] for $tmps
 
     public function __construct($s, $f, $w = []) {
 
@@ -78,7 +78,7 @@ class FCP_Forms__Files {
         }
 
         $this->files = array_values( $f );
-        $this->hiddens_to_tmps(); // add values to $this->tmps
+        $this->hiddens_to_tmps(); // add previously uploaded to tmp dir files to $this->tmps
 
     }
     
@@ -115,13 +115,14 @@ class FCP_Forms__Files {
             }
         }
         
-        $this->files = array_values( $this->files );
-        $this->for_hiddens();
+        $this->files = [];
+        $this->tmps = array_values( array_merge( $this->files, $this->tmps ) );
+        $this->hiddens_fill();
         
         return $result[0] ? $result : true;
     }
 
-    public function hiddens_to_tmps() {
+    private function hiddens_to_tmps() {
 
         $result = [];
     
@@ -133,47 +134,49 @@ class FCP_Forms__Files {
                  $hidden = explode( ', ', $val );
                  foreach ( $hidden as $l => $w ) {
                     if ( !is_file( self::tmp_dir()[1] . '/' . $w ) ) {
-                        unset( $hidden[$l] );
+                        continue;
                     }
+                    $result[] = [ 'name' => $w['name'], 'field' => $v->name ];
                  }
-                 $result[ $v->name ] = array_values( array_unique( $hidden ) );
             }
         }
 
         $this->tmps = $result;
     }
 
-    public function for_hiddens() {
-        $result = [];
-        
-        foreach ( $this->files as $v ) {
-            $result[ $v['field'] ][] = $v['name'];
-        }
-        foreach ( $result as $k => &$v ) {
-            if ( $_POST[ '--' . $k ] ) {
-                 $hidden = explode( ', ', $_POST[ '--' . $k ] );
-                 foreach ( $hidden as $l => $w ) {
-                    if ( !is_file( self::tmp_dir()[1] . '/' . $w ) ) {
-                        unset( $hidden[$l] );
-                    }
-                 }
-                 $v = array_unique( array_merge( $hidden, $v ) );
-            }
-            $v = implode( ', ', $v );
+    private function hiddens_fill() {
+
+        $result = tmps_to_meta();
+
+        foreach ( $result as $k => $v ) {
             $_POST[ '--' . $k ] = $v;
         }
-        $this->tmps = $result;
-    }
 
+    }
+    
+    public function tmps_to_meta() {
+        $result = [];
+        
+        foreach ( $this->tmps as $v ) {
+            $result[ $v['field'] ][] = $v['name'];
+        }
+        foreach ( $result as &$v ) {
+            $v = implode( ', ', $v );
+        }
+        
+        return $result;
+    }
+    
+    
     public function tmp_move($to = '') { // move files to final destination
-        if ( !count( $this->files ) || !$to ) {
+        if ( !count( $this->tmps ) || !$to ) {
             return;
         }
         
         $result = [];
         
         $dir = self::tmp_dir();
-        foreach ( $this->files as $k => $v ) {
+        foreach ( $this->tmps as $k => $v ) {
             if ( !is_file( $dir[1] . '/' . $v['name'] ) || !is_dir( $to ) ) {
                 $result[] = 'Source file or target directory doesn\'t exist';
                 continue;

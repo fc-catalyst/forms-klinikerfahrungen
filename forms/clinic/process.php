@@ -21,12 +21,16 @@ if ( !is_user_logged_in() ) {
 // upload the files to tmp directory
 if ( $_FILES ) {
 
-    $uploads->tmp_upload();
-    $uploads->for_hiddens();
-    
-    echo '<pre>';
+    echo '**0<pre>';
     print_r( $uploads->files );
-    print_r( $uploads->for_hiddens() );
+    print_r( $uploads->tmps );
+    echo '</pre>';
+
+    $uploads->tmp_upload(); // if is true?
+    
+    echo '**1<pre>';
+    print_r( $uploads->files );
+    print_r( $uploads->tmps );
     echo '</pre>';
 
 }
@@ -50,18 +54,18 @@ if ( !$warning && empty( $warns->result ) ) {
     // meta data is added automatically with save_post hook
     
     // upload the files & add them to meta
-    if ( !empty( $uploads->files ) ) {
+    if ( !empty( $uploads->tmps ) ) {
 
         $dir = wp_get_upload_dir()['basedir'] . '/' . 'kliniken' . '/' . $id;
         if ( !mkdir( $dir, 0777, true ) ) {
             $warning = "Can't create the folder for the files";
             return;
         }
-        if ( !$uploads->tmp_move( $dir ) ) {
+        if ( $uploads->tmp_move( $dir ) !== true ) {
             $warning = "Files are not uploaded";
             return;
         }
-        foreach ( $uploads->for_hiddens() as $k => $v ) {
+        foreach ( $uploads->tmps_to_meta() as $k => $v ) {
             update_post_meta( $id, FCP_Forms::$prefix . $_POST['fcp-form-name'] . '_' . $k, $v );
         }
         

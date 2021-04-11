@@ -202,6 +202,8 @@ class FCP_Forms {
         }
         
         // teamtrees
+        // add method - files for meta box
+        // make tmps into the same array as files, just make that fucking uploading
         // uploaded from hidden fields don't appear in meta
         // ?does save meta effects only the mentioned post type??!!
         // !!save meta only if is meta in json!!
