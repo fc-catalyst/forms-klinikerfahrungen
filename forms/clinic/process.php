@@ -13,18 +13,60 @@ Process the form data
 //*/
 
 
-if ( !empty( $_FILES ) ) {
+if ( !is_user_logged_in() ) {
+    $warning = 'Please log in to use the form';
+    return;
+}
 
+// upload the files to tmp directory
+if ( $_FILES ) {
+
+    $uploads->tmp_upload();
+    $uploads->for_hiddens();
+    
     echo '<pre>';
-    print_r( FCP_Forms__Files::tmp_dir() );
     print_r( $uploads->files );
-    print_r( $uploads->tmp_upload() );
     print_r( $uploads->for_hiddens() );
     echo '</pre>';
-    
 
-    
-//    exit;
-    
 }
-//*/
+
+
+if ( !$warning && empty( $warns->result ) ) {
+    
+    // create new post
+    $id = wp_insert_post( [
+        'post_title' => sanitize_text_field( $_POST['company-name'] ),
+        'post_content' => '',
+        'post_status' => 'private', // ++ pending
+        'post_author' => get_the_author_meta()['ID'],
+        'post_type' => 'kliniken'
+    ]);
+    if ( $id === 0 ) {
+        $warning = 'Unexpected WordPress error';
+        return;
+    }
+    
+    // meta data is added automatically with save_post hook
+    
+    // upload the files & add them to meta
+    if ( !empty( $uploads->files ) ) {
+
+        $dir = wp_get_upload_dir()['basedir'] . '/' . 'kliniken' . '/' . $id;
+        if ( !mkdir( $dir, 0777, true ) ) {
+            $warning = "Can't create the folder for the files";
+            return;
+        }
+        if ( !$uploads->tmp_move( $dir ) ) {
+            $warning = "Files are not uploaded";
+            return;
+        }
+        foreach ( $uploads->for_hiddens() as $k => $v ) {
+            update_post_meta( $id, FCP_Forms::$prefix . $_POST['fcp-form-name'] . '_' . $k, $v );
+        }
+        
+    }
+    
+    // $redirect to newly created clinic with the awesomely designed template and personal button to modify the data
+
+}

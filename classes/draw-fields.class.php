@@ -19,7 +19,7 @@ class FCP_Forms__Draw {
         foreach ( $f as &$add ) {
 
             if ( $add->type ) {
-                $add->savedValue = $add->type == 'file' ? $v[ '--'.$add->name ] : $v[ $add->name ];
+                $add->savedValue = $add->type == 'file' && $v[ '--'.$add->name ] ? $v[ '--'.$add->name ] : $v[ $add->name ];
                 $add->warning = $v['fcp-form--warnings'][ $add->name ];
                 continue;
             }
@@ -253,7 +253,7 @@ class FCP_Forms__Draw {
             </span>
             <?php
         }
-    
+
         $this->{ $method }( $a );
         
         if ( $a->description ) {

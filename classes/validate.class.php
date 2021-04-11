@@ -140,9 +140,19 @@ class FCP_Forms__Validate {
 
                 // multiple files
                 if ( $f->type == 'file' && $f->multiple ) {
-                
+
                     // ++can move to __construct, as in files.class.php
                     $mflip = FCP_Forms__Files::flip_files( $this->v[ $f->name ] );
+/*
+                    // ++ limit the number of files - FINISH THIS WITH HIDDENS TOO
+                    $limit = isset( $f->validate->limit ) ? $f->validate->limit : 5; // ++ can export to defaults
+                    if ( is_numeric( $limit ) && $limit !== 0 ) {
+                        if ( count( $mflip ) > $limit ) {
+                            $this->result[ $f->name ] = 'The maximum number of files for this field is '.$limit;
+                            continue;
+                        }
+                    }
+//*/
                     foreach ( $mflip as $v ) {
                         if ( $this->addResult( $method, $f->name, $rule, $v ) ) {
                             $this->mFilesFailed[ $f->name ][] = $v['name'];

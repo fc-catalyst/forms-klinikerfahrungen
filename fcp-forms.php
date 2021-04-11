@@ -65,6 +65,8 @@ class FCP_Forms {
         $dir = wp_get_upload_dir()['basedir'];
         mkdir( $dir . '/' . self::$tmp_dir );
 
+        flush_rewrite_rules();
+
     }
     
     public function uninstall() {
@@ -73,6 +75,8 @@ class FCP_Forms {
         include_once $this->self_path . 'classes/files.class.php';
         $dir = wp_get_upload_dir()['basedir'];
         FCP_Forms__Files::rm_dir( $dir . '/' . self::$tmp_dir );
+        
+        flush_rewrite_rules();
     }
     
     public function process() {
@@ -81,7 +85,7 @@ class FCP_Forms {
             return;
         }
 
-        if ( !empty( $_FILES ) ) {
+        if ( $_FILES ) { // can be empty to process already uploaded files, kept in tmp dir & hidden field
             include_once $this->self_path . 'classes/files.class.php';
         }
         include_once $this->self_path . 'classes/validate.class.php';
@@ -114,15 +118,16 @@ class FCP_Forms {
         }
 
         // files processing
-        if ( !empty( $_FILES ) ) {
+        if ( $_FILES ) {
 
             // dir for temporary files of current form
             if ( !self::unique( $_POST['fcp-form--tmpdir'] ) ) {
                 return;
             }
-            FCP_Forms__Files::tmp_clean();
 
             $uploads = new FCP_Forms__Files( $json, $_FILES, $warns->mFilesFailed );
+
+            FCP_Forms__Files::tmp_clean();
 
         }
 
@@ -195,7 +200,16 @@ class FCP_Forms {
         if ( $override ) {
             return $override;
         }
-
+        
+        // teamtrees
+        // uploaded from hidden fields don't appear in meta
+        // ?does save meta effects only the mentioned post type??!!
+        // !!save meta only if is meta in json!!
+        // !!get prefix not from dir name, but from some internal variable of the form
+        // if something happened inside process.php - redirect (or switch) to the post edit form
+        // uploading single file overrides even if file name is different
+        // uploading multiple limit to the set number
+        // can simplify the nonce key
         // new user https://wp-kama.ru/function/wp_insert_user
         // remember about the worktime for the kliniks && location
         // reorganize the css classes names
@@ -220,6 +234,8 @@ class FCP_Forms {
         // uploading for meta boxes
         // use prefixes for meta boxes print - add this option to json modify
         // fcp-form-a-nonce to something unique
+        // approve panding article: https://wordpress.stackexchange.com/questions/229840/is-it-possible-to-change-an-existing-post-status-from-pending-to-publish-via
+        // use pending review, instead of private??
         
         if ( $json->options->print_method == 'client' ) {
             return '<form class="fcp-form" data-structure="'.$dir.'">Loading..</form>';

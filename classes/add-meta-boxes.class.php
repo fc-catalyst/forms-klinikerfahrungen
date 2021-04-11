@@ -40,7 +40,7 @@ class FCPAddMetaBoxes {
             $values[ $v->name ] = $values[ $prefix . $v->name ][0];
             unset( $values[ $prefix . $v->name ] );
         }
-        
+
         // print meta fields
         $draw = new FCP_Forms__Draw( $this->s, $values );
 

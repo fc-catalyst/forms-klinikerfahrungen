@@ -11,7 +11,7 @@ new FCPAddPostType( [
     'slug' => 'kliniken',
     'plural' => 'Clinics',
     'description' => 'The list of registered clinics',
-    'fields' => [ 'title', 'custom-fields' ], //, 'editor'
+    'fields' => [ 'title' ], //, 'editor'
     'hierarchical' => false,
     'public' => true,
     'gutenberg' => true,
