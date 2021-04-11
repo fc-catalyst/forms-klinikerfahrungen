@@ -219,6 +219,12 @@ class FCP_Forms__Draw {
         <?php
     }
     
+//----------___--_________---ADMIN EXCEPTIONS__--________------_______-
+
+    private function field_file_admin($a) {
+        $this->field_text( $a );
+    }
+
 //--------_______----____---_________-----
 
     private function field__wrap($a, $method) {
@@ -297,7 +303,7 @@ class FCP_Forms__Draw {
                 $this->printGroup( $f );
             }
         }
-        wp_nonce_field( 'fcp-form-a-nonce', 'fcp-form-' . $o->form_name );
+        wp_nonce_field( FCP_Forms::$prefix . FCP_Forms::plugin_unid(), 'fcp-form--' . $o->form_name );
         ?>
         
         <input type="hidden" name="fcp-form-name" value="<?php echo $o->form_name ?>">
@@ -320,6 +326,15 @@ class FCP_Forms__Draw {
     
     private function printField($f) {
         $method = 'field_' . $f->type;
+        //----------------
+        if ( is_admin() ) { // --tmp solution for meta boxes, as I have to rush some other parts of the plugin
+            $adm_method = $method . '_admin';
+            if ( method_exists( $this, $adm_method ) ) {
+                $this->field__wrap( $f, $adm_method );
+                return;
+            }
+        } // /--
+        //----------------
         if ( !method_exists( $this, $method ) ) {
             return;
         }
@@ -387,6 +402,9 @@ class FCP_Forms__Draw {
         }
         foreach ( $this->s->fields as $f ) {
             if ( $f->type ) { // common field print
+                if ( !$f->meta_box ) {
+                    continue;
+                }
                 $this->printField( $f );
                 continue;
             }
@@ -394,7 +412,7 @@ class FCP_Forms__Draw {
                 $this->printGroup( $f );
             }
         }
-        wp_nonce_field( $o->form_name.'_nonce', 'meta_box_nonce' );
+        wp_nonce_field( FCP_Forms::$prefix . FCP_Forms::plugin_unid(), 'fcp-form--' . $o->form_name );
 
         $content = ob_get_contents();
         ob_end_clean();

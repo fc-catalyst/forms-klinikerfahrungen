@@ -15,6 +15,7 @@ class FCPAddMetaBoxes {
         }
 
         $this->s = $s;
+        $this->s->options->form_name = $p->name;
         $this->p = $p;
 
         add_action( 'add_meta_boxes', [ $this, 'addMetaBoxes' ] );
@@ -23,9 +24,25 @@ class FCPAddMetaBoxes {
     }
 
     public function addMetaBoxes() {
-
+        global $post;
+        
         $p = $this->p;
-        $draw = new FCP_Forms__Draw( $this->s );
+
+        // get meta values
+        $values = get_post_meta( $post->ID );
+        $fields = FCP_Forms::flatten( $this->s->fields );
+        $prefix = $p->prefix;
+
+        foreach ( $fields as $v ) {
+            if ( !$values[ $prefix . $v->name ] ) {
+                continue;
+            }
+            $values[ $v->name ] = $values[ $prefix . $v->name ][0];
+            unset( $values[ $prefix . $v->name ] );
+        }
+        
+        // print meta fields
+        $draw = new FCP_Forms__Draw( $this->s, $values );
 
 		add_meta_box(
             $p->name,
@@ -35,31 +52,34 @@ class FCPAddMetaBoxes {
             $p->context,
             $p->priority
         );
+        
 	}
 
 	public function saveMetaBoxes($postID) {
         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
             return;
         }
-		if ( !isset( $_POST['meta_box_nonce'] ) || !wp_verify_nonce( $_POST['meta_box_nonce'], $this->p->name.'_nonce' ) ) {
+        $nonce = FCP_Forms::$prefix . FCP_Forms::plugin_unid();
+        if (
+            !isset( $_POST[ 'fcp-form--' . $this->p->name ] ) ||
+            !wp_verify_nonce( $_POST[ 'fcp-form--' . $this->p->name ], $nonce )
+        ) {
             return;
         }
 		if ( !current_user_can( 'edit_post', $postID ) ) {
             return;
         }
-        //save
-        //upload
-            //flatten first?
-        //style better?
-        //remove the submit button
-/*
-        foreach ( $this->m->structure as $b ) {
-            foreach ( $b->fields as $c ) {
-                $name = $this->s->prefix . $c->name;
-                update_post_meta( $postID, $name, $_POST[$name] );
+
+        $fields = FCP_Forms::flatten( $this->s->fields );
+
+        foreach ( $fields as $v ) {
+            if ( empty( $_POST[ $v->name ] ) ) {
+                delete_post_meta( $postID, $this->p->prefix . $v->name );
+                continue;
             }
+            update_post_meta( $postID, $this->p->prefix . $v->name, $_POST[ $v->name ] );
         }
-//*/
+
 	}
 
 	

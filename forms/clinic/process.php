@@ -7,6 +7,9 @@ Process the form data
     upload to tmp
     upload to normal if user is logged in and id is provided
     fill in the hidden field
+    save data to the engine
+    make the template
+    make the front-end for maps
 //*/
 
 

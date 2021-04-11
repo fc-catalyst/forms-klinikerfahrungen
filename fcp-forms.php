@@ -92,7 +92,15 @@ class FCP_Forms {
         }
 
         // common wp nonce check for logged in users
-        if ( !wp_verify_nonce( $_POST[ 'fcp-form-' . $_POST['fcp-form-name'] ], 'fcp-form-a-nonce' ) ){
+        $nonce = FCP_Forms::$prefix . FCP_Forms::plugin_unid();
+        if (
+            !isset( $_POST[ 'fcp-form--' . $_POST['fcp-form-name'] ] ) ||
+            !wp_verify_nonce( $_POST[ 'fcp-form--' . $_POST['fcp-form-name'] ], $nonce )
+        ) {
+            return;
+        }
+        
+        if ( !is_file( $this->forms_path . $_POST['fcp-form-name'] . '/structure.json' ) ) {
             return;
         }
 
@@ -209,6 +217,9 @@ class FCP_Forms {
             ++commaspace is not a good separator, as can be containd by a file
         */
         // prefix to static values?
+        // uploading for meta boxes
+        // use prefixes for meta boxes print - add this option to json modify
+        // fcp-form-a-nonce to something unique
         
         if ( $json->options->print_method == 'client' ) {
             return '<form class="fcp-form" data-structure="'.$dir.'">Loading..</form>';
@@ -250,6 +261,12 @@ class FCP_Forms {
             return preg_match( '/^[0-9a-f]{'.$length.'}$/', $match );
         }
         return substr( implode( '', $crop ), 0 - $length );
+    }
+    
+    public static function plugin_unid() {
+        // inlcude a file, created on the plugin install
+        $tmp = '123';
+        return $tmp;
     }
 
 }

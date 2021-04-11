@@ -1,11 +1,4 @@
 <?php
-/*
-
-create post type Clinics (kliniken)
-create meta fields for both, according to structure
-process.php to fill in the fields
-
-*/
 
 // post type for clinics
 
@@ -18,7 +11,7 @@ new FCPAddPostType( [
     'slug' => 'kliniken',
     'plural' => 'Clinics',
     'description' => 'The list of registered clinics',
-    'fields' => [ 'title', 'editor', 'custom-fields' ],
+    'fields' => [ 'title', 'custom-fields' ], //, 'editor'
     'hierarchical' => false,
     'public' => true,
     'gutenberg' => true,
@@ -45,7 +38,8 @@ new FCPAddMetaBoxes( $json, (object) [
     'title' => 'Clinic Information',
     'post_types' => ['kliniken'],
     'context' => 'normal',
-    'priority' => 'high'
+    'priority' => 'high',
+    'prefix' => FCP_Forms::$prefix . $file . '_'
 ] );
 
 
@@ -64,4 +58,14 @@ add_action( 'admin_enqueue_scripts', function($hook) {
     wp_enqueue_style( 'fcp-forms-adm', $this->self_url . 'style.css', [], $this->css_ver );
     wp_enqueue_script( 'fcp-forms-adm', $this->self_url . 'scripts.js', ['jquery'], $this->js_ver );
 
+});
+add_action( 'admin_footer', function() {
+    ?><style>
+
+    .fcp-form-field-w > span,
+    .fcp-form-field-w > span + *{
+        flex-basis:100%;
+    }
+
+</style><?php
 });
