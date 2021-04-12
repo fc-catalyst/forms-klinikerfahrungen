@@ -85,7 +85,7 @@ class FCP_Forms {
             return;
         }
 
-        if ( $_FILES ) { // can be empty to process already uploaded files, kept in tmp dir & hidden field
+        if ( isset( $_FILES ) ) {
             include_once $this->self_path . 'classes/files.class.php';
         }
         include_once $this->self_path . 'classes/validate.class.php';
@@ -118,17 +118,8 @@ class FCP_Forms {
         }
 
         // files processing
-        if ( $_FILES ) {
-
-            // dir for temporary files of current form
-            if ( !self::unique( $_POST['fcp-form--tmpdir'] ) ) {
-                return;
-            }
-
+        if ( isset( $_FILES ) ) {
             $uploads = new FCP_Forms__Files( $json, $_FILES, $warns->mFilesFailed );
-
-            FCP_Forms__Files::tmp_clean();
-
         }
 
         // main & custom validation & processing
@@ -200,26 +191,24 @@ class FCP_Forms {
         if ( $override ) {
             return $override;
         }
-        
-        // teamtrees
-        // add method - files for meta box
-        // make tmps into the same array as files, just make that fucking uploading
-        // uploaded from hidden fields don't appear in meta
+
+        // single uploads 2 files if one is in tmps and one is in files - maybe make a function to apply tmps values?
+        // meta boxes don't show values for files
         // ?does save meta effects only the mentioned post type??!!
         // !!save meta only if is meta in json!!
-        // !!get prefix not from dir name, but from some internal variable of the form
-        // if something happened inside process.php - redirect (or switch) to the post edit form
-        // uploading single file overrides even if file name is different
-        // uploading multiple limit to the set number
+        // rename files to safe names
         // can simplify the nonce key
-        // new user https://wp-kama.ru/function/wp_insert_user
         // remember about the worktime for the kliniks && location
         // reorganize the css classes names
         // recaptcha
         // front-end validation
             // autofill with front-end validation
         // ++include the modify values file before the validator for converting numbers and resizing images, maybe, renaming files, adding smilies
+        // limit the number of multiple files
+        // !!get prefix not from dir name, but from some internal variable of the form
+        // if something happened inside process.php - redirect (or switch) to the post edit form
         // ++aria
+        // ++css grid variant
         // ++multiple text and other fields
         // use array_map instead of circles where can?
         // aa_aa for public and aaAa for privates?

@@ -19,26 +19,14 @@ if ( !is_user_logged_in() ) {
 }
 
 // upload the files to tmp directory
-if ( $_FILES ) {
-
-    echo '**0<pre>';
-    print_r( $uploads->files );
-    print_r( $uploads->tmps );
-    echo '</pre>';
-
-    $uploads->tmp_upload(); // if is true?
-    
-    echo '**1<pre>';
-    print_r( $uploads->files );
-    print_r( $uploads->tmps );
-    echo '</pre>';
-
+if ( isset( $_FILES ) ) {
+    $uploads->tmp_upload();
 }
-
 
 if ( !$warning && empty( $warns->result ) ) {
     
     // create new post
+    // meta boxes are filled automatically with save_post hook
     $id = wp_insert_post( [
         'post_title' => sanitize_text_field( $_POST['company-name'] ),
         'post_content' => '',
@@ -51,7 +39,6 @@ if ( !$warning && empty( $warns->result ) ) {
         return;
     }
     
-    // meta data is added automatically with save_post hook
     
     // upload the files & add them to meta
     if ( !empty( $uploads->tmps ) ) {
@@ -62,7 +49,7 @@ if ( !$warning && empty( $warns->result ) ) {
             return;
         }
         if ( $uploads->tmp_move( $dir ) !== true ) {
-            $warning = "Files are not uploaded";
+            $warning = "Files are not uploaded" . print_r( $uploads->tmp_move( $dir ), true );
             return;
         }
         foreach ( $uploads->tmps_to_meta() as $k => $v ) {
@@ -70,7 +57,8 @@ if ( !$warning && empty( $warns->result ) ) {
         }
         
     }
-    
-    // $redirect to newly created clinic with the awesomely designed template and personal button to modify the data
+
+    // redirect on success
+    $redirect = get_permalink( $id );
 
 }

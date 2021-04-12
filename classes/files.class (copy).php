@@ -77,29 +77,33 @@ class FCP_Forms__Files {
             unset( $f[$k] );
         }
 
-        $this->files = array_values( $f ); // the list of files ready for uploading
+        $this->files = array_values( $f );
+        $this->hiddens_to_tmps(); // add previously uploaded to tmp dir files to $this->tmps
 
     }
     
 //-----___--__--___-___---tmp uploading operations
 
 
+    public static function tmp_dir() {
+        return [
+            0 => wp_get_upload_dir()['basedir'] . '/' . FCP_Forms::$tmp_dir,
+            1 => wp_get_upload_dir()['basedir'] . '/' . FCP_Forms::$tmp_dir . '/' . $_POST['fcp-form--tmpdir']
+        ];
+    }
+    
     public function tmp_upload() { // upload && ->files to ->tmps
         if ( !count( $this->files ) ) {
             return;
         }
 
-        if ( !FCP_Forms::unique( $_POST['fcp-form--tmpdir'] ) ) {
-            return;
-        }
-        
         $result = [];
         
         // mk tmp dir
         $dir = self::tmp_dir()[1];
         if ( !is_dir( $dir ) ) {
             if ( !mkdir( $dir ) ) {
-                $result[] = 'tmp folder not created';
+                $result[] = ' tmp folder not created';
             }
         }
 
@@ -111,14 +115,10 @@ class FCP_Forms__Files {
             }
         }
         
-        $this->hiddens_to_tmps();
         $this->tmps = array_values( array_merge( $this->files, $this->tmps ) );
-        $this->tmps_clean();
-        $this->hiddens_fill();
         $this->files = [];
+        $this->hiddens_fill();
 
-        self::tmp_clean();
-        
         return $result[0] ? $result : true;
     }
 
@@ -143,22 +143,9 @@ class FCP_Forms__Files {
         }
 
         $this->tmps = $result;
+        $this->hiddens_fill();
     }
 
-    private function tmps_clean() {
-        foreach ( $this->tmps as $k => &$v ) {
-            foreach ( $this->s->fields as $w ) {
-                if ( $w->name !== $v['field'] ) {
-                    continue;
-                }
-                if ( $w->multiple ) {
-                    continue 2;
-                }
-                $v = [ $v[0] ];
-            }
-        }
-    }
-    
     private function hiddens_fill() {
 
         $result = $this->tmps_to_meta();
@@ -176,7 +163,13 @@ class FCP_Forms__Files {
             $result[ $v['field'] ][] = $v['name'];
         }
         foreach ( $result as $k => &$v ) {
-            $v = implode( ', ', $v );
+            foreach ( $this->s->fields as $w ) {
+                if ( $k == $w->name && $w->multiple ) {
+                    $v = implode( ', ', $v );
+                    continue 2;
+                }
+            }
+            $v = $v[0];
         }
         
         return $result;
@@ -210,8 +203,21 @@ class FCP_Forms__Files {
         return true;
 
     }
-
-
+    
+    public static function tmp_clean() { // call every now and then to clear the tmp dir
+        $dir = self::tmp_dir()[0];
+        $files = array_diff( scandir( $dir ), [ '.', '..' ] );
+        foreach ( $files as $file ) {
+            $rm = $dir . '/' . $file;
+            if ( is_dir( $rm ) ) {
+                // ++create the file inside with the timestamp name on the dir creation action, or use timestamp in dir name
+                if ( time() - filectime( $rm ) > 15 * 60 ) {
+                    self::rm_dir( $rm );
+                }
+            }
+        }
+    }
+    
 //--_____---____--__________--Helpers
 
     public static function rm_dir($dir) { /* from https://www.php.net/manual/ru/function.rmdir.php */
@@ -259,26 +265,5 @@ class FCP_Forms__Files {
         }
         return pathinfo( $name, PATHINFO_EXTENSION );
     }
-    
-    public static function tmp_dir() {
-        return [
-            0 => wp_get_upload_dir()['basedir'] . '/' . FCP_Forms::$tmp_dir,
-            1 => wp_get_upload_dir()['basedir'] . '/' . FCP_Forms::$tmp_dir . '/' . $_POST['fcp-form--tmpdir']
-        ];
-    }
 
-    public static function tmp_clean() { // call every now and then to clear the tmp dir
-        $dir = self::tmp_dir()[0];
-        $files = array_diff( scandir( $dir ), [ '.', '..' ] );
-        foreach ( $files as $file ) {
-            $rm = $dir . '/' . $file;
-            if ( is_dir( $rm ) ) {
-                // ++create the file inside with the timestamp name on the dir creation action, or use timestamp in dir name
-                if ( time() - filectime( $rm ) > 15 * 60 ) {
-                    self::rm_dir( $rm );
-                }
-            }
-        }
-    }
-    
 }

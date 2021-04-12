@@ -10,7 +10,7 @@ class FCP_Forms__Draw {
         $s->options->warning = $v['fcp-form--warning'];
         
         $this->s = $s;
-        $this->s->fields = $this->attach_dynamics( $s->fields, $v + $f );
+        $this->s->fields = $this->attach_dynamics( $s->fields, array_merge( $v, $f ) );
         $this->result = $this->printFields();
 
     }
@@ -19,8 +19,11 @@ class FCP_Forms__Draw {
         foreach ( $f as &$add ) {
 
             if ( $add->type ) {
-                $add->savedValue = $add->type == 'file' && $v[ '--'.$add->name ] ? $v[ '--'.$add->name ] : $v[ $add->name ];
                 $add->warning = $v['fcp-form--warnings'][ $add->name ];
+                $add->savedValue = $v[ $add->name ];
+                if ( $add->type == 'file' ) {
+                    $add->savedValue = $v[ '--'.$add->name ];
+                }
                 continue;
             }
 
@@ -191,7 +194,6 @@ class FCP_Forms__Draw {
             if ( strpos( $a->savedValue, ', ' ) !== false ) {
                 $label = count( explode( ', ', $a->savedValue ) ) . ' Files Uploaded';
             }
-
         }
         ?>
         <input type="hidden" name="--<?php echo $a->name ?>" value="<?php echo esc_attr( $a->savedValue ) ?>" />
