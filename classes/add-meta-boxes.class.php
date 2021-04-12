@@ -59,10 +59,9 @@ class FCPAddMetaBoxes {
         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
             return;
         }
-        $nonce = FCP_Forms::$prefix . FCP_Forms::plugin_unid();
         if (
             !isset( $_POST[ 'fcp-form--' . $this->p->name ] ) ||
-            !wp_verify_nonce( $_POST[ 'fcp-form--' . $this->p->name ], $nonce )
+            !wp_verify_nonce( $_POST[ 'fcp-form--' . $this->p->name ], FCP_Forms::plugin_unid() )
         ) {
             return;
         }
@@ -75,6 +74,9 @@ class FCPAddMetaBoxes {
         foreach ( $fields as $v ) {
             if ( empty( $_POST[ $v->name ] ) ) {
                 delete_post_meta( $postID, $this->p->prefix . $v->name );
+                continue;
+            }
+            if ( !$v->meta_box ) { // --not sure it is needed, as we have exact list of meta boxes by the same list
                 continue;
             }
             update_post_meta( $postID, $this->p->prefix . $v->name, $_POST[ $v->name ] );

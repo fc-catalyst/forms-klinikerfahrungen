@@ -96,10 +96,9 @@ class FCP_Forms {
         }
 
         // common wp nonce check for logged in users
-        $nonce = FCP_Forms::$prefix . FCP_Forms::plugin_unid();
         if (
             !isset( $_POST[ 'fcp-form--' . $_POST['fcp-form-name'] ] ) ||
-            !wp_verify_nonce( $_POST[ 'fcp-form--' . $_POST['fcp-form-name'] ], $nonce )
+            !wp_verify_nonce( $_POST[ 'fcp-form--' . $_POST['fcp-form-name'] ], FCP_Forms::plugin_unid() )
         ) {
             return;
         }
@@ -192,12 +191,7 @@ class FCP_Forms {
             return $override;
         }
 
-        // single uploads 2 files if one is in tmps and one is in files - maybe make a function to apply tmps values?
-        // meta boxes don't show values for files
-        // ?does save meta effects only the mentioned post type??!!
-        // !!save meta only if is meta in json!!
         // rename files to safe names
-        // can simplify the nonce key
         // remember about the worktime for the kliniks && location
         // reorganize the css classes names
         // recaptcha

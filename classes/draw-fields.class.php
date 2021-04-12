@@ -21,7 +21,7 @@ class FCP_Forms__Draw {
             if ( $add->type ) {
                 $add->warning = $v['fcp-form--warnings'][ $add->name ];
                 $add->savedValue = $v[ $add->name ];
-                if ( $add->type == 'file' ) {
+                if ( $add->type == 'file' && !empty( $v[ '--'.$add->name ] ) ) {
                     $add->savedValue = $v[ '--'.$add->name ];
                 }
                 continue;
@@ -305,7 +305,7 @@ class FCP_Forms__Draw {
                 $this->printGroup( $f );
             }
         }
-        wp_nonce_field( FCP_Forms::$prefix . FCP_Forms::plugin_unid(), 'fcp-form--' . $o->form_name );
+        wp_nonce_field( FCP_Forms::plugin_unid(), 'fcp-form--' . $o->form_name );
         ?>
         
         <input type="hidden" name="fcp-form-name" value="<?php echo $o->form_name ?>">
@@ -414,7 +414,7 @@ class FCP_Forms__Draw {
                 $this->printGroup( $f );
             }
         }
-        wp_nonce_field( FCP_Forms::$prefix . FCP_Forms::plugin_unid(), 'fcp-form--' . $o->form_name );
+        wp_nonce_field( FCP_Forms::plugin_unid(), 'fcp-form--' . $o->form_name );
 
         $content = ob_get_contents();
         ob_end_clean();

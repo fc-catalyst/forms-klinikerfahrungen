@@ -43,7 +43,7 @@ new FCPAddMetaBoxes( $json, (object) [
 ] );
 
 
-// meta boxes front-end ++can probably make it universal
+// meta boxes front-end ++can probably make the following universal
 
 add_action( 'admin_enqueue_scripts', function($hook) {
 

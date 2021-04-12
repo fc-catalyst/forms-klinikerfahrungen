@@ -38,20 +38,24 @@ if ( !$warning && empty( $warns->result ) ) {
         $warning = 'Unexpected WordPress error';
         return;
     }
-    
-    
+
     // upload the files & add them to meta
     if ( !empty( $uploads->tmps ) ) {
 
         $dir = wp_get_upload_dir()['basedir'] . '/' . 'kliniken' . '/' . $id;
         if ( !mkdir( $dir, 0777, true ) ) {
-            $warning = "Can't create the folder for the files";
+            $warning = 'Can\'t create the folder for the files';
             return;
         }
+
         if ( $uploads->tmp_move( $dir ) !== true ) {
-            $warning = "Files are not uploaded" . print_r( $uploads->tmp_move( $dir ), true );
+            $warning = 'Files are not uploaded: ' . print_r( $uploads->tmp_move( $dir ), true );
             return;
         }
+        
+        // remove the tmp dir
+        FCP_Forms__Files::rm_dir( FCP_Forms__Files::tmp_dir()[1] );
+
         foreach ( $uploads->tmps_to_meta() as $k => $v ) {
             update_post_meta( $id, FCP_Forms::$prefix . $_POST['fcp-form-name'] . '_' . $k, $v );
         }

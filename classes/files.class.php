@@ -76,6 +76,11 @@ class FCP_Forms__Files {
             }
             unset( $f[$k] );
         }
+        
+        // sanitize files names
+        foreach ( $f as &$v ) {
+            $v['name'] = sanitize_file_name( $v['name'] );
+        }
 
         $this->files = array_values( $f ); // the list of files ready for uploading
 
@@ -85,6 +90,10 @@ class FCP_Forms__Files {
 
 
     public function tmp_upload() { // upload && ->files to ->tmps
+
+        $this->hiddens_to_tmps();
+        $this->tmps_clean();
+
         if ( !count( $this->files ) ) {
             return;
         }
@@ -111,7 +120,6 @@ class FCP_Forms__Files {
             }
         }
         
-        $this->hiddens_to_tmps();
         $this->tmps = array_values( array_merge( $this->files, $this->tmps ) );
         $this->tmps_clean();
         $this->hiddens_fill();
@@ -146,17 +154,36 @@ class FCP_Forms__Files {
     }
 
     private function tmps_clean() {
+        $single = [];
+
         foreach ( $this->tmps as $k => &$v ) {
+
+            // crop singles to 1 file
             foreach ( $this->s->fields as $w ) {
-                if ( $w->name !== $v['field'] ) {
+                if ( $v['field'] !== $w->name ) {
                     continue;
                 }
                 if ( $w->multiple ) {
                     continue 2;
                 }
-                $v = [ $v[0] ];
+                if ( $single[ $v['field'] ] ) {
+                    unset( $this->tmps[$k] );
+                    continue 2;
+                }
+                $single[ $v['field'] ] = true;
             }
+
+            // sanitize files names
+            $v['name'] = sanitize_file_name( $v['name'] );
+
+            // check if uploaded
+            if ( !is_file( self::tmp_dir()[1] . '/' . $v['name'] ) ) {
+                unset( $this->tmps[$k] );
+            }
+
         }
+
+        $this->tmps = array_values( $this->tmps );
     }
     
     private function hiddens_fill() {
@@ -199,7 +226,8 @@ class FCP_Forms__Files {
                 $result[] = 'Source file ' . $v['name'] . ' doesn\'t exist';
                 continue;
             }
-            if ( !rename( $dir[1] . '/' . $v['name'], $to . '/' . $v['name'] ) ) {
+            if ( !copy( $dir[1] . '/' . $v['name'], $to . '/' . $v['name'] ) ) {
+            // not rename, because 1 file can be in 2 fields
                 $result[] = $v['name'] . ' not moved from tmp';
             }
         }
