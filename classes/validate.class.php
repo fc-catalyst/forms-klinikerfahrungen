@@ -178,5 +178,9 @@ class FCP_Forms__Validate {
             return true;
         }
     }
+    
+    public function add_result($field, $value) {
+        $this->result[$field][] = $value;
+    }
 
 }

@@ -27,6 +27,7 @@ class FCP_Forms {
 
 		$this->self_url  = plugins_url( '/', __FILE__ );
 		$this->self_path = plugin_dir_path( __FILE__ );
+		$this->self_path_file = __FILE__;
 		
 		$this->forms_url  = $this->self_url . 'forms/';
 		$this->forms_path = $this->self_path . 'forms/';
@@ -46,7 +47,7 @@ class FCP_Forms {
         add_action( 'template_redirect', [ $this, 'process' ] );
         
         register_activation_hook( __FILE__, [ $this, 'install' ] );
-        register_deactivation_hook( __FILE__, array( $this, 'uninstall' ) );
+        register_deactivation_hook( __FILE__, [ $this, 'uninstall' ] );
 
         // init forms settings
         $files = array_diff( scandir( $this->forms_path ), [ '.', '..' ] );
@@ -190,17 +191,20 @@ class FCP_Forms {
         if ( $override ) {
             return $override;
         }
-
-        // rename files to safe names
+        
+        // make the password validate simple test
+        // rename classes files and delete not used?
+        // saveMetaBoxes seem to work wrong for not logged in users??
+        // login form, styling refactor, all the website, registration+login form, refactor back-end, front-end, payment details, ratings
+        // limit the number of multiple files
+        // !!get prefix not from dir name, but from some internal variable of the form - is it even used any more
+        // the plugin unique value create
         // remember about the worktime for the kliniks && location
         // reorganize the css classes names
         // recaptcha
         // front-end validation
             // autofill with front-end validation
         // ++include the modify values file before the validator for converting numbers and resizing images, maybe, renaming files, adding smilies
-        // limit the number of multiple files
-        // !!get prefix not from dir name, but from some internal variable of the form
-        // if something happened inside process.php - redirect (or switch) to the post edit form
         // ++aria
         // ++css grid variant
         // ++multiple text and other fields
@@ -221,6 +225,7 @@ class FCP_Forms {
         // fcp-form-a-nonce to something unique
         // approve panding article: https://wordpress.stackexchange.com/questions/229840/is-it-possible-to-change-an-existing-post-status-from-pending-to-publish-via
         // use pending review, instead of private??
+        // replace ", " with just comma and trim (or trim is included in sanitize)
         
         if ( $json->options->print_method == 'client' ) {
             return '<form class="fcp-form" data-structure="'.$dir.'">Loading..</form>';

@@ -1,0 +1,315 @@
+/* GROUPS */
+
+.fcp-form-register {
+    max-width:400px;
+}
+
+/* section */
+.fcp-form-register .fcp-form-group-section {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    margin-bottom:20px;
+}
+@media (max-width:991px) {
+    .fcp-form-register .fcp-form-group-section {
+        flex-direction:column;
+    }
+}
+.fcp-form-register .fcp-form-group-section > * {
+    flex-basis:calc(75% - 15px);
+    flex-grow:0;
+    overflow:hidden;
+}
+.fcp-form-register .fcp-form-group-section > *:nth-child(1) {
+    flex-basis:calc(25% - 15px);
+}
+
+.fcp-form-register .fcp-form-group-section > .fcp-form-group-h,
+.fcp-form-register .fcp-form-group-section > .fcp-form-group-w {
+    margin-bottom:0;
+}
+
+.fcp-form-register .fcp-form-group-section > .fcp-form-group-w {
+    padding-top:10px;
+}
+
+.fcp-form-register .fcp-form-group.fcp-form-cols-2 > .fcp-form-group-w > * {
+    flex-basis:calc(50% - 12px);
+    width:calc(50% - 12px);
+}
+
+/* FIELDS */
+.fcp-form-register .fcp-form-field-w {
+    margin-bottom:20px;
+}
+.fcp-form-register .fcp-form-field-w > * {
+    width:100%;
+}
+.fcp-form-register .fcp-form-field-w > span {
+    flex-basis:100%;
+    margin-right:0;
+}
+.fcp-form-register .fcp-form-field-w > span + * {
+    flex-basis:100%;
+}
+
+@media (min-width:992px) {
+    .fcp-form-register .fcp-form-group-section > .fcp-form-group-w > .fcp-form-field-w:last-child,
+    .fcp-form-register .fcp-form-group-section > .fcp-form-group-w > .fcp-form-group:last-child > .fcp-form-group-w > * {
+        margin-bottom:0;
+    }
+}
+
+@media (max-width:991px) {
+    .fcp-form-register .fcp-form-group.fcp-form-cols-2 > .fcp-form-group-w > * {
+        flex-basis:100%;
+        width:100%;
+    }
+    .fcp-form-register .fcp-form-group-section > .fcp-form-group-h {
+        margin-bottom:auto;
+    }
+}
+@media (max-width:650px) {
+    .fcp-form-register .fcp-form-group-section > .fcp-form-group-h {
+        margin-bottom:30px;
+    }
+}
+
+/* STYLING */
+.fcp-form-register .fcp-form-group-section {
+    background-color:#b9e1ed;
+    padding:25px;
+    box-sizing:border-box;
+    
+}
+.fcp-form-register * {
+    color:#0b4562;
+}
+.fcp-form-register h3 {
+    margin-top:25px!important;
+    margin-bottom:20px!important;
+    font-size:22px;
+    text-transform:uppercase;
+    font-weight:400;
+}
+.fcp-form-register p {
+    line-height:1.45;
+    font-size:15px;
+    font-weight:400;
+}
+
+.fcp-form-register .fcp-form-field-w > span {
+    margin:-10px 0 4px;
+    font-size:13px;
+    font-weight:700;
+    text-transform:uppercase;
+    color:#fff;
+}
+.fcp-form-register .fcp-form-field-w > span.fcp-form-small {
+    font-size:65%;
+}
+
+/* INPUTS */
+.fcp-form-register input,
+.fcp-form-register select,
+.fcp-form-register textarea,
+.fcp-form-register input[type=file] + label {
+    box-sizing:border-box;
+    border:none;
+    border-radius:6px;
+    padding:10px;
+    background-color:#c8ebf6;
+    font-size:14px;
+    line-height:1.4;
+    -webkit-appearance:none;
+}
+.fcp-form-register textarea {
+    font-size:12px;
+}
+.fcp-form-register option {
+    font-weight:400;
+    text-transform:none;
+    color:#0b4562;
+}
+.fcp-form-register select,
+.fcp-form-register button,
+.fcp-form-register input[type=submit],
+.fcp-form-register input[type=file] + label {
+    cursor:pointer;
+}
+
+
+.fcp-form-register input:focus,
+.fcp-form-register input:focus-visible,
+.fcp-form-register select:focus,
+.fcp-form-register select:focus-visible,
+.fcp-form-register textarea:focus,
+.fcp-form-register textarea:focus-visible,
+.fcp-form-register input[type=file]:focus + label,
+.fcp-form-register input[type=file]:focus-visible + label {
+  outline:none;
+  background-color:#fff;
+  color:#0b4562!important;
+}
+
+.fcp-form-register input:-webkit-autofill,
+.fcp-form-register  input:-internal-autofill-selected {
+    background-color:#c8ebf6;
+    -webkit-box-shadow:0 0 0 50px #c8ebf6 inset;
+    color:#0b4562;
+    -webkit-text-fill-color:#0b4562;
+}
+.fcp-form-register input:-webkit-autofill:focus,
+.fcp-form-register  input:-internal-autofill-selected:focus {
+    background-color:#fff;
+    color:#0b4562!important;
+    -webkit-box-shadow:0 0 0 50px #fff inset;
+}
+
+.fcp-form-register input::-webkit-input-placeholder,
+.fcp-form-register textarea::-webkit-input-placeholder,{
+    text-transform:uppercase;
+    color:#fff;
+    font-weight:700;
+}
+.fcp-form-register input:-ms-input-placeholder,
+.fcp-form-register textarea:-ms-input-placeholder{
+    text-transform:uppercase;
+    color:#fff;
+    font-weight:700;
+}
+.fcp-form-register input::placeholder,
+.fcp-form-register textarea::placeholder{
+    text-transform:uppercase;
+    color:#fff;
+    font-weight:700;
+}
+.fcp-form-register select.fcp-form-empty,
+.fcp-form-register input[type=hidden][value=''] + input[type=file].fcp-form-empty + label {
+    text-transform:uppercase;
+    color:#fff;
+    font-weight:700;
+}
+
+.fcp-form-register input[type=file] {
+    position:absolute;
+    z-index:-1;
+    opacity:0;
+    max-width:1px;
+    overflow:hidden;
+}
+.fcp-form-register input[type=file] + label {
+    display:block;
+}
+
+/* checkbox & radio */
+.fcp-form-register fieldset {
+    margin:6px 0 0;
+    border:none;
+    border-radius:6px;
+    padding:0 0 8px 0;
+}
+.fcp-form-register fieldset label {
+    position:relative;
+    white-space:nowrap;
+    cursor:pointer;
+}
+.fcp-form-register fieldset label > input[type=checkbox],
+.fcp-form-register fieldset label > input[type=radio]{
+    position:absolute;
+    z-index:-1;
+    opacity:0;
+}
+.fcp-form-register fieldset label > span {
+    display:inline-block;
+    margin:0 10px 0 0;
+    padding:0 0 0 25px;
+    font-size:13px;
+    font-weight:700;
+    text-transform:uppercase;
+    color:#fff;
+    
+}
+
+.fcp-form-register fieldset label > span::before {
+    content:'';
+    display:inline-block;
+    position:absolute;
+    left:0;
+    background-color:#fff;
+}
+.fcp-form-register fieldset label > input[type=checkbox] + span::before {
+    width:14px;
+    height:14px;
+    border-radius:2.5px;
+    top:4.5px;
+}
+.fcp-form-register fieldset label > input[type=radio] + span::before {
+    width:15px;
+    height:15px;
+    border-radius:7.5px;
+    top:3.5px;
+}
+
+.fcp-form-register fieldset label > span::after {
+    content:'';
+    display:inline-block;
+    position:absolute;
+    z-index:-1;
+    opacity:0;
+}
+.fcp-form-register fieldset label > input[type=checkbox] + span::after {
+    width:0;
+    height:18px;
+    left:1px;
+    top:1px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='17' %3E%3Cpath d='M 1,6 6,14.6 C 7,9 10,5 15,1' style='fill:none;stroke:%230b4562;stroke-width:2;stroke-linecap:round' /%3E%3C/svg%3E%0A");
+    background-repeat:no-repeat;
+    background-position:0 0;
+    background-size:16px 17px;
+    transition:width 0.12s ease;
+}
+.fcp-form-register fieldset label > input[type=radio] + span::after {
+    width:11px;
+    height:11px;
+    border-radius:5.5px;
+    left:2px;
+    top:5.5px;
+    background-color:#0b4562;
+    transform:scale(0, 0);
+    transition:transform 0.12s ease;
+}
+.fcp-form-register fieldset label > input[type=checkbox]:checked + span::after {
+    width:18px;
+    z-index:1;
+    opacity:1;
+}
+.fcp-form-register fieldset label > input[type=radio]:checked + span::after {
+    z-index:1;
+    opacity:1;
+    transform:scale(1, 1);
+}
+
+.fcp-form-register .fcp-f-invalid,
+.fcp-form-register input[type=file].fcp-f-invalid + label {
+    border-bottom:2px solid #f67575;
+}
+
+/* a very CUSTOM for this form */
+@media (min-width:992px) {
+    .fcp-form-register .fcp-form-cols-2 .fcp-form-field-w:nth-child(1n+3) fieldset {
+        margin-top:-27px;
+    }
+    .fcp-form-register .fcp-form-cols-2 .fcp-form-field-w:nth-child(1n+3) fieldset.fcp-f-invalid {
+        margin-top:-12px;
+    }
+}
+@media (max-width:991px) {
+    .fcp-form-register .fcp-form-field-w:nth-child(1n+2) fieldset {
+        margin-top:-27px;
+    }
+    .fcp-form-register .fcp-form-field-w:nth-child(1n+2) fieldset.fcp-f-invalid {
+        margin-top:-12px;
+    }
+}

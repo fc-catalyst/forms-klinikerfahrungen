@@ -58,7 +58,7 @@ class FCPAddPostType {
             'has_archive'         => $p['has_archive'],
             'exclude_from_search' => $p['public'] ? false : true,
             'publicly_queryable'  => $p['public'],
-            'capability_type'     => 'page',
+            'capability_type'     => $p['capability'] ? $p['capability'] : 'page',
         ];
             
         register_post_type( $p['slug'], $args );

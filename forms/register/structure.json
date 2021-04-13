@@ -1,0 +1,52 @@
+{
+    "options" : {
+        "method" : "post",
+        "print_method" : "server",
+        "json_validate" : 1,
+        "before" : "<div class=\"fcp-form-register\">",
+        "after" : "</div>",
+        "required_mark" : "*",
+        "reduce_font_after" : 36
+    },
+    "fields" : [
+        {
+            "gtype" : "section",
+            "title" : "Clinic Representative Registration",
+            "title_tag" : "h2",
+            "fields" : [
+                {
+                    "type" : "text",
+                    "placeholder" : "E-mail",
+                    "name" : "user-email",
+                    "validate" : {
+                        "notEmpty" : true,
+                        "email" : true
+                    }
+                },
+                {
+                    "type" : "text",
+                    "placeholder" : "Password",
+                    "name" : "user-password",
+                    "validate" : {
+                        "notEmpty" : true,
+                        "password" : true
+                    }
+                },
+                {
+                    "type" : "text",
+                    "placeholder" : "Repeat Password",
+                    "name" : "user-password-repeat",
+                    "validate" : {
+                        "notEmpty" : true,
+                        "equals" : "user-password"
+                    }
+                }
+            ]
+        },
+        {
+            "type" : "submit",
+            "name" : "user-submit",
+            "value" : "Register"
+        }
+    ]
+}
