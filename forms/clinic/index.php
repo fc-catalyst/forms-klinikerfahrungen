@@ -8,16 +8,18 @@ if ( !class_exists( 'FCPAddPostType' ) ) {
 
 new FCPAddPostType( [
     'name' => 'Clinic',
+    'type' => 'clinic',
     'slug' => 'kliniken',
     'plural' => 'Clinics',
     'description' => 'The list of registered clinics',
-    'fields' => [ 'title' ], //, 'editor'
+    'fields' => ['title', 'comments', 'author', 'revisions'],
     'hierarchical' => false,
     'public' => true,
     'gutenberg' => true,
     'menu_position' => 21,
     'menu_icon' => 'dashicons-plus-alt',
-    'has_archive' => true
+    'has_archive' => true,
+    'capability_type' => ['clinic', 'clinics']
 ] );
 
 
@@ -36,7 +38,7 @@ $json = json_decode( $cont, false );
 new FCPAddMetaBoxes( $json, (object) [
     'name' => $file,
     'title' => 'Clinic Information',
-    'post_types' => ['kliniken'],
+    'post_types' => ['clinic'],
     'context' => 'normal',
     'priority' => 'high',
     'prefix' => FCP_Forms::$prefix . $file . '_'

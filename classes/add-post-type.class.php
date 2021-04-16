@@ -5,7 +5,7 @@ class FCPAddPostType {
     private $p;
 
     public static function version() {
-        return '2.0.1';
+        return '2.1.1';
     }
 
     public function __construct($p) {
@@ -41,7 +41,7 @@ class FCPAddPostType {
         ];
             
         $args = [
-            'label'               => __( $p['slug'], $td ),
+            'label'               => __( $p['name'], $td ),
             'description'         => __( $p['description'], $td ),
             'labels'              => $labels,
             'supports'            => $p['fields'],
@@ -58,12 +58,14 @@ class FCPAddPostType {
             'has_archive'         => $p['has_archive'],
             'exclude_from_search' => $p['public'] ? false : true,
             'publicly_queryable'  => $p['public'],
-            'capability_type'     => $p['capability'] ? $p['capability'] : 'page',
+            'capability_type'     => $p['capability_type'] ? $p['capability_type'] : 'page',
+            'map_meta_cap'        => $p['capability_type'] || $p['capability'] ? true : null
         ];
-            
-        register_post_type( $p['slug'], $args );
-        
-        // can add slug override and other here
+        if ( $p['slug'] ) {
+            $args['rewrite'] = [ 'slug' => $p['slug'] ];
+        }
+
+        register_post_type( $p['type'], $args );
 
     }
     
@@ -72,7 +74,7 @@ class FCPAddPostType {
         global $post;
         $p = $this->p;
 
-        if ( $post->post_type !== $p['slug'] || !$p['gutenberg_allow'] ) {
+        if ( $post->post_type !== $p['type'] || !$p['gutenberg_allow'] ) {
             return $allowed_blocks;
         }
 
