@@ -186,7 +186,7 @@ class FCP_Forms {
         $json = json_decode( $cont, false );
         $json->options->form_name = $dir;
 
-        // custom handler
+        // custom handler ++ can try to place it before fetching json?
         @include_once( $this->forms_path . $dir . '/override.php' );
         if ( $override ) {
             return $override;
@@ -196,6 +196,7 @@ class FCP_Forms {
         // rename classes files and delete not used?
         // saveMetaBoxes seem to work wrong for not logged in users??
         // login form, styling refactor, all the website, registration+login form, refactor back-end, front-end, payment details, ratings
+        // new clinic - email immediately to review!!
         // limit the number of multiple files
         // !!get prefix not from dir name, but from some internal variable of the form - is it even used any more
         // the plugin unique value create

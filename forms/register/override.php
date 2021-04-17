@@ -2,12 +2,9 @@
 /*
 Print something else instead of the form
 */
-/* ++logged in switch to face or just hide?
-if ( !is_user_logged_in() ) {
+
+if ( is_user_logged_in() ) {
     unset( $json->fields );
-    // ++tmp redirect to home page
+//    $override = '<h2>Hello, ' . wp_get_current_user()->user_email . '</h2>';
     return;
 }
-// ++compare the permissions
-
-//$user = wp_get_current_user();

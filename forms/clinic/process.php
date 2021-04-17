@@ -3,20 +3,17 @@
 Process the form data
 */
 
-/*
-    upload to tmp
-    upload to normal if user is logged in and id is provided
-    fill in the hidden field
-    save data to the engine
-    make the template
-    make the front-end for maps
-//*/
-
-
 if ( !is_user_logged_in() ) {
     $warning = 'Please log in to use the form';
     return;
 }
+
+// if can create this post type
+if ( !get_userdata( wp_get_current_user()->ID )->allcaps['edit_clinic'] ) {
+    $warning = 'You don\'t have permission to add a clinic';
+    return;
+}
+
 
 // upload the files to tmp directory
 if ( isset( $_FILES ) ) {
@@ -30,9 +27,10 @@ if ( !$warning && empty( $warns->result ) ) {
     $id = wp_insert_post( [
         'post_title' => sanitize_text_field( $_POST['company-name'] ),
         'post_content' => '',
-        'post_status' => 'private', // ++ pending
-        'post_author' => get_the_author_meta()['ID'],
-        'post_type' => 'kliniken'
+        'post_status' => 'pending',
+        'post_author' => wp_get_current_user()->ID,
+        'post_type' => 'clinic',
+        'comment_status' => 'closed'
     ]);
     if ( $id === 0 ) {
         $warning = 'Unexpected WordPress error';

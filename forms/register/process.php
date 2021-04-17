@@ -10,7 +10,7 @@ $register = wp_insert_user( [
     'user_login' => $login,
 	'user_email' => $email,
 	'user_pass' => $_POST['user-password'],
-	'role' => 'fcp_cl_repr'
+	'role' => 'clinic_representative'
 ]);
 
 if ( is_wp_error( $register ) ) {
