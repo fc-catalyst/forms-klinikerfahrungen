@@ -22,6 +22,40 @@ new FCPAddPostType( [
     'capability_type' => ['clinic', 'clinics']
 ] );
 
+// ++move the templates to the FCPADDPostType class
+add_filter( 'template_include', function( $template ) {
+
+    $new_template = $template; // default theme template
+    $path = $this->forms_path . 'clinic/templates/';
+
+    if ( is_singular( 'clinic' ) ) {
+        $new_template = $path . 'clinic-template.php';
+    }
+
+    if ( is_post_type_archive( 'clinic' ) ) {
+        $new_template = $path . 'clinic-archive.php';
+    }
+
+    if ( file_exists( $new_template ) ) {
+        return $new_template;
+    }
+
+    return $template;
+
+}, 99 );
+
+add_action( 'pre_get_posts', function( $query ) {
+
+    $url = explode( "/", $_SERVER['REQUEST_URI'] );
+
+    if ( $url[1] == 'clinic' ) {
+        $this->plugin_setup();
+        $query->is_main_query();
+        $query->set( 'posts_per_page', $this->cases_per_page );
+    }
+
+} );
+
 
 // meta fields for new post types on basis of the form structure
 

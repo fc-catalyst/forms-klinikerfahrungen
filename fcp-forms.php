@@ -6,7 +6,7 @@ Description: JSON structured forms engine with pre-made forms examples.
 Version: 1.0.0
 Requires at least: 4.7
 Requires PHP: 7.0.0
-Author: Vadim Volkov, Firmcatalyst
+Author: Firmcatalyst, Vadim Volkov
 Author URI: https://firmcatalyst.com
 License: GPL v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -191,7 +191,8 @@ class FCP_Forms {
         if ( $override ) {
             return $override;
         }
-        
+        // theme upload to git
+        // check if first screen css can be picked differently
         // make the password validate simple test
         // rename classes files and delete not used?
         // saveMetaBoxes seem to work wrong for not logged in users??
