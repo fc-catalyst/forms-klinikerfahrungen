@@ -11,7 +11,7 @@ echo '<pre>';
 print_r( $json );
 echo '</pre>';
 //*/
-
+return;
 unset( $json->fields[0]->description );
 $json->fields[0]->fields = [
     (object) [

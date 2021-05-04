@@ -1,0 +1,36 @@
+{
+    "options" : {
+        "method" : "post",
+        "print_method" : "server",
+        "json_validate" : 1,
+        "before" : "<div class=\"fcp-form-clinic-search\">",
+        "after" : "</div>"
+    },
+    "fields" : [
+        {
+            "gtype" : "row",
+            "cols" : 2,
+            "fields" : [
+                {
+                    "type" : "text",
+                    "placeholder" : "z.B. Chirurgie, Hausarzt",
+                    "name" : "spezialisierung",
+                    "validate" : {
+                    }
+                },
+                {
+                    "type" : "text",
+                    "placeholder" : "PLZ, Ort",
+                    "name" : "region",
+                    "validate" : {
+                    }
+                }
+            ]
+        },
+        {
+            "type" : "submit",
+            "name" : "suchen",
+            "value" : "Suchen"
+        }
+    ]
+}

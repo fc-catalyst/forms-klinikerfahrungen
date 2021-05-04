@@ -17,7 +17,7 @@ register_deactivation_hook( $this->self_path_file, function() {
     remove_role( 'clinic_representative' );
 });
 
-add_action( 'init', function () { // ++change to init, if the front-end forms don't save the data
+add_action( 'init', function () { // can be admin_init
 
     $role = get_role( 'clinic_representative' );
 
@@ -30,6 +30,7 @@ add_action( 'init', function () { // ++change to init, if the front-end forms do
     $role->add_cap( 'publish_clinics', false );
     $role->add_cap( 'delete_private_clinics' );
     $role->add_cap( 'delete_published_clinics' );
+
 
     $role = get_role( 'administrator' );
 

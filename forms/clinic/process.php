@@ -2,12 +2,13 @@
 /*
 Process the form data
 */
-
+/*
 if ( !is_user_logged_in() ) {
     $warning = 'Please log in to use the form';
     return;
 }
-
+//*/
+/*
 // if can create this post type
 if ( !get_userdata( wp_get_current_user()->ID )->allcaps['edit_clinic'] ) {
     $warning = 'You don\'t have permission to add a clinic';
@@ -19,7 +20,7 @@ if ( !get_userdata( wp_get_current_user()->ID )->allcaps['edit_clinic'] ) {
 if ( isset( $_FILES ) ) {
     $uploads->tmp_upload();
 }
-
+//*/
 if ( !$warning && empty( $warns->result ) ) {
     
     // create new post
@@ -37,6 +38,8 @@ if ( !$warning && empty( $warns->result ) ) {
         return;
     }
 
+    // ++can check if meta boxes are saved here
+    
     // upload the files & add them to meta
     if ( !empty( $uploads->tmps ) ) {
 

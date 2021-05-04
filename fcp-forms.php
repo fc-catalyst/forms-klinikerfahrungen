@@ -49,7 +49,7 @@ class FCP_Forms {
         register_activation_hook( __FILE__, [ $this, 'install' ] );
         register_deactivation_hook( __FILE__, [ $this, 'uninstall' ] );
 
-        // init forms settings
+        // initial forms settings
         $files = array_diff( scandir( $this->forms_path ), [ '.', '..' ] );
         foreach ( $files as $file ) {
             $index = $this->forms_path . $file . '/' . 'index.php';
@@ -126,7 +126,7 @@ class FCP_Forms {
         @include_once( $this->forms_path . $_POST['fcp-form-name'] . '/process.php' );
 
         if ( $warning || !empty( $warns->result ) ) {
-            $_POST['fcp-form--warning'] = $warning; // passing to the printing hook via globals
+            $_POST['fcp-form--warning'] = $warning; // passing to the printing and other hooks via globals
             $_POST['fcp-form--warnings'] = $warns->result;
             return;
         }
@@ -191,7 +191,12 @@ class FCP_Forms {
         if ( $override ) {
             return $override;
         }
-        // theme upload to git
+        // clinic meta boxes to proper ones
+        /*
+            company-image
+            if on edit post submit or if on just clinic add
+        */
+        // clinic meta boxes - change title and slug on meta title change.. or remove title from meta
         // check if first screen css can be picked differently
         // make the password validate simple test
         // rename classes files and delete not used?
