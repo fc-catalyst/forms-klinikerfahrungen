@@ -191,10 +191,16 @@ class FCP_Forms {
         if ( $override ) {
             return $override;
         }
+        // !! check is_admin in saveMetaBoxes !!
         // clinic meta boxes to proper ones
+            // just process the common process in that function, just silengly
+            // dunno about files - find out
         /*
             company-image
             if on edit post submit or if on just clinic add
+            ADD THE FREE PASS TRIGGER IF VALIDATION IS DONE CORRECTLY NOT ON ADMIN SIDE
+            front-end validation visible
+            maybe learn how meta boxes gotta be added not semi-manually
         */
         // clinic meta boxes - change title and slug on meta title change.. or remove title from meta
         // check if first screen css can be picked differently
