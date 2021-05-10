@@ -57,13 +57,15 @@ function FCP_Advisor($input, arr) {
             return;
         }
         
-        var width = $input.width(),
+        var width = $input.outerWidth(),
+            height = $input.outerHeight(),
             position = $input.position();
 
         $input.after( $( '<div>', {
             'class': css_class,
-            'style': 'left:'+position.left+'px;'+
-                        'width:'+width+'px'
+            'style': 'left:' + position.left + 'px;' +
+                     'top:' + ( position.top + height ) + 'px;' +
+                     'width:'+width+'px;'
         }) );
 
         document.addEventListener( 'click', list_holder_remove ); // blur event doesn't pass through the click

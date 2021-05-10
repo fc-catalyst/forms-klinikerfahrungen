@@ -4,7 +4,8 @@
         "print_method" : "server",
         "json_validate" : 1,
         "before" : "<div class=\"fcp-form-clinic-search\">",
-        "after" : "</div>"
+        "after" : "</div>",
+        "autocomplete" : "off"
     },
     "fields" : [
         {

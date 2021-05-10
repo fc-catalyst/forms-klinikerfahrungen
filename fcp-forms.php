@@ -57,6 +57,11 @@ class FCP_Forms {
                 include_once $index;
             }
         }
+        
+        // allow scripts track the helpers' urls
+        add_action( 'wp_head', function() {
+            echo '<script>var fcp_forms_assets_url = "' . $this->self_url . 'assets/";</script>'."\n";
+        });
 
     }
     

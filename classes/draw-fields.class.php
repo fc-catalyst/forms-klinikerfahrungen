@@ -46,7 +46,7 @@ class FCP_Forms__Draw {
         <input
             type="text"
             name="<?php echo $a->name ?>"
-            id="fcp-f-<?php echo $a->name ?>"
+            id="<?php $this->e_field_id( $a->name ) ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty ? '*' : '' ?>"
             value="<?php echo esc_attr( $a->savedValue ? $a->savedValue : $a->value ) ?>"
@@ -61,7 +61,7 @@ class FCP_Forms__Draw {
         <input
             type="password"
             name="<?php echo $a->name ?>"
-            id="fcp-f-<?php echo $a->name ?>"
+            id="<?php $this->e_field_id( $a->name ) ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty ? '*' : '' ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
@@ -74,7 +74,7 @@ class FCP_Forms__Draw {
         <input
             type="hidden"
             name="<?php echo $a->name ?>"
-            id="fcp-f-<?php echo $a->name ?>"
+            id="<?php $this->e_field_id( $a->name ) ?>"
             value="<?php echo esc_attr( $a->value ) ?>"
             <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
         />
@@ -85,7 +85,7 @@ class FCP_Forms__Draw {
         ?>
         <textarea
             name="<?php echo $a->name ?>"
-            id="fcp-f-<?php echo $a->name ?>"
+            id="<?php $this->e_field_id( $a->name ) ?>"
             rows="<?php echo $a->rows ? $a->rows : '10' ?>" cols="<?php echo $a->cols ? $a->cols : '50' ?>"
             placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty ? '*' : '' ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
@@ -98,7 +98,7 @@ class FCP_Forms__Draw {
         ?>
         
         <fieldset
-            id="fcp-f-<?php echo $a->name ?>"
+            id="<?php $this->e_field_id( $a->name ) ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
         >
         
@@ -130,7 +130,7 @@ class FCP_Forms__Draw {
         ?>
         
         <fieldset 
-            id="fcp-f-<?php echo $a->name ?>"
+            id="<?php $this->e_field_id( $a->name ) ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
         >
         
@@ -162,7 +162,7 @@ class FCP_Forms__Draw {
         ?>
         <select
             name="<?php echo $a->name ?><?php echo $a->multiple ? '[]' : '' ?>"
-            id="fcp-f-<?php echo $a->name ?>"
+            id="<?php $this->e_field_id( $a->name ) ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
             <?php echo $a->multiple ? 'multiple' : '' ?>
         >
@@ -200,12 +200,12 @@ class FCP_Forms__Draw {
         <input
             type="file"
             name="<?php echo $a->name; echo $a->multiple ? '[]' : '' ?>"
-            id="fcp-f-<?php echo $a->name ?>"
+            id="<?php $this->e_field_id( $a->name ) ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             <?php echo $a->multiple ? 'multiple' : '' ?>
         />
-        <label for="fcp-f-<?php echo $a->name ?>"><?php echo $label ? $label : 'Datei Auswählen' ?></label>
+        <label for="<?php $this->e_field_id( $a->name ) ?>"><?php echo $label ? $label : 'Datei Auswählen' ?></label>
         <?php
     }
 
@@ -214,7 +214,7 @@ class FCP_Forms__Draw {
         <input
             type="submit"
             name="<?php echo $a->name ?>"
-            id="fcp-f-<?php echo $a->name ?>"
+            id="<?php $this->e_field_id( $a->name ) ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             value="<?php echo esc_attr( $a->value ) ?>"
         />
@@ -423,6 +423,10 @@ class FCP_Forms__Draw {
         $content = preg_replace( '/\s+/', ' ', $content );
         $content = preg_replace( '/ </', "\n<", $content );
         echo $content;
+    }
+    
+    private function e_field_id ($field_name) {
+        echo 'fcp-f-'.$this->s->options->form_name.'--' . $field_name;
     }
     
 }
