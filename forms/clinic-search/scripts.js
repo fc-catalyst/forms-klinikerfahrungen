@@ -20,14 +20,18 @@
         // load other needed scripts
         var assets = window.fcp_forms_assets_url,
             externals = {
-//            'google' : 'https://maps.googleapis.com/maps/api/js?key={KEY}&libraries=places'
-            'FCP_Advisor': assets + 'advisor',
-            'FCP_Slider' : assets + 'slider'
+            //'google' : 'https://maps.googleapis.com/maps/api/js?key={KEY}&libraries=places',
+            'FCP_Advisor': 'advisor',
+            'FCP_Slider' : 'slider'
         };
 
         for ( var i in externals ) {
-            $( 'body' ).append( '<script src="' + externals[i] + '.js" async></script>' );
-            $( 'body' ).append( '<link rel="stylesheet" href="' + externals[i] + '.css" type="text/css" media="all" />' );
+            if ( externals[i].indexOf( 'http' ) === 0 ) {
+                $( 'body' ).append( '<script src="' + externals[i] + '" async></script>' );
+                continue;
+            }
+            $( 'body' ).append( '<script src="' + assets + externals[i] + '.js?' + new Date().getTime() + '" async></script>' );
+            $( 'body' ).append( '<link rel="stylesheet" href="' + assets + externals[i] + '.css?' + new Date().getTime() + '" type="text/css" media="all" />' );
         }
 
         b = setInterval( function() {
@@ -51,13 +55,17 @@
                 $( '#fcp-f-clinic-search--spezialisierung' ),
                 ['Allergologen', 'Allgemein- &amp; Hausärzte', 'Augenärzte', 'Chirurgen', 'Dermatologen', 'Gynäkologen', 'HNO-Ärzte', 'Kardiologen', 'Kinderärzte', 'Neurologen', 'Orthopäden', 'Plastische und Ästhetische Chirurgen', 'Psychologen &amp; Psychotherapie', 'Urologen', 'Zahnärzte']
             );
-            
-            // ++ google maps place germany region advisor instead of it
-            new FCP_Advisor(
-                $( '#fcp-f-clinic-search--region' ),
-                ['Allergologen', 'Allgemein- &amp; Hausärzte', 'Augenärzte', 'Chirurgen', 'Dermatologen', 'Gynäkologen', 'HNO-Ärzte', 'Kardiologen', 'Kinderärzte', 'Neurologen', 'Orthopäden', 'Plastische und Ästhetische Chirurgen', 'Psychologen &amp; Psychotherapie', 'Urologen', 'Zahnärzte']
+
+            new google.maps.places.Autocomplete(
+                $( '#fcp-f-clinic-search--region' )[0],
+                {
+                    componentRestrictions: { country: ['de'] },
+                    fields: ['geometry'],
+                    types: ['(cities)']
+                }
             );
             
+            // --move slider to a separate plugin?
             new FCP_Slider(
                 '.fcp-group-slider > .wp-block-group__inner-container',
                 { 'navigation': [ 'arrows', 'dots', 'can_block' ] }

@@ -5,7 +5,7 @@
 class FCP_Forms__Files {
 
     private $s, $f, $w; // json structure; $_FILES; warnings
-    public $files, $uploaded, $tmps; // [] of prepared $_FILES with ['field'], [] of uploaded files ['name','field']
+    public $files, $tmps; // [] of prepared $_FILES with ['field'], same for tmps dir
 
     public function __construct($s, $f, $w = []) {
 
@@ -90,7 +90,6 @@ class FCP_Forms__Files {
     
 //-----___--__--___-___---tmp uploading operations
 
-    // public method to upload to provided dir process( $field, $dir ), mention hiddens and delete-radios inside
 
     public function tmp_upload() { // upload && ->files to ->tmps
 

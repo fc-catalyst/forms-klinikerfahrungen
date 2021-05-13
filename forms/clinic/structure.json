@@ -26,7 +26,7 @@
                             "validate" : {
                                 "notEmpty" : true
                             },
-                            "meta_box" : true
+                            "comment" : "this field goes to the title, not a meta box"
                         },
                         {
                             "type" : "text",
@@ -46,7 +46,7 @@
                     "fields" : [
                         {
                             "type" : "file",
-                            "title" : "Logo Ihrer Klinik",
+                            "title" : "Single Upload",
                             "name" : "company-logo",
                             "validate" : {
                                 "default" : true,
@@ -62,7 +62,7 @@
                         },
                         {
                             "type" : "file",
-                            "title" : "Titelbild für Ihre Praxis",
+                            "title" : "Multiple Upload",
                             "name" : "company-image",
                             "multiple" : true,
                             "validate" : {
@@ -71,7 +71,8 @@
                                 "extension" : [
                                     "jpg"
                                 ],
-                                "limit" : 2
+                                "limit" : 3,
+                                "comment" : "the number of files limit is not developed yet"
                             },
                             "meta_box" : true
                         }

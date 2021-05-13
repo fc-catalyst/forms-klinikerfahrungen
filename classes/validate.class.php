@@ -1,21 +1,9 @@
 <?php
 
-/*
-$_POST = [
-    'calc-name' => 'calc-1-email',
-    'calc' => [
-        'dd@dd.',
-        ''
-    ]
-];
-$path = __DIR__ . '/../structure/'.$_POST['calc-name'].'/main.json';
-$structure = @file_get_contents( $path );
-//*/
-
 class FCP_Forms__Validate {
 
-    private $s, $v; // structure - json; $_POST; $_FILES (concat with $_POST here)
-    public $result, $mFilesFailed; // filtered and marked content; filtered files from the list of multiples
+    private $s, $v; // json structure; $_POST + $_FILES
+    public $result, $files_failed; // text warnings; [field name][] = failed file name
 
     public function __construct($s, $v, $f = []) {
 
@@ -104,7 +92,7 @@ class FCP_Forms__Validate {
         return 'The file <em>'.$a['name'].'</em> extension doesn\'t fit the allowed list: ' . implode( ', ', $rule );
     }
     
-    private function test_file_default($a) { // ++move to files.class?
+    private function test_file_default($a) { // this one goes silently with current server settings
         if ( $a['error'] ) {
             return [ // taken from the php reference for uploading errors
                 0 => 'There is no error, the file uploaded with success', // doesn't count anyways
@@ -141,23 +129,14 @@ class FCP_Forms__Validate {
                 // multiple files
                 if ( $f->type == 'file' && $f->multiple ) {
 
-                    // ++can move to __construct, as in files.class.php
                     $mflip = FCP_Forms__Files::flip_files( $this->v[ $f->name ] );
-/*
-                    // ++ limit the number of files - FINISH THIS WITH HIDDENS TOO
-                    $limit = isset( $f->validate->limit ) ? $f->validate->limit : 5; // ++ can export to defaults
-                    if ( is_numeric( $limit ) && $limit !== 0 ) {
-                        if ( count( $mflip ) > $limit ) {
-                            $this->result[ $f->name ] = 'The maximum number of files for this field is '.$limit;
-                            continue;
-                        }
-                    }
-//*/
+
                     foreach ( $mflip as $v ) {
                         if ( $this->addResult( $method, $f->name, $rule, $v ) ) {
-                            $this->mFilesFailed[ $f->name ][] = $v['name'];
+                            $this->files_failed[ $f->name ][] = $v['name'];
                         }
                     }
+
                     continue;
                 }
                 
@@ -166,7 +145,7 @@ class FCP_Forms__Validate {
                     if ( $f->type != 'file' ) {
                         continue;
                     }
-                    $this->mFilesFailed[ $f->name ][] = $this->v[ $f->name ]['name'];
+                    $this->files_failed[ $f->name ][] = $this->v[ $f->name ]['name'];
                 }
             }
         }
@@ -179,7 +158,7 @@ class FCP_Forms__Validate {
         }
     }
     
-    public function add_result($field, $value) {
+    public function add_result($field, $value) { // --Y is it used??
         $this->result[$field][] = $value;
     }
 

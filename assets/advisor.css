@@ -1,26 +1,30 @@
 .fcp-advisor-holder {
     display:block;
     min-width:100px;
-    border:1px dotted red;
     position:absolute;
+    border-radius:2px;
+    overflow:hidden;
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
 }
 .fcp-advisor-holder > button {
     display:block;
     width:100%;
     margin:0;
     border:none;
-    border-bottom:1px solid #ccc;
-    padding:8px 12px;
+    border-bottom:1px solid #e6e6e6;
+    padding:6px 9px 7px;
     background-color:#fff;
     text-align:left;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+    color:#000;
     cursor:pointer;
     -webkit-appearance:none;
 }
-.fcp-advisor-holder > button:hover,
+.fcp-advisor-holder > button:hover {
+    background-color:#fafafa;
+}
 .fcp-advisor-holder > button.active {
-    background-color:#ccc;
-    color:#fff;
+    background-color:#ebf2fe;
 }

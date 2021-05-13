@@ -4,8 +4,8 @@
 */
 class FCP_Forms__Files {
 
-    private $s, $f, $w; // json structure; $_FILES; warnings
-    public $files, $uploaded, $tmps; // [] of prepared $_FILES with ['field'], [] of uploaded files ['name','field']
+    private $s, $f, $w; // structure - json; $_FILES; warnings; dir for temporary files
+    public $files, $tmps; // [ single file array ] + [ post field name ], [ name, field ] for $tmps
 
     public function __construct($s, $f, $w = []) {
 
@@ -13,15 +13,13 @@ class FCP_Forms__Files {
         $this->s->fields = FCP_Forms::flatten( $s->fields );
         $this->w = $w;
         $this->f = array_map( 'self::flip_files', $f );
-        $this->process();
+        $this->proceed();
 
     }
 
-    private function process() {
+    private function proceed() { // ++brush it and all the loops up later
 
-        // filter files
-        
-        // by structure: field exists, is multiple
+        // filter by structure (field, multiple)
         $multi = [];
         foreach ( $this->s->fields as $v ) {
             if ( $v->type !=='file' ) {
@@ -48,7 +46,7 @@ class FCP_Forms__Files {
         }
 
         // flatten
-        $fl = []; // [0] => [ name, tmp_name, size, error, added field name ]
+        $fl = [];
         foreach ( $f as $k => $v ) {
             if ( isset( $v['name'] ) ) {
                 $fl[] = $v + ['field' => $k];
@@ -61,14 +59,14 @@ class FCP_Forms__Files {
         $f = $fl;
         unset( $fl );
 
-        // by server error
+        // uploading error
         foreach ( $f as $k => $v ) {
             if ( $v['error'] ) {
                 unset( $f[$k] );
             }
         }
 
-        // by warnings
+        // filter by warnings & error
         foreach ( $f as $k => $v ) {
             if ( !$this->w[ $v['field'] ] ) { // no warnings for the field
                 continue;
@@ -90,7 +88,6 @@ class FCP_Forms__Files {
     
 //-----___--__--___-___---tmp uploading operations
 
-    // public method to upload to provided dir process( $field, $dir ), mention hiddens and delete-radios inside
 
     public function tmp_upload() { // upload && ->files to ->tmps
 
@@ -271,8 +268,7 @@ class FCP_Forms__Files {
         }
     }
     
-    // flip the array of uploading files from [name][0] to [0][name]
-    public static function flip_files($mfile = []) {
+    public static function flip_files($mfile = []) { /* flip the array of uploading files from [name][0] to [0][name] */
         if ( !is_array( $mfile['name'] ) ) {
             return $mfile;
         }

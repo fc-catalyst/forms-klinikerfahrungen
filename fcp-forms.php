@@ -19,7 +19,7 @@ defined( 'ABSPATH' ) || exit;
 class FCP_Forms {
 
 	public static $dev = true,
-                  $tmp_dir = 'fcp-forms-tmp',
+                  $tmp_dir = 'fcp-forms-tmps',
                   $text_domain = 'fcp-forms',
                   $prefix = 'fcpf_';
 	
@@ -31,6 +31,8 @@ class FCP_Forms {
 		
 		$this->forms_url  = $this->self_url . 'forms/';
 		$this->forms_path = $this->self_path . 'forms/';
+		
+		$this->assets = $this->self_url . 'assets/';
 
 		$this->css_ver = '1.0.7' . ( self::$dev ? '.'.time() : '' );
 		$this->js_ver = '1.1.0' . ( self::$dev ? '.'.time() : '' );
@@ -49,30 +51,32 @@ class FCP_Forms {
         register_activation_hook( __FILE__, [ $this, 'install' ] );
         register_deactivation_hook( __FILE__, [ $this, 'uninstall' ] );
 
-        // initial forms settings
+        // initial forms settings, which must have even without the form on the page
         $files = array_diff( scandir( $this->forms_path ), [ '.', '..' ] );
         foreach ( $files as $file ) {
-            $index = $this->forms_path . $file . '/' . 'index.php';
-            if ( is_file( $index ) ) {
-                include_once $index;
-            }
+            @include_once $this->forms_path . $file . '/' . 'index.php';
         }
-        
-        // allow scripts track the helpers' urls
+
+        // allow js track the helpers' urls
         add_action( 'wp_head', function() {
-            echo '<script>var fcp_forms_assets_url = "' . $this->self_url . 'assets/";</script>'."\n";
+            echo '<script>var fcp_forms_assets_url = "' . $this->assets .'";</script>'."\n";
         });
 
     }
     
     public function install() {
     
-        // create tmp dir for the files uploading
+        // create tmp dir for the files, uploaded by not authorized users
         $dir = wp_get_upload_dir()['basedir'];
         mkdir( $dir . '/' . self::$tmp_dir );
 
+        // create unique plugin id
+        file_put_contents(
+            self::plugin_unid_path(),
+            '<?php return "' . md5( time() ) . '";'
+        );
+        
         flush_rewrite_rules();
-
     }
     
     public function uninstall() {
@@ -82,10 +86,13 @@ class FCP_Forms {
         $dir = wp_get_upload_dir()['basedir'];
         FCP_Forms__Files::rm_dir( $dir . '/' . self::$tmp_dir );
         
+        // remove unique plugin id
+        unlink( self::plugin_unid_path() );
+        
         flush_rewrite_rules();
     }
     
-    public function process() {
+    public function process() { // when $_POST is passed by the client side
 
         if ( !$_POST['fcp-form-name'] ) { // handle only the fcp-forms
             return;
@@ -96,7 +103,7 @@ class FCP_Forms {
         }
         include_once $this->self_path . 'classes/validate.class.php';
 
-        // only correct symbols for the form name
+        // only allowed symbols for the form name
         if ( FCP_Forms__Validate::name( true, $_POST['fcp-form-name'] ) ) {
             return;
         }
@@ -109,34 +116,38 @@ class FCP_Forms {
             return;
         }
         
+        // if the form doesn't exist
         if ( !is_file( $this->forms_path . $_POST['fcp-form-name'] . '/structure.json' ) ) {
             return;
         }
 
+
         $cont = file_get_contents( $this->forms_path . $_POST['fcp-form-name'] . '/structure.json' );
         $json = json_decode( $cont, false );
         
-        // get the array of errors
         $warns = new FCP_Forms__Validate( $json, $_POST, $_FILES );
+        
+        // get the array of wrong filled fields' warnings
         if ( !empty( $warns->result ) ) {
             $warning = 'Some fields are not filled correctly:';
         }
 
-        // files processing
+        // prepare files to process
         if ( isset( $_FILES ) ) {
-            $uploads = new FCP_Forms__Files( $json, $_FILES, $warns->mFilesFailed );
+            $uploads = new FCP_Forms__Files( $json, $_FILES, $warns->files_failed );
         }
 
-        // main & custom validation & processing
+        // main processing file of the form
         @include_once( $this->forms_path . $_POST['fcp-form-name'] . '/process.php' );
 
+        // failure
         if ( $warning || !empty( $warns->result ) ) {
-            $_POST['fcp-form--warning'] = $warning; // passing to the printing and other hooks via globals
+            $_POST['fcp-form--warning'] = $warning; // passing to print via globals
             $_POST['fcp-form--warnings'] = $warns->result;
             return;
         }
 
-        // custom redirect
+        // success
         if ( $redirect ) {
             wp_redirect( $redirect );
             exit;
@@ -207,6 +218,7 @@ class FCP_Forms {
             front-end validation visible
             maybe learn how meta boxes gotta be added not semi-manually
         */
+        // files uploading add checkboxes to delete files on submit (as well as thumbnails)
         // clinic meta boxes - change title and slug on meta title change.. or remove title from meta
         // check if first screen css can be picked differently
         // make the password validate simple test
@@ -244,8 +256,8 @@ class FCP_Forms {
         // approve panding article: https://wordpress.stackexchange.com/questions/229840/is-it-possible-to-change-an-existing-post-status-from-pending-to-publish-via
         // use pending review, instead of private??
         // replace ", " with just comma and trim (or trim is included in sanitize)
-        
-        if ( $json->options->print_method == 'client' ) {
+
+        if ( $json->options->print_method == 'client' ) { // ++ not ready yet
             return '<form class="fcp-form" data-structure="'.$dir.'">Loading..</form>';
         }
 
@@ -288,9 +300,10 @@ class FCP_Forms {
     }
     
     public static function plugin_unid() {
-        // inlcude a file, created on the plugin install
-        $tmp = '123';
-        return $tmp;
+        return 'a' . ( @include_once self::plugin_unid_path() );
+    }
+    public static function plugin_unid_path() {
+        return plugin_dir_path( __FILE__ ) . 'fcp-forms-unid.php'; // wp_get_upload_dir()['basedir'] . '/'
     }
 
 }
