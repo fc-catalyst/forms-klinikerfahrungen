@@ -2,6 +2,24 @@
 /*
 Process the form data
 */
+
+$uploads->add_dirs( [
+    'company-logo' => FCP_Forms__Files::tmp_dir()[0],
+    'company-image' => FCP_Forms__Files::tmp_dir()[0]
+]);
+
+echo '<pre>';
+$uploads->uploaded_files_get();
+print_r( $uploads->uploaded );
+print_r( $uploads->files );
+print_r( $uploads->upload() );
+print_r( $uploads->uploaded );
+print_r( $uploads->files );
+$uploads->uploaded_files_set();
+echo '</pre>';
+
+
+
 /*
 if ( !is_user_logged_in() ) {
     $warning = 'Please log in to use the form';
@@ -21,6 +39,7 @@ if ( isset( $_FILES ) ) {
     $uploads->tmp_upload();
 }
 //*/
+/*
 if ( !$warning && empty( $warns->result ) ) {
     
     // create new post
@@ -67,3 +86,4 @@ if ( !$warning && empty( $warns->result ) ) {
     $redirect = get_permalink( $id );
 
 }
+//*/

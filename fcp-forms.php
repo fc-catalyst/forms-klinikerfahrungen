@@ -218,6 +218,7 @@ class FCP_Forms {
             front-end validation visible
             maybe learn how meta boxes gotta be added not semi-manually
         */
+        // warnings are not attached to particular form as well as other fields, which names might repeat on other forms on the page
         // files uploading add checkboxes to delete files on submit (as well as thumbnails)
         // clinic meta boxes - change title and slug on meta title change.. or remove title from meta
         // check if first screen css can be picked differently

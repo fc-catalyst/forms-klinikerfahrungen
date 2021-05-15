@@ -4,8 +4,8 @@
 */
 class FCP_Forms__Files {
 
-    private $s, $f, $w; // json structure; $_FILES; warnings
-    public $files, $uploaded, $tmps; // [] of prepared $_FILES with ['field'], [] of uploaded files ['name','field']
+    private $s, $f, $w, $d; // json structure; $_FILES; warnings; directories ['field-name' => 'dir']
+    public $files, $uploaded; // [] of prepared $_FILES with ['field'], [] of uploaded files ['name','field']
 
     public function __construct($s, $f, $w = []) {
 
@@ -13,8 +13,28 @@ class FCP_Forms__Files {
         $this->s->fields = FCP_Forms::flatten( $s->fields );
         $this->w = $w;
         $this->f = array_map( 'self::flip_files', $f );
+        $this->d = [];
         $this->process();
 
+    }
+
+    public function add_dirs($a) {
+        $this->d = array_merge( $this->d, $a );
+    }
+    
+    public function upload() {
+        $bad = [];
+    
+        foreach ( $this->files as $k => $v ) {
+            if ( !move_uploaded_file( $v['tmp_name'], $this->d[ $v['field'] ] . '/' . $v['name'] ) ) {
+                $bad[] = $v['name'] . ' not uploaded';
+                continue;
+            }
+            $this->uploaded[] = [ 'name' => $v['name'], 'field' => $v['field'] ];
+            unset( $this->files[$k] );
+        }
+        
+        return empty( $bad ) ? true : $bad;
     }
 
     private function process() {
@@ -88,164 +108,57 @@ class FCP_Forms__Files {
 
     }
     
-//-----___--__--___-___---tmp uploading operations
-
-    // public method to upload to provided dir process( $field, $dir ), mention hiddens and delete-radios inside
-
-    public function tmp_upload() { // upload && ->files to ->tmps
-
-        $this->hiddens_to_tmps();
-        $this->tmps_clean();
-
-        if ( !count( $this->files ) ) {
-            return;
+    public function uploaded_files_set() {
+        foreach ( $this->s->fields as $v ) {
+            if ( $v->type !=='file' ) { continue; }
+            $_POST[ '--' . $v->name ] = [];
         }
-
-        if ( !FCP_Forms::unique( $_POST['fcp-form--tmpdir'] ) ) {
-            return;
+        foreach ( $this->uploaded as $v ) {
+            $_POST[ '--' . $v['field'] ][] = $v['name'];
         }
-        
-        $result = [];
-        
-        // mk tmp dir
-        $dir = self::tmp_dir()[1];
-        if ( !is_dir( $dir ) ) {
-            if ( !mkdir( $dir ) ) {
-                $result[] = 'tmp folder not created';
-            }
-        }
-
-        // upload accepted files
-        foreach ( $this->files as $k => $v ) {
-            if ( !move_uploaded_file( $v['tmp_name'], $dir . '/' . $v['name'] ) ) {
-                unlink( $this->files[$k] );
-                $result[] = $v['name'] . ' not uploaded to tmp';
-            }
-        }
-        
-        $this->tmps = array_values( array_merge( $this->files, $this->tmps ) );
-        $this->tmps_clean();
-        $this->hiddens_fill();
-        $this->files = [];
-
-        self::tmp_clean();
-        
-        return $result[0] ? $result : true;
     }
-
-    private function hiddens_to_tmps() {
-
+    
+    public function uploaded_files_get() {
+        if ( empty( $this->d ) ) { return; }
+    
         $result = [];
+        $keep = [];
 
         foreach ( $this->s->fields as $v ) {
-            if ( $v->type !=='file' ) {
-                continue;
-            }
-            if ( $val = $_POST[ '--' . $v->name ] ) {
-                 $hidden = explode( ', ', $val );
-                 foreach ( $hidden as $l => $w ) {
-                    if ( !is_file( self::tmp_dir()[1] . '/' . $w ) ) {
-                        continue;
-                    }
-                    $result[] = [ 'name' => $w, 'field' => $v->name ];
-                 }
-            }
+            if ( $v->type !=='file' ) { continue; }
+            if ( !$_POST[ '--' . $v->name ] ) { continue; }
 
-        }
+            foreach ( $_POST[ '--' . $v->name ] as $w ) {
+                $w = sanitize_file_name( $w );
+                $path = $this->d[ $v->name ] . '/' . $w;
 
-        $this->tmps = $result;
-    }
+                if ( !is_file( $path ) ) { continue; }
 
-    private function tmps_clean() {
-        $single = [];
+                $result[] = [ 'name' => $w, 'field' => $v->name ];
+                $keep[ $path ] = true;
 
-        foreach ( $this->tmps as $k => &$v ) {
-
-            // crop singles to 1 file
-            foreach ( $this->s->fields as $w ) {
-                if ( $v['field'] !== $w->name ) {
-                    continue;
-                }
-                if ( $w->multiple ) {
-                    continue 2;
-                }
-                if ( $single[ $v['field'] ] ) {
-                    unset( $this->tmps[$k] );
-                    continue 2;
-                }
-                $single[ $v['field'] ] = true;
-            }
-
-            // sanitize files names
-            $v['name'] = sanitize_file_name( $v['name'] );
-
-            // check if uploaded
-            if ( !is_file( self::tmp_dir()[1] . '/' . $v['name'] ) ) {
-                unset( $this->tmps[$k] );
+                if ( !$v->multiple ) { continue 2; }
             }
 
         }
 
-        $this->tmps = array_values( $this->tmps );
-    }
-    
-    private function hiddens_fill() {
-
-        $result = $this->tmps_to_meta();
-
-        foreach ( $result as $k => $v ) {
-            $_POST[ '--' . $k ] = $v;
-        }
-
-    }
-    
-    public function tmps_to_meta() {
-        $result = [];
-
-        foreach ( $this->tmps as $v ) {
-            $result[ $v['field'] ][] = $v['name'];
-        }
-        foreach ( $result as $k => &$v ) {
-            $v = implode( ', ', $v );
-        }
+        $this->uploaded = $result; // the list of uploaded files
         
-        return $result;
-    }
-    
-    
-    public function tmp_move($to = '') { // move files to final destination
-        if ( !count( $this->tmps ) || !$to ) {
-            return;
-        }
-        if ( !is_dir( $to ) ) {
-            return ['Target directory doesn\'t exist'];
-        }
-        
-        $result = [];
+        // delete files, not on the list, from server
+        foreach ( $this->s->fields as $v ) {
+            $dir = $this->d[ $v->name ];
+            $files = array_diff( scandir( $dir ), [ '.', '..' ] );
 
-        $dir = self::tmp_dir();
-        foreach ( $this->tmps as $k => $v ) {
-            if ( !is_file( $dir[1] . '/' . $v['name'] ) ) {
-                $result[] = 'Source file ' . $v['name'] . ' doesn\'t exist';
-                continue;
-            }
-            if ( !copy( $dir[1] . '/' . $v['name'], $to . '/' . $v['name'] ) ) {
-            // not rename, because 1 file can be in 2 fields
-                $result[] = $v['name'] . ' not moved from tmp';
+            foreach ( $files as $file ) {
+                if ( $keep[ $dir . '/' . $file ] ) { continue; }
+                unlink( $dir . '/' . $file );
             }
         }
-        if ( isset( $result[0] ) ) {
-            return $result;
-        }
-        self::rm_dir( $dir[1] );
-        return true;
-
     }
-
 
 //--_____---____--__________--Helpers
 
-    public static function rm_dir($dir) { /* from https://www.php.net/manual/ru/function.rmdir.php */
+    public static function rm_dir($dir) { // from https://www.php.net/manual/ru/function.rmdir.php
         if ( !is_dir( $dir ) ) {
             return;
         }
@@ -285,32 +198,11 @@ class FCP_Forms__Files {
         return $mflip;
     }
     
-    public static function ext($name) {
-        if ( !$name ) {
-            return;
-        }
-        return pathinfo( $name, PATHINFO_EXTENSION );
-    }
-    
     public static function tmp_dir() {
         return [
             0 => wp_get_upload_dir()['basedir'] . '/' . FCP_Forms::$tmp_dir,
             1 => wp_get_upload_dir()['basedir'] . '/' . FCP_Forms::$tmp_dir . '/' . $_POST['fcp-form--tmpdir']
         ];
     }
-
-    public static function tmp_clean() { // call every now and then to clear the tmp dir
-        $dir = self::tmp_dir()[0];
-        $files = array_diff( scandir( $dir ), [ '.', '..' ] );
-        foreach ( $files as $file ) {
-            $rm = $dir . '/' . $file;
-            if ( is_dir( $rm ) ) {
-                // ++create the file inside with the timestamp name on the dir creation action, or use timestamp in dir name
-                if ( time() - filectime( $rm ) > 15 * 60 ) {
-                    self::rm_dir( $rm );
-                }
-            }
-        }
-    }
-    
+//*/
 }

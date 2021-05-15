@@ -21,8 +21,8 @@ class FCP_Forms__Draw {
             if ( $add->type ) {
                 $add->warning = $v['fcp-form--warnings'][ $add->name ];
                 $add->savedValue = $v[ $add->name ];
-                if ( $add->type == 'file' && !empty( $v[ '--'.$add->name ] ) ) {
-                    $add->savedValue = $v[ '--'.$add->name ];
+                if ( $add->type === 'file' ) {
+                    $add->savedValue = empty( $v[ '--'.$add->name ] ) ? [] : $v[ '--'.$add->name ];
                 }
                 continue;
             }
@@ -189,14 +189,28 @@ class FCP_Forms__Draw {
     }
     
     private function field_file($a) {
-        if ( $a->savedValue ) {
-            $label = $a->savedValue;
-            if ( strpos( $a->savedValue, ', ' ) !== false ) {
-                $label = count( explode( ', ', $a->savedValue ) ) . ' Files Uploaded';
-            }
+        if ( !empty( $a->savedValue ) ) {
+        
+            ?><fieldset><?php
+            foreach ( $a->savedValue as $k => $v ) :
+            ?>
+                <input type="checkbox" checked
+                    name="--<?php echo $a->name ?>[]"
+                    value="<?php echo esc_attr( $v ) ?>"
+                    id="--<?php $this->e_field_id( $a->name ); echo '-' . $k ?>"
+                >
+                <label for="--<?php $this->e_field_id( $a->name ); echo '-' . $k ?>"><?php echo $v ?></label>
+
+            <?php
+            endforeach;
+            ?></fieldset><?php
+            
+            $count = count( $a->savedValue );
+            $label = $count == 1 ? $a->savedValue[0] : $count . ' Files Uploaded';
+
         }
+        
         ?>
-        <input type="hidden" name="--<?php echo $a->name ?>" value="<?php echo esc_attr( $a->savedValue ) ?>" />
         <input
             type="file"
             name="<?php echo $a->name; echo $a->multiple ? '[]' : '' ?>"
@@ -205,7 +219,9 @@ class FCP_Forms__Draw {
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             <?php echo $a->multiple ? 'multiple' : '' ?>
         />
-        <label for="<?php $this->e_field_id( $a->name ) ?>"><?php echo $label ? $label : 'Datei Auswählen' ?></label>
+        <label for="<?php $this->e_field_id( $a->name ) ?>">
+            <?php echo $label ? $label : 'Select File'; echo $a->multiple ? 's' : '' ?>
+        </label>
         <?php
     }
 
