@@ -13,7 +13,7 @@
         {
             "gtype" : "section",
             "title" : "Unternehmen",
-            "title_tag" : "h3",
+            "title_tag" : "h2",
             "fields" : [
                 {
                     "gtype" : "row",
@@ -36,6 +36,41 @@
                             "validate" : {
                                 "email" : true
                             },
+                            "meta_box" : true
+                        }
+                    ]
+                },                {
+                    "gtype" : "row",
+                    "cols" : 3,
+                    "title" : "Ahaha",
+                    "title_tag" : "h3",
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "title" : "Name der Klinik / Praxis2",
+                            "name" : "company-name2",
+                            "comment" : "this field goes to the title, not a meta box",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "text",
+                            "title" : "EMail Adresse für Kontaktanfrage3",
+                            "name" : "company-email3",
+                            "autofill" : "create-account-email",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "text",
+                            "title" : "EMail Adresse für Kontaktanfrage4",
+                            "name" : "company-email4",
+                            "autofill" : "create-account-email",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "text",
+                            "title" : "EMail Adresse für Kontaktanfrage5",
+                            "name" : "company-email5",
+                            "autofill" : "create-account-email",
                             "meta_box" : true
                         }
                     ]

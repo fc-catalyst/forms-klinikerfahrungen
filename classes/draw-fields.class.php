@@ -190,6 +190,27 @@ class FCP_Forms__Draw {
     
     private function field_file($a) {
         if ( !empty( $a->savedValue ) ) {
+            $count = count( $a->savedValue );
+            $label = $count == 1 ? $a->savedValue[0] : $count . ' Files Uploaded';
+        }
+    
+        ?>
+        <input
+            type="file"
+            name="<?php echo $a->name; echo $a->multiple ? '[]' : '' ?>"
+            id="<?php $this->e_field_id( $a->name ) ?>"
+            class="
+                <?php echo empty( $a->savedValue ) ? '' : 'fcp-f-filled' ?>
+                <?php echo $a->warning ? 'fcp-f-invalid' : '' ?>
+            "
+            <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
+            <?php echo $a->multiple ? 'multiple' : '' ?>
+        />
+        <label for="<?php $this->e_field_id( $a->name ) ?>">
+            <?php echo $label ? $label : 'Select File'; echo $a->multiple ? 's' : '' ?>
+        </label>
+        <?php
+        if ( !empty( $a->savedValue ) ) {
         
             ?><fieldset><?php
             foreach ( $a->savedValue as $k => $v ) :
@@ -204,25 +225,8 @@ class FCP_Forms__Draw {
             <?php
             endforeach;
             ?></fieldset><?php
-            
-            $count = count( $a->savedValue );
-            $label = $count == 1 ? $a->savedValue[0] : $count . ' Files Uploaded';
 
         }
-        
-        ?>
-        <input
-            type="file"
-            name="<?php echo $a->name; echo $a->multiple ? '[]' : '' ?>"
-            id="<?php $this->e_field_id( $a->name ) ?>"
-            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
-            <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
-            <?php echo $a->multiple ? 'multiple' : '' ?>
-        />
-        <label for="<?php $this->e_field_id( $a->name ) ?>">
-            <?php echo $label ? $label : 'Select File'; echo $a->multiple ? 's' : '' ?>
-        </label>
-        <?php
     }
 
     private function field_submit($a) {
@@ -237,14 +241,6 @@ class FCP_Forms__Draw {
         <?php
     }
     
-//----------___--_________---ADMIN EXCEPTIONS__--________------_______-
-
-    private function field_file_admin($a) {
-        $this->field_text( $a );
-    }
-
-//--------_______----____---_________-----
-
     private function field__wrap($a, $method) {
         
         $o = $this->s->options;
@@ -321,13 +317,10 @@ class FCP_Forms__Draw {
                 $this->printGroup( $f );
             }
         }
-        wp_nonce_field( FCP_Forms::plugin_unid(), 'fcp-form--' . $o->form_name );
         ?>
-        
+
+        <?php wp_nonce_field( FCP_Forms::plugin_unid(), 'fcp-form--' . $o->form_name ) ?>
         <input type="hidden" name="fcp-form-name" value="<?php echo $o->form_name ?>">
-        <input type="hidden" name="fcp-form--tmpdir"
-            value="<?php echo $_POST['fcp-form--tmpdir'] ? $_POST['fcp-form--tmpdir'] : FCP_Forms::unique() ?>"
-        >
         </form>
         <?php echo $o->after ?>
 
@@ -344,15 +337,7 @@ class FCP_Forms__Draw {
     
     private function printField($f) {
         $method = 'field_' . $f->type;
-        //----------------
-        if ( is_admin() ) { // --tmp solution for meta boxes, as I have to rush some other parts of the plugin
-            $adm_method = $method . '_admin';
-            if ( method_exists( $this, $adm_method ) ) {
-                $this->field__wrap( $f, $adm_method );
-                return;
-            }
-        } // /--
-        //----------------
+
         if ( !method_exists( $this, $method ) ) {
             return;
         }
@@ -360,19 +345,20 @@ class FCP_Forms__Draw {
     }
     
     private function printGroup($f) {
-        echo $o->before;
         ?>
-        <div class="fcp-form-group fcp-form-group-<?php echo $f->gtype ?><?php echo $f->cols ? ' fcp-form-cols-'.$f->cols : '' ?>">
+        <div class="fcp-form-group
+            fcp-form-group-<?php echo $f->gtype ?>
+            <?php echo $f->cols ? ' fcp-form-cols-'.$f->cols : '' ?>
+        ">
         <?php
             if ( $f->title || $f->description ) {
                 ?>
                 <div class="fcp-form-group-h">
                 <?php
                 if ( $f->title ) {
+                    $h2 = $f->title_tag ? $f->title_tag : 'h2';
                     ?>
-                    <<?php echo $f->title_tag ? $f->title_tag : 'h2' ?>>
-                        <?php echo $f->title ?>
-                    </<?php echo $f->title_tag ? $f->title_tag : 'h2' ?>>
+                    <<?php echo $h2 ?>><?php echo $f->title ?></<?php echo $h2 ?>>
                     <?php
                 }
 
@@ -386,7 +372,6 @@ class FCP_Forms__Draw {
                 <?php
             }
         ?>
-            <div class="fcp-form-group-w">
         <?php
         if ( is_array( $f->fields ) ) {
             foreach ( $f->fields as $gf ) {
@@ -400,47 +385,10 @@ class FCP_Forms__Draw {
             }
         }
         ?>
-            </div>
         </div>
         <?php
-        
-        echo $o->after;
     }
 
-    public function print_meta_boxes() {
-        ob_start();
-        $o = $this->s->options;
-        ?>
-
-        <?php
-        if ( $o->warning ) {
-            ?>
-            <div class="fcp-form-warning"><?php echo $o->warning ?></div>
-            <?php
-        }
-        foreach ( $this->s->fields as $f ) {
-            if ( $f->type ) { // common field print
-                if ( !$f->meta_box ) {
-                    continue;
-                }
-                $this->printField( $f );
-                continue;
-            }
-            if ( $f->gtype ) { // group of fields print
-                $this->printGroup( $f );
-            }
-        }
-        wp_nonce_field( FCP_Forms::plugin_unid(), 'fcp-form--' . $o->form_name );
-
-        $content = ob_get_contents();
-        ob_end_clean();
-
-        $content = trim( $content );
-        $content = preg_replace( '/\s+/', ' ', $content );
-        $content = preg_replace( '/ </', "\n<", $content );
-        echo $content;
-    }
-    
     private function e_field_id ($field_name) {
         echo 'fcp-f-'.$this->s->options->form_name.'--' . $field_name;
     }

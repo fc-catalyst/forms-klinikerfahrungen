@@ -8,16 +8,9 @@ $uploads->add_dirs( [
     'company-image' => FCP_Forms__Files::tmp_dir()[0]
 ]);
 
-echo '<pre>';
 $uploads->uploaded_files_get();
-print_r( $uploads->uploaded );
-print_r( $uploads->files );
-print_r( $uploads->upload() );
-print_r( $uploads->uploaded );
-print_r( $uploads->files );
+$uploads->upload();
 $uploads->uploaded_files_set();
-echo '</pre>';
-
 
 
 /*
