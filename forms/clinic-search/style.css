@@ -9,13 +9,15 @@
 }
 
 /* section */
-.fcp-form-clinic-search .fcp-form-group.fcp-form-cols-2 > .fcp-form-group-w > * {
-    flex-basis:calc(50% - 7px);
-}
-@media (max-width:1069px) {
-    .fcp-form-clinic-search .fcp-form-group.fcp-form-cols-2 > .fcp-form-group-w > * {
-        flex-basis:100%;
+@media (min-width:1200px) {
+    .fcp-form-clinic-search .fcp-form-group.fcp-form-cols-2 > * {
+        flex-basis:calc(50% - 7px);
     }
+}
+
+.fcp-form-clinic-search .fcp-form-group-row,
+.fcp-form-clinic-search .fcp-form-field-w > * {
+    margin-bottom:0;
 }
 
 .fcp-form-clinic-search input {

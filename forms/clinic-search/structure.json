@@ -3,7 +3,7 @@
         "method" : "post",
         "print_method" : "server",
         "json_validate" : 1,
-        "before" : "<div class=\"fcp-form-clinic-search\">",
+        "before" : "<div class=\"fcp-form-clinic-search fcp-form--half\">",
         "after" : "</div>",
         "autocomplete" : "off"
     },

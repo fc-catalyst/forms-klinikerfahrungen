@@ -191,7 +191,8 @@ class FCP_Forms__Draw {
     private function field_file($a) {
         if ( !empty( $a->savedValue ) ) {
             $count = count( $a->savedValue );
-            $label = $count == 1 ? $a->savedValue[0] : $count . ' Files Uploaded';
+            //$label = $count == 1 ? $a->savedValue[0] : $count . ' Files Uploaded';
+            $label = ( $count == 1 ? '1 File' : $count . ' Files' ) . ' Uploaded:';
         }
     
         ?>
@@ -207,7 +208,7 @@ class FCP_Forms__Draw {
             <?php echo $a->multiple ? 'multiple' : '' ?>
         />
         <label for="<?php $this->e_field_id( $a->name ) ?>">
-            <?php echo $label ? $label : 'Select File'; echo $a->multiple ? 's' : '' ?>
+            <?php echo $label ? $label : 'Select File' . ( $a->multiple ? 's' : '' ) ?>
         </label>
         <?php
         if ( !empty( $a->savedValue ) ) {
@@ -215,12 +216,14 @@ class FCP_Forms__Draw {
             ?><fieldset><?php
             foreach ( $a->savedValue as $k => $v ) :
             ?>
-                <input type="checkbox" checked
-                    name="--<?php echo $a->name ?>[]"
-                    value="<?php echo esc_attr( $v ) ?>"
-                    id="--<?php $this->e_field_id( $a->name ); echo '-' . $k ?>"
-                >
-                <label for="--<?php $this->e_field_id( $a->name ); echo '-' . $k ?>"><?php echo $v ?></label>
+                <span>
+                    <input type="checkbox" checked
+                        name="--<?php echo $a->name ?>[]"
+                        value="<?php echo esc_attr( $v ) ?>"
+                        id="--<?php $this->e_field_id( $a->name ); echo '-' . $k ?>"
+                    >
+                    <label for="--<?php $this->e_field_id( $a->name ); echo '-' . $k ?>"><?php echo $v ?></label>
+                </span>
 
             <?php
             endforeach;
@@ -251,8 +254,8 @@ class FCP_Forms__Draw {
         }
         
         ?>
-        <?php echo $a->before ?>
         <div class="fcp-form-field-w">
+        <?php echo $a->before ?>
         <?php
         
         if ( $a->title ) {
@@ -278,13 +281,13 @@ class FCP_Forms__Draw {
 
         if ( $a->warning ) {
             ?>
-            <div class="fcp-form-field-warn"><?php echo implode( '<br />', $a->warning ) ?></div>
+            <ul class="fcp-form-field-warn"><li><?php echo implode( "</li>\n<li>", $a->warning ) ?></ul>
             <?php
         }
 
         ?>
-        </div>
         <?php echo $a->after ?>
+        </div>
         <?php
     }
     

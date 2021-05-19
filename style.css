@@ -1,88 +1,212 @@
+body {
+    background:#398b9b linear-gradient(60deg, #277888 10%, #58acbc 90%);
+    color:#fff;
+}
 .fcp-form {
+    --bg:#b4e9f299;
+    --bg-a:#fff;
+    --color:#0b4562;
+    --color-a:#0b4562;
+    --color-empty:#fff;
+    --not-valid:#fda7a7;
+    --checkbox:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 17'%3E%3Cpath d='M 1,6 6,14.6 C 7,9 10,5 15,1' style='fill:none;stroke:%23000;stroke-width:2.5;stroke-linecap:round' /%3E%3C/svg%3E%0A");
 }
 
-/* GROUPS */
-.fcp-form-group {
-    margin:5px;
-    border:1px dotted red;
-    padding:5px;
-    box-sizing:border-box;
-}
-
-.fcp-form-group {
-    display:flex;
-    justify-content:space-between;
-    align-items:stretch;
-    flex-wrap:wrap;
-}
-.fcp-form-group > * {
-    width:100%;
-}
-.fcp-form-group.fcp-form-cols-2 > * {
-    width:calc(50% - 15px);
-}
-.fcp-form-group.fcp-form-cols-3 > * {
-    width:calc(33.333% - 15px);
-}
-
-.fcp-form-group > .fcp-form-group-h {
-    width:100%; 
-    margin-bottom:15px;
-}
-.fcp-form-group-h > *:first-child {
-    margin-top:0;
-}
-.fcp-form-group-h > *:last-child {
+.fcp-form-group-row,
+.fcp-form-field-w {
     margin-bottom:0;
 }
-
-/* common GTYPES */
-/* section */
-.fcp-form-group-section {
-    margin-bottom:30px;
-    border-bottom:1px dotted green;
-}
-/* row */
-.fcp-form-group-row {
-    margin-bottom:15px;
-    border-bottom:1px dotted blue;
-}
-/* hidden */
-.fcp-form-group-hidden {
-    opacity:0;
-    z-index:-1;
-    pointer-events:none;
-}
-.fcp-form-group-hidden.active {
-    opacity:1;
-    z-index:10;
-    pointer-events:auto;
-}
-
-/* FIELDS */
-.fcp-form-field-w {
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    margin-bottom:15px;
-    border-bottom:1px dotted violet;
-    flex-wrap:wrap;
-}
 .fcp-form-field-w > * {
-    width:100%;
-}
-.fcp-form-field-w > span {
-    width:calc(40% - 15px);
-    margin-right:15px;
-}
-.fcp-form-field-w > span + * {
-    width:calc(60% - 15px);
+    margin-bottom:6px;
 }
 
-.fcp-form-field-warn {
+.fcp-form-field-w > span {
+    display:flex;
+    align-items:flex-end;
+    width:100%;
+    min-height:30px;
+    margin-bottom:7px;
+    font-size:13px;
+    font-weight:600;
+    text-transform:uppercase;
+}
+.fcp-form-field-w > span.fcp-form-small {
+    font-size:65%;
+}
+
+.fcp-form input,
+.fcp-form select,
+.fcp-form textarea,
+.fcp-form input[type=file] + label {
+    display:block;
+    box-sizing:border-box;
+    border:none;
+    border-radius:6px;
+    padding:10px;
+    background-color:var(--bg);
+    font-size:14px;
+    line-height:1.4;
+    color:var(--color);
+    -webkit-appearance:none;
+}
+.fcp-form textarea {
     font-size:12px;
 }
+.fcp-form option {
+    font-weight:400;
+    text-transform:none;
+    background-color:var(--bg-a);
+    color:var(--color-a);
+}
 
-input[type=file] + label {
-    display:none;
+.fcp-form input:focus,
+.fcp-form input:focus-visible,
+.fcp-form select:focus,
+.fcp-form select:focus-visible,
+.fcp-form textarea:focus,
+.fcp-form textarea:focus-visible,
+.fcp-form input[type=file]:focus + label,
+.fcp-form input[type=file]:focus-visible + label {
+  outline:none;
+  background-color:var(--bg-a);
+  color:var(--color-a)!important;
+}
+
+.fcp-form input:-webkit-autofill,
+.fcp-form  input:-internal-autofill-selected {
+    background-color:var(--bg);
+    -webkit-box-shadow:0 0 0 50px var(--bg) inset;
+    color:var(--color);
+    -webkit-text-fill-color:var(--color);
+}
+.fcp-form input:-webkit-autofill:focus,
+.fcp-form  input:-internal-autofill-selected:focus {
+    background-color:var(--bg-a);
+    -webkit-box-shadow:0 0 0 50px var(--bg-a) inset;
+    color:var(--color-a)!important;
+}
+
+.fcp-form input::-webkit-input-placeholder { color:var(--color-empty); font-weight:600; text-transform:uppercase; }
+.fcp-form input::placeholder { color:var(--color-empty); font-weight:600; text-transform:uppercase; }
+
+.fcp-form select.fcp-form-empty,
+input[type=file]:not(.fcp-f-filled) + label {
+    color:var(--color-empty);
+    font-weight:600;
+    text-transform:uppercase;
+}
+
+.fcp-form input[type=file] {
+    position:absolute;
+    z-index:-1;
+    opacity:0;
+    max-height:0;
+    overflow:hidden;
+}
+.fcp-form input[type=file]:not(.fcp-f-filled) + label {
+    display:block!important;
+}
+
+/* checkbox & radio */
+.fcp-form fieldset {
+    border-radius:6px;
+}
+
+.fcp-form fieldset label > input[type=checkbox],
+.fcp-form fieldset label > input[type=radio] {
+    position:absolute;
+    z-index:-1;
+    opacity:0;
+}
+
+.fcp-form fieldset label {
+    position:relative;
+    white-space:nowrap;
+}
+.fcp-form fieldset label > span {
+    display:inline-block;
+    margin:0 10px 0 0;
+    padding:0 0 0 25px;
+    font-size:13px;
+    font-weight:600;
+    text-transform:uppercase;
+}
+.fcp-form fieldset label > span::before {
+    content:'';
+    display:inline-block;
+    position:absolute;
+    left:0;
+    background-color:var(--bg-a);
+}
+.fcp-form fieldset label > input[type=checkbox] + span::before {
+    width:14px;
+    height:14px;
+    border-radius:2.5px;
+    top:4.5px;
+}
+.fcp-form fieldset label > input[type=radio] + span::before {
+    width:15px;
+    height:15px;
+    border-radius:7.5px;
+    top:3.5px;
+}
+
+.fcp-form fieldset label > span::after {
+    content:'';
+    display:inline-block;
+    position:absolute;
+    z-index:-1;
+    opacity:0;
+}
+.fcp-form fieldset label > input[type=checkbox] + span::after {
+    width:0;
+    height:18px;
+    left:1px;
+    top:1px;
+    background-color:var(--color-a);
+    mask-image:var(--checkbox);
+    -webkit-mask-image:var(--checkbox);
+    mask-repeat:no-repeat;
+    -webkit-mask-repeat:no-repeat;
+    mask-position:0 0;
+    -webkit-mask-position:0 0;
+    mask-size:16px 17px;
+    -webkit-mask-size:16px 17px;
+    transition:width 0.15s ease;
+}
+.fcp-form fieldset label > input[type=radio] + span::after {
+    width:11px;
+    height:11px;
+    border-radius:5.5px;
+    left:2px;
+    top:5.5px;
+    background-color:var(--color-a);
+    transform:scale(0, 0);
+    transition:transform 0.15s ease;
+}
+.fcp-form fieldset label > input[type=checkbox]:checked + span::after {
+    width:18px;
+    z-index:1;
+    opacity:1;
+}
+.fcp-form fieldset label > input[type=radio]:checked + span::after {
+    z-index:1;
+    opacity:1;
+    transform:scale(1, 1);
+}
+
+.fcp-form .fcp-f-invalid,
+.fcp-form input[type=file].fcp-f-invalid + label {
+    border-bottom:2px solid var(--not-valid);
+}
+.fcp-form-field-warn > li {
+    color:var(--not-valid);
+}
+
+.fcp-form select,
+.fcp-form button,
+.fcp-form input[type=submit],
+.fcp-form input[type=file] + label,
+.fcp-form fieldset label {
+    cursor:pointer;
 }
