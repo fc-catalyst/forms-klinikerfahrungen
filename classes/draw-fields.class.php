@@ -99,7 +99,10 @@ class FCP_Forms__Draw {
         
         <fieldset
             id="<?php $this->e_field_id( $a->name ) ?>"
-            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
+            class="
+                <?php echo $a->cols ? 'fcp-form-cols-' . $a->cols : '' ?>
+                <?php echo $a->warning ? 'fcp-f-invalid' : '' ?>
+            "
         >
         
         <?php
@@ -131,7 +134,10 @@ class FCP_Forms__Draw {
         
         <fieldset 
             id="<?php $this->e_field_id( $a->name ) ?>"
-            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
+            class="
+                <?php echo $a->cols ? 'fcp-form-cols-' . $a->cols : '' ?>
+                <?php echo $a->warning ? 'fcp-f-invalid' : '' ?>
+            "
         >
         
         <?php
@@ -216,14 +222,13 @@ class FCP_Forms__Draw {
             ?><fieldset><?php
             foreach ( $a->savedValue as $k => $v ) :
             ?>
-                <span>
+                <label>
                     <input type="checkbox" checked
                         name="--<?php echo $a->name ?>[]"
                         value="<?php echo esc_attr( $v ) ?>"
-                        id="--<?php $this->e_field_id( $a->name ); echo '-' . $k ?>"
                     >
-                    <label for="--<?php $this->e_field_id( $a->name ); echo '-' . $k ?>"><?php echo $v ?></label>
-                </span>
+                    <span><?php echo $v ?></span>
+                </label>
 
             <?php
             endforeach;
