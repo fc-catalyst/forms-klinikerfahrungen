@@ -5,7 +5,7 @@
 class FCP_Forms__Files {
 
     private $s, $f, $w, $d; // json structure; $_FILES; warnings; directories ['field-name' => 'dir']
-    public $files, $uploaded; // [] of prepared $_FILES with ['field'], [] of uploaded files ['name','field']
+    public $files, $uploaded; // [] of prepared $_FILES with ['field']; [] of uploaded files ['name','field']
 
     public function __construct($s, $f, $w = []) {
 

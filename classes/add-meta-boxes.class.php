@@ -72,8 +72,7 @@ class FCP_Add_Meta_Boxes {
             return;
         }
 
-        // saving from admin doesn't work
-        // radio and select
+        // validation
         // uploads
                 
             // ++ check for $_POST['fcp-form--warning'] && $_POST['fcp-form--warnings'] ??
@@ -81,8 +80,12 @@ class FCP_Add_Meta_Boxes {
         $prefix = $is_admin ? '' : $this->p->prefix;
         $fields = FCP_Forms::flatten( $this->s->fields );
 
-        
-        
+/*        // don't save wrongly formatted fields
+        if ( $is_admin ) {
+            include_once $this->self_path . 'classes/validate.class.php';
+            $warns = new FCP_Forms__Validate( $this->s, $_POST );
+        }
+//*/
         // update_post_meta( $postID, 'is_admin', is_admin() ? 'ADMIN' : 'FRONTEND' );
 
         foreach ( $fields as $v ) {
@@ -91,6 +94,8 @@ class FCP_Add_Meta_Boxes {
             $name_meta = $this->p->prefix . $v->name;
             $name_post = $is_admin ? $name_meta : $v->name;
 
+            if ( $warns->result[ $name_post ] ) { continue; }
+            
             if ( empty( $_POST[ $name_post ] ) ) {
                 delete_post_meta( $postID, $name_meta );
                 continue;

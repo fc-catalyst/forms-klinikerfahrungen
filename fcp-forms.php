@@ -268,6 +268,8 @@ class FCP_Forms {
         // approve panding article: https://wordpress.stackexchange.com/questions/229840/is-it-possible-to-change-an-existing-post-status-from-pending-to-publish-via
         // use pending review, instead of private??
         // replace ", " with just comma and trim (or trim is included in sanitize)
+        // on clear trash - remove the clinic logo dir
+        // img preview to admin (mk thumbnail??)
 
         if ( $json->options->print_method == 'client' ) { // ++ not ready yet
             return '<form class="fcp-form" data-structure="'.$dir.'">Loading..</form>';

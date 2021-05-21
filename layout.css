@@ -120,16 +120,12 @@
     justify-content:space-between;
     align-items:flex-start;
     align-content:flex-start;
-    margin-bottom:20px;
+    margin-bottom:0;
     flex-wrap:wrap;
 }
 .fcp-form-field-w > * {
     width:100%;
-    margin-bottom:15px;
-}
-
-.fcp-form-field-w > span.fcp-form-small {
-    font-size:65%;
+    margin-bottom:12px;
 }
 
 .fcp-form-field-warn {
