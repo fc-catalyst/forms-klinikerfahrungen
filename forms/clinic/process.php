@@ -13,26 +13,17 @@ $uploads->upload();
 $uploads->uploaded_files_set();
 
 
-/*
 if ( !is_user_logged_in() ) {
     $warning = 'Please log in to use the form';
     return;
 }
-//*/
-/*
+
 // if can create this post type
 if ( !get_userdata( wp_get_current_user()->ID )->allcaps['edit_clinic'] ) {
-    $warning = 'You don\'t have permission to add a clinic';
+    $warning = 'You don\'t have permission to add / edit a clinic';
     return;
 }
 
-
-// upload the files to tmp directory
-if ( isset( $_FILES ) ) {
-    $uploads->tmp_upload();
-}
-//*/
-/*
 if ( !$warning && empty( $warns->result ) ) {
     
     // create new post
@@ -50,8 +41,7 @@ if ( !$warning && empty( $warns->result ) ) {
         return;
     }
 
-    // ++can check if meta boxes are saved here
-    
+/*
     // upload the files & add them to meta
     if ( !empty( $uploads->tmps ) ) {
 
@@ -72,8 +62,8 @@ if ( !$warning && empty( $warns->result ) ) {
         foreach ( $uploads->tmps_to_meta() as $k => $v ) {
             update_post_meta( $id, FCP_Forms::$prefix . $_POST['fcp-form-name'] . '_' . $k, $v );
         }
-        
     }
+//*/
 
     // redirect on success
     $redirect = get_permalink( $id );

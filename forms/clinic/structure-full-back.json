@@ -44,7 +44,8 @@
                             "name" : "company-name",
                             "validate" : {
                                 "notEmpty" : true
-                            }
+                            },
+                            "meta_box" : true
                         },
                         {
                             "type" : "text",
@@ -82,11 +83,6 @@
                             "validate" : {
                                 "notEmpty" : true
                             },
-                            "meta_box" : true
-                        },
-                        {
-                            "type" : "hidden",
-                            "name" : "company-coordinates",
                             "meta_box" : true
                         }
                     ]
@@ -191,9 +187,169 @@
             ]
         },
         {
+            "gtype" : "section",
+            "title" : "Öffnungszeiten (optional)",
+            "title_tag" : "h3",
+            "id" : "oeffnungszeiten",
+            "description" : "<p>Keep empty if days are not work-days</p>",
+            "fields" : [
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "name" : "mo-open",
+                            "title" : "Montag",
+                            "placeholder" : "Geöffnet",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "mo-close",
+                            "placeholder" : "Geschlossen",
+                            "meta_box" : true
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "name" : "tu-open",
+                            "title" : "Dienstag",
+                            "placeholder" : "Geöffnet",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "tu-close",
+                            "placeholder" : "Geschlossen",
+                            "meta_box" : true
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "name" : "we-open",
+                            "title" : "Mittwoch",
+                            "placeholder" : "Geöffnet",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "we-close",
+                            "placeholder" : "Geschlossen",
+                            "meta_box" : true
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "name" : "th-open",
+                            "title" : "Donnerstag",
+                            "placeholder" : "Geöffnet",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "th-close",
+                            "placeholder" : "Geschlossen",
+                            "meta_box" : true
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "name" : "fr-open",
+                            "title" : "Freitag",
+                            "placeholder" : "Geöffnet",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "fr-close",
+                            "placeholder" : "Geschlossen",
+                            "meta_box" : true
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "name" : "sa-open",
+                            "title" : "Samstag",
+                            "placeholder" : "Geöffnet",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "sa-close",
+                            "placeholder" : "Geschlossen",
+                            "meta_box" : true
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "name" : "su-open",
+                            "title" : "Sonntag",
+                            "placeholder" : "Geöffnet",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "su-close",
+                            "placeholder" : "Geschlossen",
+                            "meta_box" : true
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "gtype" : "section",
+            "description" : "<div class=\"gmaps-specify-map\"></div>",
+            "fields" : [
+                {
+                    "type" : "notice",
+                    "text" : "<div class=\"gmaps-specify-markers\"></div>"
+                },
+                {
+                    "type" : "hidden",
+                    "name" : "company-location",
+                    "validate" : {
+                        "regExp" : "^(\\d+\\.?\\d* \\d+\\.?\\d*)+$"
+                    },
+                    "meta_box" : true
+                }
+            ]
+        },
+        {
             "type" : "submit",
-            "name" : "company-submit",
-            "value" : "Weiter"
+            "name" : "user-submit",
+            "value" : "Submit"
         }
     ]
 }

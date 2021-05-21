@@ -1,8 +1,6 @@
 (function() {
 
-    // ++list of autocomplete && pickers
-    
-    var b, a = setInterval( function() {
+    var a = setInterval( function() {
         if ( document.readyState !== "complete" && document.readyState !== "interactive" ) {
             return;
         }
@@ -11,39 +9,64 @@
             return;
         }
 
-        window.clearInterval( a );
         var $ = window.jQuery;
-        //autofill();
-/*
-        var externals = {
-            'google' : '<script src="https://maps.googleapis.com/maps/api/js?key=KEY&libraries=places"></script>',
-            'datepicker' : '<script src="https://maps.googleapis.com/maps/api/js?key=KEY&libraries=places"></script>'
+        window.clearInterval( a );
+
+        var s = {
+            "file" : ".fcp-form input[type=file]",
+            "select" : ".fcp-form select",
+            "empty" : "fcp-form-empty"
         };
+        
+        // change the content of file lable
+        $( s.file ).on( 'change', function() {
+            var $self = $( this ),
+                $label = $self.next( 'label' );
 
-        for ( let i in externals ) {
-            jQuery( 'head' ).append( externals[i] );
-        }
-
-        b = setInterval( function() {
-            let goOn = true;
-            for ( let i in externals ) {
-                if ( typeof window[i] === 'undefined' ) {
-                    goOn = false;
-                }
-            }
-            if ( !goOn ) {
+            empty_file( $self );
+            
+            if ( $self[0].files.length === 0 ) {
+                $label.html( 'Select File(s)' ); // ++ if is multiple - add .s
                 return;
             }
+            if ( $self[0].files.length === 1 ) {
+                $label.html( $self[0].files[0]['name'] );
+                return;
+            }
+            $label.html( $self[0].files.length + ' Files Chosen' );
+        });
+        
+        // change the style of empty select
+        $( s.select ).on( 'change', function() {
+            empty_select( $( this ) );
+        });
+        
+        // placeholder replacement on init
+        $( s.file ).each( function() {
+            empty_file( $( this ) );
+        });
+        $( s.select ).each( function() {
+            empty_select( $( this ) );
+        });
+        
+        function empty_file($self) {
+            if ( $self[0].files.length === 0 ) {
+                $self.addClass( s.empty );
+                return;
+            }
+            $self.removeClass( s.empty );
+        }
+        function empty_select($self) {
+            if ( $self.children( 'option:selected' ).val() === '' ) {
+                $self.addClass( s.empty );
+                return;
+            }
+            $self.removeClass( s.empty );
+        }
 
-            window.clearInterval( b );
-            console.log( 'Subs are loaded' );
-            load_externals();
+    });
 
-        }, 500);
-//*/
-
-    }, 500 );
-    
+/*    
     function autofill() {
         var uniques = [];
         $( '*[data-fcp-autofill]' ).each( function() {
@@ -69,5 +92,6 @@
             });
         });
     }
+//*/
 
 })();

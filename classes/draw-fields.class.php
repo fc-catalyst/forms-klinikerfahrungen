@@ -45,7 +45,7 @@ class FCP_Forms__Draw {
         ?>
         <input
             type="text"
-            name="<?php echo $a->name ?>"
+            name="<?php $this->e_field_name( $a->name ) ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty ? '*' : '' ?>"
@@ -60,7 +60,7 @@ class FCP_Forms__Draw {
         ?>
         <input
             type="password"
-            name="<?php echo $a->name ?>"
+            name="<?php $this->e_field_name( $a->name ) ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty ? '*' : '' ?>"
@@ -73,7 +73,7 @@ class FCP_Forms__Draw {
         ?>
         <input
             type="hidden"
-            name="<?php echo $a->name ?>"
+            name="<?php $this->e_field_name( $a->name ) ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
             value="<?php echo esc_attr( $a->value ) ?>"
             <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
@@ -84,7 +84,7 @@ class FCP_Forms__Draw {
     private function field_textarea($a) {
         ?>
         <textarea
-            name="<?php echo $a->name ?>"
+            name="<?php $this->e_field_name( $a->name ) ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
             rows="<?php echo $a->rows ? $a->rows : '10' ?>" cols="<?php echo $a->cols ? $a->cols : '50' ?>"
             placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty ? '*' : '' ?>"
@@ -111,7 +111,7 @@ class FCP_Forms__Draw {
         ?>
             <label>
                 <input type="checkbox"
-                    name="<?php echo $a->name ?><?php echo $single ? '' : '[]' ?>"
+                    name="<?php $this->e_field_name( $a->name ) ?><?php echo $single ? '' : '[]' ?>"
                     value="<?php echo esc_attr( $k ) ?>"
                     <?php echo $single && $k == $a->savedValue || in_array( $k, $a->savedValue ) ? 'checked' : '' ?>
                 >
@@ -141,19 +141,18 @@ class FCP_Forms__Draw {
         >
         
         <?php
-        $single = count( (array) $a->options ) == 1 ? true : false;
+        $single = count( (array) $a->options ) === 1 ? true : false;
         foreach ( $a->options as $k => $b ) :
-        ?>
+            ?>
             <label>
                 <input type="radio"
-                    name="<?php echo $a->name ?><?php echo $single ? '' : '[]' ?>"
+                    name="<?php $this->e_field_name( $a->name ) ?><?php echo $single ? '' : '[]' ?>"
                     value="<?php echo esc_attr( $k ) ?>"
                     <?php echo $single && $k == $a->savedValue || in_array( $k, $a->savedValue ) ? 'checked' : '' ?>
                 >
                 <span><?php echo $b ?></span>
             </label>
-
-        <?php
+            <?php
         endforeach;
 
         ?>
@@ -167,27 +166,30 @@ class FCP_Forms__Draw {
     private function field_select($a) {
         ?>
         <select
-            name="<?php echo $a->name ?><?php echo $a->multiple ? '[]' : '' ?>"
+            name="<?php $this->e_field_name( $a->name ) ?><?php echo $a->multiple ? '[]' : '' ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
             <?php echo $a->multiple ? 'multiple' : '' ?>
         >
             <?php
                 if ( $a->placeholder ) {
-            ?>
-                <option value=""><?php echo $a->placeholder ?><?php echo $a->validate->notEmpty ? '*' : '' ?></option>
-            <?php
-                }
-            
-                foreach ( $a->options as $k => $b ) :
-            ?>
-                <option
-                    value="<?php echo esc_attr( $k ) ?>"
-                    <?php echo in_array( $k, $a->savedValue ) ? 'selected' : '' ?>
-                    >
-                        <?php echo $b ?>
+                    ?>
+                    <option value="">
+                        <?php echo $a->placeholder ?><?php echo $a->validate->notEmpty ? '*' : '' ?>
                     </option>
-            <?php
+                    <?php
+                }
+
+
+                foreach ( $a->options as $k => $b ) :
+                    ?>
+                    <option
+                        value="<?php echo esc_attr( $k ) ?>"
+                        <?php echo $a->multiple && in_array( $k, $a->savedValue ) || $k == $a->savedValue ? 'selected' : '' ?>
+                    >
+                            <?php echo $b ?>
+                    </option>
+                    <?php
                 endforeach;
             ?>
         </select>
@@ -204,7 +206,7 @@ class FCP_Forms__Draw {
         ?>
         <input
             type="file"
-            name="<?php echo $a->name; echo $a->multiple ? '[]' : '' ?>"
+            name="<?php $this->e_field_name( $a->name ) ?><?php echo $a->multiple ? '[]' : '' ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
             class="
                 <?php echo empty( $a->savedValue ) ? '' : 'fcp-f-filled' ?>
@@ -224,7 +226,7 @@ class FCP_Forms__Draw {
             ?>
                 <label>
                     <input type="checkbox" checked
-                        name="--<?php echo $a->name ?>[]"
+                        name="--<?php $this->e_field_name( $a->name ) ?>[]"
                         value="<?php echo esc_attr( $v ) ?>"
                     >
                     <span><?php echo $v ?></span>
@@ -241,7 +243,7 @@ class FCP_Forms__Draw {
         ?>
         <input
             type="submit"
-            name="<?php echo $a->name ?>"
+            name="<?php $this->e_field_name( $a->name ) ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             value="<?php echo esc_attr( $a->value ) ?>"
@@ -344,11 +346,9 @@ class FCP_Forms__Draw {
     }
     
     private function printField($f) {
+        if ( is_admin() && !$f->meta_box ) { return; }
         $method = 'field_' . $f->type;
-
-        if ( !method_exists( $this, $method ) ) {
-            return;
-        }
+        if ( !method_exists( $this, $method ) ) { return; }
         $this->field__wrap( $f, $method );
     }
     
@@ -398,7 +398,43 @@ class FCP_Forms__Draw {
     }
 
     private function e_field_id ($field_name) {
-        echo 'fcp-f-'.$this->s->options->form_name.'--' . $field_name;
+        echo FCP_Forms::$prefix . $this->s->options->form_name . '_' . $field_name;
+    }
+    private function e_field_name ($field_name) {
+        if ( is_admin() ) {
+            echo FCP_Forms::$prefix . $this->s->options->form_name . '_' . $field_name;
+        } else {
+            echo $field_name;
+        }
+    }
+
+    public function print_meta_boxes() {
+        ob_start();
+        $o = $this->s->options;
+        
+        ?><div class="fcp-form fcp-form--half"><?php
+        
+        foreach ( $this->s->fields as $f ) {
+            if ( $f->type ) { // common field print
+                $this->printField( $f );
+                continue;
+            }
+            if ( $f->gtype ) { // group of fields print
+                $this->printGroup( $f );
+            }
+        }
+        
+        wp_nonce_field( FCP_Forms::plugin_unid(), 'fcp-form--' . $o->form_name );
+
+        ?></div><?php
+        
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        $content = trim( $content );
+        $content = preg_replace( '/\s+/', ' ', $content );
+        $content = preg_replace( '/ </', "\n<", $content );
+        echo $content;
     }
     
 }

@@ -15,14 +15,16 @@ new FCPAddPostType( [
     'fields' => ['title', 'comments', 'author', 'revisions'],
     'hierarchical' => false,
     'public' => true,
-    'gutenberg' => true,
+    'gutenberg' => false,
     'menu_position' => 21,
     'menu_icon' => 'dashicons-plus-alt',
     'has_archive' => true,
     'capability_type' => ['clinic', 'clinics']
 ] );
 
-// ++move the templates to the FCPADDPostType class
+
+// pages templates ++move the templates to the FCPADDPostType class
+
 add_filter( 'template_include', function( $template ) {
 
     $new_template = $template; // default theme template
@@ -59,7 +61,7 @@ add_action( 'pre_get_posts', function( $query ) {
 
 // meta fields for new post types on basis of the form structure
 
-if ( !class_exists( 'FCPAddMetaBoxes' ) ) {
+if ( !class_exists( 'FCP_Add_Meta_Boxes' ) ) {
     include_once $this->self_path . 'classes/add-meta-boxes.class.php';
 }
 if ( !class_exists( 'FCP_Forms__Draw' ) ) {
@@ -69,7 +71,7 @@ if ( !class_exists( 'FCP_Forms__Draw' ) ) {
 $cont = file_get_contents( $this->forms_path . $file . '/structure.json' );
 $json = json_decode( $cont, false );
 
-new FCPAddMetaBoxes( $json, (object) [
+new FCP_Add_Meta_Boxes( $json, (object) [
     'name' => $file,
     'title' => 'Clinic Information',
     'post_types' => ['clinic'],
@@ -87,14 +89,15 @@ add_action( 'admin_enqueue_scripts', function($hook) {
         return;
     }
     $screen = get_current_screen();
-    if ( !isset( $screen ) || !is_object( $screen ) || $screen->post_type != 'kliniken' ) {
+    if ( !isset( $screen ) || !is_object( $screen ) || $screen->post_type != 'clinic' ) {
         return;
     }
 
-    wp_enqueue_style( 'fcp-forms-adm', $this->self_url . 'style.css', [], $this->css_ver );
-    wp_enqueue_script( 'fcp-forms-adm', $this->self_url . 'scripts.js', ['jquery'], $this->js_ver );
+    wp_enqueue_style( 'fcp-forms-layout', $this->self_url . 'layout.css', [], $this->css_ver );
+    wp_enqueue_script( 'fcp-forms', $this->self_url . 'scripts.js', ['jquery'], $this->js_ver );
 
 });
+/*
 add_action( 'admin_footer', function() {
     ?><style>
 
@@ -105,3 +108,4 @@ add_action( 'admin_footer', function() {
 
 </style><?php
 });
+//*/

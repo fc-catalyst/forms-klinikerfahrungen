@@ -1,6 +1,6 @@
 <?php
 
-class FCPAddMetaBoxes {
+class FCP_Add_Meta_Boxes {
 
     private $s, $p; // json structure, preferences
 
@@ -20,7 +20,6 @@ class FCPAddMetaBoxes {
 
         add_action( 'add_meta_boxes', [ $this, 'addMetaBoxes' ] );
         add_action( 'save_post', [ $this, 'saveMetaBoxes' ] );
-
     }
 
     public function addMetaBoxes() {
@@ -29,16 +28,20 @@ class FCPAddMetaBoxes {
         $p = $this->p;
 
         // get meta values
-        $values = get_post_meta( $post->ID );
+        $values0 = get_post_meta( $post->ID );
         $fields = FCP_Forms::flatten( $this->s->fields );
-        $prefix = $p->prefix;
 
         foreach ( $fields as $v ) {
-            if ( !$values[ $prefix . $v->name ] ) {
+            $name = $p->prefix . $v->name;
+            if ( !$values0[ $name ] ) {
                 continue;
             }
-            $values[ $v->name ] = $values[ $prefix . $v->name ][0];
-            unset( $values[ $prefix . $v->name ] );
+            
+            $values[ $v->name ] = $values0[ $name ][0];
+            
+            if ( $v->multiple || $v->options && $v->type != 'select' && count( (array) $v->options ) > 1 ) {
+                $values[ $v->name ] = unserialize( $values[ $v->name ] );
+            }
         }
 
         // print meta fields
@@ -52,8 +55,8 @@ class FCPAddMetaBoxes {
             $p->context,
             $p->priority
         );
-        
-	}
+
+    }
 
 	public function saveMetaBoxes($postID) {
         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
@@ -69,17 +72,30 @@ class FCPAddMetaBoxes {
             return;
         }
 
+        // saving from admin doesn't work
+        // radio and select
+        // uploads
+                
+            // ++ check for $_POST['fcp-form--warning'] && $_POST['fcp-form--warnings'] ??
+        $is_admin = is_admin();
+        $prefix = $is_admin ? '' : $this->p->prefix;
         $fields = FCP_Forms::flatten( $this->s->fields );
 
+        
+        
+        // update_post_meta( $postID, 'is_admin', is_admin() ? 'ADMIN' : 'FRONTEND' );
+
         foreach ( $fields as $v ) {
-            if ( empty( $_POST[ $v->name ] ) ) {
-                delete_post_meta( $postID, $this->p->prefix . $v->name );
+            if ( !$v->meta_box ) { continue; }
+
+            $name_meta = $this->p->prefix . $v->name;
+            $name_post = $is_admin ? $name_meta : $v->name;
+
+            if ( empty( $_POST[ $name_post ] ) ) {
+                delete_post_meta( $postID, $name_meta );
                 continue;
             }
-            if ( !$v->meta_box ) { // --not sure it is needed, as we have exact list of meta boxes by the same list
-                continue;
-            }
-            update_post_meta( $postID, $this->p->prefix . $v->name, $_POST[ $v->name ] );
+            update_post_meta( $postID, $name_meta, $_POST[ $name_post ] );
         }
 
 	}
