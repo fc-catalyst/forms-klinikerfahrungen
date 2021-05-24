@@ -2,7 +2,7 @@
 
 class FCP_Forms__Draw {
 
-    private $s; // $s is for structure, json
+    private $s; // structure
     public $result; // contains the final form html
 
     public function __construct($s, $v = [], $f = []) {
@@ -10,12 +10,12 @@ class FCP_Forms__Draw {
         $s->options->warning = $v['fcp-form--warning'];
         
         $this->s = $s;
-        $this->s->fields = $this->attach_dynamics( $s->fields, array_merge( $v, $f ) );
+        $this->s->fields = $this->add_values( $s->fields, array_merge( $v, $f ) );
         $this->result = $this->printFields();
 
     }
 
-    private function attach_dynamics(&$f, $v) {
+    private function add_values(&$f, $v) {
         foreach ( $f as &$add ) {
 
             if ( $add->type ) {
@@ -28,7 +28,7 @@ class FCP_Forms__Draw {
             }
 
             if ( $add->gtype ) {
-                $this->attach_dynamics( $add->fields, $v );
+                $this->add_values( $add->fields, $v );
             }
 
         }
@@ -398,14 +398,14 @@ class FCP_Forms__Draw {
     }
 
     private function e_field_id ($field_name) {
-        echo FCP_Forms::$prefix . $this->s->options->form_name . '_' . $field_name;
+        echo FCP_Forms::prefix( $this->s->options->form_name ) . $field_name;
     }
     private function e_field_name ($field_name) {
-        if ( is_admin() ) {
-            echo FCP_Forms::$prefix . $this->s->options->form_name . '_' . $field_name;
-        } else {
-            echo $field_name;
+        if ( is_admin() ) { // for meta boxes
+            echo FCP_Forms::prefix( $this->s->options->form_name ) . $field_name;
+            return;
         }
+        echo $field_name;
     }
 
     public function print_meta_boxes() {

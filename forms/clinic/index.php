@@ -68,16 +68,14 @@ if ( !class_exists( 'FCP_Forms__Draw' ) ) {
     include_once $this->self_path . 'classes/draw-fields.class.php';
 }
 
-$cont = file_get_contents( $this->forms_path . $file . '/structure.json' );
-$json = json_decode( $cont, false );
+$json = FCP_Forms::structure( $dir );
+if ( $json === false ) { return; }
 
 new FCP_Add_Meta_Boxes( $json, (object) [
-    'name' => $file,
     'title' => 'Clinic Information',
     'post_types' => ['clinic'],
     'context' => 'normal',
-    'priority' => 'high',
-    'prefix' => FCP_Forms::$prefix . $file . '_'
+    'priority' => 'high'
 ] );
 
 

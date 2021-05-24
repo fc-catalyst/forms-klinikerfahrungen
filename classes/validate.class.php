@@ -2,7 +2,7 @@
 
 class FCP_Forms__Validate {
 
-    private $s, $v; // json structure; $_POST + $_FILES
+    private $s, $v, $p; // structure; $_POST + $_FILES
     public $result, $files_failed; // text warnings; [field name][] = failed file name
 
     public function __construct($s, $v, $f = []) {
@@ -10,8 +10,11 @@ class FCP_Forms__Validate {
         $this->s = $s;
         $this->s->fields = FCP_Forms::flatten( $s->fields );
         $this->v = $v + $f;
-        $this->checkValues();
+        
+        // add prefix for meta boxes
+        $this->p = is_admin() ? FCP_Forms::prefix( $s->options->form_name ) : '';
 
+        $this->checkValues();
     }
 
 
@@ -59,10 +62,10 @@ class FCP_Forms__Validate {
     }
 
     private function test_equals($rule, $a) {
-        if ( !$a || $a && $a === $this->v[ $rule ] ) {
+        if ( !$a || $a && $a === $this->v[ $this->p . $rule ] ) {
             return false;
         }
-        return 'The value has to match the previous field';
+        return 'The value has to match the previous field'; // ++ can add the title / placeholder here
     }
     
 // -----____--____FILES VALIDATION____----____---____
@@ -114,22 +117,20 @@ class FCP_Forms__Validate {
 
         foreach ( $this->s->fields as $f ) {
 
-            if ( !$f->validate ) {
-                continue;
-            }
+            if ( !$f->validate ) { continue; }
 
             foreach ( $f->validate as $mname => $rule ) {
                 $method = 'test_' . ( $f->type == 'file' ? 'file_' : '' ) . $mname;
                 $test = false;
 
-                if ( !method_exists( $this, $method ) ) {
-                    continue;
-                }
+                if ( !method_exists( $this, $method ) ) { continue; }
 
+                $fname = $this->p . $f->name;
+                
                 // multiple files
                 if ( $f->type == 'file' && $f->multiple ) {
 
-                    $mflip = FCP_Forms__Files::flip_files( $this->v[ $f->name ] );
+                    $mflip = FCP_Forms__Files::flip_files( $this->v[ $fname ] );
 
                     foreach ( $mflip as $v ) {
                         if ( $this->addResult( $method, $f->name, $rule, $v ) ) {
@@ -139,13 +140,12 @@ class FCP_Forms__Validate {
 
                     continue;
                 }
-                
+
                 // text data && single file
-                if ( $this->addResult( $method, $f->name, $rule, $this->v[ $f->name ] ) ){
-                    if ( $f->type != 'file' ) {
-                        continue;
+                if ( $this->addResult( $method, $f->name, $rule, $this->v[ $fname ] ) ){
+                    if ( $f->type == 'file' ) {
+                        $this->files_failed[ $f->name ][] = $this->v[ $fname ]['name'];
                     }
-                    $this->files_failed[ $f->name ][] = $this->v[ $f->name ]['name'];
                 }
             }
         }

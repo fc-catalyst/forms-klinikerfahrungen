@@ -21,14 +21,14 @@ class FCP_Forms {
 	public static $dev = true,
                   $tmp_dir = 'fcp-forms-tmps',
                   $text_domain = 'fcp-forms',
-                  $prefix = 'fcpf_';
+                  $prefix = 'fcpf';
 	
 	private function plugin_setup() {
 
 		$this->self_url  = plugins_url( '/', __FILE__ );
 		$this->self_path = plugin_dir_path( __FILE__ );
 		$this->self_path_file = __FILE__;
-		
+
 		$this->forms_url  = $this->self_url . 'forms/';
 		$this->forms_path = $this->self_path . 'forms/';
 		
@@ -52,9 +52,9 @@ class FCP_Forms {
         register_deactivation_hook( __FILE__, [ $this, 'uninstall' ] );
 
         // initial forms settings, which must have even without the form on the page
-        $files = array_diff( scandir( $this->forms_path ), [ '.', '..' ] );
-        foreach ( $files as $file ) {
-            @include_once $this->forms_path . $file . '/' . 'index.php';
+        $forms = array_diff( scandir( $this->forms_path ), [ '.', '..' ] );
+        foreach ( $forms as $dir ) {
+            @include_once $this->forms_path . $dir . '/' . 'index.php';
         }
 
         // allow js track the helpers' urls
@@ -66,7 +66,7 @@ class FCP_Forms {
     
     public function install() {
     
-        // create tmp dir for the files, uploaded by not authorized users
+        // create tmp dir for the files
         $dir = wp_get_upload_dir()['basedir'];
         mkdir( $dir . '/' . self::$tmp_dir );
 
@@ -117,14 +117,9 @@ class FCP_Forms {
         }
         
         // if the form doesn't exist
-        if ( !is_file( $this->forms_path . $_POST['fcp-form-name'] . '/structure.json' ) ) {
-            return;
-        }
+        $json = self::structure( $_POST['fcp-form-name'] );
+        if ( $json === false ) { return; }
 
-
-        $cont = file_get_contents( $this->forms_path . $_POST['fcp-form-name'] . '/structure.json' );
-        $json = json_decode( $cont, false );
-        
         $warns = new FCP_Forms__Validate( $json, $_POST, $_FILES );
         
         // get the array of wrong filled fields' warnings
@@ -163,7 +158,7 @@ class FCP_Forms {
 			'dir' => ''
 		], $atts );
 
-		if ( !$atts['dir'] || !is_file( $this->forms_path . $atts['dir'] . '/structure.json' ) ) {
+		if ( !$atts['dir'] || !self::form_exists( $atts['dir'] ) ) {
 			return '';
         }
         
@@ -208,68 +203,14 @@ class FCP_Forms {
 	
 	private function generate_form( $dir ) {
 
-        $cont = file_get_contents( $this->forms_path . $dir . '/structure.json' );
-        $json = json_decode( $cont, false );
-        $json->options->form_name = $dir;
+        $json = self::structure( $dir );
+        if ( $json === false ) { return; }
 
         // custom handler ++ can try to place it before fetching json?
         @include_once( $this->forms_path . $dir . '/override.php' );
         if ( $override ) {
             return $override;
         }
-        // exclude dirs, starting from -- - take from gutenberg
-        // !! check is_admin in saveMetaBoxes !!
-        // clinic meta boxes to proper ones
-            // just process the common process in that function, just silengly
-            // dunno about files - find out
-        /*
-            company-image
-            if on edit post submit or if on just clinic add
-            ADD THE FREE PASS TRIGGER IF VALIDATION IS DONE CORRECTLY NOT ON ADMIN SIDE
-            front-end validation visible
-            maybe learn how meta boxes gotta be added not semi-manually
-        */
-        // warnings are not attached to particular form as well as other fields, which names might repeat on other forms on the page
-        // files uploading add checkboxes to delete files on submit (as well as thumbnails)
-        // clinic meta boxes - change title and slug on meta title change.. or remove title from meta
-        // check if first screen css can be picked differently
-        // make the password validate simple test
-        // rename classes files and delete not used?
-        // saveMetaBoxes seem to work wrong for not logged in users??
-        // login form, styling refactor, all the website, registration+login form, refactor back-end, front-end, payment details, ratings
-        // new clinic - email immediately to review!!
-        // limit the number of multiple files
-        // !!get prefix not from dir name, but from some internal variable of the form - is it even used any more
-        // the plugin unique value create
-        // remember about the worktime for the kliniks && location
-        // reorganize the css classes names
-        // recaptcha
-        // front-end validation
-            // autofill with front-end validation
-        // ++include the modify values file before the validator for converting numbers and resizing images, maybe, renaming files, adding smilies
-        // ++aria
-        // ++css grid variant
-        // ++multiple text and other fields
-        // use array_map instead of circles where can?
-        // aa_aa for public and aaAa for privates?
-        // fcp-form-a-nonce to some semi-random thing
-            // nonce goes only after init, and works only for logged in users
-        // delete the form file if empty or "delete" checkbox is clicked??
-        // ++if same files are uploaded via different fields - don't upload twice
-        // file default validation with no mentioning in json, notEmpry
-        /*
-            ++file not empty validation works wrong - gotta mention hiddens!!
-            ++commaspace is not a good separator, as can be containd by a file
-        */
-        // prefix to static values?
-        // uploading for meta boxes
-        // use prefixes for meta boxes print - add this option to json modify
-        // fcp-form-a-nonce to something unique
-        // approve panding article: https://wordpress.stackexchange.com/questions/229840/is-it-possible-to-change-an-existing-post-status-from-pending-to-publish-via
-        // use pending review, instead of private??
-        // replace ", " with just comma and trim (or trim is included in sanitize)
-        // on clear trash - remove the clinic logo dir
-        // img preview to admin (mk thumbnail??)
 
         if ( $json->options->print_method == 'client' ) { // ++ not ready yet
             return '<form class="fcp-form" data-structure="'.$dir.'">Loading..</form>';
@@ -320,6 +261,87 @@ class FCP_Forms {
         return plugin_dir_path( __FILE__ ) . 'fcp-forms-unid.php'; // wp_get_upload_dir()['basedir'] . '/'
     }
 
+    public static function prefix($dir = '') {
+        return ( self::$prefix ? self::$prefix.'_' : '' ) . ( $dir ? $dir.'_' : '' );
+    }
+    public static function form_exists($dir = '') { // ++ can it be private?
+        if ( !$dir ) { return false; }
+
+        $path = plugin_dir_path( __FILE__ ) . 'forms/' . $dir . '/structure.json';
+        if ( !is_file( $path ) ) { return false; }
+        
+        return true;
+    }
+    public static function structure($dir = '') {
+        if ( !$dir ) { return false; }
+
+        $path = plugin_dir_path( __FILE__ ) . 'forms/' . $dir . '/structure.json';
+        if ( !is_file( $path ) ) { return false; }
+
+        $cont = file_get_contents( $path );
+        if ( $cont === false ) { return false; }
+        
+        $json = json_decode( $cont, false );
+        if ( $json === null ) { return false; }
+        
+        $json->options->form_name = $dir;
+        
+        return $json;
+    }
+
 }
 
 new FCP_Forms();
+
+/*
+    exclude dirs, starting from -- - take from gutenberg
+    !! check is_admin in saveMetaBoxes !!
+    clinic meta boxes to proper ones
+        just process the common process in that function, just silengly
+        dunno about files - find out
+
+        company-image
+        if on edit post submit or if on just clinic add
+        ADD THE FREE PASS TRIGGER IF VALIDATION IS DONE CORRECTLY NOT ON ADMIN SIDE
+        front-end validation visible
+        maybe learn how meta boxes gotta be added not semi-manually
+
+    warnings are not attached to particular form as well as other fields, which names might repeat on other forms on the page
+    files uploading add checkboxes to delete files on submit (as well as thumbnails)
+    clinic meta boxes - change title and slug on meta title change.. or remove title from meta
+    check if first screen css can be picked differently
+    make the password validate simple test
+    rename classes files and delete not used?
+    saveMetaBoxes seem to work wrong for not logged in users??
+    login form, styling refactor, all the website, registration+login form, refactor back-end, front-end, payment details, ratings
+    new clinic - email immediately to review!!
+    limit the number of multiple files
+    the plugin unique value create
+    remember about the worktime for the kliniks && location
+    reorganize the css classes names
+    recaptcha
+    front-end validation
+        autofill with front-end validation
+    ++include the modify values file before the validator for converting numbers and resizing images, maybe, renaming files, adding smilies
+    ++aria
+    ++css grid variant
+    ++multiple text and other fields
+    use array_map instead of circles where can?
+    aa_aa for public and aaAa for privates?
+    fcp-form-a-nonce to some semi-random thing
+        nonce goes only after init, and works only for logged in users
+    delete the form file if empty or "delete" checkbox is clicked??
+    ++if same files are uploaded via different fields - don't upload twice
+    file default validation with no mentioning in json, notEmpry
+
+        ++file not empty validation works wrong - gotta mention hiddens!!
+        ++commaspace is not a good separator, as can be containd by a file
+
+    uploading for meta boxes
+    fcp-form-a-nonce to something unique
+    approve panding article: https://wordpress.stackexchange.com/questions/229840/is-it-possible-to-change-an-existing-post-status-from-pending-to-publish-via
+    use pending review, instead of private??
+    replace ", " with just comma and trim (or trim is included in sanitize)
+    on clear trash - remove the clinic logo dir
+    img preview to admin (mk thumbnail??)
+//*/
