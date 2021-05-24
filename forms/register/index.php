@@ -48,12 +48,69 @@ add_action( 'init', function () { // can be admin_init
 
 }, 20 );
 
-// disable admin bar for the user
-/*
+// disable front-end admin bar for the representative
+//*
 add_action( 'plugins_loaded', function() {
-    if ( current_user_can( 'clinic_representative' ) ) {
-        show_admin_bar( false );
-    }
+    if ( !fcp_forms_register_cr() ) { return; }
+    show_admin_bar( false );
 });
 // ++ ++ add hidding the checkbox from the admin
 //*/
+
+// style the wp-admin for the role
+add_action( 'admin_enqueue_scripts', function() use ($dir) {
+    if ( !fcp_forms_register_cr() ) { return; }
+    wp_enqueue_style( 'fcp-forms-'.$dir.'-admin', $this->forms_url . $dir . '/style-admin.css', [], $this->css_ver );
+});
+
+// remove the wp logo
+add_action( 'wp_before_admin_bar_render', function() {
+    if ( !fcp_forms_register_cr() ) { return; }
+    //if ( !is_admin() ) { return; }
+
+    global $wp_admin_bar;
+    $wp_admin_bar->remove_node( 'wp-logo' );
+    //$wp_admin_bar->remove_node( 'new-content' ); // add new post
+    //$wp_admin_bar->remove_node( 'view' ); // view single post
+    //$wp_admin_bar->remove_node( 'archive' ); // view posts archive
+    //$wp_admin_bar->remove_node( 'logout' );    // logout under Howdy
+    //$wp_admin_bar->remove_node( 'user-info' );    // under Howdy
+    //$wp_admin_bar->remove_node( 'edit-profile' ); // under Howdy
+    //$wp_admin_bar->remove_node( 'search' );
+    //$wp_admin_bar->remove_node( 'my-account' );
+}, 0 );
+
+// disable dashboard
+add_action( 'admin_menu', function(){  
+    if ( !fcp_forms_register_cr() ) { return; }
+
+    remove_menu_page( 'index.php' );                  //Dashboard
+    //remove_menu_page( 'edit.php' );                   //Posts  
+    //remove_menu_page( 'upload.php' );                 //Media  
+    //remove_menu_page( 'edit.php?post_type=page' );    //Pages  
+    //remove_menu_page( 'edit-comments.php' );          //Comments  
+    //remove_menu_page( 'themes.php' );                 //Appearance  
+    //remove_menu_page( 'plugins.php' );                //Plugins  
+    //remove_menu_page( 'users.php' );                  //Users  
+    //remove_menu_page( 'tools.php' );                  //Tools  
+    //remove_menu_page( 'options-general.php' );        //Settings
+}); 
+// redirect from dashboard to the list of clinics
+add_action( 'admin_enqueue_scripts', function() {
+    if ( get_current_screen()->id != 'dashboard' ) { return; }
+    wp_redirect( get_option( 'siteurl' ) . '/wp-admin/edit.php?post_type=clinic' );
+});
+
+// remove the list of post-groups
+add_action( 'admin_init', function() {
+    if ( !fcp_forms_register_cr() ) { return; }
+    add_filter( 'views_edit-clinic', '__return_null' );
+});
+
+function fcp_forms_register_cr() { // check if role == representative
+    $user = wp_get_current_user();
+    if( empty( $user ) || !count( array_intersect( [ 'clinic_representative' ], (array) $user->roles ) ) ) {
+        return false;
+    }
+    return true;
+}

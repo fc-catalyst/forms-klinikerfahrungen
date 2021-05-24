@@ -61,6 +61,9 @@ class FCP_Forms {
         add_action( 'wp_head', function() {
             echo '<script>var fcp_forms_assets_url = "' . $this->assets .'";</script>'."\n";
         });
+        
+        // admin part
+        add_action( 'admin_enqueue_scripts', [ $this, 'add_styles_scripts_admin' ] );
 
     }
     
@@ -200,6 +203,21 @@ class FCP_Forms {
         }
 
 	}
+	
+    public function add_styles_scripts_admin($hook) {
+
+        if ( !in_array( $hook, ['post.php', 'post-new.php'] ) ) {
+            return;
+        }
+        $screen = get_current_screen();
+        if ( !isset( $screen ) || !is_object( $screen ) || $screen->post_type != 'clinic' ) {
+            return;
+        }
+
+        wp_enqueue_style( 'fcp-forms-layout', $this->self_url . 'layout.css', [], $this->css_ver );
+        wp_enqueue_script( 'fcp-forms', $this->self_url . 'scripts.js', ['jquery'], $this->js_ver );
+
+    }
 	
 	private function generate_form( $dir ) {
 

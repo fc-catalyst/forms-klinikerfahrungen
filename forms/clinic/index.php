@@ -77,33 +77,3 @@ new FCP_Add_Meta_Boxes( $json, (object) [
     'context' => 'normal',
     'priority' => 'high'
 ] );
-
-
-// meta boxes front-end ++can probably make the following universal
-
-add_action( 'admin_enqueue_scripts', function($hook) {
-
-    if ( !in_array( $hook, ['post.php', 'post-new.php'] ) ) {
-        return;
-    }
-    $screen = get_current_screen();
-    if ( !isset( $screen ) || !is_object( $screen ) || $screen->post_type != 'clinic' ) {
-        return;
-    }
-
-    wp_enqueue_style( 'fcp-forms-layout', $this->self_url . 'layout.css', [], $this->css_ver );
-    wp_enqueue_script( 'fcp-forms', $this->self_url . 'scripts.js', ['jquery'], $this->js_ver );
-
-});
-/*
-add_action( 'admin_footer', function() {
-    ?><style>
-
-    .fcp-form-field-w > span,
-    .fcp-form-field-w > span + *{
-        flex-basis:100%;
-    }
-
-</style><?php
-});
-//*/

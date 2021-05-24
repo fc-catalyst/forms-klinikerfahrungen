@@ -1,0 +1,36 @@
+.search-box,
+.tablenav.top,
+.tablenav.bottom,
+.table-view-list.posts tr > td:first-child,
+.table-view-list.posts tr > th:first-child,
+#wpfooter {
+    display:none;
+}
+
+body.edit-php h1.wp-heading-inline {
+    margin-top:25px;
+}
+body.edit-php .table-view-list.posts {
+    margin-top:40px;
+}
+
+body.post-php h1.wp-heading-inline {
+    margin-top:25px;
+}
+body.post-php #clinic {
+    margin-top:40px;
+    border:1px solid #23667b4a;
+}
+
+body.post-php #clinic,
+body.edit-php .table-view-list.posts {
+    /*background:#398b9b linear-gradient(60deg, #f0f0f0 10%, #fff 90%);*/
+    box-shadow:4px 6px 25px 0px #00000042, 0px 2px 5px 0px #23667b;
+}
+
+.fcp-form-field-warn > li {
+    color:#a94646;
+}
+.fcp-form-field-warn > li:last-child {
+    color:#4699a9;
+}

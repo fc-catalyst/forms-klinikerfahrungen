@@ -44,17 +44,29 @@ class FCP_Add_Meta_Boxes {
         if ( $_COOKIE['fcp-form--warnings'] ) {
             foreach ( $_COOKIE['fcp-form--warnings'] as $k => $v ) {
                 $values['fcp-form--warnings'][$k] = json_decode( stripslashes( $v ) );
-                $values['fcp-form--warnings'][$k][] = 'Initial value is restored';
+                $values['fcp-form--warnings'][$k][] = 'The Initial value is restored';
                 setcookie( 'fcp-form--warnings['.$k.']', '', time()-3600, '/' );
             }
             unset( $_COOKIE['fcp-form--warnings'] );
+            
+            add_action( 'admin_notices', function() {
+                ?>
+                <div class="notice error my-acf-notice is-dismissible" >
+                    <p>
+                <?php _e( 'Some fields were not filled correctly. Please, correct the values and submit again.' ) ?>
+                    </p>
+                    <style>#message{display:none;}</style>
+                </div>
+                <?php
+                // ++ disable sending the email
+            } );
         }
 
         // print meta fields
         $draw = new FCP_Forms__Draw( $this->s, $values ); // !!must always remove prefixes of values
 
 		add_meta_box(
-            $s->options->form_name,
+            $this->s->options->form_name,
             $p->title,
             [ $draw, 'print_meta_boxes' ],
             $p->post_types,

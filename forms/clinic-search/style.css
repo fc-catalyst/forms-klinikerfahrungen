@@ -15,6 +15,10 @@
     }
 }
 
+.fcp-form-clinic-search .fcp-form-field-w {
+    margin-bottom:16px;
+}
+
 .fcp-form-clinic-search .fcp-form-group-row,
 .fcp-form-clinic-search .fcp-form-field-w > * {
     margin-bottom:0;
