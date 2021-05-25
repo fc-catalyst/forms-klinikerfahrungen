@@ -306,6 +306,37 @@ class FCP_Forms {
         
         return $json;
     }
+    
+    public static function email_to_user($email) {
+        $person = ['me', 'person', 'name'];
+        $zone = substr( $email, strrpos( $email, '.' ) + 1 );
+        
+        if ( in_array( $zone, $person ) ) {
+            $crop = substr( $email, 0, strrpos( $email, '.' ) );
+            list( $n['first_name'], $n['last_name'] ) = explode( '@', $crop );
+        } else {
+            $crop = substr( $email, 0, strrpos( $email, '@' ) );
+            list( $n['first_name'], $n['last_name'] ) = explode( '.', $crop );   
+        }
+        
+        $n = array_map( 'ucfirst', $n );
+        $n['display_name'] = $n['first_name'] . ' ' . $n['last_name'];
+        $n['user_login'] = sanitize_user( $n['first_name'] . $n['last_name'], true );
+        
+        $n['user_email'] = $email;
+        
+        // check if user login exists && create a new one
+        require_once ABSPATH . WPINC . '/user.php';
+        $init_login = $n['user_login'];
+        $counter = 2;
+        while( username_exists( $n['user_login'] ) ) {
+            $n['user_login'] = $init_login . $counter;
+            $counter++;
+        }
+        
+        return $n;
+
+    }
 
 }
 

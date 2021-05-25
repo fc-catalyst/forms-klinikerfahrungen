@@ -7,12 +7,9 @@ if ( $warning || !empty( $warns->result ) ) {
     return;
 }
 
-$email = wp_slash( $_POST['user-email'] );
-$login = sanitize_title( $email );
+$params = FCP_Forms::email_to_user( $_POST['user-email'] );
 
-$register = wp_insert_user( [
-    'user_login' => $login,
-	'user_email' => $email,
+$register = wp_insert_user( $params + [
 	'user_pass' => $_POST['user-password'],
 	'role' => 'clinic_representative'
 ]);
@@ -25,7 +22,7 @@ if ( is_wp_error( $register ) ) {
 }
 
 // log in
-$creds['user_login'] = $login;
+$creds['user_login'] = $params['user_login'];
 $creds['user_password'] = $_POST['user-password'];
 $creds['remember'] = false;
 

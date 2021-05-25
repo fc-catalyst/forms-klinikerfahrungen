@@ -1,12 +1,3 @@
-.search-box,
-.tablenav.top,
-.tablenav.bottom,
-.table-view-list.posts tr > td:first-child,
-.table-view-list.posts tr > th:first-child,
-#wpfooter {
-    display:none;
-}
-
 body.edit-php h1.wp-heading-inline {
     margin-top:25px;
 }

@@ -27,6 +27,7 @@ add_action( 'init', function () { // can be admin_init
     $role->add_cap( 'edit_clinic' );
     $role->add_cap( 'edit_clinics' );
     $role->add_cap( 'edit_published_clinics', false );
+    //$role->add_cap( 'edit_others_clinics', false );
     $role->add_cap( 'publish_clinics', false );
     $role->add_cap( 'delete_private_clinics' );
     $role->add_cap( 'delete_published_clinics' );
@@ -59,7 +60,7 @@ add_action( 'plugins_loaded', function() {
 
 // style the wp-admin for the role
 add_action( 'admin_enqueue_scripts', function() use ($dir) {
-    if ( !fcp_forms_register_cr() ) { return; }
+    //if ( !fcp_forms_register_cr() ) { return; }
     wp_enqueue_style( 'fcp-forms-'.$dir.'-admin', $this->forms_url . $dir . '/style-admin.css', [], $this->css_ver );
 });
 
@@ -97,6 +98,7 @@ add_action( 'admin_menu', function(){
 }); 
 // redirect from dashboard to the list of clinics
 add_action( 'admin_enqueue_scripts', function() {
+    if ( !fcp_forms_register_cr() ) { return; }
     if ( get_current_screen()->id != 'dashboard' ) { return; }
     wp_redirect( get_option( 'siteurl' ) . '/wp-admin/edit.php?post_type=clinic' );
 });
@@ -114,3 +116,32 @@ function fcp_forms_register_cr() { // check if role == representative
     }
     return true;
 }
+
+
+// hide some elements from the representative to not distrub
+add_action( 'admin_footer', function() {
+    if ( !fcp_forms_register_cr() ) { return; }
+    ?>
+<style>
+    .search-box,
+    .tablenav.top,
+    .tablenav.bottom,
+    .table-view-list.posts tr.author-other,
+    .table-view-list.posts tr > td:first-child,
+    .table-view-list.posts tr > th:first-child,
+    .show-admin-bar.user-admin-bar-front-wrap,
+    #collapse-menu,
+    #wpfooter {
+        display:none;
+    }
+</style>
+    <?php
+});
+
+// set default admin color scheme for representative
+add_action( 'user_register', function($user_id) {
+    wp_update_user( [
+        'ID' => $user_id,
+        'admin_color' => 'klinikerfahrungen'
+    ]);
+});
