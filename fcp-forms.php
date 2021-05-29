@@ -166,6 +166,7 @@ class FCP_Forms {
         }
         
         $this->add_styles_scripts( $atts['dir'] );
+
         return $this->generate_form( $atts['dir'] );
 
 	}
@@ -173,31 +174,23 @@ class FCP_Forms {
 	private function add_styles_scripts($dir) {
 
         wp_enqueue_style( 'fcp-forms-layout', $this->self_url . 'layout.css', [], $this->css_ver );
+        wp_enqueue_style( 'fcp-forms-style', $this->self_url . 'style.css', ['fcp-forms-layout'], $this->css_ver );
         wp_enqueue_script( 'fcp-forms', $this->self_url . 'scripts.js', ['jquery'], $this->js_ver );
-
-        // ++ rebuild the following so that styles could add or override, not only override
 
         // custom forms styling
         if ( is_file( $this->forms_path . $dir . '/style.css' ) ) {
-            // private styling
             wp_enqueue_style(
-                'fcp-forms-'.$dir,
+                'fcp-forms-style-'.$dir,
                 $this->forms_url . $dir . '/style.css',
-                array_filter( array_merge( ['fcp-forms-layout'], [$fcp_forms_style] ) ),
+                [ 'fcp-forms-layout', 'fcp-forms-style' ],
                 $this->css_ver
             );
-        } else {
-            // common styling
-            if ( is_file( $this->self_path . 'style.css' ) ) {
-                $fcp_forms_style = 'fcp-forms-style';
-                wp_enqueue_style( $fcp_forms_style, $this->self_url . 'style.css', [], $this->css_ver );
-            }
         }
         if ( is_file( $this->forms_path . $dir . '/scripts.js' ) ) {
             wp_enqueue_script(
                 'fcp-forms-'.$dir,
                 $this->forms_url . $dir . '/scripts.js',
-                ['jquery', 'fcp-forms'],
+                [ 'jquery', 'fcp-forms' ],
                 $this->js_ver
             );
         }

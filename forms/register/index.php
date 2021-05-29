@@ -137,11 +137,3 @@ add_action( 'admin_footer', function() {
 </style>
     <?php
 });
-
-// set default admin color scheme for representative
-add_action( 'user_register', function($user_id) {
-    wp_update_user( [
-        'ID' => $user_id,
-        'admin_color' => 'klinikerfahrungen'
-    ]);
-});

@@ -1,5 +1,7 @@
 <?php
 
+$fcp_imgs_dir = str_replace( ABSPATH, get_site_url() . '/', dirname( __DIR__ ) . '/images/' );
+
 get_header();
 
 if ( have_posts() ) :
@@ -8,18 +10,116 @@ if ( have_posts() ) :
 
 ?>
 
-	<article class="post-<?php the_ID(); ?> <?php echo get_post_type(); ?> type-<?php echo get_post_type(); ?> status-publish entry" itemscope="" itemtype="https://schema.org/CreativeWork">
-		<div class="post-content" itemprop="text">
-            <header class="entry-header wrap-width">
-                <h1 class="entry-title" itemprop="headline">
-                    Clinic: <?php the_title(); ?>
-                </h1>
-            </header>
-            <div class="entry-content">
-                <?php the_content(); ?>
+<article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-publish entry" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <div class="post-content" itemprop="text">
+        <div class="entry-content">
+            <?php // the_content() ?>
+
+<!-- gutenberg copy start -->
+
+<div class="wp-block-columns alignwide are-vertically-aligned-center fcp-clinic-hero">
+
+    <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:66.66%">
+        <div class="fcp-clinic-badges">
+            <img loading="lazy" width="46" height="76" src="<?php echo $fcp_imgs_dir . 'badge-1.png' ?>" alt="Featured" />
+            <img loading="lazy" width="46" height="76" src="<?php echo $fcp_imgs_dir . 'badge-1.png' ?>" alt="Featured" />
+        </div>
+        
+        <h1>Prof. Dr. Med. Staudenmaier</h1>
+        <p>Experte Für Nasenkorrektur In München</p>
+        
+        <div class="fcp-clinic-rating">&#9733;&#9733;&#9733;&#9733;&#9734;<span>5.0</span></div>
+        
+        <div class="wp-block-buttons">
+            <div class="wp-block-button is-style-outline">
+                <a class="wp-block-button__link has-white-color has-text-color" href="#bewertungen">Bewertungen</a>
             </div>
-		</div>
-	</article>
+        </div>
+    </div>
+
+    <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:33.33%">
+        <div class="fcp-clinic-photo">
+            <img loading="lazy" width="100%" height="100%" src="http://localhost/wordpress/wp-content/uploads/vertical.png" alt="" />
+        </div>
+    </div>
+
+</div>
+
+
+<div style="height:35px" aria-hidden="true" class="wp-block-spacer"></div>
+
+
+<div class="wp-block-columns fcp-clinic-content">
+    <div class="wp-block-column" style="flex-basis:66.66%">
+
+        <h2>Über</h2>
+
+        <p>Intimoperationen sind eine sehr private Angelegenheit. Vielen Frauen haben Hemmungen, über ihre Situation zu sprechen. Häufig tragen sie ihr Problem schon seit Jahren mit sich. Auch Scham, Angst oder Unsicherheit spielen eine Rolle. Das ist völlig normal und verständlich.</p>
+
+        <p>Dr. Gress kann Ihnen Mut zusprechen: Aus seiner langen beruflichen Erfahrung heraus, weiß er, dass gerade die Patientinnen, die anfangs skeptisch oder ängstlich der Intimchirurgie gegenüber standen, hinterher bestätigen, dass der Eingriff die Entscheidung ihres Lebens war und dass sie sich dazu viel früher hätten entschließen sollen.</p>
+
+        <p>17 Jahre Erfahrung als Intimchirurg<br>Vor über 15 Jahren hat sich Dr. Gress als Facharzt der Genitalästhetik spezialisiert. Seitdem hat er über 3500 Eingriffe im weiblichen Genitalbereich durchgeführt. Die Eingriffe basieren auf durch ihn entwickelte Techniken, die in der Wissenschaft seit Jahren zu den führenden Operationsverfahren gehören.</p>
+
+        <h2>Unser Behandlungsspektrum</h2>
+
+        <p>Brustverkleinerung, Fettabsaugung, Lidstraffung, Intimchirurgie, Faltenbehandlung, Faltenunterspritzung.</p>
+
+        <div style="height:35px" aria-hidden="true" class="wp-block-spacer"></div>
+        
+        <div class="wp-block-buttons fcp-clinic-details">
+
+            <div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-text-color" href="http://aaa" style="color:var(--h-color)"><strong>Telefon</strong></a></div>
+            <div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-text-color" href="http://aaa" style="color:var(--h-color)"><strong>E-mail</strong></a></div>
+            <div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-text-color" href="http://aaa" style="color:var(--h-color)"><strong>Website</strong></a></div>
+
+        </div>
+        
+        <div class="wp-block-buttons fcp-clinic-details">
+
+            <div class="wp-block-button is-style-outline fcp-button-select"><a class="wp-block-button__link has-text-color" href="http://aaa" style="color:var(--h-color)"><strong>Öffnungszeiten</strong></a></div>
+
+        </div>
+        
+        <p>SOCIAL NETWORKS</p>
+        
+    </div>
+    <div class="wp-block-column fcp-clinic-gallery-wrap" style="flex-basis:33.33%">
+    
+        <h2 class="with-line">Gallerie</h2>
+
+        <div class="fcp-clinic-gallery">
+
+            <figure class="wp-block-image"><img loading="lazy" width="562" height="471" src="http://localhost/wordpress/wp-content/uploads/Leo-034712.jpg" alt="" /></figure>
+
+            <figure class="wp-block-image"><img loading="lazy" width="479" height="549" src="http://localhost/wordpress/wp-content/uploads/Japan2.jpg" alt="" /></figure>
+
+            <figure class="wp-block-image"><img loading="lazy" width="749" height="1022" src="http://localhost/wordpress/wp-content/uploads/nathan-dumlao-Wr3comVZJxU-unsplash-1.png" alt="" /></figure>
+
+        </div>
+
+    </div>
+    
+</div>
+
+
+<div class="wp-block-columns">
+    <div class="wp-block-column" style="flex-basis:66.66%">
+    
+        <p>VIDEO</p>
+
+    </div>
+    <div class="wp-block-column" style="flex-basis:33.33%">
+
+        <p>MAP</p>
+
+    </div>
+</div>
+
+
+<!-- gutenberg copy end -->
+        </div>
+    </div>
+</article>
 	
 <?php
 

@@ -21,6 +21,12 @@ if ( is_wp_error( $register ) ) {
     return;
 }
 
+// update the admin colors for the user
+wp_update_user([
+    'ID' => $register,
+    'admin_color' => 'klinikerfahrungen'
+]);
+
 // log in
 $creds['user_login'] = $params['user_login'];
 $creds['user_password'] = $_POST['user-password'];
