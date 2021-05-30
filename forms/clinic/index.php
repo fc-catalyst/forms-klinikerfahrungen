@@ -12,10 +12,10 @@ new FCPAddPostType( [
     'slug' => 'kliniken',
     'plural' => 'Clinics',
     'description' => 'The list of registered clinics',
-    'fields' => ['title', 'editor', 'comments', 'author', 'revisions'],
+    'fields' => ['title', 'comments', 'author', 'revisions'],
     'hierarchical' => false,
     'public' => true,
-    'gutenberg' => true,
+    'gutenberg' => false,
     'menu_position' => 21,
     'menu_icon' => 'dashicons-plus-alt',
     'has_archive' => true,
@@ -46,6 +46,7 @@ add_filter( 'template_include', function( $template ) {
 
 }, 99 );
 
+/*
 add_action( 'pre_get_posts', function( $query ) {
 
     $url = explode( "/", $_SERVER['REQUEST_URI'] );
@@ -57,7 +58,7 @@ add_action( 'pre_get_posts', function( $query ) {
     }
 
 } );
-
+*/
 
 // meta fields for new post types on basis of the form structure
 

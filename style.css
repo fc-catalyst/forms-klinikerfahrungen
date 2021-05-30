@@ -2,7 +2,7 @@ body {
     background:#398b9b linear-gradient(60deg, #277888 10%, #58acbc 90%);
     color:#fff;
 }
-.fcp-form {
+.fcp-form--main {
     --bg:#b4e9f299;
     --bg-a:#fff;
     --color:#0b4562;
@@ -39,10 +39,10 @@ body {
 
 /* fields */
 
-.fcp-form input,
-.fcp-form select,
-.fcp-form textarea,
-.fcp-form input[type=file] + label {
+.fcp-form--main input,
+.fcp-form--main select,
+.fcp-form--main textarea,
+.fcp-form--main input[type=file] + label {
     display:block;
     box-sizing:border-box;
     border:none;
@@ -54,60 +54,60 @@ body {
     color:var(--color);
     -webkit-appearance:none;
 }
-.fcp-form textarea {
+.fcp-form--main textarea {
     font-size:12px;
 }
-.fcp-form option {
+.fcp-form--main option {
     font-weight:400;
     text-transform:none;
     background-color:var(--bg-a);
     color:var(--color-a);
 }
 
-.fcp-form input:focus,
-.fcp-form input:focus-visible,
-.fcp-form select:focus,
-.fcp-form select:focus-visible,
-.fcp-form textarea:focus,
-.fcp-form textarea:focus-visible,
-.fcp-form input[type=file]:focus + label,
-.fcp-form input[type=file]:focus-visible + label {
+.fcp-form--main input:focus,
+.fcp-form--main input:focus-visible,
+.fcp-form--main select:focus,
+.fcp-form--main select:focus-visible,
+.fcp-form--main textarea:focus,
+.fcp-form--main textarea:focus-visible,
+.fcp-form--main input[type=file]:focus + label,
+.fcp-form--main input[type=file]:focus-visible + label {
   outline:none;
   background-color:var(--bg-a);
   color:var(--color-a)!important;
 }
 
-.fcp-form input:-webkit-autofill,
-.fcp-form  input:-internal-autofill-selected {
+.fcp-form--main input:-webkit-autofill,
+.fcp-form--main  input:-internal-autofill-selected {
     background-color:var(--bg);
     -webkit-box-shadow:0 0 0 50px var(--bg) inset;
     color:var(--color);
     -webkit-text-fill-color:var(--color);
 }
-.fcp-form input:-webkit-autofill:focus,
-.fcp-form  input:-internal-autofill-selected:focus {
+.fcp-form--main input:-webkit-autofill:focus,
+.fcp-form--main  input:-internal-autofill-selected:focus {
     background-color:var(--bg-a);
     -webkit-box-shadow:0 0 0 50px var(--bg-a) inset;
     color:var(--color-a)!important;
 }
 
-.fcp-form input::-webkit-input-placeholder { color:var(--color-empty); font-weight:600; text-transform:uppercase; }
-.fcp-form input::placeholder { color:var(--color-empty); font-weight:600; text-transform:uppercase; }
+.fcp-form--main input::-webkit-input-placeholder { color:var(--color-empty); font-weight:600; text-transform:uppercase; }
+.fcp-form--main input::placeholder { color:var(--color-empty); font-weight:600; text-transform:uppercase; }
 
-.fcp-form select.fcp-form-empty {
+.fcp-form--main select.fcp-form-empty {
     color:var(--color-empty);
     font-weight:600;
     text-transform:uppercase;
 }
 
 /* file */
-.fcp-form input[type=file]:not(.fcp-f-filled) + label {
+.fcp-form--main input[type=file]:not(.fcp-f-filled) + label {
     color:var(--color-empty);
     font-weight:600;
     text-transform:uppercase;
 }
 
-.fcp-form input[type=file] {
+.fcp-form--main input[type=file] {
     position:absolute;
     z-index:-1;
     opacity:0;
@@ -115,33 +115,33 @@ body {
     max-height:0;
     overflow:hidden;
 }
-.fcp-form input[type=file]:not(.fcp-f-filled) + label {
+.fcp-form--main input[type=file]:not(.fcp-f-filled) + label {
     display:block!important;
 }
 
-.fcp-form input[type=file] + label + fieldset > label > input {
+.fcp-form--main input[type=file] + label + fieldset > label > input {
     opacity:0!important;
 }
 
 /* checkbox & radio */
-.fcp-form fieldset {
+.fcp-form--main fieldset {
     margin:6px 0 0;
     padding:0 0 8px 0;
     border-radius:6px;
 }
 
-.fcp-form fieldset label > input[type=checkbox],
-.fcp-form fieldset label > input[type=radio] {
+.fcp-form--main fieldset label > input[type=checkbox],
+.fcp-form--main fieldset label > input[type=radio] {
     position:absolute;
     z-index:-1;
     opacity:0;
 }
 
-.fcp-form fieldset label {
+.fcp-form--main fieldset label {
     position:relative;
     white-space:nowrap;
 }
-.fcp-form fieldset label > span {
+.fcp-form--main fieldset label > span {
     display:inline-block;
     margin:0 10px 0 0;
     padding:0 0 0 25px;
@@ -149,34 +149,34 @@ body {
     font-weight:600;
     text-transform:uppercase;
 }
-.fcp-form fieldset label > span::before {
+.fcp-form--main fieldset label > span::before {
     content:'';
     display:inline-block;
     position:absolute;
     left:0;
     background-color:var(--bg-a);
 }
-.fcp-form fieldset label > input[type=checkbox] + span::before {
+.fcp-form--main fieldset label > input[type=checkbox] + span::before {
     width:14px;
     height:14px;
     border-radius:2.5px;
     top:4.5px;
 }
-.fcp-form fieldset label > input[type=radio] + span::before {
+.fcp-form--main fieldset label > input[type=radio] + span::before {
     width:15px;
     height:15px;
     border-radius:7.5px;
     top:3.5px;
 }
 
-.fcp-form fieldset label > span::after {
+.fcp-form--main fieldset label > span::after {
     content:'';
     display:inline-block;
     position:absolute;
     z-index:-1;
     opacity:0;
 }
-.fcp-form fieldset label > input[type=checkbox] + span::after {
+.fcp-form--main fieldset label > input[type=checkbox] + span::after {
     width:0;
     height:18px;
     left:1px;
@@ -192,7 +192,7 @@ body {
     -webkit-mask-size:16px 17px;
     transition:width 0.15s ease;
 }
-.fcp-form fieldset label > input[type=radio] + span::after {
+.fcp-form--main fieldset label > input[type=radio] + span::after {
     width:11px;
     height:11px;
     border-radius:5.5px;
@@ -202,19 +202,19 @@ body {
     transform:scale(0, 0);
     transition:transform 0.15s ease;
 }
-.fcp-form fieldset label > input[type=checkbox]:checked + span::after {
+.fcp-form--main fieldset label > input[type=checkbox]:checked + span::after {
     width:18px;
     z-index:1;
     opacity:1;
 }
-.fcp-form fieldset label > input[type=radio]:checked + span::after {
+.fcp-form--main fieldset label > input[type=radio]:checked + span::after {
     z-index:1;
     opacity:1;
     transform:scale(1, 1);
 }
 
-.fcp-form .fcp-f-invalid,
-.fcp-form input[type=file].fcp-f-invalid + label {
+.fcp-form--main .fcp-f-invalid,
+.fcp-form--main input[type=file].fcp-f-invalid + label {
     border-bottom:2px solid var(--not-valid);
 }
 .fcp-form-field-warn > li {
@@ -222,7 +222,7 @@ body {
 }
 
 /* submit */
-.fcp-form input[type=submit] {
+.fcp-form--main input[type=submit] {
     width:auto;
     margin-left:auto;
     padding:9px 16px;
@@ -233,6 +233,6 @@ body {
     letter-spacing:1px;
     color:inherit;
 }
-.fcp-form input[type=submit]:hover {
+.fcp-form--main input[type=submit]:hover {
     background-color:var(--bg);
 }

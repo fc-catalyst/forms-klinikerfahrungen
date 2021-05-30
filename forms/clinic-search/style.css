@@ -41,11 +41,11 @@
     background-size:22px;
 }
 
-#fcp-f-clinic-search--spezialisierung {
+#fcpf_clinic-search_spezialisierung {
     padding-left:55px;
     background-image:var(--heartrate);
 }
-#fcp-f-clinic-search--region {
+#fcpf_clinic-search_region {
     padding-left:55px;
     background-image:var(--marker);
     background-size:24px;

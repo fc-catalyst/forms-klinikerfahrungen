@@ -1,6 +1,29 @@
 <?php
 
+// ++ move the functions somewhere, index.php with namespace or a class?
+
 $fcp_imgs_dir = str_replace( ABSPATH, get_site_url() . '/', dirname( __DIR__ ) . '/images/' );
+
+function fcp_epmp($name, $return = '') { // ++ add reset for lists
+    static $pmb = null;
+    //if ( !$name ) { return ''; }
+    if ( $pmb === null ) {
+        $pmb = get_post_meta( get_the_ID() );
+    }
+    $result = $pmb[ 'fcpf_clinic_' . $name ] ? $pmb[ 'fcpf_clinic_' . $name ][0] : '';
+    if ( $return ) {
+        return $result;
+    }
+    echo $result;
+}
+
+function fcp_eimgsrc($name, $return = '') {
+    $result = wp_get_upload_dir()['url'] . '/clinic/' . get_the_ID() . '/' . $name;
+    if ( $return ) {
+        return $result;
+    }
+    echo $result;
+}
 
 get_header();
 
@@ -8,6 +31,12 @@ if ( have_posts() ) :
     while ( have_posts() ) :
         the_post();
 
+        
+/*
+        echo '<pre>';
+        print_r($pmb);
+        echo '</pre>';
+//*/
 ?>
 
 <article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-publish entry" itemscope="" itemtype="https://schema.org/CreativeWork">
@@ -25,8 +54,8 @@ if ( have_posts() ) :
             <img loading="lazy" width="46" height="76" src="<?php echo $fcp_imgs_dir . 'badge-1.png' ?>" alt="Featured" />
         </div>
         
-        <h1>Prof. Dr. Med. Staudenmaier</h1>
-        <p>Experte Für Nasenkorrektur In München</p>
+        <h1><?php the_title() ?></h1>
+        <p>Where to take it from?? Plastische und Ästhetische Chirurgen</p>
         
         <div class="fcp-clinic-rating">&#9733;&#9733;&#9733;&#9733;&#9734;<span>5.0</span></div>
         
@@ -39,7 +68,10 @@ if ( have_posts() ) :
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:33.33%">
         <div class="fcp-clinic-photo">
-            <img loading="lazy" width="100%" height="100%" src="http://localhost/wordpress/wp-content/uploads/vertical.png" alt="" />
+            <img loading="lazy" width="100%" height="100%"
+                src="<?php fcp_eimgsrc( fcp_epmp( 'company-logo', true ) ) ?>"
+                alt="<?php the_title() ?> Logo"
+            />
         </div>
     </div>
 
@@ -49,16 +81,12 @@ if ( have_posts() ) :
 <div style="height:35px" aria-hidden="true" class="wp-block-spacer"></div>
 
 
-<div class="wp-block-columns fcp-clinic-content">
+<div class="wp-block-columns are-vertically-aligned-stretch">
     <div class="wp-block-column" style="flex-basis:66.66%">
 
         <h2>Über</h2>
 
-        <p>Intimoperationen sind eine sehr private Angelegenheit. Vielen Frauen haben Hemmungen, über ihre Situation zu sprechen. Häufig tragen sie ihr Problem schon seit Jahren mit sich. Auch Scham, Angst oder Unsicherheit spielen eine Rolle. Das ist völlig normal und verständlich.</p>
-
-        <p>Dr. Gress kann Ihnen Mut zusprechen: Aus seiner langen beruflichen Erfahrung heraus, weiß er, dass gerade die Patientinnen, die anfangs skeptisch oder ängstlich der Intimchirurgie gegenüber standen, hinterher bestätigen, dass der Eingriff die Entscheidung ihres Lebens war und dass sie sich dazu viel früher hätten entschließen sollen.</p>
-
-        <p>17 Jahre Erfahrung als Intimchirurg<br>Vor über 15 Jahren hat sich Dr. Gress als Facharzt der Genitalästhetik spezialisiert. Seitdem hat er über 3500 Eingriffe im weiblichen Genitalbereich durchgeführt. Die Eingriffe basieren auf durch ihn entwickelte Techniken, die in der Wissenschaft seit Jahren zu den führenden Operationsverfahren gehören.</p>
+        <?php fcp_epmp( 'company-description' ) ?>
 
         <h2>Unser Behandlungsspektrum</h2>
 
@@ -66,35 +94,39 @@ if ( have_posts() ) :
 
         <div style="height:35px" aria-hidden="true" class="wp-block-spacer"></div>
         
-        <div class="wp-block-buttons fcp-clinic-details">
+        <div class="wp-block-buttons is-content-justification-full">
 
-            <div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-text-color" href="http://aaa" style="color:var(--h-color)"><strong>Telefon</strong></a></div>
-            <div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-text-color" href="http://aaa" style="color:var(--h-color)"><strong>E-mail</strong></a></div>
-            <div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-text-color" href="http://aaa" style="color:var(--h-color)"><strong>Website</strong></a></div>
+        <?php if ( $button = fcp_epmp( 'company-phone', true ) ) { ?>
+            <div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-text-color" href="tel:<?php echo $button ?>" style="color:var(--h-color)"><strong>Telefon</strong></a></div>
+        <?php } ?>
+        <?php if ( $button = fcp_epmp( 'company-email', true ) ) { ?>
+            <div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-text-color" href="mailto:<?php echo $button ?>" style="color:var(--h-color)"><strong>E-mail</strong></a></div>
+        <?php } ?>
+        <?php if ( $button = fcp_epmp( 'company-website', true ) ) { ?>
+            <div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-text-color" href="<?php echo $button ?>" style="color:var(--h-color)"><strong>Website</strong></a></div>
+        <?php } ?>
 
         </div>
         
-        <div class="wp-block-buttons fcp-clinic-details">
+        <div class="wp-block-buttons is-content-justification-full">
 
-            <div class="wp-block-button is-style-outline fcp-button-select"><a class="wp-block-button__link has-text-color" href="http://aaa" style="color:var(--h-color)"><strong>Öffnungszeiten</strong></a></div>
+            <div class="wp-block-button is-style-outline fct-button-select"><a class="wp-block-button__link has-text-color" href="#" style="color:var(--h-color)"><strong>Öffnungszeiten</strong></a></div>
 
         </div>
-        
-        <p>SOCIAL NETWORKS</p>
         
     </div>
-    <div class="wp-block-column fcp-clinic-gallery-wrap" style="flex-basis:33.33%">
+    <div class="wp-block-column fcp-vertical-gallery-wrap" style="flex-basis:33.33%">
     
         <h2 class="with-line">Gallerie</h2>
 
-        <div class="fcp-clinic-gallery">
-
+        <div class="fcp-vertical-gallery">
+<!--
             <figure class="wp-block-image"><img loading="lazy" width="562" height="471" src="http://localhost/wordpress/wp-content/uploads/Leo-034712.jpg" alt="" /></figure>
 
             <figure class="wp-block-image"><img loading="lazy" width="479" height="549" src="http://localhost/wordpress/wp-content/uploads/Japan2.jpg" alt="" /></figure>
 
             <figure class="wp-block-image"><img loading="lazy" width="749" height="1022" src="http://localhost/wordpress/wp-content/uploads/nathan-dumlao-Wr3comVZJxU-unsplash-1.png" alt="" /></figure>
-
+-->
         </div>
 
     </div>
@@ -122,6 +154,14 @@ if ( have_posts() ) :
 </article>
 	
 <?php
+
+        if ( $back_img = fcp_eimgsrc( fcp_epmp( 'company-image', true ), true ) ) {
+            ?><style>
+                .post-<?php the_ID() ?> .fcp-clinic-hero {
+                    --clinic-bg:url( '<?php echo $back_img ?>' );
+                }
+            </style><?php
+        }
 
     endwhile;
 endif;

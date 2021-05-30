@@ -52,12 +52,12 @@
             // Libraries can be used from here
 
             new FCP_Advisor(
-                $( '#fcp-f-clinic-search--spezialisierung' ),
+                $( '#fcpf_clinic-search_spezialisierung' ),
                 ['Allergologen', 'Allgemein- &amp; Hausärzte', 'Augenärzte', 'Chirurgen', 'Dermatologen', 'Gynäkologen', 'HNO-Ärzte', 'Kardiologen', 'Kinderärzte', 'Neurologen', 'Orthopäden', 'Plastische und Ästhetische Chirurgen', 'Psychologen &amp; Psychotherapie', 'Urologen', 'Zahnärzte']
             );
 
             new google.maps.places.Autocomplete(
-                $( '#fcp-f-clinic-search--region' )[0],
+                $( '#fcpf_clinic-search_region' )[0],
                 {
                     componentRestrictions: { country: ['de'] },
                     fields: ['geometry'],

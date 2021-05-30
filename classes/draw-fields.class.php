@@ -306,7 +306,11 @@ class FCP_Forms__Draw {
         
         <?php echo $o->before ?>
         <form
-            class="fcp-form"
+            class="fcp-form
+                <?php echo $o->inherit_styles === false ? '' : 'fcp-form--main' ?>
+                <?php echo 'fcp-form-' . $o->form_name ?>
+                <?php echo $o->width ? 'fcp-form--' . $o->width : '' ?>
+            "
             method="<?php echo $o->method ? $o->method : 'post' ?>"
             <?php echo $o->enctype ? 'enctype="'.$o->enctype.'"' : '' ?>
             <?php echo $o->autocomplete ? 'autocomplete="'.$o->autocomplete.'"' : '' ?>
