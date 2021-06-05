@@ -1,0 +1,48 @@
+{
+    "options" : {
+        "method" : "post",
+        "print_method" : "server",
+        "json_validate" : 1,
+        "required_mark" : "*",
+        "reduce_font_after" : 36
+    },
+    "fields" : [
+        {
+            "gtype" : "section",
+            "title" : "Login",
+            "title_tag" : "h2",
+            "fields" : [
+                {
+                    "type" : "text",
+                    "placeholder" : "E-mail",
+                    "name" : "user-email",
+                    "validate" : {
+                        "notEmpty" : true,
+                        "email" : true
+                    }
+                },
+                {
+                    "type" : "text",
+                    "placeholder" : "Password",
+                    "name" : "user-password",
+                    "validate" : {
+                        "notEmpty" : true,
+                        "password" : true
+                    }
+                },
+                {
+                    "type" : "checkbox",
+                    "name" : "rememberme",
+                    "options" : {
+                        "1" : "Remember me"
+                    }
+                }
+            ]
+        },
+        {
+            "type" : "submit",
+            "name" : "user-submit",
+            "value" : "Login"
+        }
+    ]
+}

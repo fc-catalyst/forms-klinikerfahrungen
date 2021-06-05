@@ -7,7 +7,7 @@ class FCP_Forms__Draw {
 
     public function __construct($s, $v = [], $f = []) {
 
-        $s->options->warning = $v['fcp-form--warning'];
+        $s->options->warning = $v['fcp-form--'.$s->options->form_name.'--warning'];
         
         $this->s = $s;
         $this->s->fields = $this->add_values( $s->fields, array_merge( $v, $f ) );
@@ -19,7 +19,7 @@ class FCP_Forms__Draw {
         foreach ( $f as &$add ) {
 
             if ( $add->type ) {
-                $add->warning = $v['fcp-form--warnings'][ $add->name ];
+                $add->warning = $v['fcp-form--'.$this->s->options->form_name.'--warnings'][ $add->name ];
                 $add->savedValue = $v[ $add->name ];
                 if ( $add->type === 'file' ) {
                     $add->savedValue = empty( $v[ '--'.$add->name ] ) ? [] : $v[ '--'.$add->name ];

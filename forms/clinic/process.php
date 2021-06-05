@@ -9,7 +9,7 @@ if ( !is_user_logged_in() ) {
 }
 
 // if can create this post type
-if ( !get_userdata( wp_get_current_user()->ID )->allcaps['edit_clinic'] ) {
+if ( !get_userdata( wp_get_current_user()->ID )->allcaps['edit_entity'] ) {
     $warning = 'You don\'t have permission to add / edit a clinic';
     return;
 }
@@ -21,7 +21,7 @@ if ( $warning || !empty( $warns->result ) ) {
 
 // create new post
 $id = wp_insert_post( [
-    'post_title' => sanitize_text_field( $_POST['company-name'] ),
+    'post_title' => sanitize_text_field( $_POST['entity-name'] ),
     'post_content' => '',
     'post_status' => 'pending',
     'post_author' => wp_get_current_user()->ID,

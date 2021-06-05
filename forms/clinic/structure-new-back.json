@@ -76,31 +76,6 @@
                             "meta_box" : true
                         },
                         {
-                            "type" : "hidden",
-                            "name" : "entity-region",
-                            "meta_box" : true
-                        },
-                        {
-                            "type" : "hidden",
-                            "name" : "entity-geo-lat",
-                            "meta_box" : true
-                        },
-                        {
-                            "type" : "hidden",
-                            "name" : "entity-geo-long",
-                            "meta_box" : true
-                        },
-                        {
-                            "type" : "hidden",
-                            "name" : "entity-geo-city",
-                            "meta_box" : true
-                        },
-                        {
-                            "type" : "hidden",
-                            "name" : "entity-geo-postcode",
-                            "meta_box" : true
-                        },
-                        {
                             "type" : "select",
                             "title" : "Branche",
                             "placeholder" : "Select an Option…",
@@ -142,8 +117,8 @@
                     "fields" : [
                         {
                             "type" : "file",
-                            "title" : "Logo Ihrer Klinik / ",
-                            "name" : "entity-avatar",
+                            "title" : "Logo Ihrer Klinik",
+                            "name" : "entity-logo",
                             "validate" : {
                                 "default" : true,
                                 "maxSize" : 1000000,

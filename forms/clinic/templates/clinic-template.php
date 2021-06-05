@@ -10,7 +10,7 @@ function fcp_epmp($name, $return = '') { // ++ add reset for lists
     if ( $pmb === null ) {
         $pmb = get_post_meta( get_the_ID() );
     }
-    $result = $pmb[ 'fcpf_clinic_' . $name ] ? $pmb[ 'fcpf_clinic_' . $name ][0] : '';
+    $result = $pmb[ 'fcpf_' . $name ] ? $pmb[ 'fcpf_' . $name ][0] : '';
     if ( $return ) {
         return $result;
     }
@@ -31,12 +31,6 @@ if ( have_posts() ) :
     while ( have_posts() ) :
         the_post();
 
-        
-/*
-        echo '<pre>';
-        print_r($pmb);
-        echo '</pre>';
-//*/
 ?>
 
 <article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-publish entry" itemscope="" itemtype="https://schema.org/CreativeWork">
@@ -67,12 +61,14 @@ if ( have_posts() ) :
     </div>
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:33.33%">
+        <?php if ( $logo = fcp_epmp( 'entity-avatar', true ) ) { ?>
         <div class="fcp-clinic-photo">
             <img loading="lazy" width="100%" height="100%"
-                src="<?php fcp_eimgsrc( fcp_epmp( 'company-logo', true ) ) ?>"
+                src="<?php echo $logo ?>"
                 alt="<?php the_title() ?> Logo"
             />
         </div>
+        <?php } ?>
     </div>
 
 </div>
@@ -86,23 +82,24 @@ if ( have_posts() ) :
 
         <h2>Über</h2>
 
-        <?php fcp_epmp( 'company-description' ) ?>
+        <?php fcp_epmp( 'entity-description' ) ?>
+        The content is missing for now :(
 
         <h2>Unser Behandlungsspektrum</h2>
 
-        <p>Brustverkleinerung, Fettabsaugung, Lidstraffung, Intimchirurgie, Faltenbehandlung, Faltenunterspritzung.</p>
+        <p><?php fcp_epmp( 'entity-tags' ) ?></p>
 
         <div style="height:35px" aria-hidden="true" class="wp-block-spacer"></div>
         
         <div class="wp-block-buttons is-content-justification-full">
 
-        <?php if ( $button = fcp_epmp( 'company-phone', true ) ) { ?>
+        <?php if ( $button = fcp_epmp( 'entity-phone', true ) ) { ?>
             <div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-text-color" href="tel:<?php echo $button ?>" style="color:var(--h-color)"><strong>Telefon</strong></a></div>
         <?php } ?>
-        <?php if ( $button = fcp_epmp( 'company-email', true ) ) { ?>
+        <?php if ( $button = fcp_epmp( 'entity-email', true ) ) { ?>
             <div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-text-color" href="mailto:<?php echo $button ?>" style="color:var(--h-color)"><strong>E-mail</strong></a></div>
         <?php } ?>
-        <?php if ( $button = fcp_epmp( 'company-website', true ) ) { ?>
+        <?php if ( $button = fcp_epmp( 'entity-website', true ) ) { ?>
             <div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-text-color" href="<?php echo $button ?>" style="color:var(--h-color)"><strong>Website</strong></a></div>
         <?php } ?>
 
@@ -110,7 +107,7 @@ if ( have_posts() ) :
         
         <div class="wp-block-buttons is-content-justification-full">
 
-            <div class="wp-block-button is-style-outline fct-button-select"><a class="wp-block-button__link has-text-color" href="#" style="color:var(--h-color)"><strong>Öffnungszeiten</strong></a></div>
+            <div style="opacity:0.3;" class="wp-block-button is-style-outline fct-button-select"><a class="wp-block-button__link has-text-color" href="#" style="color:var(--h-color)"><strong>Öffnungszeiten</strong></a></div>
 
         </div>
         
@@ -120,6 +117,17 @@ if ( have_posts() ) :
         <h2 class="with-line">Gallerie</h2>
 
         <div class="fcp-vertical-gallery">
+            <?php 
+                $gallery = fcp_epmp( 'entity-gallery', true );
+                if ( $gallery && !empty( $gallery ) ) {
+                    $gallery = unserialize( $gallery );
+                    foreach ( $gallery as $v ) {
+                    ?>
+                        <figure class="wp-block-image"><img loading="lazy" width="562" src="<?php echo $v ?>" alt="" /></figure>
+                    <?php
+                    }
+                }
+            ?>
 <!--
             <figure class="wp-block-image"><img loading="lazy" width="562" height="471" src="http://localhost/wordpress/wp-content/uploads/Leo-034712.jpg" alt="" /></figure>
 
@@ -155,7 +163,7 @@ if ( have_posts() ) :
 	
 <?php
 
-        if ( $back_img = fcp_eimgsrc( fcp_epmp( 'company-image', true ), true ) ) {
+        if ( $back_img = fcp_epmp( 'entity-image', true ) ) {
             ?><style>
                 .post-<?php the_ID() ?> .fcp-clinic-hero {
                     --clinic-bg:url( '<?php echo $back_img ?>' );

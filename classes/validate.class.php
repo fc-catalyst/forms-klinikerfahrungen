@@ -48,7 +48,7 @@ class FCP_Forms__Validate {
     }
 
     private function test_email($rule, $a) {
-        if ( !$a || $a && $rule == true && filter_var( $a, FILTER_VALIDATE_EMAIL ) ) {
+        if ( !$a || $a && $rule == true && is_email( $a ) ) {
             return false;
         }
         return 'The email format is incorrect';

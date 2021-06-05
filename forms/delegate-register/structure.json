@@ -9,7 +9,7 @@
     "fields" : [
         {
             "gtype" : "section",
-            "title" : "Clinic Representative Registration",
+            "title" : "Clinic / Doctor Registration",
             "title_tag" : "h2",
             "fields" : [
                 {

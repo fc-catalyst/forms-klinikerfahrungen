@@ -15,6 +15,7 @@ class FCP_Add_Meta_Boxes {
         $this->s = $s;
         $this->p = $p;
         $this->p->prefix = FCP_Forms::prefix( $s->options->form_name );
+        $this->p->warn_name = 'fcp-form--'.$s->options->form_name.'--warnings';
 
         add_action( 'add_meta_boxes', [ $this, 'addMetaBoxes' ] );
         add_action( 'save_post', [ $this, 'saveMetaBoxes' ] );
@@ -41,13 +42,13 @@ class FCP_Add_Meta_Boxes {
         }
         
         // add warnings
-        if ( $_COOKIE['fcp-form--warnings'] ) {
-            foreach ( $_COOKIE['fcp-form--warnings'] as $k => $v ) {
-                $values['fcp-form--warnings'][$k] = json_decode( stripslashes( $v ) );
-                $values['fcp-form--warnings'][$k][] = 'The Initial value is restored';
-                setcookie( 'fcp-form--warnings['.$k.']', '', time()-3600, '/' );
+        if ( $_COOKIE[ $p->warn_name ] ) {
+            foreach ( $_COOKIE[ $p->warn_name ] as $k => $v ) {
+                $values[ $p->warn_name ][$k] = json_decode( stripslashes( $v ) );
+                $values[ $p->warn_name ][$k][] = 'The Initial value is restored';
+                setcookie( $p->warn_name.'['.$k.']', '', time()-3600, '/' );
             }
-            unset( $_COOKIE['fcp-form--warnings'] );
+            unset( $_COOKIE[ $p->warn_name ] );
             
             add_action( 'admin_notices', function() {
                 ?>
@@ -107,7 +108,10 @@ class FCP_Add_Meta_Boxes {
         foreach ( $fields as $f ) {
             if ( !$f->meta_box ) { continue; }
             if ( $warns->result[ $f->name ] ) {
-                setcookie( 'fcp-form--warnings['.$f->name.']',  json_encode( $warns->result[ $f->name ] ), 0, '/' );
+                setcookie(
+                    $this->p->warn_name.'['.$f->name.']',
+                    json_encode( $warns->result[ $f->name ] ),
+                0, '/' );
                 continue;
             }
 

@@ -11,7 +11,7 @@ $params = FCP_Forms::email_to_user( $_POST['user-email'] );
 
 $register = wp_insert_user( $params + [
 	'user_pass' => $_POST['user-password'],
-	'role' => 'clinic_representative'
+	'role' => 'entity_delegate'
 ]);
 
 if ( is_wp_error( $register ) ) {
@@ -21,7 +21,7 @@ if ( is_wp_error( $register ) ) {
     return;
 }
 
-// update the admin colors for the user
+// set the admin colors for the user
 wp_update_user([
     'ID' => $register,
     'admin_color' => 'klinikerfahrungen'

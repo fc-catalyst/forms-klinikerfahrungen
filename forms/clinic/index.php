@@ -19,7 +19,7 @@ new FCPAddPostType( [
     'menu_position' => 21,
     'menu_icon' => 'dashicons-plus-alt',
     'has_archive' => true,
-    'capability_type' => ['clinic', 'clinics']
+    'capability_type' => ['entity', 'entities']
 ] );
 
 
@@ -49,12 +49,11 @@ add_filter( 'template_include', function( $template ) {
 /*
 add_action( 'pre_get_posts', function( $query ) {
 
-    $url = explode( "/", $_SERVER['REQUEST_URI'] );
+    $url = explode( "/", $_SERVER['REQUEST_URI'] ); // do in a different way!!
 
     if ( $url[1] == 'clinic' ) {
-        $this->plugin_setup();
         $query->is_main_query();
-        $query->set( 'posts_per_page', $this->cases_per_page );
+        $query->set( 'posts_per_page', 10 );
     }
 
 } );

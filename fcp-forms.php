@@ -100,6 +100,8 @@ class FCP_Forms {
         if ( !$_POST['fcp-form-name'] ) { // handle only the fcp-forms
             return;
         }
+        $form_name = $_POST['fcp-form-name'];
+        $nonce = $_POST[ 'fcp-form--' . $form_name ];
 
         if ( isset( $_FILES ) ) {
             include_once $this->self_path . 'classes/files.class.php';
@@ -107,20 +109,20 @@ class FCP_Forms {
         include_once $this->self_path . 'classes/validate.class.php';
 
         // only allowed symbols for the form name
-        if ( FCP_Forms__Validate::name( true, $_POST['fcp-form-name'] ) ) {
+        if ( FCP_Forms__Validate::name( true, $form_name ) ) {
             return;
         }
 
         // common wp nonce check for logged in users
         if (
-            !isset( $_POST[ 'fcp-form--' . $_POST['fcp-form-name'] ] ) ||
-            !wp_verify_nonce( $_POST[ 'fcp-form--' . $_POST['fcp-form-name'] ], FCP_Forms::plugin_unid() )
+            !isset( $nonce ) ||
+            !wp_verify_nonce( $nonce, FCP_Forms::plugin_unid() )
         ) {
             return;
         }
-        
+
         // if the form doesn't exist
-        $json = self::structure( $_POST['fcp-form-name'] );
+        $json = self::structure( $form_name );
         if ( $json === false ) { return; }
 
         $warns = new FCP_Forms__Validate( $json, $_POST, $_FILES );
@@ -136,12 +138,12 @@ class FCP_Forms {
         }
 
         // main processing file of the form
-        @include_once( $this->forms_path . $_POST['fcp-form-name'] . '/process.php' );
+        @include_once( $this->forms_path . $form_name . '/process.php' );
 
         // failure
         if ( $warning || !empty( $warns->result ) ) {
-            $_POST['fcp-form--warning'] = $warning; // passing to print via globals
-            $_POST['fcp-form--warnings'] = $warns->result;
+            $_POST['fcp-form--'.$form_name.'--warning'] = $warning; // passing to print via globals
+            $_POST['fcp-form--'.$form_name.'--warnings'] = $warns->result;
             return;
         }
 
@@ -266,7 +268,13 @@ class FCP_Forms {
     }
     
     public static function plugin_unid() {
-        return 'a' . ( @include_once self::plugin_unid_path() );
+        static $unid;
+
+        if ( !$unid ) {
+            $unid = ( @include_once self::plugin_unid_path() );
+        }
+
+        return $unid;
     }
     public static function plugin_unid_path() {
         return plugin_dir_path( __FILE__ ) . 'fcp-forms-unid.php'; // wp_get_upload_dir()['basedir'] . '/'
@@ -329,6 +337,18 @@ class FCP_Forms {
         
         return $n;
 
+    }
+    
+    public static function check_role($role, $user = []) {
+        if( empty( $user ) ) {
+            $user = wp_get_current_user();
+        }
+
+        if( empty( $user ) || !in_array( 'entity_delegate', (array) $user->roles ) ) {
+            return false;
+        }
+
+        return true;
     }
 
 }
