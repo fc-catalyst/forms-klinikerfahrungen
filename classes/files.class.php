@@ -5,7 +5,7 @@
 class FCP_Forms__Files {
 
     private $s, $f, $w; // json structure; $_FILES; warnings; directories ['field-name' => 'dir']
-    public $files, $uploaded; // [] of prepared $_FILES with ['field']; [] of uploaded files ['name','field']
+    public $files, $uploaded, $warns; // [] of prepared $_FILES with ['field']; [] of uploaded files ['name','field']
 
     public function __construct($s, $f, $w = []) {
 
@@ -86,10 +86,11 @@ class FCP_Forms__Files {
 
         $this->files = array_values( $f ); // the list of files ready for uploading
         
-        // ++ clean tmp dir
+        // clean tmp dir (can, probably, move to the main forms class
+        self::tmp_clean();
     }
 
-    public function upload_tmp() {
+    public function upload_tmp() { // ++ can unite with upload with no arguments and tmp_main for better ui
         foreach ( $this->s->fields as $v ) {
             if ( $v->type !=='file' ) { continue; }
             if ( !self::tmp_dir()['base'] ) { continue; }
@@ -101,17 +102,15 @@ class FCP_Forms__Files {
 
     public function upload($dirs = []) { // [ field => dir, field => dir ]
         if ( empty( $dirs ) ) { return; }
-    
-        $bad = [];
-//++ here somewhere add the move option from tmp dir
-    //https://github.com/VVolkov833/wp-fcp-forms/blob/72db7cf33f708fd1e738bd7f4902104d964459c4/classes/files.class.php
+        $this->warns = [];
 
         foreach ( $this->s->fields as $v ) { // mk dirs
             if ( $v->type !=='file' ) { continue; }
 
             if ( !is_dir( $dirs[ $v->name ] ) ) {
                 if ( !mkdir( $dirs[ $v->name ], 0777, true ) ) {
-                    return [ 'The folder ' . $dirs[ $v->name ] . ' can not be created' ];
+                    $this->warns[ $v->name ][] = 'The folder '.$v->name.' can not be created due to a server error';
+                    return;
                 }
             }
         }
@@ -120,7 +119,7 @@ class FCP_Forms__Files {
 
         foreach ( $this->files as $k => $v ) { // upload new files
             if ( !move_uploaded_file( $v['tmp_name'], $dirs[ $v['field'] ] . '/' . $v['name'] ) ) {
-                $bad[] = $v['name'] . ' not uploaded';
+                $this->warns[ $v['field'] ][] = $v['name'] . ' not uploaded due to a server error';
                 continue;
             }
 
@@ -159,7 +158,39 @@ class FCP_Forms__Files {
 
         $this->uploaded_files_set(); // set globals for printing the uploaded list to the form
 
-        return empty( $bad ) ? true : $bad;
+        return empty( $this->warns );
+    }
+    
+    public function upload_tmp_main($dirs = []) { // [ field => dir, field => dir ]
+        if ( empty( $dirs ) ) { return; }
+        $this->warns = [];
+
+        foreach ( $this->s->fields as $v ) { // mk dirs
+            if ( $v->type !=='file' ) { continue; }
+
+            if ( !is_dir( $dirs[ $v->name ] ) ) {
+                if ( !mkdir( $dirs[ $v->name ], 0777, true ) ) {
+                    $this->warns[ $v->name ][] = 'The folder '.$v->name.' can not be created due to a server error';
+                    return;
+                }
+            }
+        }
+        
+        foreach ( $this->uploaded as $v ) {
+            
+            if ( !copy(
+                self::tmp_dir()['dir'] . '/' . $v['field'] . '/' . $v['name'],
+                $dirs[ $v['field'] ] . '/' . $v['name']
+            ) ) {
+                $this->warns[ $v['field'] ][] = $v['name'] . ' file moving failed due to a server error';
+                continue;
+            }
+        }
+        
+        if ( empty( $this->warns ) ) {
+            self::rm_dir( self::tmp_dir()['dir'] );
+        }
+
     }
 
     private function uploaded_files_get($dirs = []) {
@@ -256,9 +287,23 @@ class FCP_Forms__Files {
         $uploads = wp_get_upload_dir()['basedir'];
         return [
             'main' => $uploads . '/' . FCP_Forms::$tmp_dir,
-            'dir' => $uploads . '/' . FCP_Forms::$tmp_dir . '/' . $_POST['fcp-form--tmpdir'],
+            'dir' => $uploads . '/' . FCP_Forms::$tmp_dir . '/' .
+                ( $_POST['fcp-form--tmpdir'] ? $_POST['fcp-form--tmpdir'] : 'aa' ),
             'base' => $_POST['fcp-form--tmpdir']
         ];
+    }
+    
+    public static function tmp_clean() {
+        $main_dir = self::tmp_dir()['main'];
+        $tmp_dirs = array_diff( scandir( $main_dir ), [ '.', '..' ] );
+        $rm_time = time() - 15 * 60;
+
+        foreach ( $tmp_dirs as $tmp_dir ) {
+            $rm = $main_dir . '/' . $tmp_dir;
+            if ( is_dir( $rm ) && $rm_time > filectime( $rm ) ) {
+                self::rm_dir( $rm );
+            }
+        }
     }
 
 }

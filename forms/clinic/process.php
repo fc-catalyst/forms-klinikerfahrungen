@@ -14,19 +14,8 @@ if ( !get_userdata( wp_get_current_user()->ID )->allcaps['edit_entity'] ) {
     return;
 }
 
-
-$id = '777';
-$dir = wp_get_upload_dir()['basedir'] . '/entity/' . $id;
-
-$warning = $uploads->upload([
-    'entity-logo' => $dir,
-    'entity-image' => $dir
-]);
-$warning = implode( '<br>', $warning );
-return;
-
 // upload to tmp dir
-if ( $warning = implode( '<br>', $uploads->upload_tmp() ) ) {
+if ( !$uploads->upload_tmp() ) {
     return;
 }
 
@@ -34,7 +23,6 @@ if ( $warning || !empty( $warns->result ) ) {
     return;
 }
 
-/*
 // create new post
 $id = wp_insert_post( [
     'post_title' => sanitize_text_field( $_POST['entity-name'] ),
@@ -50,27 +38,21 @@ if ( $id === 0 ) {
     $warning = 'Unexpected WordPress error';
     return;
 }
-//*/
 
 // upload files
 $dir = wp_get_upload_dir()['basedir'] . '/entity/' . $id;
-if ( !is_dir( $dir ) ) {
-    if ( !mkdir( $dir, 0777, true ) ) {
-        $warning = 'Can\'t create the folder for the files';
-        return;
-    }
+
+if ( !$uploads->upload_tmp_main([
+    'entity-logo' => $dir,
+    'entity-image' => $dir
+])) {
+    $warning = implode( '<br>', $uploads->warns );
+    return;
 }
-
-$uploads->upload([
-    'company-logo' => $dir,
-    'company-image' => $dir
-]);
-
 /*
 foreach ( $uploads->uploaded as $v ) {
-    update_post_meta( $id, FCP_Forms::$prefix . $_POST['fcp-form-name'] . '_' . $k, $v );
+    update_post_meta( $id, FCP_Forms::$prefix . 'entity' . '_' . $k, $v );
 }
-
+//*/
 // redirect on success
 $redirect = get_permalink( $id );
-//*/

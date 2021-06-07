@@ -54,7 +54,7 @@
                             "title" : "Multiple Upload",
                             "name" : "entity-image",
                             "multiple" : true,
-                            "limit" : 0,
+                            "limit" : 3,
                             "validate" : {
                                 "default" : true,
                                 "maxSize" : 1000000,
