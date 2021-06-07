@@ -132,17 +132,17 @@ class FCP_Forms {
             $warning = 'Some fields are not filled correctly:';
         }
 
-        // prepare files to process
+        // prepare the list of files to process
         if ( isset( $_FILES ) ) {
             $uploads = new FCP_Forms__Files( $json, $_FILES, $warns->files_failed );
         }
 
-        // main processing file of the form
+        // main processing
         @include_once( $this->forms_path . $form_name . '/process.php' );
 
         // failure
         if ( $warning || !empty( $warns->result ) ) {
-            $_POST['fcp-form--'.$form_name.'--warning'] = $warning; // passing to print via globals
+            $_POST['fcp-form--'.$form_name.'--warning'] = $warning; // passing to printing hook via globals
             $_POST['fcp-form--'.$form_name.'--warnings'] = $warns->result;
             return;
         }
@@ -307,7 +307,9 @@ class FCP_Forms {
         
         return $json;
     }
-    
+
+    // the following are used in different types of forms or fields
+
     public static function email_to_user($email) {
         $person = ['me', 'person', 'name'];
         $zone = substr( $email, strrpos( $email, '.' ) + 1 );
@@ -344,13 +346,13 @@ class FCP_Forms {
             $user = wp_get_current_user();
         }
 
-        if( empty( $user ) || !in_array( 'entity_delegate', (array) $user->roles ) ) {
+        if( empty( $user ) || !in_array( $role, (array) $user->roles ) ) {
             return false;
         }
 
         return true;
     }
-
+    
 }
 
 new FCP_Forms();

@@ -18,17 +18,19 @@ class FCP_Forms__Draw {
     private function add_values(&$f, $v) {
         foreach ( $f as &$add ) {
 
+            if ( $add->gtype ) {
+                $this->add_values( $add->fields, $v );
+                continue;
+            }
+        
             if ( $add->type ) {
                 $add->warning = $v['fcp-form--'.$this->s->options->form_name.'--warnings'][ $add->name ];
                 $add->savedValue = $v[ $add->name ];
-                if ( $add->type === 'file' ) {
-                    $add->savedValue = empty( $v[ '--'.$add->name ] ) ? [] : $v[ '--'.$add->name ];
-                }
-                continue;
-            }
 
-            if ( $add->gtype ) {
-                $this->add_values( $add->fields, $v );
+                if ( $add->type === 'file' ) {
+                    $add->uploaded_fields = $add->name.'--uploaded';
+                    $add->uploaded_files = empty( $v[ $add->uploaded_fields ] ) ? [] : $v[ $add->uploaded_fields ];
+                }
             }
 
         }
@@ -197,9 +199,9 @@ class FCP_Forms__Draw {
     }
     
     private function field_file($a) {
-        if ( !empty( $a->savedValue ) ) {
-            $count = count( $a->savedValue );
-            //$label = $count == 1 ? $a->savedValue[0] : $count . ' Files Uploaded';
+        if ( !empty( $a->uploaded_files ) ) {
+            $count = count( $a->uploaded_files );
+            //$label = $count == 1 ? $a->uploaded_files[0] : $count . ' Files Uploaded';
             $label = ( $count == 1 ? '1 File' : $count . ' Files' ) . ' Uploaded:';
         }
     
@@ -219,16 +221,17 @@ class FCP_Forms__Draw {
             <?php echo $label ? $label : 'Select File' . ( $a->multiple ? 's' : '' ) ?>
         </label>
         <?php
-        if ( !empty( $a->savedValue ) ) {
+
+        if ( !empty( $a->uploaded_files ) ) {
         
             ?><fieldset><?php
-            foreach ( $a->savedValue as $k => $v ) :
+            foreach ( $a->uploaded_files as $k => $v ) :
             ?>
                 <label>
                     <input type="checkbox" checked
-                        name="--<?php $this->e_field_name( $a->name ) ?>[]"
+                        name="<?php $this->e_field_name( $a->uploaded_fields ) ?>[]"
                         value="<?php echo esc_attr( $v ) ?>"
-                    >
+                    />
                     <span><?php echo $v ?></span>
                 </label>
 
@@ -334,7 +337,10 @@ class FCP_Forms__Draw {
         ?>
 
         <?php wp_nonce_field( FCP_Forms::plugin_unid(), 'fcp-form--' . $o->form_name ) ?>
-        <input type="hidden" name="fcp-form-name" value="<?php echo $o->form_name ?>">
+        <input type="hidden" name="fcp-form-name" value="<?php echo $o->form_name ?>" />
+        <input type="hidden" name="fcp-form--tmpdir"
+            value="<?php echo $_POST['fcp-form--tmpdir'] ? $_POST['fcp-form--tmpdir'] : FCP_Forms::unique() ?>"
+        />
         </form>
         <?php echo $o->after ?>
 
