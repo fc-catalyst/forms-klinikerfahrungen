@@ -225,7 +225,7 @@ class FCP_Forms__Draw {
         if ( !empty( $a->uploaded_files ) ) {
         
             ?><fieldset><?php
-            foreach ( $a->uploaded_files as $k => $v ) :
+            foreach ( $a->uploaded_files as $v ) :
             ?>
                 <label>
                     <input type="checkbox" checked
@@ -236,6 +236,7 @@ class FCP_Forms__Draw {
                 </label>
 
             <?php
+            // ++ can print the images thumbnails somewhere here or inside the label
             endforeach;
             ?></fieldset><?php
 
@@ -408,13 +409,9 @@ class FCP_Forms__Draw {
     }
 
     private function e_field_id ($field_name) {
-        echo FCP_Forms::prefix( $this->s->options->form_name ) . $field_name;
+        echo $field_name . $this->s->options->form_name;
     }
     private function e_field_name ($field_name) {
-        if ( is_admin() ) { // for meta boxes
-            echo FCP_Forms::prefix( $this->s->options->form_name ) . $field_name;
-            return;
-        }
         echo $field_name;
     }
 

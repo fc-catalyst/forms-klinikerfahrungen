@@ -14,7 +14,6 @@ class FCP_Add_Meta_Boxes {
 
         $this->s = $s;
         $this->p = $p;
-        $this->p->prefix = FCP_Forms::prefix( $s->options->form_name );
         $this->p->warn_name = 'fcp-form--'.$s->options->form_name.'--warnings';
 
         add_action( 'add_meta_boxes', [ $this, 'addMetaBoxes' ] );
@@ -31,16 +30,25 @@ class FCP_Add_Meta_Boxes {
         // meta names to structure names
         $fields = FCP_Forms::flatten( $this->s->fields );
         foreach ( $fields as $f ) {
-            $name = $p->prefix . $f->name;
-            if ( !$values0[ $name ] ) { continue; }
+
+            if ( !$values0[ $f->name ] ) { continue; }
             
-            $values[ $f->name ] = $values0[ $name ][0];
-            
-            if ( $f->multiple || $f->options && $f->type != 'select' && count( (array) $f->options ) > 1 ) {
+            $values[ $f->name ] = $values0[ $f->name ][0];
+
+            if (
+                $f->multiple ||
+                $f->options && $f->type != 'select' && count( (array) $f->options ) > 1 ||
+                $f->type === 'file'
+            ) {
                 $values[ $f->name ] = unserialize( $values[ $f->name ] );
             }
+            
+            if ( $f->type === 'file' ) {
+                $values[ $f->name . '--uploaded' ] = $values[ $f->name ];
+                unset( $values[ $f->name ] );
+            }
         }
-        
+
         // add warnings
         if ( $_COOKIE[ $p->warn_name ] ) {
             foreach ( $_COOKIE[ $p->warn_name ] as $k => $v ) {
@@ -64,7 +72,7 @@ class FCP_Add_Meta_Boxes {
         }
 
         // print meta fields
-        $draw = new FCP_Forms__Draw( $this->s, $values ); // !!must always remove prefixes of values
+        $draw = new FCP_Forms__Draw( $this->s, $values );
 
 		add_meta_box(
             $this->s->options->form_name,
@@ -99,10 +107,17 @@ class FCP_Add_Meta_Boxes {
             if ( !class_exists( 'FCP_Forms__Validate' ) ) {
                 include_once plugin_dir_path( __FILE__ ) . 'validate.class.php';
             }
-            $warns = new FCP_Forms__Validate( $this->s, $_POST );
-        }
+            $warns = new FCP_Forms__Validate( $this->s, $_POST ); // ++ if !current_user_can('administrator')
+/*
+            if ( isset( $_FILES ) ) {
+                $uploads = new FCP_Forms__Files( $this->s, $_FILES, $warns->files_failed );
+            }
 
-        // update_post_meta( $postID, 'is_admin', is_admin() ? 'ADMIN' : 'FRONTEND' );
+            update_post_meta( $postID, 'test', print_r( $_POST + $_FILES, true ) );
+            // main processing
+            //@include_once( plugin_dir_path( __FILE__ ) . '../forms/' . $this->s->options->form_name . '/process-admin.php' );
+//*/
+        }
 
         $fields = FCP_Forms::flatten( $this->s->fields );
         foreach ( $fields as $f ) {
@@ -115,14 +130,11 @@ class FCP_Add_Meta_Boxes {
                 continue;
             }
 
-            $name_meta = $this->p->prefix . $f->name;
-            $name_post = is_admin() ? $name_meta : $f->name;
-            
-            if ( empty( $_POST[ $name_post ] ) ) {
-                delete_post_meta( $postID, $name_meta );
+            if ( empty( $_POST[ $f->name ] ) ) {
+                delete_post_meta( $postID, $f->name );
                 continue;
             }
-            update_post_meta( $postID, $name_meta, $_POST[ $name_post ] );
+            update_post_meta( $postID, $f->name, $_POST[ $f->name ] );
         }
 
 	}

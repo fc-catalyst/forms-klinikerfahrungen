@@ -138,6 +138,8 @@ class FCP_Forms__Files {
         $count = []; // number of files per field
         $this->uploaded = array_reverse( $this->uploaded );
         foreach ( $this->s->fields as $v ) {
+            if ( $v->type !=='file' ) { continue; }
+            
             $count[ $v->name ] = 0;
             if ( !isset( $v->limit ) ) {
                 $v->limit = 10;
@@ -161,7 +163,7 @@ class FCP_Forms__Files {
         return empty( $this->warns );
     }
     
-    public function upload_tmp_main($dirs = []) { // [ field => dir, field => dir ]
+    public function upload_tmp_main($dirs = []) { // [ field => dir, field => dir ] ++ can go to upload() top
         if ( empty( $dirs ) ) { return; }
         $this->warns = [];
 
@@ -176,7 +178,7 @@ class FCP_Forms__Files {
             }
         }
         
-        foreach ( $this->uploaded as $v ) {
+        foreach ( $this->uploaded as $v ) { // copy the files
             
             if ( !copy(
                 self::tmp_dir()['dir'] . '/' . $v['field'] . '/' . $v['name'],
@@ -190,6 +192,8 @@ class FCP_Forms__Files {
         if ( empty( $this->warns ) ) {
             self::rm_dir( self::tmp_dir()['dir'] );
         }
+        
+        return empty( $this->warns );
 
     }
 
@@ -220,6 +224,8 @@ class FCP_Forms__Files {
 
         // delete files, not on the list, from server
         foreach ( $this->s->fields as $v ) {
+            if ( $v->type !=='file' ) { continue; }
+
             $dir = $dirs[ $v->name ];
             $files = array_diff( scandir( $dir ), [ '.', '..' ] );
 
@@ -238,6 +244,16 @@ class FCP_Forms__Files {
         foreach ( $this->uploaded as $v ) {
             $_POST[ $v['field'] . '--uploaded' ][] = $v['name'];
         }
+    }
+
+    public function format_for_storing() {
+        $result = [];
+
+        foreach ( $this->uploaded as $v ) {
+            $result[ $v['field'] ][] = $v['name'];
+        }
+
+        return $result;
     }
     
 

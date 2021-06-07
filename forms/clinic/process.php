@@ -46,13 +46,13 @@ if ( !$uploads->upload_tmp_main([
     'entity-logo' => $dir,
     'entity-image' => $dir
 ])) {
-    $warning = implode( '<br>', $uploads->warns );
     return;
 }
-/*
-foreach ( $uploads->uploaded as $v ) {
-    update_post_meta( $id, FCP_Forms::$prefix . 'entity' . '_' . $k, $v );
+
+$update_list = $uploads->format_for_storing();
+foreach ( $update_list as $k => $v ) {
+    update_post_meta( $id, $k, $v );
 }
-//*/
+
 // redirect on success
 $redirect = get_permalink( $id );

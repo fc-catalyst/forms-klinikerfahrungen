@@ -280,9 +280,6 @@ class FCP_Forms {
         return plugin_dir_path( __FILE__ ) . 'fcp-forms-unid.php'; // wp_get_upload_dir()['basedir'] . '/'
     }
 
-    public static function prefix($dir = '') {
-        return ( self::$prefix ? self::$prefix.'_' : '' ) . ( $dir ? $dir.'_' : '' );
-    }
     public static function form_exists($dir = '') { // ++ can it be private?
         if ( !$dir ) { return false; }
 
@@ -291,6 +288,7 @@ class FCP_Forms {
         
         return true;
     }
+
     public static function structure($dir = '') {
         if ( !$dir ) { return false; }
 
@@ -304,6 +302,8 @@ class FCP_Forms {
         if ( $json === null ) { return false; }
         
         $json->options->form_name = $dir;
+        
+        // ++ add prefixes here // self::$prefix.'_'
         
         return $json;
     }

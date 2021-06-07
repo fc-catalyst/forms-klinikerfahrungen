@@ -7,7 +7,8 @@
         "before" : "<div class=\"fcp-form-clinic fcp-form--half\">",
         "after" : "</div>",
         "required_mark" : "*",
-        "reduce_font_after" : 36
+        "reduce_font_after" : 36,
+        "prefix" : "entity"
     },
     "fields" : [
         {
@@ -17,6 +18,7 @@
             "fields" : [
                 {
                     "gtype" : "row",
+                    "cols" : 2,
                     "fields" : [
                         {
                             "type" : "text",
@@ -25,7 +27,18 @@
                             "validate" : {
                                 "notEmpty" : true
                             },
+                            "meta_box" : true,
                             "comment" : "this field goes to the title, not a meta box"
+                        },
+                        {
+                            "type" : "text",
+                            "title" : "E-mail",
+                            "name" : "entity-email",
+                            "validate" : {
+                                "notEmpty" : true,
+                                "email" : true
+                            },
+                            "meta_box" : true
                         }
                     ]
                 },
