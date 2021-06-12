@@ -64,6 +64,11 @@ class FCP_Forms {
         
         // admin part
         add_action( 'admin_enqueue_scripts', [ $this, 'add_styles_scripts_admin' ] );
+        
+        // admin form allow uploading
+        add_action( 'post_edit_form_tag', function() {
+            echo 'enctype="multipart/form-data"';
+        });
 
     }
     
@@ -234,7 +239,7 @@ class FCP_Forms {
         return $draw->result;
 
 	}
-	
+
 // -----______---___---_____HELPING FUNCITONS______---____--___
 
 

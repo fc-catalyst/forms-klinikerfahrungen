@@ -107,16 +107,19 @@ class FCP_Add_Meta_Boxes {
             if ( !class_exists( 'FCP_Forms__Validate' ) ) {
                 include_once plugin_dir_path( __FILE__ ) . 'validate.class.php';
             }
-            $warns = new FCP_Forms__Validate( $this->s, $_POST ); // ++ if !current_user_can('administrator')
-/*
+            $warns = new FCP_Forms__Validate( $this->s, $_POST, $_FILES ); // ++ if !current_user_can('administrator')
+            
+            //print_r( [$warns->result, $warns->files_failed] ); exit;
+            
             if ( isset( $_FILES ) ) {
                 $uploads = new FCP_Forms__Files( $this->s, $_FILES, $warns->files_failed );
             }
+            
+            //update_post_meta( $postID, 'test', include( plugin_dir_path( __FILE__ ) . '../forms/' . $this->s->options->form_name . '/process-admin.php' ) ); exit;
 
-            update_post_meta( $postID, 'test', print_r( $_POST + $_FILES, true ) );
             // main processing
-            //@include_once( plugin_dir_path( __FILE__ ) . '../forms/' . $this->s->options->form_name . '/process-admin.php' );
-//*/
+            @include_once( plugin_dir_path( __FILE__ ) . '../forms/' . $this->s->options->form_name . '/process-admin.php' );
+
         }
 
         $fields = FCP_Forms::flatten( $this->s->fields );
