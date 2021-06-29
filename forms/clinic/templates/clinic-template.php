@@ -160,6 +160,10 @@ if ( have_posts() ) :
         </div>
     </div>
 </article>
+
+<div class="entry-content">
+    <?php comments_template() ?>
+</div>
 	
 <?php
 

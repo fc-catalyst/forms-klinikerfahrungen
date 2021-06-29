@@ -46,6 +46,22 @@ add_filter( 'template_include', function( $template ) {
 
 }, 99 );
 
+add_filter( 'comments_template', function( $template ) {
+
+    $new_template = $template; // default theme template
+    $path = $this->forms_path . 'clinic/templates/';
+
+    if ( is_singular( 'clinic' ) ) {
+		$new_template = $path . 'clinic-comments.php';
+	}
+	
+    if ( file_exists( $new_template ) ) {
+        return $new_template;
+    }
+
+    return $template;
+}, 99 );
+
 /*
 add_action( 'pre_get_posts', function( $query ) {
 
