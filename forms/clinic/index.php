@@ -22,6 +22,11 @@ new FCPAddPostType( [
     'capability_type' => ['entity', 'entities']
 ] );
 
+/*
+add_action( 'init', function() {
+    add_post_type_support( 'clinic', 'author' );
+});
+//*/
 
 // pages templates ++move the templates to the FCPADDPostType class
 

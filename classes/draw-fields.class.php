@@ -44,18 +44,34 @@ class FCP_Forms__Draw {
     }
 
     private function field_text($a) {
+
+        $value = $a->savedValue ? $a->savedValue : $a->value; //++ can unite the following to a function
+        if ( !is_array( $value ) ) {
+            $value = [ $value ];
+        }
+
+        foreach ( $value as $k => $v ) {
+
+            if ( empty( $v ) && count( $value ) > 1 ) { // && !is_numeric( $k )
+                continue;
+            }
+
+            $k = is_numeric( $k ) ? '' : $k;
+
         ?>
         <input
             type="text"
-            name="<?php $this->e_field_name( $a->name ) ?>"
+            name="<?php $this->e_field_name( $a->name ) ?><?php echo $a->multiple ? '['.$k.']' : '' ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty ? '*' : '' ?>"
-            value="<?php echo esc_attr( $a->savedValue ? $a->savedValue : $a->value ) ?>"
+            value="<?php echo esc_attr( $v ) ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
             <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
         />
         <?php
+        
+        }
     }
     
     private function field_password($a) {

@@ -7,11 +7,18 @@
 register_activation_hook( $this->self_path_file, function() {
 
     add_role( 'entity_delegate', 'Clinic / Doctor', [
-        'read' => true,
-        'edit_posts' => false,
-        'delete_posts' => false,
-        'publish_posts' => false,
-        'upload_files' => false
+        'level_0' => true, // only read
+        'edit_entities' => true,
+        'edit_published_entities' => true,
+        'delete_entities' => true,
+/*
+        'read_private_entities' => true,
+        'edit_others_entities' => false,
+        'publish_entities' => false,
+        'delete_private_entities' => true,
+        'delete_others_entities' => false,
+        'delete_published_entities' => true,
+//*/
     ]);
 
 });
@@ -20,39 +27,8 @@ register_deactivation_hook( $this->self_path_file, function() {
     remove_role( 'entity_delegate' );
 });
 
-add_action( 'init', function () { // can be admin_init
 
-    $role = get_role( 'entity_delegate' );
-
-    $role->add_cap( 'read' );
-    $role->add_cap( 'read_entity' );
-    $role->add_cap( 'read_private_entities' );
-    $role->add_cap( 'edit_entity' );
-    $role->add_cap( 'edit_entities' );
-    $role->add_cap( 'edit_published_entities', false );
-    //$role->add_cap( 'edit_others_entities', false );
-    $role->add_cap( 'publish_entities', false );
-    $role->add_cap( 'delete_private_entities' );
-    $role->add_cap( 'delete_published_entities' );
-
-
-    $role = get_role( 'administrator' );
-
-    $role->add_cap( 'read' );
-    $role->add_cap( 'read_entity' );
-    $role->add_cap( 'read_private_entities' );
-    $role->add_cap( 'edit_entity' );
-    $role->add_cap( 'edit_entities' );
-    $role->add_cap( 'edit_others_entities' );
-    $role->add_cap( 'edit_published_entities' );
-    $role->add_cap( 'publish_entities' );
-    $role->add_cap( 'delete_others_entities' );
-    $role->add_cap( 'delete_private_entities' );
-    $role->add_cap( 'delete_published_entities' );
-
-}, 20 );
-
-// modify the admin for the role
+/* modify the wp-admin for the role */
 
 // disable front-end admin bar
 add_action( 'plugins_loaded', function() {
@@ -85,7 +61,7 @@ add_action( 'admin_enqueue_scripts', function() {
     if ( !self::check_role( 'entity_delegate' ) ) { return; }
     if ( get_current_screen()->id != 'dashboard' ) { return; }
 
-    wp_redirect( get_option( 'siteurl' ) . '/wp-admin/edit.php?post_type=clinic' );
+    //wp_redirect( get_option( 'siteurl' ) . '/wp-admin/edit.php?post_type=clinic' ); // ++ restore!!
 });
 
 // remove the list of post-groups
@@ -112,6 +88,7 @@ add_action( 'wp_logout', function() {
 
 // hide some elements from the entity_delegate to not distrub
 add_action( 'admin_footer', function() {
+    global $wp_roles;
     if ( !self::check_role( 'entity_delegate' ) ) { return; }
     ?>
 <style>

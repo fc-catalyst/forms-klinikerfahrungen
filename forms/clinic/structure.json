@@ -39,6 +39,20 @@
                                 "email" : true
                             },
                             "meta_box" : true
+                        },
+                        {
+                            "type" : "text",
+                            "title" : "Multiple",
+                            "name" : "entity-multiple",
+                            "multiple" : true,
+                            "validate" : {
+                                "notEmpty" : true
+                            },
+                            "value" : [
+                                "value 1",
+                                "value 2"
+                            ],
+                            "meta_box" : true
                         }
                     ]
                 },
