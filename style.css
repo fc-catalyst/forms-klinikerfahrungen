@@ -94,19 +94,7 @@ body {
 .fcp-form--main input::-webkit-input-placeholder { color:var(--color-empty); font-weight:600; text-transform:uppercase; }
 .fcp-form--main input::placeholder { color:var(--color-empty); font-weight:600; text-transform:uppercase; }
 
-.fcp-form--main select.fcp-form-empty {
-    color:var(--color-empty);
-    font-weight:600;
-    text-transform:uppercase;
-}
-
 /* file */
-.fcp-form--main input[type=file]:not(.fcp-f-filled) + label {
-    color:var(--color-empty);
-    font-weight:600;
-    text-transform:uppercase;
-}
-
 .fcp-form--main input[type=file] {
     position:absolute;
     z-index:-1;
@@ -115,12 +103,20 @@ body {
     max-height:0;
     overflow:hidden;
 }
-.fcp-form--main input[type=file]:not(.fcp-f-filled) + label {
+.fcp-form--main input[type=file] + label {
     display:block!important;
 }
 
 .fcp-form--main input[type=file] + label + fieldset > label > input {
     opacity:0!important;
+}
+
+/* empty */
+.fcp-form--main select.fcp-form-empty,
+.fcp-form--main input[type=file].fcp-form-empty + label {
+    color:var(--color-empty);
+    font-weight:600;
+    text-transform:uppercase;
 }
 
 /* checkbox & radio */

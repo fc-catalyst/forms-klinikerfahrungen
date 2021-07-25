@@ -52,7 +52,7 @@ class FCP_Forms__Draw {
 
         foreach ( $value as $k => $v ) {
 
-            if ( empty( $v ) && count( $value ) > 1 ) { // && !is_numeric( $k )
+            if ( empty( $v ) && !$a->keep_empty && count( $value ) > 1 ) { // && !is_numeric( $k )
                 continue;
             }
 
@@ -213,12 +213,37 @@ class FCP_Forms__Draw {
         </select>
         <?php
     }
-    
+
+    private function field_datalist($a) {
+        ?>
+        <input
+            type="text"
+            name="<?php $this->e_field_name( $a->name ) ?>"
+            id="<?php $this->e_field_id( $a->name ) ?>"
+            list="<?php $this->e_field_id( $a->name ) ?>-list"
+            <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
+            placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty ? '*' : '' ?>"
+            value="<?php echo esc_attr( $a->savedValue ? $a->savedValue : $a->value ) ?>"
+            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
+        />
+        <datalist id="<?php $this->e_field_id( $a->name ) ?>-list">
+        <?php
+
+            foreach ( $a->options as $b ) :
+                ?>
+                <option value="<?php echo esc_attr( $b ) ?>">
+                <?php
+            endforeach;
+        ?>
+        </datalist>
+        <?php
+    }
+
     private function field_file($a) {
         if ( !empty( $a->uploaded_files ) ) {
             $count = count( $a->uploaded_files );
             //$label = $count == 1 ? $a->uploaded_files[0] : $count . ' Files Uploaded';
-            $label = ( $count == 1 ? '1 File' : $count . ' Files' ) . ' Uploaded:';
+            $label = ( $count == 1 ? '1 File' : $count . ' Files' ) . ' uploaded:';
         }
     
         ?>
@@ -227,11 +252,14 @@ class FCP_Forms__Draw {
             name="<?php $this->e_field_name( $a->name ) ?><?php echo $a->multiple ? '[]' : '' ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
             class="
-                <?php echo empty( $a->savedValue ) ? '' : 'fcp-f-filled' ?>
+                <?php echo empty( $a->savedValue ) ? 'fcp-form-empty' : '' ?>
                 <?php echo $a->warning ? 'fcp-f-invalid' : '' ?>
             "
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             <?php echo $a->multiple ? 'multiple' : '' ?>
+            data-select-file="<?php _e( 'Select File' ) ?>"
+            data-select-files="<?php _e( 'Select Files' ) ?>"
+            data-files-selected="<?php _e( 'files selected' ) ?>"
         />
         <label for="<?php $this->e_field_id( $a->name ) ?>">
             <?php echo $label ? $label : 'Select File' . ( $a->multiple ? 's' : '' ) ?>
@@ -425,7 +453,7 @@ class FCP_Forms__Draw {
     }
 
     private function e_field_id ($field_name) {
-        echo $field_name . $this->s->options->form_name;
+        echo $field_name . '_' . $this->s->options->form_name;
     }
     private function e_field_name ($field_name) {
         echo $field_name;

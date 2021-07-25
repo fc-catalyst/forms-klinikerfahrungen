@@ -4,17 +4,16 @@
         "print_method" : "server",
         "enctype" : "multipart/form-data",
         "json_validate" : 1,
-        "before" : "<div class=\"fcp-form-clinic fcp-form--half\">",
-        "after" : "</div>",
         "required_mark" : "*",
-        "reduce_font_after" : 36,
-        "prefix" : "entity"
+        "width" : "half",
+        "reduce_font_after" : 26,
+        "comment" : "there are fields moved, not mentioned here yet, as the engine is not really ready yet"
     },
     "fields" : [
         {
             "gtype" : "section",
             "title" : "Unternehmen",
-            "title_tag" : "h2",
+            "title_tag" : "h3",
             "fields" : [
                 {
                     "gtype" : "row",
@@ -26,32 +25,39 @@
                             "name" : "entity-name",
                             "validate" : {
                                 "notEmpty" : true
-                            },
-                            "meta_box" : true,
-                            "comment" : "this field goes to the title, not a meta box"
+                            }
                         },
                         {
                             "type" : "text",
-                            "title" : "E-mail",
+                            "title" : "Telefonnummer der Klinik",
+                            "name" : "entity-phone",
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "title" : "EMail Adresse für Kontaktanfrage",
                             "name" : "entity-email",
                             "validate" : {
-                                "notEmpty" : true,
                                 "email" : true
                             },
                             "meta_box" : true
                         },
                         {
                             "type" : "text",
-                            "title" : "Multiple",
-                            "name" : "entity-multiple",
-                            "multiple" : true,
+                            "title" : "Website der Klinik",
+                            "name" : "entity-website",
                             "validate" : {
-                                "notEmpty" : true
+                                "notEmpty" : true,
+                                "url" : true
                             },
-                            "value" : [
-                                "value 1",
-                                "value 2"
-                            ],
                             "meta_box" : true
                         }
                     ]
@@ -61,9 +67,99 @@
                     "cols" : 2,
                     "fields" : [
                         {
+                            "type" : "text",
+                            "title" : "Adresse",
+                            "name" : "entity-address",
+                            "validate" : {
+                                "notEmpty" : true
+                            },
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "hidden",
+                            "name" : "entity-region",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "hidden",
+                            "name" : "entity-geo-lat",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "hidden",
+                            "name" : "entity-geo-long",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "hidden",
+                            "name" : "entity-geo-city",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "hidden",
+                            "name" : "entity-geo-postcode",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "datalist",
+                            "title" : "Branche",
+                            "placeholder" : "Select an Option…",
+                            "name" : "entity-specialty",
+                            "options" : {
+                                "857" : "Allergologen",
+                                "858" : "Allgemein- &amp; Hausärzte",
+                                "860" : "Augenärzte",
+                                "861" : "Chirurgen",
+                                "863" : "Dermatologen",
+                                "859" : "Gynäkologen",
+                                "864" : "HNO-Ärzte",
+                                "1862" : "Innere Medizin",
+                                "1863" : "&nbsp;&nbsp;&nbsp;Endokrinologen",
+                                "1864" : "&nbsp;&nbsp;&nbsp;Gastroenterologen",
+                                "865" : "&nbsp;&nbsp;&nbsp;Kardiologen",
+                                "2071" : "&nbsp;&nbsp;&nbsp;Pneumologen",
+                                "866" : "Kinderärzte",
+                                "867" : "Neurologen",
+                                "868" : "Orthopäden",
+                                "862" : "Plastische und Ästhetische Chirurgen",
+                                "1022" : "Psychologen &amp; Psychotherapeuten",
+                                "869" : "Psychologen &amp; Psychotherapie",
+                                "1861" : "Radiologen",
+                                "870" : "Urologen",
+                                "871" : "Zahnärzte"
+                            },
+                            "options_get" : "specialty",
+                            "validate" : {
+                                "notEmpty" : true
+                            },
+                            "meta_box" : true
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "button",
+                            "title" : "Specify on map",
+                            "name" : "entity-map"
+                        },
+                        {
+                            "type" : "button",
+                            "title" : "Specify working hours",
+                            "name" : "entity-working-hours"
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
                             "type" : "file",
-                            "title" : "Single Upload",
-                            "name" : "entity-logo",
+                            "title" : "Logo Ihrer Klinik / ",
+                            "name" : "entity-avatar",
                             "validate" : {
                                 "default" : true,
                                 "maxSize" : 1000000,
@@ -77,29 +173,218 @@
                             "meta_box" : true
                         },
                         {
-                            "type" : "file",
-                            "title" : "Multiple Upload",
-                            "name" : "entity-image",
-                            "multiple" : true,
-                            "limit" : 3,
+                            "type" : "text",
+                            "title" : "Video zum Profil hinzufügen",
+                            "name" : "entity-video",
                             "validate" : {
-                                "default" : true,
-                                "maxSize" : 1000000,
-                                "extension" : [
-                                    "jpg",
-                                    "png"
-                                ]
+                                "url" : true
                             },
                             "meta_box" : true
+                        }
+                    ]
+                },
+                {
+                    "type" : "textarea",
+                    "title" : "Unternehmens Beschreibung",
+                    "name" : "entity-content",
+                    "rows" : 8,
+                    "validate" : {
+                        "notEmpty" : true
+                    },
+                    "meta_box" : true
+                }
+            ]
+        },
+        {
+            "gtype" : "section",
+            "title" : "Öffnungszeiten (optional)",
+            "title_tag" : "h3",
+            "id" : "oeffnungszeiten",
+            "description" : "<p>Keep empty if days are not work-days</p>",
+            "fields" : [
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "name" : "mo-open",
+                            "title" : "Monday",
+                            "placeholder" : "Open",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "mo-close",
+                            "title" : "&nbsp;",
+                            "placeholder" : "Close",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "name" : "tu-open",
+                            "title" : "Tuesday",
+                            "placeholder" : "Open",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "tu-close",
+                            "title" : "&nbsp;",
+                            "placeholder" : "Close",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "name" : "we-open",
+                            "title" : "Wednesday",
+                            "placeholder" : "Open",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "we-close",
+                            "title" : "&nbsp;",
+                            "placeholder" : "Close",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "name" : "th-open",
+                            "title" : "Thursday",
+                            "placeholder" : "Open",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "th-close",
+                            "title" : "&nbsp;",
+                            "placeholder" : "Close",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "name" : "fr-open",
+                            "title" : "Friday",
+                            "placeholder" : "Open",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "fr-close",
+                            "title" : "&nbsp;",
+                            "placeholder" : "Close",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "name" : "sa-open",
+                            "title" : "Saturday",
+                            "placeholder" : "Open",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "sa-close",
+                            "title" : "&nbsp;",
+                            "placeholder" : "Close",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "name" : "su-open",
+                            "title" : "Sunday",
+                            "placeholder" : "Open",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "su-close",
+                            "title" : "&nbsp;",
+                            "placeholder" : "Close",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
                         }
                     ]
                 }
             ]
         },
         {
+            "gtype" : "section",
+            "fields" : [
+                {
+                    "type" : "notice",
+                    "text" : "<div class=\"gmaps-specify-map\"></div>"
+                }
+            ]
+        },
+        {
             "type" : "submit",
-            "name" : "user-submit",
-            "value" : "Submit"
+            "name" : "entity-submit",
+            "value" : "Weiter"
         }
     ]
 }
