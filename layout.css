@@ -46,14 +46,44 @@
 }
 /* hidden */
 .fcp-form-group-hidden {
+    position:fixed;
+    left:0;
+    top:0;
+    right:0;
+    bottom:0;
+    background-color:#fff;
+    overflow:auto;
+    padding:40px 30px 80px;
+}
+
+.fcp-form-group-hidden {
     opacity:0;
     z-index:-1;
     pointer-events:none;
 }
-.fcp-form-group-hidden.active {
+.fcp-form-group-hidden.fcp-active {
     opacity:1;
-    z-index:10;
+    z-index:100;
     pointer-events:auto;
+}
+.fcp-form-group-hidden > * {
+    max-width:800px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+/* hidden buttons */
+.fcp-form-group-hidden .fcp-section--close {
+    width:50px;
+    height:50px;
+    position:fixed;
+    bottom:10px;
+}
+.fcp-form-group-hidden .fcp-section--apply {
+    left:calc( 50% + 7px );
+}
+.fcp-form-group-hidden .fcp-section--discard {
+    right:calc( 50% + 7px );
 }
 
 /* LAYOUTS */
@@ -146,7 +176,7 @@
     padding:0;
     border:none;
 }
-.fcp-form input[type=file]:not(.fcp-f-filled) + label {
+.fcp-form input[type=file].fcp-form-empty + label {
     display:none;
 }
 .fcp-form input[type=file] + label + fieldset > label {

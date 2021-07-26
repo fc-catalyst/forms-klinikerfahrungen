@@ -17,7 +17,13 @@
         // working hours picker
         
         // picker for branche?
-        
+        var workhours_popup = new FCP_Forms_Hidden( '#clinic-work-hours' );
+        $( '#entity-working-hours_clinic' ).on( 'click', function() {
+            workhours_popup.show();
+        });
+
+        // ++tmp
+        workhours_popup.show();
     });
 
 })();

@@ -103,7 +103,6 @@
                         {
                             "type" : "datalist",
                             "title" : "Branche",
-                            "placeholder" : "Select an Option…",
                             "name" : "entity-specialty",
                             "options" : {
                                 "857" : "Allergologen",
@@ -142,12 +141,12 @@
                     "fields" : [
                         {
                             "type" : "button",
-                            "title" : "Specify on map",
+                            "value" : "Specify on map",
                             "name" : "entity-map"
                         },
                         {
                             "type" : "button",
-                            "title" : "Specify working hours",
+                            "value" : "Specify working hours",
                             "name" : "entity-working-hours"
                         }
                     ]
@@ -196,10 +195,10 @@
             ]
         },
         {
-            "gtype" : "section",
+            "gtype" : "hidden",
             "title" : "Öffnungszeiten (optional)",
             "title_tag" : "h3",
-            "id" : "oeffnungszeiten",
+            "id" : "clinic-work-hours",
             "description" : "<p>Keep empty if days are not work-days</p>",
             "fields" : [
                 {
@@ -362,6 +361,30 @@
                         {
                             "type" : "text",
                             "name" : "su-close",
+                            "title" : "&nbsp;",
+                            "placeholder" : "Close",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "name" : "ha-open",
+                            "title" : "Sunday",
+                            "placeholder" : "Open",
+                            "meta_box" : true,
+                            "multiple" : true,
+                            "keep_empty" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "ha-close",
                             "title" : "&nbsp;",
                             "placeholder" : "Close",
                             "meta_box" : true,

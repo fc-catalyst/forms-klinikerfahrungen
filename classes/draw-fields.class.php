@@ -87,6 +87,17 @@ class FCP_Forms__Draw {
         <?php
     }
     
+    private function field_button($a) {
+        ?>
+        <button
+            type="button"
+            name="<?php $this->e_field_name( $a->name ) ?>"
+            id="<?php $this->e_field_id( $a->name ) ?>"
+            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
+        ><?php echo $a->value ?></button>
+        <?php
+    }
+    
     private function field_hidden($a) {
         ?>
         <input
@@ -408,11 +419,22 @@ class FCP_Forms__Draw {
     }
     
     private function printGroup($f) {
+
+        /*
+        if ( $f->gtype == 'hidden' ) { // for the hiddens display
+            echo '<input type="checkbox" aria-hidden="true" id="' . $f->id . '-tumbler" />';
+        }
+        //*/
+
         ?>
-        <div class="fcp-form-group
-            fcp-form-group-<?php echo $f->gtype ?>
-            <?php echo $f->cols ? ' fcp-form-cols-'.$f->cols : '' ?>
-        ">
+        <div 
+            class="
+                fcp-form-group
+                fcp-form-group-<?php echo $f->gtype ?>
+                <?php echo $f->cols ? ' fcp-form-cols-'.$f->cols : '' ?>
+            "
+            <?php echo $f->id ? 'id="'.$f->id.'"' : '' ?>
+        >
         <?php
             if ( $f->title || $f->description ) {
                 ?>
@@ -447,6 +469,14 @@ class FCP_Forms__Draw {
                 }
             }
         }
+
+        /*
+        if ( $f->gtype == 'hidden' ) { // hiddens' close buttons
+            echo '<label for="' . $f->id . '-tumbler" class="fcp-form-group-done">Done</label>';
+            echo '<label for="' . $f->id . '-tumbler" class="fcp-form-group-close">Close</label>';
+        }
+        //*/
+
         ?>
         </div>
         <?php
