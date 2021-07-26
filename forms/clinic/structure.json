@@ -76,31 +76,6 @@
                             "meta_box" : true
                         },
                         {
-                            "type" : "hidden",
-                            "name" : "entity-region",
-                            "meta_box" : true
-                        },
-                        {
-                            "type" : "hidden",
-                            "name" : "entity-geo-lat",
-                            "meta_box" : true
-                        },
-                        {
-                            "type" : "hidden",
-                            "name" : "entity-geo-long",
-                            "meta_box" : true
-                        },
-                        {
-                            "type" : "hidden",
-                            "name" : "entity-geo-city",
-                            "meta_box" : true
-                        },
-                        {
-                            "type" : "hidden",
-                            "name" : "entity-geo-postcode",
-                            "meta_box" : true
-                        },
-                        {
                             "type" : "datalist",
                             "title" : "Branche",
                             "name" : "entity-specialty",
@@ -212,7 +187,8 @@
                             "placeholder" : "Open",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         },
                         {
                             "type" : "text",
@@ -221,7 +197,8 @@
                             "placeholder" : "Close",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         }
                     ]
                 },
@@ -236,7 +213,8 @@
                             "placeholder" : "Open",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         },
                         {
                             "type" : "text",
@@ -245,7 +223,8 @@
                             "placeholder" : "Close",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         }
                     ]
                 },
@@ -260,7 +239,8 @@
                             "placeholder" : "Open",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         },
                         {
                             "type" : "text",
@@ -269,7 +249,8 @@
                             "placeholder" : "Close",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         }
                     ]
                 },
@@ -284,7 +265,8 @@
                             "placeholder" : "Open",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         },
                         {
                             "type" : "text",
@@ -293,7 +275,8 @@
                             "placeholder" : "Close",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         }
                     ]
                 },
@@ -308,7 +291,8 @@
                             "placeholder" : "Open",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         },
                         {
                             "type" : "text",
@@ -317,7 +301,8 @@
                             "placeholder" : "Close",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         }
                     ]
                 },
@@ -332,7 +317,8 @@
                             "placeholder" : "Open",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         },
                         {
                             "type" : "text",
@@ -341,7 +327,8 @@
                             "placeholder" : "Close",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         }
                     ]
                 },
@@ -356,7 +343,8 @@
                             "placeholder" : "Open",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         },
                         {
                             "type" : "text",
@@ -365,7 +353,8 @@
                             "placeholder" : "Close",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         }
                     ]
                 },
@@ -380,7 +369,8 @@
                             "placeholder" : "Open",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         },
                         {
                             "type" : "text",
@@ -389,18 +379,48 @@
                             "placeholder" : "Close",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true
+                            "keep_empty" : true,
+                            "autocomplete" : "off"
                         }
                     ]
                 }
             ]
         },
         {
-            "gtype" : "section",
+            "gtype" : "hidden",
+            "title" : "Specify on map",
+            "title_tag" : "h3",
+            "id" : "clinic-specify-map",
+            "description" : "<p>You can specify the place, for example, place the pin to the facility entrance.</p>",
             "fields" : [
                 {
                     "type" : "notice",
-                    "text" : "<div class=\"gmaps-specify-map\"></div>"
+                    "text" : "<div class=\"gmaps-specify-map\" style=\"border:1px dotted red;\"></div>"
+                },
+                {
+                    "type" : "hidden",
+                    "name" : "entity-region",
+                    "meta_box" : true
+                },
+                {
+                    "type" : "hidden",
+                    "name" : "entity-geo-lat",
+                    "meta_box" : true
+                },
+                {
+                    "type" : "hidden",
+                    "name" : "entity-geo-long",
+                    "meta_box" : true
+                },
+                {
+                    "type" : "hidden",
+                    "name" : "entity-geo-city",
+                    "meta_box" : true
+                },
+                {
+                    "type" : "hidden",
+                    "name" : "entity-geo-postcode",
+                    "meta_box" : true
                 }
             ]
         },

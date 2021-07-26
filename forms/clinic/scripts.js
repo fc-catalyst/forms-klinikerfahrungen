@@ -12,18 +12,16 @@
         var $ = window.jQuery;
         window.clearInterval( a );
 
-        // working hours fields operate
-        
-        // working hours picker
-        
-        // picker for branche?
         var workhours_popup = new FCP_Forms_Hidden( '#clinic-work-hours' );
         $( '#entity-working-hours_clinic' ).on( 'click', function() {
-            workhours_popup.show();
+            workhours_popup.show( this );
+        });
+        
+        var gmap_popup = new FCP_Forms_Hidden( '#clinic-specify-map' );
+        $( '#entity-map_clinic' ).on( 'click', function() {
+            gmap_popup.show( this );
         });
 
-        // ++tmp
-        workhours_popup.show();
     });
 
 })();

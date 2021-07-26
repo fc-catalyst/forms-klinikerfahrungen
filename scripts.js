@@ -90,17 +90,28 @@ function FCP_Forms_Hidden(section) {
     
     var self = this;
     
-    this.show = function() {
+    this.show = function(target) {
         this.section.classList.add( 'fcp-active' );
         document.querySelector( 'body' ).style.overflow = 'hidden';
-        // ++first element focus
-    }
+        document.addEventListener( 'keydown', key_press );
+        presave_values();
+        this.section.querySelector( 'input, button, select, textarea' ).focus();
+        if ( typeof target === 'object' ) {
+            self.target = target;
+        } else {
+            delete self.target;
+        }
+    };
     
     this.hide = function() {
         this.section.classList.remove( 'fcp-active' );
         document.querySelector( 'body' ).style.overflow = null;
-    }
-    
+        document.removeEventListener( 'keydown', key_press );
+        if ( typeof self.target !== 'undefined' ) {
+            self.target.focus();
+        }
+    };
+
     // close buttons
     var apply = document.createElement( 'button' );
     apply.title = 'Apply';
@@ -108,7 +119,6 @@ function FCP_Forms_Hidden(section) {
     apply.className = 'fcp-section--close fcp-section--apply';
     apply.addEventListener( 'click', function() {
        self.hide();
-       // ++!! override enter button
     });
     this.section.appendChild( apply );
     
@@ -118,9 +128,35 @@ function FCP_Forms_Hidden(section) {
     discard.className = 'fcp-section--close fcp-section--discard';
     discard.addEventListener( 'click', function() {
        self.hide();
-       // ++reset the initials before opening the popup
-       // ++add esc button
+       restore_values();
     });
     this.section.appendChild( discard );
+    
+    function key_press(e) {
+        if ( e.code === 'Enter' ) {
+            if ( !~['input','button','select','textarea'].indexOf( e.target.nodeName.toLowerCase() ) ) { return true; }
+            e.preventDefault();
+            self.hide();
+            return false;
+        }
+        if ( e.code === 'Escape' ) {
+            e.preventDefault();
+            self.hide();
+            restore_values();
+            return false;
+        }
+    }
+    
+    function presave_values() {
+        self.section.querySelectorAll( 'input, button, select, textarea' ).forEach( function(a) {
+            a.setAttribute( 'data-presaved-value', a.value );
+        });
+    }
+    function restore_values() {
+        self.section.querySelectorAll( 'input, button, select, textarea' ).forEach( function(a) {
+            a.value = a.getAttribute( 'data-presaved-value' );
+            a.removeAttribute( 'data-presaved-value' );
+        });
+    }
     
 }

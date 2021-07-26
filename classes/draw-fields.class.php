@@ -68,6 +68,7 @@ class FCP_Forms__Draw {
             value="<?php echo esc_attr( $v ) ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
             <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
+            <?php echo isset( $a->autocomplete ) ? 'autocomplete="'.$a->autocomplete.'"' : '' ?>
         />
         <?php
         
