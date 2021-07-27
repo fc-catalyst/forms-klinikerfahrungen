@@ -9,35 +9,80 @@
     "fields" : [
         {
             "gtype" : "section",
-            "title" : "Clinic / Doctor Registration",
+            "title" : "eine Klinik oder einen Arzt registrieren",
             "title_tag" : "h2",
             "fields" : [
                 {
-                    "type" : "text",
-                    "placeholder" : "E-mail",
-                    "name" : "user-email",
+                    "gtype" : "row",
+                    "fields" : [
+                        {
+                            "type" : "text",
+                            "placeholder" : "E-mail",
+                            "name" : "user-email",
+                            "validate" : {
+                                "notEmpty" : true,
+                                "email" : true
+                            }
+                        },
+                        {
+                            "type" : "text",
+                            "placeholder" : "Password",
+                            "name" : "user-password",
+                            "validate" : {
+                                "notEmpty" : true,
+                                "password" : true
+                            }
+                        },
+                        {
+                            "type" : "text",
+                            "placeholder" : "Repeat Password",
+                            "name" : "user-password-repeat",
+                            "validate" : {
+                                "notEmpty" : true,
+                                "equals" : "user-password"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
+                        {
+                            "type" : "checkbox",
+                            "name" : "user-datenschutzhinweise",
+                            "options" : {
+                                "Datenschutzhinweise bestätigt" : "Datenschutzhinweise"
+                            },
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        },
+                        {
+                            "type" : "checkbox",
+                            "name" : "user-nutzungsbedingungen",
+                            "options" : {
+                                "Nutzungsbedingungen bestätigt" : "Nutzungsbedingungen"
+                            },
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type" : "checkbox",
+                    "name" : "user-agb",
+                    "options" : {
+                        "AGB bestätigt" : "AGB"
+                    },
                     "validate" : {
-                        "notEmpty" : true,
-                        "email" : true
+                        "notEmpty" : true
                     }
                 },
                 {
-                    "type" : "text",
-                    "placeholder" : "Password",
-                    "name" : "user-password",
-                    "validate" : {
-                        "notEmpty" : true,
-                        "password" : true
-                    }
-                },
-                {
-                    "type" : "text",
-                    "placeholder" : "Repeat Password",
-                    "name" : "user-password-repeat",
-                    "validate" : {
-                        "notEmpty" : true,
-                        "equals" : "user-password"
-                    }
+                    "type" : "notice",
+                    "text" : "<small><a href=\"/datenschutzerklarung/\" target=\"_blank\">Datenschutzerklärung</a> | <a href=\"/agb/\" target=\"_blank\">Allgemeinen Geschäftsbedingungen</a> | <a href=\"/faq/\" target=\"_blank\">Nutzungsbedingungen</a></small>"
                 }
             ]
         },

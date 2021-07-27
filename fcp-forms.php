@@ -210,7 +210,7 @@ class FCP_Forms {
             return;
         }
         $screen = get_current_screen();
-        if ( !isset( $screen ) || !is_object( $screen ) || $screen->post_type != 'clinic' ) {
+        if ( !isset( $screen ) || !is_object( $screen ) ) { // || $screen->post_type != 'clinic'
             return;
         }
 
@@ -226,7 +226,7 @@ class FCP_Forms {
 
         // custom handler ++ can try to place it before fetching json?
         @include_once( $this->forms_path . $dir . '/override.php' );
-        if ( $override ) {
+        if ( isset( $override ) ) {
             return $override;
         }
 
@@ -363,6 +363,8 @@ class FCP_Forms {
 new FCP_Forms();
 
 /*
+    add meta boxes automatically, if are mentioned in the structure (now in forms' index.php)
+    add_styles_scripts_admin - a all mentioned post types
     exclude dirs, starting from -- - take from gutenberg
     !! check is_admin in saveMetaBoxes !!
     clinic meta boxes to proper ones

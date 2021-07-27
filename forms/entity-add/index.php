@@ -7,17 +7,17 @@ if ( !class_exists( 'FCPAddPostType' ) ) {
 }
 
 new FCPAddPostType( [
-    'name' => 'Doctor',
-    'type' => 'doctor',
-    'slug' => 'doctor',
-    'plural' => 'My Doctors',
-    'description' => 'The list of registered doctors',
+    'name' => 'Clinic',
+    'type' => 'clinic',
+    'slug' => 'kliniken',
+    'plural' => 'My Clinics',
+    'description' => 'The list of registered clinics',
     'fields' => ['title', 'comments', 'author', 'revisions'],
     'hierarchical' => false,
     'public' => true,
     'gutenberg' => false,
-    'menu_position' => 22,
-    'menu_icon' => 'dashicons-businessperson',
+    'menu_position' => 21,
+    'menu_icon' => 'dashicons-plus-alt',
     'has_archive' => true,
     'capability_type' => ['entity', 'entities']
 ] );
@@ -30,11 +30,11 @@ add_filter( 'template_include', function( $template ) {
     $new_template = $template; // default theme template
     $path = $this->forms_path . 'clinic/templates/';
 
-    if ( is_singular( 'doctor' ) ) {
+    if ( is_singular( 'clinic' ) ) {
         $new_template = $path . 'clinic-template.php';
     }
 
-    if ( is_post_type_archive( 'doctor' ) ) {
+    if ( is_post_type_archive( 'clinic' ) ) {
         $new_template = $path . 'clinic-archive.php';
     }
 
@@ -44,6 +44,22 @@ add_filter( 'template_include', function( $template ) {
 
     return $template;
 
+}, 99 );
+
+add_filter( 'comments_template', function( $template ) {
+
+    $new_template = $template; // default theme template
+    $path = $this->forms_path . 'clinic/templates/';
+
+    if ( is_singular( 'clinic' ) ) {
+		$new_template = $path . 'clinic-comments.php';
+	}
+	
+    if ( file_exists( $new_template ) ) {
+        return $new_template;
+    }
+
+    return $template;
 }, 99 );
 
 /*
@@ -73,7 +89,7 @@ if ( $json === false ) { return; }
 
 new FCP_Add_Meta_Boxes( $json, (object) [
     'title' => 'Clinic Information',
-    'post_types' => ['doctor'],
+    'post_types' => ['clinic'],
     'context' => 'normal',
     'priority' => 'high'
 ] );

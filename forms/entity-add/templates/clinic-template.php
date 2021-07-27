@@ -2,7 +2,7 @@
 
 // ++ move the functions somewhere, index.php with namespace or a class?
 
-$fcp_imgs_dir = str_replace( ABSPATH, get_site_url() . '/', dirname( __DIR__ ) . '/images/' );
+$fcp_imgs_dir = str_replace( ABSPATH, get_site_url() . '/', dirname( __DIR__ ) . '/templates/images/' );
 
 function fcp_epmp($name, $return = '') { // ++ add reset for lists
     static $pmb = null;

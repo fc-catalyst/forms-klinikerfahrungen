@@ -7,8 +7,6 @@ if ( $warning || !empty( $warns->result ) ) {
     return;
 }
 
-
-
 // log in
 $creds['user_login'] = $_POST['user-email'];
 $creds['user_password'] = $_POST['user-password'];

@@ -52,7 +52,6 @@ add_action( 'wp_before_admin_bar_render', function() {
 // disable dashboard
 add_action( 'admin_menu', function(){  
     if ( !self::check_role( 'entity_delegate' ) ) { return; }
-
     remove_menu_page( 'index.php' );
 });
 
@@ -81,7 +80,7 @@ add_filter( 'login_redirect', function( $redirect_to, $requested_redirect_to, $u
 
 // logout redirect home
 add_action( 'wp_logout', function() {
-    // if ( !self::check_role( 'entity_delegate' ) ) { return; } // it doesn't work here :( BUT make the log out message on home page very obvious!!
+    // if ( !self::check_role( 'entity_delegate' ) ) { return; } // it doesn't work here :( BUT make the log out message on home page the most obvious!!
     wp_safe_redirect( home_url() );
     exit;
 });

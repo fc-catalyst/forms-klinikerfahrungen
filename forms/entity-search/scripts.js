@@ -52,12 +52,12 @@
             // Libraries can be used from here
 
             new FCP_Advisor(
-                $( '#fcpf_clinic-search_spezialisierung' ),
+                $( '#spezialisierung_entity-search' ),
                 ['Allergologen', 'Allgemein- &amp; Hausärzte', 'Augenärzte', 'Chirurgen', 'Dermatologen', 'Gynäkologen', 'HNO-Ärzte', 'Kardiologen', 'Kinderärzte', 'Neurologen', 'Orthopäden', 'Plastische und Ästhetische Chirurgen', 'Psychologen &amp; Psychotherapie', 'Urologen', 'Zahnärzte']
             );
 
             new google.maps.places.Autocomplete(
-                $( '#fcpf_clinic-search_region' )[0],
+                $( '#region_entity-search' )[0],
                 {
                     componentRestrictions: { country: ['de'] },
                     fields: ['geometry'],
@@ -66,10 +66,12 @@
             );
             
             // --move slider to a separate plugin?
+            /*
             new FCP_Slider(
                 '.fcp-group-slider > .wp-block-group__inner-container',
                 { 'navigation': [ 'arrows', 'dots', 'can_block' ] }
             );
+            //*/
 
         }, 500 );
 

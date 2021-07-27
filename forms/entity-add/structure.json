@@ -132,7 +132,7 @@
                     "fields" : [
                         {
                             "type" : "file",
-                            "title" : "Logo Ihrer Klinik / ",
+                            "title" : "Logo Ihrer Klinik / Doctor Photo",
                             "name" : "entity-avatar",
                             "validate" : {
                                 "default" : true,
@@ -152,6 +152,26 @@
                             "name" : "entity-video",
                             "validate" : {
                                 "url" : true
+                            },
+                            "meta_box" : true
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "fields" : [
+                        {
+                            "type" : "radio",
+                            "cols" : 3,
+                            "title" : "Ich Wähle Einen",
+                            "name" : "entity-tariff",
+                            "options" : {
+                                "standardeintrag" : "Standardeintrag",
+                                "premiumeintrag" : "Premiumeintrag",
+                                "kostenloser_eintrag" : "Kostenloser Eintrag"
+                            },
+                            "validate" : {
+                                "notEmpty" : true
                             },
                             "meta_box" : true
                         }

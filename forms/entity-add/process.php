@@ -43,8 +43,7 @@ if ( $id === 0 ) {
 $dir = wp_get_upload_dir()['basedir'] . '/entity/' . $id;
 
 if ( !$uploads->upload_tmp_main([
-    'entity-logo' => $dir,
-    'entity-image' => $dir
+    'entity-avatar' => $dir
 ])) {
     return;
 }

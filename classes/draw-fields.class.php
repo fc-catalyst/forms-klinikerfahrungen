@@ -38,9 +38,7 @@ class FCP_Forms__Draw {
     }
     
     private function field_notice($a) {
-        ?>
-        <p><?php echo $a->text ?></p>
-        <?php
+        echo $a->text;
     }
 
     private function field_text($a) {
