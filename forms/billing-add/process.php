@@ -34,5 +34,31 @@ if ( $id === 0 ) {
     return;
 }
 
-// redirect on success
-$redirect = get_permalink( $id );
+// autofill the entity billing information
+// picking the new clinic (the only, actually)
+$authors_entitiy = new WP_Query([
+    'author' => wp_get_current_user()->ID,
+    'post_type' => ['clinic', 'doctor'], // ++replace with entity
+    'orderby' => 'ID',
+    'order'   => 'DESC',
+    'posts_per_page' => 2
+]);
+
+// checking if there is only one billing method
+$authors_billing = new WP_Query([
+    'author' => wp_get_current_user()->ID,
+    'post_type' => 'billing',
+    'posts_per_page' => 2
+]);
+
+if ( $authors_entitiy->post_count === 1 && $authors_billing->post_count === 1 ) {
+    update_post_meta( $authors_entitiy->posts[0]->ID, 'entity-billing', $id );
+}
+
+
+// redirect to the newly created on previous step entity page
+if ( $authors_entitiy->post_count === 1 ) {
+    $redirect = get_permalink( $authors_entitiy->posts[0]->ID );
+    return;
+}
+$redirect = get_edit_post_link( $id );

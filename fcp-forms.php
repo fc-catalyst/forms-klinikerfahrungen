@@ -363,6 +363,10 @@ class FCP_Forms {
 new FCP_Forms();
 
 /*
+    if the form is only for admin - unify the shortcode overrides
+    FCP_Add_Meta_Boxes get the title from json
+    redirect to the editor works strange for admins - test for delegates
+    filter multiple fields empty values, as schedule fills in too many rows
     add meta boxes automatically, if are mentioned in the structure (now in forms' index.php)
     add_styles_scripts_admin - a all mentioned post types
     exclude dirs, starting from -- - take from gutenberg

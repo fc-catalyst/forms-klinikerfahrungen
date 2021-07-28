@@ -67,6 +67,7 @@ class FCP_Forms__Draw {
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
             <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
             <?php echo isset( $a->autocomplete ) ? 'autocomplete="'.$a->autocomplete.'"' : '' ?>
+            <?php //echo $a->roles_edit ? in_array() $this->check_roles(); ?>
         />
         <?php
         
@@ -486,6 +487,13 @@ class FCP_Forms__Draw {
     }
     private function e_field_name ($field_name) {
         echo $field_name;
+    }
+    private function check_roles() {
+        static $roles = [];
+        if ( empty( $roles ) ) {
+            $roles = get_userdata( get_current_user_id() )->roles;
+        }
+        return $roles;
     }
 
     public function print_meta_boxes() {

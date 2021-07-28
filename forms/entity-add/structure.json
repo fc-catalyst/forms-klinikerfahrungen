@@ -17,6 +17,23 @@
             "fields" : [
                 {
                     "gtype" : "row",
+                    "fields" : [
+                        {
+                            "type" : "radio",
+                            "cols" : 2,
+                            "name" : "entity-entity",
+                            "options" : {
+                                "clinic" : "Klinik",
+                                "doctor" : "Doctor"
+                            },
+                            "validate" : {
+                                "notEmpty" : true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
                     "cols" : 2,
                     "fields" : [
                         {

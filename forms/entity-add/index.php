@@ -10,14 +10,30 @@ new FCPAddPostType( [
     'name' => 'Clinic',
     'type' => 'clinic',
     'slug' => 'kliniken',
-    'plural' => 'My Clinics',
-    'description' => 'The list of registered clinics',
+    'plural' => 'Clinics',
+    'description' => 'The list of clinics, registered by you',
     'fields' => ['title', 'comments', 'author', 'revisions'],
     'hierarchical' => false,
     'public' => true,
     'gutenberg' => false,
     'menu_position' => 21,
     'menu_icon' => 'dashicons-plus-alt',
+    'has_archive' => true,
+    'capability_type' => ['entity', 'entities']
+] );
+
+new FCPAddPostType( [
+    'name' => 'Doctor',
+    'type' => 'doctor',
+    'slug' => 'doctor',
+    'plural' => 'Doctors',
+    'description' => 'The list of registered doctors, registered by you',
+    'fields' => ['title', 'comments', 'author', 'revisions'],
+    'hierarchical' => false,
+    'public' => true,
+    'gutenberg' => false,
+    'menu_position' => 22,
+    'menu_icon' => 'dashicons-insert',
     'has_archive' => true,
     'capability_type' => ['entity', 'entities']
 ] );
@@ -30,11 +46,11 @@ add_filter( 'template_include', function( $template ) {
     $new_template = $template; // default theme template
     $path = $this->forms_path . 'clinic/templates/';
 
-    if ( is_singular( 'clinic' ) ) {
+    if ( is_singular( 'clinic' ) || is_singular( 'doctor' ) ) {
         $new_template = $path . 'clinic-template.php';
     }
 
-    if ( is_post_type_archive( 'clinic' ) ) {
+    if ( is_post_type_archive( 'clinic' ) || is_post_type_archive( 'doctor' ) ) {
         $new_template = $path . 'clinic-archive.php';
     }
 
@@ -51,7 +67,7 @@ add_filter( 'comments_template', function( $template ) {
     $new_template = $template; // default theme template
     $path = $this->forms_path . 'clinic/templates/';
 
-    if ( is_singular( 'clinic' ) ) {
+    if ( is_singular( 'clinic' ) || is_singular( 'doctor' ) ) {
 		$new_template = $path . 'clinic-comments.php';
 	}
 	
@@ -88,8 +104,8 @@ $json = FCP_Forms::structure( $dir );
 if ( $json === false ) { return; }
 
 new FCP_Add_Meta_Boxes( $json, (object) [
-    'title' => 'Clinic Information',
-    'post_types' => ['clinic'],
+    'title' => 'The Information',
+    'post_types' => ['clinic', 'doctor'],
     'context' => 'normal',
     'priority' => 'high'
 ] );
