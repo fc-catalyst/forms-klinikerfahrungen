@@ -39,6 +39,6 @@ if ( is_wp_error( $user ) ) {
 }
 
 $redirect = $_POST['_wp_http_referer'] ? $_POST['_wp_http_referer'] : get_permalink();
-add_query_arg( [
-    "register_step" => 2
+$redirect = add_query_arg( [
+    "registration_step" => 2
 ], $redirect );

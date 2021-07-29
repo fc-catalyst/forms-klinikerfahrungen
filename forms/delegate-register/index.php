@@ -82,7 +82,7 @@ add_filter( 'login_redirect', function( $redirect_to, $requested_redirect_to, $u
 // logout redirect home
 add_action( 'wp_logout', function() {
     // if ( !self::check_role( 'entity_delegate' ) ) { return; } // it doesn't work here :( BUT make the log out message on home page the most obvious!!
-    wp_safe_redirect( home_url() );
+    //wp_safe_redirect( home_url() ); // ++restore
     exit;
 });
 

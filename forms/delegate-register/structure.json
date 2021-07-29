@@ -28,7 +28,7 @@
                             }
                         },
                         {
-                            "type" : "text",
+                            "type" : "password",
                             "placeholder" : "Password",
                             "name" : "user-password",
                             "validate" : {
@@ -37,7 +37,7 @@
                             }
                         },
                         {
-                            "type" : "text",
+                            "type" : "password",
                             "placeholder" : "Repeat Password",
                             "name" : "user-password-repeat",
                             "validate" : {
