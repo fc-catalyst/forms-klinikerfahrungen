@@ -44,14 +44,14 @@ new FCPAddPostType( [ // basically the clone of clinics for now
 add_filter( 'template_include', function( $template ) {
 
     $new_template = $template; // default theme template
-    $path = $this->forms_path . 'clinic/templates/';
+    $path = $this->forms_path . 'entity-add/templates/'; // ++get the dir name automatically for all
 
     if ( is_singular( 'clinic' ) || is_singular( 'doctor' ) ) {
-        $new_template = $path . 'clinic-template.php';
+        $new_template = $path . 'entity-template.php'; // ++rename these with not prefix
     }
 
     if ( is_post_type_archive( 'clinic' ) || is_post_type_archive( 'doctor' ) ) {
-        $new_template = $path . 'clinic-archive.php';
+        $new_template = $path . 'entities-archive.php';
     }
 
     if ( file_exists( $new_template ) ) {
@@ -65,10 +65,10 @@ add_filter( 'template_include', function( $template ) {
 add_filter( 'comments_template', function( $template ) {
 
     $new_template = $template; // default theme template
-    $path = $this->forms_path . 'clinic/templates/';
+    $path = $this->forms_path . 'entity-add/templates/';
 
     if ( is_singular( 'clinic' ) || is_singular( 'doctor' ) ) {
-		$new_template = $path . 'clinic-comments.php';
+		$new_template = $path . 'entity-comments.php';
 	}
 	
     if ( file_exists( $new_template ) ) {
