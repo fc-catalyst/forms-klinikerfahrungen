@@ -67,6 +67,7 @@ add_action( 'admin_enqueue_scripts', function() {
 add_action( 'admin_init', function() {
     if ( !self::check_role( 'entity_delegate' ) ) { return; }
     add_filter( 'views_edit-clinic', '__return_null' );
+    add_filter( 'views_edit-doctor', '__return_null' );
 });
 
 // login redirect to referrer ( works only from wp-login.php )

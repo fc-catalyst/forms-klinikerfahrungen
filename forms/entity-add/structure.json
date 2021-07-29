@@ -50,7 +50,8 @@
                             "name" : "entity-phone",
                             "validate" : {
                                 "notEmpty" : true
-                            }
+                            },
+                            "meta_box" : true
                         }
                     ]
                 },
@@ -210,7 +211,7 @@
             "gtype" : "hidden",
             "title" : "Öffnungszeiten (optional)",
             "title_tag" : "h3",
-            "id" : "clinic-work-hours",
+            "id" : "entity-working-hours",
             "description" : "<p>Keep empty if days are not work-days</p>",
             "fields" : [
                 {
@@ -427,7 +428,7 @@
             "gtype" : "hidden",
             "title" : "Specify on map",
             "title_tag" : "h3",
-            "id" : "clinic-specify-map",
+            "id" : "entity-specify-map",
             "description" : "<p>You can specify the place, for example, place the pin to the facility entrance.</p>",
             "fields" : [
                 {

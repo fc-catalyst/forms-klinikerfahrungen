@@ -18,7 +18,7 @@ function fcp_epmp($name, $return = '') { // ++ add reset for lists
 }
 
 function fcp_eimgsrc($name, $return = '') {
-    $result = wp_get_upload_dir()['url'] . '/clinic/' . get_the_ID() . '/' . $name;
+    $result = wp_get_upload_dir()['url'] . '/entity/' . get_the_ID() . '/' . $name;
     if ( $return ) {
         return $result;
     }
@@ -40,10 +40,10 @@ if ( have_posts() ) :
 
 <!-- gutenberg copy start -->
 
-<div class="wp-block-columns alignwide are-vertically-aligned-center fcp-clinic-hero">
+<div class="wp-block-columns alignwide are-vertically-aligned-center fcp-entity-hero">
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:66.66%">
-        <div class="fcp-clinic-badges">
+        <div class="fcp-entity-badges">
             <img loading="lazy" width="46" height="76" src="<?php echo $fcp_imgs_dir . 'badge-1.png' ?>" alt="Featured" />
             <img loading="lazy" width="46" height="76" src="<?php echo $fcp_imgs_dir . 'badge-1.png' ?>" alt="Featured" />
         </div>
@@ -51,7 +51,7 @@ if ( have_posts() ) :
         <h1><?php the_title() ?></h1>
         <p>Where to take it from?? Plastische und Ästhetische Chirurgen</p>
         
-        <div class="fcp-clinic-rating">&#9733;&#9733;&#9733;&#9733;&#9734;<span>5.0</span></div>
+        <div class="fcp-entity-rating">&#9733;&#9733;&#9733;&#9733;&#9734;<span>5.0</span></div>
         
         <div class="wp-block-buttons">
             <div class="wp-block-button is-style-outline">
@@ -62,7 +62,7 @@ if ( have_posts() ) :
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:33.33%">
         <?php if ( $logo = fcp_epmp( 'entity-avatar', true ) ) { ?>
-        <div class="fcp-clinic-photo">
+        <div class="fcp-entity-photo">
             <img loading="lazy" width="100%" height="100%"
                 src="<?php echo $logo ?>"
                 alt="<?php the_title() ?> Logo"
@@ -169,8 +169,8 @@ if ( have_posts() ) :
 
         if ( $back_img = fcp_epmp( 'entity-image', true ) ) {
             ?><style>
-                .post-<?php the_ID() ?> .fcp-clinic-hero {
-                    --clinic-bg:url( '<?php echo $back_img ?>' );
+                .post-<?php the_ID() ?> .fcp-entity-hero {
+                    --entity-bg:url( '<?php echo $back_img ?>' );
                 }
             </style><?php
         }

@@ -10,7 +10,7 @@ if ( !is_user_logged_in() ) {
 
 // if can create this post type
 if ( !get_userdata( wp_get_current_user()->ID )->allcaps['edit_entity'] ) {
-    $warning = 'You don\'t have permission to add / edit a clinic';
+    $warning = 'You don\'t have permission to add / edit a clinic or a doctor';
     return;
 }
 
@@ -29,7 +29,7 @@ $id = wp_insert_post( [
     'post_content' => '',
     'post_status' => 'pending',
     'post_author' => wp_get_current_user()->ID,
-    'post_type' => 'clinic',
+    'post_type' => $_POST['entity-entity'], // clinic or doctor
     'comment_status' => 'closed'
 ]);
 // meta boxes are filled automatically with save_post hooked

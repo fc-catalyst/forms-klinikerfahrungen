@@ -1,6 +1,6 @@
 <?php
 
-// post type for clinics
+// post type for billing
 
 if ( !class_exists( 'FCPAddPostType' ) ) {
     include_once $this->self_path . 'classes/add-post-type.class.php';

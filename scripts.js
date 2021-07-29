@@ -88,6 +88,11 @@ function FCP_Forms_Hidden(section) {
         this.section = section;
     }
     
+    if ( !this.section ) {
+        this.show = this.hide = function(){};
+        return;
+    }
+    
     var self = this;
     
     this.show = function(target) {

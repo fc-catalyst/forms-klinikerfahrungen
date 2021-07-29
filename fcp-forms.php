@@ -358,6 +358,17 @@ class FCP_Forms {
         return true;
     }
     
+    public static function role_allow($a = []) {
+        return !empty( array_intersect( self::roles_get(), $a ) );
+    }
+    private static function roles_get() {
+        static $roles = [];
+        if ( empty( $roles ) ) {
+            $roles = get_userdata( get_current_user_id() )->roles;
+        }
+        return $roles;
+    }
+    
 }
 
 new FCP_Forms();
@@ -370,6 +381,7 @@ new FCP_Forms();
     add meta boxes automatically, if are mentioned in the structure (now in forms' index.php)
     add_styles_scripts_admin - a all mentioned post types
     exclude dirs, starting from -- - take from gutenberg
+    add default checkboxes & radios checked
     !! check is_admin in saveMetaBoxes !!
     clinic meta boxes to proper ones
         just process the common process in that function, just silengly

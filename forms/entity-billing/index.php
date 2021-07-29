@@ -35,7 +35,7 @@ foreach( $json->fields as &$v ) {
 
 new FCP_Add_Meta_Boxes( $json, (object) [
     'title' => 'Rechnungsdaten',
-    'post_types' => ['clinic'],
+    'post_types' => ['clinic', 'doctor'],
     'context' => 'side',
     'priority' => 'default'
 ] );

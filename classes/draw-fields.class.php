@@ -67,9 +67,25 @@ class FCP_Forms__Draw {
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
             <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
             <?php echo isset( $a->autocomplete ) ? 'autocomplete="'.$a->autocomplete.'"' : '' ?>
-            <?php //echo $a->roles_edit ? in_array() $this->check_roles(); ?>
         />
         <?php
+        
+        }
+    }
+    private function field_text_view($a) {
+
+        $value = $a->savedValue ? $a->savedValue : $a->value;
+        if ( !is_array( $value ) ) {
+            $value = [ $value ];
+        }
+
+        foreach ( $value as $v ) {
+
+            if ( empty( $v ) && !$a->keep_empty && count( $value ) > 1 ) {
+                continue;
+            }
+
+            echo '<p>' . esc_attr( $v ? $v : 'No value set' ) . '</p>';
         
         }
     }
@@ -170,14 +186,13 @@ class FCP_Forms__Draw {
         >
         
         <?php
-        $single = count( (array) $a->options ) === 1 ? true : false;
         foreach ( $a->options as $k => $b ) :
             ?>
             <label>
                 <input type="radio"
-                    name="<?php $this->e_field_name( $a->name ) ?><?php echo $single ? '' : '[]' ?>"
+                    name="<?php $this->e_field_name( $a->name ) ?>"
                     value="<?php echo esc_attr( $k ) ?>"
-                    <?php echo $single && $k == $a->savedValue || in_array( $k, $a->savedValue ) ? 'checked' : '' ?>
+                    <?php echo $k == $a->savedValue ? 'checked' : '' ?>
                 >
                 <span><?php echo $b ?></span>
             </label>
@@ -413,7 +428,12 @@ class FCP_Forms__Draw {
     
     private function printField($f) {
         if ( is_admin() && !$f->meta_box ) { return; }
-        $method = 'field_' . $f->type;
+        if ( isset( $f->roles_view ) && FCP_Forms::role_allow( $f->roles_view ) ) {
+            $method = 'field_' . $f->type . '_view';
+        }
+        if ( !isset( $f->roles_view ) && !isset( $f->roles_edit ) || FCP_Forms::role_allow( $f->roles_edit ) ) {
+            $method = 'field_' . $f->type;
+        }
         if ( !method_exists( $this, $method ) ) { return; }
         $this->field__wrap( $f, $method );
     }
@@ -488,13 +508,7 @@ class FCP_Forms__Draw {
     private function e_field_name ($field_name) {
         echo $field_name;
     }
-    private function check_roles() {
-        static $roles = [];
-        if ( empty( $roles ) ) {
-            $roles = get_userdata( get_current_user_id() )->roles;
-        }
-        return $roles;
-    }
+
 
     public function print_meta_boxes() {
         ob_start();

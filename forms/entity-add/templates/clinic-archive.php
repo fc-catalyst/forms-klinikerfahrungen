@@ -23,7 +23,7 @@ function fcp_epmp($name, $return = '') { // ++ add reset for lists
 <?php
 
 $args = array(
-    'post_type'        => 'clinic',
+    'post_type'        => ['clinic', 'doctor'],
     'orderby'          => 'date',
     'order'            => 'DESC',
 //		'posts_per_page'   => '1', // this one is located in vv_addons.php cases_template_pagination() ++ check if it might work now

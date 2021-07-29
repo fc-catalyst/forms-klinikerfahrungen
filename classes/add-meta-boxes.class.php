@@ -37,7 +37,7 @@ class FCP_Add_Meta_Boxes {
 
             if (
                 $f->multiple ||
-                $f->options && $f->type != 'select' && count( (array) $f->options ) > 1 ||
+                $f->type === 'checkbox' && count( (array) $f->options ) > 1 ||
                 $f->type === 'file'
             ) {
                 $values[ $f->name ] = unserialize( $values[ $f->name ] );
@@ -125,6 +125,18 @@ class FCP_Add_Meta_Boxes {
         $fields = FCP_Forms::flatten( $this->s->fields );
         foreach ( $fields as $f ) {
             if ( !$f->meta_box ) { continue; }
+            
+            if ( isset( $f->roles_edit ) && !FCP_Forms::role_allow( $f->roles_edit ) ) { continue; }
+            if ( 
+                isset( $f->roles_view ) && FCP_Forms::role_allow( $f->roles_view ) &&
+                (
+                    !isset( $f->roles_edit ) ||
+                    isset( $f->roles_edit ) && !FCP_Forms::role_allow( $f->roles_edit )
+                )
+            ) {
+                continue;
+            }
+
             if ( $warns->result[ $f->name ] ) {
                 setcookie(
                     $this->p->warn_name.'['.$f->name.']',

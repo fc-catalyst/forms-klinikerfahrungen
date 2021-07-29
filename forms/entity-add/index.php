@@ -1,6 +1,6 @@
 <?php
 
-// post type for clinics
+// post types for clinics & doctors
 
 if ( !class_exists( 'FCPAddPostType' ) ) {
     include_once $this->self_path . 'classes/add-post-type.class.php';
@@ -22,7 +22,7 @@ new FCPAddPostType( [
     'capability_type' => ['entity', 'entities']
 ] );
 
-new FCPAddPostType( [
+new FCPAddPostType( [ // basically the clone of clinics for now
     'name' => 'Doctor',
     'type' => 'doctor',
     'slug' => 'doctor',
