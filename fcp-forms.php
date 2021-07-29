@@ -224,6 +224,24 @@ class FCP_Forms {
         $json = self::structure( $dir );
         if ( $json === false ) { return; }
 
+        // override (hide) if $_GET
+        if ( isset( $json->options->hide_on_GET ) ) {
+            foreach ( (array) $json->options->hide_on_GET as $k => $v ) {
+
+                if ( !is_array( $v ) ) {
+                    $v = [ $v ];
+                }
+
+                // no $_GET element with such key in the url --> hide
+                if ( !isset( $_GET[ $k ] ) && in_array( false, $v, true ) ) { return; }
+                // any $_GET element value --> hide
+                if ( isset( $_GET[ $k ] ) && in_array( true, $v, true ) ) { return; }
+                // match the value to hide
+                if ( isset( $_GET[ $k ] ) && in_array( $_GET[ $k ], $v ) ) { return; }
+
+            }
+        }
+
         // custom handler ++ can try to place it before fetching json?
         @include_once( $this->forms_path . $dir . '/override.php' );
         if ( isset( $override ) ) {

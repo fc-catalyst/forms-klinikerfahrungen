@@ -37,3 +37,8 @@ $user = wp_signon( $creds, false );
 if ( is_wp_error( $user ) ) {
    $warning = $user->get_error_message();
 }
+
+$redirect = $_POST['_wp_http_referer'] ? $_POST['_wp_http_referer'] : get_permalink();
+add_query_arg( [
+    "register_step" => 2
+], $redirect );

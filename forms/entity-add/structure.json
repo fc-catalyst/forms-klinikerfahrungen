@@ -7,7 +7,9 @@
         "required_mark" : "*",
         "width" : "half",
         "reduce_font_after" : 26,
-        "comment" : "there are fields moved, not mentioned here yet, as the engine is not really ready yet"
+        "hide_on_GET" : {
+            "registration_step" : [ false, 3 ]
+        }
     },
     "fields" : [
         {

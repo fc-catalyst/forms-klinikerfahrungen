@@ -6,7 +6,10 @@
         "json_validate" : 1,
         "required_mark" : "*",
         "width" : "half",
-        "reduce_font_after" : 26
+        "reduce_font_after" : 26,
+        "hide_on_GET" : {
+            "registration_step" : [ false, 2 ]
+        }
     },
     "fields" : [
         {
