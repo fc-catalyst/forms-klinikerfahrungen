@@ -20,7 +20,7 @@ global $wpdb;
 $billings = $wpdb->get_results( '
     SELECT `ID`, `post_title`
     FROM `'.$wpdb->posts.'`
-    WHERE `post_type` = "billing" AND `post_author` = "'.$author_id.'"
+    WHERE `post_type` = "billing" AND `post_author` = "'.$author_id.'" AND `post_status` = "publish"
     ORDER BY `post_title` ASC
 ' );
 

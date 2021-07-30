@@ -8,7 +8,7 @@
         "width" : "half",
         "reduce_font_after" : 26,
         "hide_on_GET" : {
-            "registration_step" : [ false, 3 ]
+            "add_billing" : true
         }
     },
     "fields" : [

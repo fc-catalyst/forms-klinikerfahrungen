@@ -73,5 +73,5 @@ if ( $authors_billing->post_count > 0 ) {
 
 $redirect = $_POST['_wp_http_referer'] ? $_POST['_wp_http_referer'] : get_permalink();
 $redirect = add_query_arg( [
-    "registration_step" => 3
+    'add_billing' => ''
 ], $redirect );

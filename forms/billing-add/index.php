@@ -19,7 +19,7 @@ new FCPAddPostType( [
     'menu_position' => 23,
     'menu_icon' => 'dashicons-money-alt',
     'has_archive' => false,
-    'capability_type' => ['entity', 'entities']
+    'capability_type' => ['billing', 'billings']
 ] );
 
 
@@ -41,3 +41,15 @@ new FCP_Add_Meta_Boxes( $json, (object) [
     'context' => 'normal',
     'priority' => 'high'
 ] );
+
+// rename the Publish button
+add_filter( 'gettext', function ( $translation, $text ) {
+    if ( get_post_type() != 'billing' ) { return $translation; }
+    if ( $text == 'Publish' ) {
+        $translation = 'Activate';
+    }
+    if ( $text == 'Published' ) {
+        $translation = 'Active';
+    }
+    return $translation;
+}, 10, 2 );

@@ -163,10 +163,14 @@ class FCP_Forms {
 
 	}
     
-	public function add_shortcode( $atts = '' ) {
-		$atts = shortcode_atts( [
-			'dir' => ''
-		], $atts );
+	public function add_shortcode( $atts = [] ) {
+
+        $allowed = [
+			'dir' => '',
+			'ignore_hide_on_GET' => false
+		];
+		$atts = $this->fix_shortcode_atts( $allowed, $atts );
+		$atts = shortcode_atts( $allowed, $atts );
 
 		if ( !$atts['dir'] || !self::form_exists( $atts['dir'] ) ) {
 			return '';
@@ -174,8 +178,26 @@ class FCP_Forms {
         
         $this->add_styles_scripts( $atts['dir'] );
 
-        return $this->generate_form( $atts['dir'] );
+        return $this->generate_form( $atts );
 
+	}
+	private function fix_shortcode_atts($allowed, $atts) { // turns isset to = true and fixes the default lowercase
+        foreach ( $allowed as $k => $v ) {
+            $l = strtolower( $k );
+            if ( $atts[ $l ] && !$atts[ $k ] ) {
+                $atts[ $k ] = $atts[ $l ];
+                unset( $atts[ $l ] );
+                continue;
+            }
+            if ( in_array( $k, $atts ) ) {
+                $m = array_search( $k, $atts );
+                if ( is_numeric( $m ) ) {
+                    $atts[ $k ] = true;
+                    unset( $atts[ $m ] );
+                }
+            }
+        }
+        return $atts;
 	}
 
 	private function add_styles_scripts($dir) {
@@ -219,25 +241,26 @@ class FCP_Forms {
 
     }
 	
-	private function generate_form( $dir ) {
+	private function generate_form( $atts ) {
 
+        $dir = $atts['dir'];
         $json = self::structure( $dir );
         if ( $json === false ) { return; }
-
+//return isset( $_GET['add_billing'] ) . ' ' . print_r( $json->options->hide_on_GET, true ) . '***';
         // override (hide) if $_GET
-        if ( isset( $json->options->hide_on_GET ) ) {
+        if ( isset( $json->options->hide_on_GET ) && !$atts['ignore_hide_on_GET'] ) {
             foreach ( (array) $json->options->hide_on_GET as $k => $v ) {
 
                 if ( !is_array( $v ) ) {
                     $v = [ $v ];
                 }
 
-                // no $_GET element with such key in the url --> hide
-                if ( !isset( $_GET[ $k ] ) && in_array( false, $v, true ) ) { return; }
                 // any $_GET element value --> hide
                 if ( isset( $_GET[ $k ] ) && in_array( true, $v, true ) ) { return; }
+                // no $_GET element with such key in the url --> hide
+                if ( !isset( $_GET[ $k ] ) && in_array( false, $v, true ) ) { return; }
                 // match the value to hide
-                if ( isset( $_GET[ $k ] ) && in_array( $_GET[ $k ], $v ) ) { return; }
+                if ( !empty( $_GET[ $k ] ) && in_array( $_GET[ $k ], $v ) ) { return; }
 
             }
         }
