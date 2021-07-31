@@ -128,6 +128,20 @@ class FCP_Forms__Validate {
                     $mflip = FCP_Forms__Files::flip_files( $this->v[ $f->name ] );
 
                     foreach ( $mflip as $v ) {
+                        // max amount of uploading files filter
+                        // ++mention already uploaded files
+                        // ++move to separate function
+/*
+                        if (
+                            is_numeric( $f->limit ) &&
+                            is_array( $this->files_failed[ $f->name ] ) &&
+                            count( $this->files_failed[ $f->name ] ) > $f->limit
+                        ) {
+                            $this->result[ $f->name ][] = 'Maximum amount of uploading files is riched. File <em>'.$f->name.'</em> not uploaded';
+                            continue;
+                        }
+//*/
+                        // other filters
                         if ( $this->addResult( $method, $f->name, $rule, $v ) ) {
                             $this->files_failed[ $f->name ][] = $v['name'];
                         }
