@@ -12,7 +12,7 @@
         {
             "type" : "text",
             "placeholder" : "dd.mm.yyyy",
-            "name" : "tariff-active-till",
+            "name" : "entity-tariff-till",
             "meta_box" : true,
             "roles_edit" : [
                 "administrator"

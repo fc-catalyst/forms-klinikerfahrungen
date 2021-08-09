@@ -428,6 +428,7 @@ class FCP_Forms__Draw {
     
     private function printField($f) {
         if ( is_admin() && !$f->meta_box ) { return; }
+        if ( !is_admin() && $f->meta_box === 'only' ) { return; }
         if ( isset( $f->roles_view ) && FCP_Forms::role_allow( $f->roles_view ) ) {
             $method = 'field_' . $f->type . '_view';
         }

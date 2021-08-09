@@ -54,6 +54,18 @@
                                 "notEmpty" : true
                             },
                             "meta_box" : true
+                        },
+                        {
+                            "type" : "checkbox",
+                            "name" : "entity-featured",
+                            "title" : "Pin the Entry",
+                            "meta_box" : "only",
+                            "options" : {
+                                "1" : "Featured"
+                            },
+                            "roles_edit" : [
+                                "administrator"
+                            ]
                         }
                     ]
                 },
@@ -167,6 +179,20 @@
                             "meta_box" : true
                         },
                         {
+                            "type" : "file",
+                            "title" : "Photo Ihrer Klinik",
+                            "name" : "entity-photo",
+                            "validate" : {
+                                "default" : true,
+                                "maxSize" : 1000000,
+                                "extension" : [
+                                    "jpg",
+                                    "jpeg"
+                                ]
+                            },
+                            "meta_box" : "only"
+                        },
+                        {
                             "type" : "text",
                             "title" : "Video zum Profil hinzufügen",
                             "name" : "entity-video",
@@ -174,6 +200,13 @@
                                 "url" : true
                             },
                             "meta_box" : true
+                        },
+                        {
+                            "type" : "text",
+                            "name" : "entity-tags",
+                            "title" : "Tags",
+                            "placeholder" : "Example: dantist, orthodontist",
+                            "meta_box" : "only"
                         }
                     ]
                 },
@@ -222,9 +255,9 @@
                     "fields" : [
                         {
                             "type" : "text",
-                            "name" : "mo-open",
+                            "name" : "entity-mo-open",
                             "title" : "Monday",
-                            "placeholder" : "Open",
+                            "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
                             "keep_empty" : true,
@@ -232,9 +265,9 @@
                         },
                         {
                             "type" : "text",
-                            "name" : "mo-close",
+                            "name" : "entity-mo-close",
                             "title" : "&nbsp;",
-                            "placeholder" : "Close",
+                            "placeholder" : "Geschlossen",
                             "meta_box" : true,
                             "multiple" : true,
                             "keep_empty" : true,
@@ -248,9 +281,9 @@
                     "fields" : [
                         {
                             "type" : "text",
-                            "name" : "tu-open",
+                            "name" : "entity-tu-open",
                             "title" : "Tuesday",
-                            "placeholder" : "Open",
+                            "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
                             "keep_empty" : true,
@@ -258,9 +291,9 @@
                         },
                         {
                             "type" : "text",
-                            "name" : "tu-close",
+                            "name" : "entity-tu-close",
                             "title" : "&nbsp;",
-                            "placeholder" : "Close",
+                            "placeholder" : "Geschlossen",
                             "meta_box" : true,
                             "multiple" : true,
                             "keep_empty" : true,
@@ -274,9 +307,9 @@
                     "fields" : [
                         {
                             "type" : "text",
-                            "name" : "we-open",
+                            "name" : "entity-we-open",
                             "title" : "Wednesday",
-                            "placeholder" : "Open",
+                            "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
                             "keep_empty" : true,
@@ -284,9 +317,9 @@
                         },
                         {
                             "type" : "text",
-                            "name" : "we-close",
+                            "name" : "entity-we-close",
                             "title" : "&nbsp;",
-                            "placeholder" : "Close",
+                            "placeholder" : "Geschlossen",
                             "meta_box" : true,
                             "multiple" : true,
                             "keep_empty" : true,
@@ -300,9 +333,9 @@
                     "fields" : [
                         {
                             "type" : "text",
-                            "name" : "th-open",
+                            "name" : "entity-th-open",
                             "title" : "Thursday",
-                            "placeholder" : "Open",
+                            "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
                             "keep_empty" : true,
@@ -310,9 +343,9 @@
                         },
                         {
                             "type" : "text",
-                            "name" : "th-close",
+                            "name" : "entity-th-close",
                             "title" : "&nbsp;",
-                            "placeholder" : "Close",
+                            "placeholder" : "Geschlossen",
                             "meta_box" : true,
                             "multiple" : true,
                             "keep_empty" : true,
@@ -326,9 +359,9 @@
                     "fields" : [
                         {
                             "type" : "text",
-                            "name" : "fr-open",
+                            "name" : "entity-fr-open",
                             "title" : "Friday",
-                            "placeholder" : "Open",
+                            "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
                             "keep_empty" : true,
@@ -336,9 +369,9 @@
                         },
                         {
                             "type" : "text",
-                            "name" : "fr-close",
+                            "name" : "entity-fr-close",
                             "title" : "&nbsp;",
-                            "placeholder" : "Close",
+                            "placeholder" : "Geschlossen",
                             "meta_box" : true,
                             "multiple" : true,
                             "keep_empty" : true,
@@ -352,9 +385,9 @@
                     "fields" : [
                         {
                             "type" : "text",
-                            "name" : "sa-open",
+                            "name" : "entity-sa-open",
                             "title" : "Saturday",
-                            "placeholder" : "Open",
+                            "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
                             "keep_empty" : true,
@@ -362,9 +395,9 @@
                         },
                         {
                             "type" : "text",
-                            "name" : "sa-close",
+                            "name" : "entity-sa-close",
                             "title" : "&nbsp;",
-                            "placeholder" : "Close",
+                            "placeholder" : "Geschlossen",
                             "meta_box" : true,
                             "multiple" : true,
                             "keep_empty" : true,
@@ -378,9 +411,9 @@
                     "fields" : [
                         {
                             "type" : "text",
-                            "name" : "su-open",
+                            "name" : "entity-su-open",
                             "title" : "Sunday",
-                            "placeholder" : "Open",
+                            "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
                             "keep_empty" : true,
@@ -388,35 +421,9 @@
                         },
                         {
                             "type" : "text",
-                            "name" : "su-close",
+                            "name" : "entity-su-close",
                             "title" : "&nbsp;",
-                            "placeholder" : "Close",
-                            "meta_box" : true,
-                            "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
-                        }
-                    ]
-                },
-                {
-                    "gtype" : "row",
-                    "cols" : 2,
-                    "fields" : [
-                        {
-                            "type" : "text",
-                            "name" : "ha-open",
-                            "title" : "Sunday",
-                            "placeholder" : "Open",
-                            "meta_box" : true,
-                            "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
-                        },
-                        {
-                            "type" : "text",
-                            "name" : "ha-close",
-                            "title" : "&nbsp;",
-                            "placeholder" : "Close",
+                            "placeholder" : "Geschlossen",
                             "meta_box" : true,
                             "multiple" : true,
                             "keep_empty" : true,
@@ -444,22 +451,22 @@
                 },
                 {
                     "type" : "hidden",
-                    "name" : "entity-geo-lat",
-                    "meta_box" : true
-                },
-                {
-                    "type" : "hidden",
-                    "name" : "entity-geo-long",
-                    "meta_box" : true
-                },
-                {
-                    "type" : "hidden",
                     "name" : "entity-geo-city",
                     "meta_box" : true
                 },
                 {
                     "type" : "hidden",
                     "name" : "entity-geo-postcode",
+                    "meta_box" : true
+                },
+                {
+                    "type" : "hidden",
+                    "name" : "entity-geo-lat",
+                    "meta_box" : true
+                },
+                {
+                    "type" : "hidden",
+                    "name" : "entity-geo-long",
                     "meta_box" : true
                 }
             ]
