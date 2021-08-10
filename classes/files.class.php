@@ -104,13 +104,19 @@ class FCP_Forms__Files {
         if ( empty( $dirs ) ) { return; }
         $this->warns = [];
 
-        foreach ( $this->s->fields as $v ) { // mk dirs
+        foreach ( $this->s->fields as $k => $v ) { // mk dirs
             if ( $v->type !=='file' ) { continue; }
 
+            if ( !isset( $dirs[ $v->name ] ) ) {
+                $this->warns[ $v->name ][] = 'The folder for '.$v->name.' is not assigned';
+                unset( $this->s->fields[ $k ] );
+                continue;
+            }
             if ( !is_dir( $dirs[ $v->name ] ) ) {
                 if ( !mkdir( $dirs[ $v->name ], 0777, true ) ) {
-                    $this->warns[ $v->name ][] = 'The folder '.$v->name.' can not be created due to a server error';
-                    return;
+                    $this->warns[ $v->name ][] = 'The folder for '.$v->name.' can not be created due to a server error';
+                    unset( $this->s->fields[ $k ] );
+                    continue;
                 }
             }
         }
@@ -251,6 +257,22 @@ class FCP_Forms__Files {
 
         foreach ( $this->uploaded as $v ) {
             $result[ $v['field'] ][] = $v['name'];
+/*
+            $multiple = false;
+            foreach ( $this->s->fields as $w ) {
+                if ( $w->name == $v['field'] && $w->multiple ) {
+                    $multiple = true;
+                    continue;
+                }
+            }
+
+            if ( $multiple ) {
+                $result[ $v['field'] ][] = $v['name'];
+                continue;
+            }
+            $result[ $v['field'] ] = $v['name'];
+//*/
+
         }
 
         return $result;

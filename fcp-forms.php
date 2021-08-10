@@ -65,7 +65,7 @@ class FCP_Forms {
         // admin part
         add_action( 'admin_enqueue_scripts', [ $this, 'add_styles_scripts_admin' ] );
         
-        // admin form allow uploading
+        // admin form allow uploading ++move to particular indexes
         add_action( 'post_edit_form_tag', function() {
             echo 'enctype="multipart/form-data"';
         });

@@ -7,7 +7,8 @@ Process meta boxes data
 $dir = wp_get_upload_dir()['basedir'] . '/entity/' . $postID;
 
 if ( !$uploads->upload([
-    'entity-avatar' => $dir
+    'entity-avatar' => $dir,
+    'entity-photo' => $dir
 ])) {
     return;
 }
