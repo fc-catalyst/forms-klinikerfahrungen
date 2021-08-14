@@ -17,20 +17,14 @@ if ( $json === false ) { return; }
 $author_id = get_post_field( 'post_author', $_GET['post'] );
 
 global $wpdb;
-$billings = $wpdb->get_results( '
+$options = $wpdb->get_results( '
     SELECT `ID`, `post_title`
     FROM `'.$wpdb->posts.'`
     WHERE `post_type` = "billing" AND `post_author` = "'.$author_id.'" AND `post_status` = "publish"
     ORDER BY `post_title` ASC
-' );
+', ARRAY_A );
 
-foreach( $json->fields as &$v ) {
-    if ( $v->name != 'entity-billing' ) { continue; }
-    foreach ( $billings as $w ) {
-        $v->options->{ $w->ID } = $w->post_title;
-    }
-    break;
-}
+FCP_Forms::add_options( $json, 'entity-billing', $options, 'ID', 'post_title' );
 
 
 new FCP_Add_Meta_Boxes( $json, (object) [

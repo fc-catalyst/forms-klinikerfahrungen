@@ -353,6 +353,33 @@ class FCP_Forms {
         
         return $json;
     }
+    
+    public static function add_options(&$json, $name, $options = [], $key = '', $value = '' ){
+
+        if ( !$json->fields || !$name ) { return; }
+        
+        if ( $key !== '' && $value !== '' ) {
+            foreach ( $options as $k => $v ) {
+                $options[ $v['ID'] ] = $v['post_title'];
+                unset( $options[ $k ] );
+            }
+        }
+
+        foreach ( $json->fields as $v ) {
+            if ( $v->gtype ) {
+                self::add_options( $v, $name, $options, $key, $value );
+                continue;
+            }
+
+            if ( !$v->type ) { continue; }
+            if ( $v->name != $name ) { continue; }
+
+            foreach ( $options as $l => $w ) {
+                $v->options->{ $l } = $w;
+            }
+        }
+
+    }
 
     // the following are used in different types of forms or fields
 

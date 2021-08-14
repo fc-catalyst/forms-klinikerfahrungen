@@ -103,6 +103,18 @@ if ( !class_exists( 'FCP_Forms__Draw' ) ) {
 $json = FCP_Forms::structure( $dir );
 if ( $json === false ) { return; }
 
+
+global $wpdb;
+$options = $wpdb->get_col( '
+    SELECT `meta_value`
+    FROM `'.$wpdb->postmeta.'`
+    WHERE `meta_key` = "entity-specialty" AND `meta_value` <> ""
+    GROUP BY `meta_value` ASC
+');
+
+FCP_Forms::add_options( $json, 'entity-specialty', $options );
+
+
 new FCP_Add_Meta_Boxes( $json, (object) [
     'title' => 'The Information',
     'post_types' => ['clinic', 'doctor'],

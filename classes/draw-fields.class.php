@@ -251,6 +251,7 @@ class FCP_Forms__Draw {
             placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty ? '*' : '' ?>"
             value="<?php echo esc_attr( $a->savedValue ? $a->savedValue : $a->value ) ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
+            <?php echo isset( $a->autocomplete ) ? 'autocomplete="'.$a->autocomplete.'"' : '' ?>
         />
         <datalist id="<?php $this->e_field_id( $a->name ) ?>-list">
         <?php

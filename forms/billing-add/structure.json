@@ -26,7 +26,17 @@
                             "name" : "billing-company",
                             "validate" : {
                                 "notEmpty" : true
-                            }
+                            },
+                            "meta_box" : "only"
+                        },
+                        {
+                            "type" : "text",
+                            "title" : "Person name?",
+                            "name" : "billing-name",
+                            "validate" : {
+                                "notEmpty" : true
+                            },
+                            "meta_box" : "only"
                         }
                     ]
                 },
