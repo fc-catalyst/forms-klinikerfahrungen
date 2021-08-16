@@ -210,7 +210,8 @@ class FCP_Forms__Files {
 
         foreach ( $this->s->fields as $v ) {
             if ( $v->type !=='file' ) { continue; }
-            if ( !$_POST[ $v->name . '--uploaded' ] ) { continue; }
+            if ( empty( $_POST[ $v->name . '--uploaded' ] ) ) { continue; }
+            if ( $_POST[ $v->name . '--uploaded' ][0] == '' ) { continue; }
 
             foreach ( $_POST[ $v->name . '--uploaded' ] as $w ) {
                 $w = sanitize_file_name( $w );

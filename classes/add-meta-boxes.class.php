@@ -86,18 +86,15 @@ class FCP_Add_Meta_Boxes {
     }
 
 	public function saveMetaBoxes($postID) {
-        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-            return;
-        }
+        if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) { return; }
         if (
             !isset( $_POST[ 'fcp-form--' . $this->s->options->form_name ] ) ||
             !wp_verify_nonce( $_POST[ 'fcp-form--' . $this->s->options->form_name ], FCP_Forms::plugin_unid() )
-        ) {
-            return;
-        }
-		if ( !current_user_can( 'edit_post', $postID ) ) {
-            return;
-        }
+        ) { return; }
+		if ( !current_user_can( 'edit_post', $postID ) ) { return; }
+        
+        $post = get_post( $postID );
+        if ( $post->post_type == 'revision' ) { return; } // ++ maybe move only to the uploading process, as I don't know how revisions work for now
 
         // don't save wrongly formatted fields
         if ( is_admin() ) {
