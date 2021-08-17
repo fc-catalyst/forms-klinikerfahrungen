@@ -2,28 +2,8 @@
 
 // ++ move the functions somewhere, index.php with namespace or a class?
 
-$fcp_imgs_dir = str_replace( ABSPATH, get_site_url() . '/', dirname( __DIR__ ) . '/templates/images/' );
+$imgs_dir = str_replace( ABSPATH, get_site_url() . '/', dirname( __DIR__ ) . '/templates/images/' );
 
-function fcp_epmp($name, $return = '') { // ++ add reset for lists
-    static $pmb = null;
-    //if ( !$name ) { return ''; }
-    if ( $pmb === null ) {
-        $pmb = get_post_meta( get_the_ID() );
-    }
-    $result = $pmb[ 'fcpf_' . $name ] ? $pmb[ 'fcpf_' . $name ][0] : '';
-    if ( $return ) {
-        return $result;
-    }
-    echo $result;
-}
-
-function fcp_eimgsrc($name, $return = '') {
-    $result = wp_get_upload_dir()['url'] . '/entity/' . get_the_ID() . '/' . $name;
-    if ( $return ) {
-        return $result;
-    }
-    echo $result;
-}
 
 get_header();
 
@@ -33,10 +13,9 @@ if ( have_posts() ) :
 
 ?>
 
-<article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-publish entry" itemscope="" itemtype="https://schema.org/CreativeWork">
+<article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-<?php echo get_post_status() ?> entry" itemscope="" itemtype="https://schema.org/CreativeWork">
     <div class="post-content" itemprop="text">
         <div class="entry-content">
-            <?php // the_content() ?>
 
 <!-- gutenberg copy start -->
 
@@ -44,14 +23,19 @@ if ( have_posts() ) :
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:66.66%">
         <div class="fcp-entity-badges">
-            <img loading="lazy" width="46" height="76" src="<?php echo $fcp_imgs_dir . 'badge-1.png' ?>" alt="Featured" />
-            <img loading="lazy" width="46" height="76" src="<?php echo $fcp_imgs_dir . 'badge-1.png' ?>" alt="Featured" />
+            <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'verified.png' ?>" alt="Verified" title="Verified" />
+            <?php if ( fct_print_meta( 'entity-featured', true ) ) { ?>
+                <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="Featured" title="Featured" />
+            <?php } ?>
         </div>
         
         <h1><?php the_title() ?></h1>
-        <p>Where to take it from?? Plastische und Ästhetische Chirurgen</p>
+        <p><?php fct_print_meta( 'entity-specialty' ); echo ' in '; fct_print_meta( 'entity-geo-city' ) ?></p>
         
-        <div class="fcp-entity-rating">&#9733;&#9733;&#9733;&#9733;&#9734;<span>5.0</span></div>
+        <?php if ( method_exists( 'FCP_Comment_Rate', 'print_rating_summary_short' ) ) { ?>
+            <!--<div class="fcp-entity-rating">&#9733;&#9733;&#9733;&#9733;&#9734;<span>5.0</span></div>-->
+            <?php FCP_Comment_Rate::print_rating_summary_short() ?>
+        <?php } ?>
         
         <div class="wp-block-buttons">
             <div class="wp-block-button is-style-outline">
@@ -61,10 +45,10 @@ if ( have_posts() ) :
     </div>
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:33.33%">
-        <?php if ( $logo = fcp_epmp( 'entity-avatar', true ) ) { ?>
+        <?php if ( $logo = fct_print_meta( 'entity-avatar', true )[0] ) { ?>
         <div class="fcp-entity-photo">
             <img loading="lazy" width="100%" height="100%"
-                src="<?php echo $logo ?>"
+                src="<?php echo wp_get_upload_dir()['url'] . '/entity/' . get_the_ID() . '/' . $logo ?>"
                 alt="<?php the_title() ?> Logo"
             />
         </div>
@@ -82,24 +66,23 @@ if ( have_posts() ) :
 
         <h2>Über</h2>
 
-        <?php fcp_epmp( 'entity-description' ) ?>
-        The content is missing for now :(
+        <?php fct_print_meta( 'entity-content' ) ?>
 
         <h2>Unser Behandlungsspektrum</h2>
 
-        <p><?php fcp_epmp( 'entity-tags' ) ?></p>
+        <?php fct_print_meta( 'entity-tags', false, '<p>', '</p>' ) ?>
 
         <div style="height:35px" aria-hidden="true" class="wp-block-spacer"></div>
         
         <div class="wp-block-buttons is-content-justification-full">
 
-        <?php if ( $button = fcp_epmp( 'entity-phone', true ) ) { ?>
+        <?php if ( $button = fct_print_meta( 'entity-phone', true ) ) { ?>
             <div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-text-color" href="tel:<?php echo $button ?>" style="color:var(--h-color)"><strong>Telefon</strong></a></div>
         <?php } ?>
-        <?php if ( $button = fcp_epmp( 'entity-email', true ) ) { ?>
+        <?php if ( $button = fct_print_meta( 'entity-email', true ) ) { ?>
             <div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-text-color" href="mailto:<?php echo $button ?>" style="color:var(--h-color)"><strong>E-mail</strong></a></div>
         <?php } ?>
-        <?php if ( $button = fcp_epmp( 'entity-website', true ) ) { ?>
+        <?php if ( $button = fct_print_meta( 'entity-website', true ) ) { ?>
             <div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-text-color" href="<?php echo $button ?>" style="color:var(--h-color)"><strong>Website</strong></a></div>
         <?php } ?>
 
@@ -118,30 +101,24 @@ if ( have_posts() ) :
 
         <div class="fcp-vertical-gallery">
             <?php 
-                $gallery = fcp_epmp( 'entity-gallery', true );
-                if ( $gallery && !empty( $gallery ) ) {
-                    $gallery = unserialize( $gallery );
+                $gallery = fct_print_meta( 'gallery-images', true );
+                if ( !empty( $gallery ) ) {
                     foreach ( $gallery as $v ) {
                     ?>
-                        <figure class="wp-block-image"><img loading="lazy" width="562" src="<?php echo $v ?>" alt="" /></figure>
+                        <figure class="wp-block-image">
+                            <img loading="lazy" width="562" src="<?php echo wp_get_upload_dir()['url'] . '/entity/' . get_the_ID() . '/gallery/' . $v ?>" alt="" />
+                        </figure>
                     <?php
                     }
                 }
             ?>
-<!--
-            <figure class="wp-block-image"><img loading="lazy" width="562" height="471" src="http://localhost/wordpress/wp-content/uploads/Leo-034712.jpg" alt="" /></figure>
-
-            <figure class="wp-block-image"><img loading="lazy" width="479" height="549" src="http://localhost/wordpress/wp-content/uploads/Japan2.jpg" alt="" /></figure>
-
-            <figure class="wp-block-image"><img loading="lazy" width="749" height="1022" src="http://localhost/wordpress/wp-content/uploads/nathan-dumlao-Wr3comVZJxU-unsplash-1.png" alt="" /></figure>
--->
         </div>
 
     </div>
     
 </div>
 
-
+<!--
 <div class="wp-block-columns">
     <div class="wp-block-column" style="flex-basis:66.66%">
     
@@ -154,23 +131,25 @@ if ( have_posts() ) :
 
     </div>
 </div>
-
+-->
 
 <!-- gutenberg copy end -->
         </div>
     </div>
 </article>
 
-<div class="entry-content">
+<div style="height:100px" aria-hidden="true" class="wp-block-spacer"></div>
+
+<div class="entry-content" id="bewertungen">
     <?php comments_template() ?>
 </div>
 	
 <?php
 
-        if ( $back_img = fcp_epmp( 'entity-image', true ) ) {
+        if ( $back_img = fct_print_meta( 'entity-photo', true )[0] ) {
             ?><style>
                 .post-<?php the_ID() ?> .fcp-entity-hero {
-                    --entity-bg:url( '<?php echo $back_img ?>' );
+                    --entity-bg:url( '<?php echo wp_get_upload_dir()['url'] . '/entity/' . get_the_ID() . '/' . $back_img ?>' );
                 }
             </style><?php
         }
@@ -179,3 +158,23 @@ if ( have_posts() ) :
 endif;
 
 get_footer();
+
+
+function fct_print_meta($name, $return = false, $before = '', $after = '') { // ++ add reset for lists ++ move to common
+    static $a = null;
+    if ( !$name ) { return ''; }
+    if ( $a === null ) {
+        $a = get_post_meta( get_the_ID(), '' );
+    }
+
+    if ( is_serialized( $a[ $name ][0] ) ) {
+        $result = unserialize( $a[ $name ][0] );
+    } else {
+        $result = trim( $a[ $name ][0] ) ? $before . $a[ $name ][0] . $after : '';
+    }
+
+    if ( $return ) {
+        return $result;
+    }
+    echo $result;
+}
