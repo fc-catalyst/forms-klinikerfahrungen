@@ -7,8 +7,11 @@ class FCP_Forms__Draw {
 
     public function __construct($s, $v = [], $f = []) {
 
+        $v = $v ? $v : []; // probably, remove those in later versions of php
+        $f = $f ? $f : [];
+
         $s->options->warning = $v['fcp-form--'.$s->options->form_name.'--warning'];
-        
+       
         $this->s = $s;
         $this->s->fields = $this->add_values( $s->fields, array_merge( $v, $f ) );
         $this->result = $this->printFields();
@@ -153,12 +156,13 @@ class FCP_Forms__Draw {
         <?php
         $single = count( (array) $a->options ) == 1 ? true : false;
         foreach ( $a->options as $k => $b ) :
+            $checked = $single && $k == $a->savedValue || is_array( $a->savedValue ) && in_array( $k, $a->savedValue );
         ?>
             <label>
                 <input type="checkbox"
                     name="<?php $this->e_field_name( $a->name ) ?><?php echo $single ? '' : '[]' ?>"
                     value="<?php echo esc_attr( $k ) ?>"
-                    <?php echo $single && $k == $a->savedValue || in_array( $k, $a->savedValue ) ? 'checked' : '' ?>
+                    <?php echo $checked ? 'checked' : '' ?>
                 >
                 <span><?php echo $b ?></span>
             </label>

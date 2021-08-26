@@ -19,10 +19,10 @@ if ( have_posts() ) :
 
 <!-- gutenberg copy start -->
 
-<div class="wp-block-columns alignwide are-vertically-aligned-center fcp-entity-hero">
+<div class="wp-block-columns alignwide are-vertically-aligned-center fct-entity-hero">
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:66.66%">
-        <div class="fcp-entity-badges">
+        <div class="fct-entity-badges">
             <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'verified.png' ?>" alt="Verified" title="Verified" />
             <?php if ( fct_print_meta( 'entity-featured', true ) ) { ?>
                 <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="Featured" title="Featured" />
@@ -30,23 +30,24 @@ if ( have_posts() ) :
         </div>
         
         <h1><?php the_title() ?></h1>
-        <p><?php fct_print_meta( 'entity-specialty' ); echo ' in '; fct_print_meta( 'entity-geo-city' ) ?></p>
+        <p><?php fct_print_meta( 'entity-specialty' ); fct_print_meta( 'entity-geo-city', false, ' in ' ) ?></p>
         
         <?php if ( method_exists( 'FCP_Comment_Rate', 'print_rating_summary_short' ) ) { ?>
-            <!--<div class="fcp-entity-rating">&#9733;&#9733;&#9733;&#9733;&#9734;<span>5.0</span></div>-->
             <?php FCP_Comment_Rate::print_rating_summary_short() ?>
         <?php } ?>
         
         <div class="wp-block-buttons">
             <div class="wp-block-button is-style-outline">
-                <a class="wp-block-button__link has-white-color has-text-color" href="#bewertungen">Bewertungen</a>
+                <a class="wp-block-button__link has-white-color has-text-color" href="#bewertungen">
+                    <?php echo wp_count_comments( get_the_ID() )->approved ? 'Bewertungen' : 'Bewerten' ?>
+                </a>
             </div>
         </div>
     </div>
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:33.33%">
         <?php if ( $logo = fct_print_meta( 'entity-avatar', true )[0] ) { ?>
-        <div class="fcp-entity-photo">
+        <div class="fct-entity-photo">
             <img loading="lazy" width="100%" height="100%"
                 src="<?php echo wp_get_upload_dir()['url'] . '/entity/' . get_the_ID() . '/' . $logo ?>"
                 alt="<?php the_title() ?> Logo"
@@ -89,17 +90,16 @@ if ( have_posts() ) :
         </div>
         
         <div class="wp-block-buttons is-content-justification-full">
-
-            <div style="opacity:0.3;" class="wp-block-button is-style-outline fct-button-select"><a class="wp-block-button__link has-text-color" href="#" style="color:var(--h-color)"><strong>Öffnungszeiten</strong></a></div>
-
+            <div class="wp-block-button is-style-outline fct-button-select fct-open-next"><a class="wp-block-button__link has-text-color" href="#" style="color:var(--h-color)"><strong>Öffnungszeiten</strong></a></div>
+            <?php fct_print_schedule() ?>
         </div>
         
     </div>
-    <div class="wp-block-column fcp-vertical-gallery-wrap" style="flex-basis:33.33%">
+    <div class="wp-block-column fct-vertical-gallery-wrap" style="flex-basis:33.33%">
     
         <h2 class="with-line">Gallerie</h2>
 
-        <div class="fcp-vertical-gallery">
+        <div class="fct-vertical-gallery">
             <?php 
                 $gallery = fct_print_meta( 'gallery-images', true );
                 if ( !empty( $gallery ) ) {
@@ -118,20 +118,23 @@ if ( have_posts() ) :
     
 </div>
 
-<!--
+
+<div style="height:100px" aria-hidden="true" class="wp-block-spacer"></div>
+
+
 <div class="wp-block-columns">
-    <div class="wp-block-column" style="flex-basis:66.66%">
+    <div class="wp-block-column fct-video" style="flex-basis:66.66%">
     
-        <p>VIDEO</p>
+        <?php fct_print_video() ?>
 
     </div>
     <div class="wp-block-column" style="flex-basis:33.33%">
 
-        <p>MAP</p>
+        
 
     </div>
 </div>
--->
+
 
 <!-- gutenberg copy end -->
         </div>
@@ -148,7 +151,7 @@ if ( have_posts() ) :
 
         if ( $back_img = fct_print_meta( 'entity-photo', true )[0] ) {
             ?><style>
-                .post-<?php the_ID() ?> .fcp-entity-hero {
+                .post-<?php the_ID() ?> .fct-entity-hero {
                     --entity-bg:url( '<?php echo wp_get_upload_dir()['url'] . '/entity/' . get_the_ID() . '/' . $back_img ?>' );
                 }
             </style><?php
@@ -160,7 +163,95 @@ endif;
 get_footer();
 
 
-function fct_print_meta($name, $return = false, $before = '', $after = '') { // ++ add reset for lists ++ move to common
+function fct_print_video() {
+    $url = fct_print_meta( 'entity-video', true );
+
+    if ( !$url ) { return; }
+
+    // direct video
+    $video_formats = ['mp4', 'webm', 'wmv', 'mov', 'avi', 'ogg'];
+    $format = strtolower( substr( $url, strrpos( $url, '.' ) + 1 ) );
+    if ( in_array( $format , $video_formats ) ) {
+
+        ?>
+        <video width="600" controls>
+            <source src="<?php echo $url ?>" type="video/<?php echo $format ?>">
+            Your browser does not support HTML video.
+        </video>
+        <?php
+
+        return;
+    }
+    
+    // youtube
+	if ( preg_match(
+        '/^(?:https?\:\/\/(?:www\.)?youtu(?:.?)+[=\/]{1}([\w-]{11})(?:.?))$/i', $url, $match
+    ) ) {
+        ?>
+        <iframe src="https://www.youtube.com/embed/<?php echo $match[1] ?>?feature=oembed&autoplay=0" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" width="600" height="312" class="youtube"></iframe>
+        <?php
+    }
+
+	return $filtered_data;
+
+}
+
+
+function fct_print_schedule() {
+
+    $fields = [
+        'entity-mo' => __( 'Monday' ), // -open, -close
+        'entity-tu' => __( 'Tuesday' ),
+        'entity-we' => __( 'Wednesday' ),
+        'entity-th' => __( 'Thursday' ),
+        'entity-fr' => __( 'Friday' ),
+        'entity-sa' => __( 'Saturday' ),
+        'entity-su' => __( 'Sunday' )
+    ];
+
+    $values = [];
+    foreach ( $fields as $k => $v ) {
+        $open = fct_print_meta( $k . '-open', true );
+        $close = fct_print_meta( $k . '-close', true );
+
+        if ( !empty( $open ) ) {
+            foreach ( $open as $l => $w ) {
+                if ( !$close[ $l ] ) {
+                    continue;
+                }
+                $values[ $k ][] = $open[ $l ] . ' - ' . $close[ $l ]; // format
+            }
+            if ( !empty( $values[ $k ] ) ) { continue; }
+        }
+        
+        $values[ $k ][] = '<small>' . __( 'Closed' ) . '</small>';
+
+    }
+    
+    if ( empty( $values ) ) { return; }
+    
+    ?>
+    <dl class="fct-schedule-list">
+    <?php
+    
+    foreach ( $values as $k => $v ) {
+        ?>
+        <dt>
+            <?php echo $fields[ $k ] ?>
+        </dt>
+        <dd>
+            <?php echo implode( '<br/>', $v ) ?>
+        </dd>
+        <?php
+    }
+    
+    ?>
+    </dl>
+    <?php
+}
+
+
+function fct_print_meta($name, $return = false, $before = '', $after = '') { // ++ add reset for lists ++ move to common ++ maybe wrap in class
     static $a = null;
     if ( !$name ) { return ''; }
     if ( $a === null ) {
