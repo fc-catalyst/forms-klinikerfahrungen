@@ -95,11 +95,11 @@ if ( have_posts() ) :
         </div>
         
     </div>
-    <div class="wp-block-column fct-vertical-gallery-wrap" style="flex-basis:33.33%">
+    <div class="wp-block-column" style="flex-basis:33.33%">
     
         <h2 class="with-line">Gallerie</h2>
 
-        <div class="fct-vertical-gallery">
+        <div id="entity-gallery">
             <?php 
                 $gallery = fct_print_meta( 'gallery-images', true );
                 if ( !empty( $gallery ) ) {
@@ -130,7 +130,7 @@ if ( have_posts() ) :
     </div>
     <div class="wp-block-column" style="flex-basis:33.33%">
 
-        
+        <?php fct_print_gmap() ?>    
 
     </div>
 </div>
@@ -194,6 +194,24 @@ function fct_print_video() {
 
 	return $filtered_data;
 
+}
+
+function fct_print_gmap() {
+    
+    $lat = fct_print_meta( 'entity-geo-lat', true );
+    $long = fct_print_meta( 'entity-geo-long', true );
+    $addr = fct_print_meta( 'entity-address', true );
+    $zoom = fct_print_meta( 'entity-zoom', true );
+
+    ?>
+    <div class="fct-gmap-view"
+        <?php echo $lat ? 'data-lat="'.$lat.'"' : '' ?>
+        <?php echo $long ? 'data-long="'.$long.'"' : '' ?>
+        <?php echo $zoom ? 'data-zoom="'.$zoom.'"' : '' ?>
+        <?php echo $addr ? 'data-addr="'.$addr.'"' : '' ?>
+        <?php echo 'data-title="'.get_the_title().'"' ?>
+    ></div>
+    <?php
 }
 
 
