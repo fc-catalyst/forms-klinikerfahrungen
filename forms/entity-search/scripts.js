@@ -78,6 +78,3 @@
     }, 500 );
     
 })();
-
-// ++can add timeout to slop loading if takes too long..
-// ++can do into a class!!

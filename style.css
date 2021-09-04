@@ -137,6 +137,9 @@ body {
     float:right;
     transform:scale(1, 1.8);
 }
+.fcp-form--main .fct-gmap-pick button::before { /* just because ^ doesn't work with :not() O_o */
+    content:none;
+}
 
 /* checkbox & radio */
 .fcp-form--main fieldset {
@@ -295,4 +298,10 @@ body {
 }
 .fcp-form-group-hidden .fcp-section--discard {
     background-image:var(--discard);
+}
+
+/* gmap */
+.fct-gmap-pick {
+    min-height:50vh;
+    height:400px;
 }

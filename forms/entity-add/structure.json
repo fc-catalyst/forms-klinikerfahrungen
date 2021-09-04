@@ -102,6 +102,7 @@
                             "type" : "text",
                             "title" : "Adresse",
                             "name" : "entity-address",
+                            "autocomplete" : "nope1",
                             "validate" : {
                                 "notEmpty" : true
                             },
@@ -112,7 +113,7 @@
                             "title" : "Branche",
                             "name" : "entity-specialty",
                             "options" : {},
-                            "autocomplete" : "off",
+                            "autocomplete" : "nope2",
                             "validate" : {
                                 "notEmpty" : true
                             },
@@ -416,11 +417,11 @@
             "title" : "Specify on map",
             "title_tag" : "h3",
             "id" : "entity-specify-map",
-            "description" : "<p>You can specify the place, for example, place the pin to the facility entrance.</p>",
+            "description" : "<p>You can specify the place, for example, place the pin to the facility entrance.<br/><em>Notice, that your picked zoom lavel will also be saved</em></p>",
             "fields" : [
                 {
                     "type" : "notice",
-                    "text" : "<div class=\"gmaps-specify-map\" style=\"border:1px dotted red;\"></div>"
+                    "text" : "<div class=\"fct-gmap-pick\"></div>"
                 },
                 {
                     "type" : "hidden",
@@ -446,6 +447,12 @@
                     "type" : "hidden",
                     "name" : "entity-geo-long",
                     "meta_box" : true
+                },
+                {
+                    "type" : "hidden",
+                    "name" : "entity-geo-zoom",
+                    "meta_box" : true,
+                    "value" : 17
                 }
             ]
         },
