@@ -130,6 +130,35 @@ class FCP_Forms__Draw {
     }
     
     private function field_textarea($a) {
+    
+        if ( $a->tinymce === true || is_admin() && $a->tinymce === 'admin' || !is_admin() && $a->tinymce === 'front' ) {
+            $buttons = ['undo', 'redo', '|', 'formatselect', 'bold', 'italic', '|', 'link', 'unlink', '|', 'bullist', 'numlist'];
+        
+            wp_editor(
+                $a->savedValue ? $a->savedValue : $a->value,
+                $this->__field_id( $a->name ),
+                [
+                    //'wpautop'       => 1,
+                    'media_buttons' => 0,
+                    'textarea_name' => $this->__field_name( $a->name ),
+                    'textarea_rows' => $a->rows ? $a->rows : '20',
+                    //'tabindex'      => null,
+                    //'editor_css'    => '',
+                    //'editor_class'  => '',
+                    //'teeny'         => 0,
+                    //'dfw'           => 0,
+                    'tinymce' => [
+                        'toolbar1' => implode( ',', $buttons )
+                    ],
+                    'quicktags'     => [
+                        'buttons' => 'none'
+                    ],
+                    //'drag_drop_upload' => false
+                ]
+            );
+            return;
+        }
+
         ?>
         <textarea
             name="<?php $this->e_field_name( $a->name ) ?>"
@@ -508,11 +537,17 @@ class FCP_Forms__Draw {
         <?php
     }
 
-    private function e_field_id ($field_name) {
-        echo $field_name . '_' . $this->s->options->form_name;
+    private function e_field_id($field_name) {
+        echo $this->__field_id( $field_name );
     }
-    private function e_field_name ($field_name) {
-        echo $field_name;
+    private function e_field_name($field_name) {
+        echo $this->__field_name( $field_name );
+    }
+    private function __field_id ($field_name) {
+        return $field_name . '_' . $this->s->options->form_name;
+    }
+    private function __field_name ($field_name) {
+        return $field_name;
     }
 
 

@@ -12,6 +12,11 @@ class FCP_Add_Meta_Boxes {
     
         if ( !$s || !class_exists( 'FCP_Forms__Draw' ) ) { return; }
 
+        $datalist = FCP_Forms::save_options();
+        foreach ( $datalist as $k => $v ) {
+            FCP_Forms::add_options( $s, $k, $v );
+        }
+        
         $this->s = $s;
         $this->p = $p;
         $this->p->warn_name = 'fcp-form--'.$s->options->form_name.'--warnings';

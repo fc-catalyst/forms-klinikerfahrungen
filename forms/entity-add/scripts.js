@@ -34,7 +34,7 @@
                     }
                 );
 
-            autocomplete.addListener( 'place_changed', function() { // ++replace with local autocomplete??
+            autocomplete.addListener( 'place_changed', function() { // ++replace with local autocomplete?
                 fillInValues( autocomplete.getPlace() );
             });
 
@@ -44,7 +44,7 @@
 
             $autocompleteInput.on( 'blur', function() {
                 
-                setTimeout( function() { // should wait for autocompete if is // ++add interval && timeout to reduce the waiting time (or use promice)
+                setTimeout( function() { // should wait for autocompete if is - a measure of economy
                 
                     if ( autocompleteFilled ) { return }
                     

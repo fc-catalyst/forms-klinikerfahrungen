@@ -69,6 +69,12 @@ class FCP_Forms {
         add_action( 'post_edit_form_tag', function() {
             echo 'enctype="multipart/form-data"';
         });
+        
+        // remove h1 & h2 from tinymce
+        add_filter( 'tiny_mce_before_init', function($args) {
+            $args['block_formats'] = 'Paragraph=p;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6;Pre=pre';
+            return $args;
+        });
 
     }
     
@@ -246,7 +252,7 @@ class FCP_Forms {
         $dir = $atts['dir'];
         $json = self::structure( $dir );
         if ( $json === false ) { return; }
-//return isset( $_GET['add_billing'] ) . ' ' . print_r( $json->options->hide_on_GET, true ) . '***';
+
         // override (hide) if $_GET
         if ( isset( $json->options->hide_on_GET ) && !$atts['ignore_hide_on_GET'] ) {
             foreach ( (array) $json->options->hide_on_GET as $k => $v ) {
@@ -276,6 +282,10 @@ class FCP_Forms {
         }
 
         include_once $this->self_path . 'classes/draw-fields.class.php';
+        $datalist = FCP_Forms::save_options();
+        foreach ( $datalist as $k => $v ) {
+            FCP_Forms::add_options( $json, $k, $v );
+        }
         $draw = new FCP_Forms__Draw( $json, $_POST, $_FILES );
         return $draw->result;
 
@@ -343,18 +353,18 @@ class FCP_Forms {
 
         $cont = file_get_contents( $path );
         if ( $cont === false ) { return false; }
-        
+
         $json = json_decode( $cont, false );
         if ( $json === null ) { return false; }
-        
+
         $json->options->form_name = $dir;
-        
+
         // ++ add prefixes here // self::$prefix.'_'
-        
+
         return $json;
     }
     
-    public static function add_options(&$json, $name, $options = [], $key = '', $value = '' ){
+    public static function add_options(&$json, $name, $options = [], $key = '', $value = '' ) {
 
         if ( !$json->fields || !$name ) { return; }
         
@@ -371,14 +381,25 @@ class FCP_Forms {
                 continue;
             }
 
-            if ( !$v->type ) { continue; }
-            if ( $v->name != $name ) { continue; }
+            if ( !$v->type || $v->name != $name ) { continue; }
 
             foreach ( $options as $l => $w ) {
                 $v->options->{ $l } = $w;
             }
         }
-
+    }
+    
+    public static function save_options($key = '', $options = []) {
+        static $saved_options = [];
+        
+        if ( !$key ) {
+            return $saved_options;
+        }
+        if ( $key && empty( $options ) ) {
+            return $saved_options[ $key ];
+        }
+        
+        $saved_options[ $key ] = $options;
     }
 
     // the following are used in different types of forms or fields
@@ -436,7 +457,7 @@ class FCP_Forms {
         }
         return $roles;
     }
-    
+
 }
 
 new FCP_Forms();

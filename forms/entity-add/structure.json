@@ -109,6 +109,12 @@
                             "meta_box" : true
                         },
                         {
+                            "type" : "button",
+                            "title" : "&nbsp;",
+                            "value" : "Specify on map",
+                            "name" : "entity-map"
+                        },
+                        {
                             "type" : "datalist",
                             "title" : "Branche",
                             "name" : "entity-specialty",
@@ -118,20 +124,10 @@
                                 "notEmpty" : true
                             },
                             "meta_box" : true
-                        }
-                    ]
-                },
-                {
-                    "gtype" : "row",
-                    "cols" : 2,
-                    "fields" : [
-                        {
-                            "type" : "button",
-                            "value" : "Specify on map",
-                            "name" : "entity-map"
                         },
                         {
                             "type" : "button",
+                            "title" : "&nbsp;",
                             "value" : "Specify working hours",
                             "name" : "entity-working-hours"
                         }
@@ -217,7 +213,8 @@
                     "validate" : {
                         "notEmpty" : true
                     },
-                    "meta_box" : true
+                    "meta_box" : true,
+                    "tinymce" : "admin"
                 }
             ]
         },
@@ -417,7 +414,7 @@
             "title" : "Specify on map",
             "title_tag" : "h3",
             "id" : "entity-specify-map",
-            "description" : "<p>You can specify the place, for example, place the pin to the facility entrance.<br/><em>Notice, that your picked zoom lavel will also be saved</em></p>",
+            "description" : "<p>You can specify the location, for example, place the pin to the facility entrance.<br/><br/>To chante the location drag the marker, or click on the map, where you want the marker to jump.<em>Notice, that your picked zoom lavel will also be saved</em></p>",
             "fields" : [
                 {
                     "type" : "notice",

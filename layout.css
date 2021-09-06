@@ -225,3 +225,8 @@
 .fcp-form label {
     cursor:pointer;
 }
+
+/* wysiwyg */
+.wp-editor-container textarea {
+    width:100%;
+}
