@@ -14,7 +14,9 @@ class FCP_Forms__Draw {
        
         $this->s = $s;
         $this->s->fields = $this->add_values( $s->fields, array_merge( $v, $f ) );
-        $this->result = $this->printFields();
+        if ( !is_admin() ) {
+            $this->result = $this->printFields(); // ++this return breaks wp_editor, which doesn't include parts. echo works
+        }
 
     }
 
@@ -123,7 +125,7 @@ class FCP_Forms__Draw {
             type="hidden"
             name="<?php $this->e_field_name( $a->name ) ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
-            value="<?php echo esc_attr( $a->value ) ?>"
+            value="<?php echo esc_attr( $a->savedValue ? $a->savedValue : $a->value ) ?>"
             <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
         />
         <?php
@@ -138,23 +140,17 @@ class FCP_Forms__Draw {
                 $a->savedValue ? $a->savedValue : $a->value,
                 $this->__field_id( $a->name ),
                 [
-                    //'wpautop'       => 1,
                     'media_buttons' => 0,
                     'textarea_name' => $this->__field_name( $a->name ),
                     'textarea_rows' => $a->rows ? $a->rows : '20',
-                    //'tabindex'      => null,
-                    //'editor_css'    => '',
-                    //'editor_class'  => '',
-                    //'teeny'         => 0,
-                    //'dfw'           => 0,
                     'tinymce' => [
                         'toolbar1' => implode( ',', $buttons )
                     ],
                     'quicktags'     => [
                         'buttons' => 'none'
-                    ],
-                    //'drag_drop_upload' => false
+                    ]
                 ]
+                // h1 & h2 are disabled in fcp-forms.php
             );
             return;
         }

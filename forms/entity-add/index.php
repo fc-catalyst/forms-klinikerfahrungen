@@ -91,6 +91,16 @@ add_action( 'pre_get_posts', function( $query ) {
 } );
 */
 
+// style the wp-admin // ++move to main maybe?
+add_action( 'admin_enqueue_scripts', function() use ($dir) {
+    wp_enqueue_script(
+        'fcp-forms-entitiy-admin',
+        $this->forms_url . $dir . '/scripts-admin.js',
+        ['jquery'],
+        $this->js_ver 
+    );
+});
+
 // meta fields for new post types on basis of the form structure
 
 if ( !class_exists( 'FCP_Add_Meta_Boxes' ) ) {

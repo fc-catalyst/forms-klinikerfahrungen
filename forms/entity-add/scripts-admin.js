@@ -1,23 +1,16 @@
 !function(){let a=setInterval(function(){let b=document.readyState;if(b!=='complete'&&b!=='interactive'||typeof jQuery==='undefined'){return}let $=jQuery;clearInterval(a);a=null;
-
-    const workhours_popup = new FCP_Forms_Hidden( '#entity-working-hours' );
-    $( '#entity-working-hours_entity-add' ).on( 'click', function() {
-        workhours_popup.show( this );
-    });
+// ++VERY MUCH ALIKE THE SCRIPTS.JS, so, better refactor sometime
+    /* add map by class */
+    if ( !$( '.fct-gmap-pick' ).length ) { return }
     
-    const gmap_popup = new FCP_Forms_Hidden( '#entity-specify-map' );
-    $( '#entity-map_entity-add' ).on( 'click', function() {
-        gmap_popup.show( this );
-        
-        /* add map by class */
-        if ( !$( '.fct-gmap-pick' ).length ) { return }
-        fcLoadScriptVariable(
-            '/wp-content/themes/fct1/assets/smarts/gmap-pick.js?' + + new Date(),
-            'fcAddGmapPick',
-            function() { fcAddGmapPick( '.fct-gmap-pick' ) },
-            ['google']
-        );
-    });
+    $( '.fct-gmap-pick' ).css( 'min-height', '312px' );
+
+    fcLoadScriptVariable(
+        '/wp-content/themes/fct1/assets/smarts/gmap-pick.js?' + + new Date(),
+        'fcAddGmapPick',
+        function() { fcAddGmapPick( '.fct-gmap-pick' ) },
+        ['google']
+    );
     
     fcLoadScriptVariable(
         'https://maps.googleapis.com/maps/api/js?key='+fcGmapKey+'&libraries=places&&language=de-DE',
@@ -105,6 +98,9 @@
                 
                 // format the main address field
                 $autocompleteInput.val( result.formatted_address );
+                
+                // change the map marker & position
+                fcAddGmapPick( '.fct-gmap-pick' );
                 
                 //++process the invalid address somehow
             }
