@@ -2,74 +2,86 @@
 
 get_header();
 
-function fcp_epmp($name, $return = '') { // ++ add reset for lists
-    static $pmb = null, $id = 0;
-    //if ( !$name ) { return ''; }
-    if ( $pmb === null || $id !== get_the_ID() ) {
-        $pmb = get_post_meta( get_the_ID() );
-        $id = get_the_ID();
-    }
-    $result = $pmb[ 'fcpf_' . $name ] ? $pmb[ 'fcpf_' . $name ][0] : '';
-    if ( $return ) {
-        return $result;
-    }
-    echo $result;
-}
-
 ?>
-	<header>
-		<h1><?php single_post_title() ?></h1>
-	</header>
+    <div class="wrap-width">
+    <?php //the_archive_title( '<h1>', '</h1>' ) ?>
+    <h1>Clinics and Doctors</h1>
 <?php
 
-$args = array(
+$wp_query = new WP_Query( [
     'post_type'        => ['clinic', 'doctor'],
     'orderby'          => 'date',
     'order'            => 'DESC',
-//		'posts_per_page'   => '1', // this one is located in vv_addons.php cases_template_pagination() ++ check if it might work now
-    'paged'            => get_query_var( 'paged', 1 )
-);
-
-// ++ check if normal way of printing is ok
-
-$wp_query = new WP_Query( $args );
+    'posts_per_page'   => '7',
+    'post_status'      => ['publish', 'private'] // ++test it
+]);
 
 if ( $wp_query->have_posts() ) {
     while ( $wp_query->have_posts() ) {
         $wp_query->the_post();
-        
+
+        fct_print_meta(); // reset
 ?>
 
-<article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-publish entry" itemscope="" itemtype="https://schema.org/CreativeWork">
-    <div class="post-content" itemprop="text">
-        <div class="entry-content">
-
-<div class="wp-block-columns are-vertically-aligned-stretch">
-    <div class="wp-block-column" style="flex-basis:33.33%">
-        <?php if ( $logo = fcp_epmp( 'entity-avatar', true ) ) { ?>
-        <a class="entry-title-link" rel="bookmark" href="<?php the_permalink(); ?>">
+<article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-<?php echo get_post_status() ?> entry" itemscope="" itemtype="https://schema.org/CreativeWork">
+    <header class="entry-header">
+        <!-- badges go here -->
+        <h2 class="entry-title" itemprop="headline">
+            <a rel="bookmark" href="<?php the_permalink() ?>"><?php the_title() ?></a>
+        </h2>
+        <?php if ( $back_img = fct_print_meta( 'entity-photo', true )[0] ) { ?>
+            <div class="entry-photo">
+                <img loading="lazy" width="100%" height="100%"
+                    src="<?php echo wp_get_upload_dir()['url'] . '/entity/' . get_the_ID() . '/' . $back_img ?>"
+                    alt=""
+                />
+            </div>
+        <?php } ?>
+    </header>
+    <div class="entry-details">
+        <?php if ( $logo = fct_print_meta( 'entity-avatar', true )[0] ) { ?>
+        <div class="entity-avatar">
             <img loading="lazy" width="100%" height="100%"
-                src="<?php echo $logo ?>"
-                alt="<?php the_title() ?> Logo"
+                src="<?php echo wp_get_upload_dir()['url'] . '/entity/' . get_the_ID() . '/' . $logo ?>"
+                alt="<?php the_title() ?> <?php echo get_post_type() == 'clinic' ? 'Logo' : 'Photo' ?>"
             />
-        </a>
+        </div>
+        <?php } ?>
+        <p><?php fct_print_meta( 'entity-specialty' ); fct_print_meta( 'entity-geo-city', false, ' in ' ) ?></p>
+        <?php if ( method_exists( 'FCP_Comment_Rate', 'print_rating_summary_short' ) ) { ?>
+            <?php //FCP_Comment_Rate::print_rating_summary_short() ?>
         <?php } ?>
     </div>
-    <div class="wp-block-column" style="flex-basis:66.66%">
-        <h2 class="entry-title" itemprop="headline">
-            <a class="entry-title-link" rel="bookmark" href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
-        </h2>
-        content is missing :(
-    </div>
-</div>
+    <a class="entry-link-cover" rel="bookmark" href="<?php the_permalink(); ?>" title="<?php the_title() ?>">
+    </a>
 
-<div style="height:35px" aria-hidden="true" class="wp-block-spacer"></div>
+</article>
+
 
 <?php
         
     }
     get_template_part( 'template-parts/pagination' );
+    ?></div><?php
 }
-	
 
 get_footer();
+
+function fct_print_meta($name = '', $return = false, $before = '', $after = '') {
+    static $a = null;
+    if ( !$name ) { $a = null; return; }
+    if ( $a === null ) {
+        $a = get_post_meta( get_the_ID(), '' );
+    }
+
+    if ( is_serialized( $a[ $name ][0] ) ) {
+        $result = unserialize( $a[ $name ][0] );
+    } else {
+        $result = trim( $a[ $name ][0] ) ? $before . $a[ $name ][0] . $after : '';
+    }
+
+    if ( $return ) {
+        return $result;
+    }
+    echo $result;
+}
