@@ -67,7 +67,7 @@ if ( have_posts() ) :
 
         <h2>Über</h2>
 
-        <?php fct_print_meta( 'entity-content' ) ?>
+        <?php echo fct_entity_content_filter( fct_print_meta( 'entity-content', true ), fct_print_meta( 'entity-tariff', true ) ) ?>
 
         <h2>Unser Behandlungsspektrum</h2>
 
@@ -91,7 +91,7 @@ if ( have_posts() ) :
         
         <div class="wp-block-buttons is-content-justification-full">
             <div class="wp-block-button is-style-outline fct-button-select fct-open-next"><a class="wp-block-button__link has-text-color" href="#" style="color:var(--h-color)"><strong>Öffnungszeiten</strong></a></div>
-            <?php fct_print_schedule() ?>
+            <?php fct_entity_print_schedule() ?>
         </div>
         
     </div>
@@ -215,7 +215,7 @@ function fct_print_gmap() {
 }
 
 
-function fct_print_schedule() {
+function fct_entity_print_schedule() {
 
     $fields = [
         'entity-mo' => __( 'Monday' ), // -open, -close
@@ -286,4 +286,37 @@ function fct_print_meta($name, $return = false, $before = '', $after = '') { // 
         return $result;
     }
     echo $result;
+}
+
+function fct_entity_com_links($text, $commercial = false) { // mention, that tha page caching gotta be working
+
+    $result = preg_replace_callback(
+        '/<a\s+[^>]+>/i',
+        function( $matches ) use ( $commercial ) {
+
+            $matches[0] = preg_replace_callback(
+                '/\s*(\w+)="([^"]+)"/i',
+                function( $matches ) use ( $commercial ) {
+                    if ( $matches[1] != 'href' ) { return; }
+                    
+                    return  ' ' . $matches[1] . '="' . $matches[2] . '"' .
+                            ( $commercial ? ' rel="noopener"' : ' rel="nofollow noopener noreferrer"' ) .
+                            ' target="_blank"';
+                },
+                $matches[0]
+            );
+
+            return $matches[0];
+
+        },
+        $text
+    );
+    
+    return $result;
+}
+
+function fct_entity_content_filter($cont, $tariff = 'standardeintrag') {
+    $com = $tariff == 'standardeintrag' ? false : true;
+    $cont = fct_entity_com_links( $cont, $com );
+    return $cont;
 }

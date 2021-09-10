@@ -23,6 +23,8 @@ if ( $warning || !empty( $warns->result ) ) {
     return;
 }
 
+// custom $_POST filters
+
 // create new post
 $id = wp_insert_post( [
     'post_title' => sanitize_text_field( $_POST['entity-name'] ),

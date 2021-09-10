@@ -15,7 +15,7 @@ class FCP_Forms__Draw {
         $this->s = $s;
         $this->s->fields = $this->add_values( $s->fields, array_merge( $v, $f ) );
         if ( !is_admin() ) {
-            $this->result = $this->printFields(); // ++this return breaks wp_editor, which doesn't include parts. echo works
+            $this->result = $this->printFields(); // ++this return breaks wp_editor, which doesn't include parts. echo works. basic solution would be to include the script separately. It can be needed in terms of tinymce front-end usage
         }
 
     }
