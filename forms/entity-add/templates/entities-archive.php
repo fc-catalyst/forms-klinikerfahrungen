@@ -78,6 +78,7 @@ if ( $wp_query->have_posts() ) {
     get_template_part( 'template-parts/pagination' );
     ?></div><?php
 }
+wp_reset_query();
 
 get_footer();
 
