@@ -40,10 +40,14 @@ if ( $wp_query->have_posts() ) {
         </div>
         <?php if ( $back_img = fct_print_meta( 'entity-photo', true )[0] ) { ?>
             <div class="entry-photo">
-                <img loading="lazy" width="100%" height="100%"
-                    src="<?php echo wp_get_upload_dir()['url'] . '/entity/' . get_the_ID() . '/' . $back_img ?>"
-                    alt=""
-                />
+                <?php
+                    fct1_image_print(
+                        'entity/' . get_the_ID() . '/' . $back_img,
+                        [454, 210],
+                        ['center', 'top'],
+                        get_the_title() . ' Photo'
+                    )
+                ?>
             </div>
         <?php } ?>
         <h2 class="entry-title" itemprop="headline">
@@ -51,12 +55,9 @@ if ( $wp_query->have_posts() ) {
         </h2>
     </header>
     <div class="entry-details">
-        <?php if ( $logo = fct_print_meta( 'entity-avatar', true )[0] ) { ?>
+        <?php if ( $ava = fct_print_meta( 'entity-avatar', true )[0] ) { ?>
         <div class="entity-avatar">
-            <img loading="lazy" width="100%" height="100%"
-                src="<?php echo wp_get_upload_dir()['url'] . '/entity/' . get_the_ID() . '/' . $logo ?>"
-                alt="<?php the_title() ?> <?php echo get_post_type() == 'clinic' ? 'Logo' : 'Photo' ?>"
-            />
+            <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $ava, [74,74], 0, get_the_title() . ' Icon' ) ?>
         </div>
         <?php } ?>
         <div class="entity-about">

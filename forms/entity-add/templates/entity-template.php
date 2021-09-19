@@ -48,10 +48,7 @@ if ( have_posts() ) :
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:33.33%">
         <?php if ( $logo = fct_print_meta( 'entity-avatar', true )[0] ) { ?>
         <div class="fct-entity-photo">
-            <img loading="lazy" width="100%" height="100%"
-                src="<?php echo wp_get_upload_dir()['url'] . '/entity/' . get_the_ID() . '/' . $logo ?>"
-                alt="<?php the_title() ?> Logo"
-            />
+            <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $logo, [600,600], 0, get_the_title() . ' Logo' ) ?>
         </div>
         <?php } ?>
     </div>
@@ -106,7 +103,7 @@ if ( have_posts() ) :
                     foreach ( $gallery as $v ) {
                     ?>
                         <figure class="wp-block-image">
-                            <img loading="lazy" width="562" src="<?php echo wp_get_upload_dir()['url'] . '/entity/' . get_the_ID() . '/gallery/' . $v ?>" alt="" />
+                            <?php fct1_image_print( 'entity/' . get_the_ID() . '/gallery/' . $v, [554,554] ) ?>
                         </figure>
                     <?php
                     }
@@ -150,9 +147,10 @@ if ( have_posts() ) :
 <?php
 
         if ( $back_img = fct_print_meta( 'entity-photo', true )[0] ) {
+            $back_img = fct1_image_src( 'entity/' . get_the_ID() . '/' . $back_img, [1440,1440], ['center','top'] );
             ?><style>
                 .post-<?php the_ID() ?> .fct-entity-hero {
-                    --entity-bg:url( '<?php echo wp_get_upload_dir()['url'] . '/entity/' . get_the_ID() . '/' . $back_img ?>' );
+                    --entity-bg:url( '<?php echo $back_img[0] ?>' );
                 }
             </style><?php
         }
