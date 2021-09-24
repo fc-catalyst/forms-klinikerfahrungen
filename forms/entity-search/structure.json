@@ -4,29 +4,24 @@
         "print_method" : "server",
         "json_validate" : 1,
         "autocomplete" : "off",
-        "inherit_styles" : false,
-        "width" : "half"
+        "inherit_styles" : true
     },
     "fields" : [
         {
-            "gtype" : "row",
-            "cols" : 2,
-            "fields" : [
-                {
-                    "type" : "text",
-                    "placeholder" : "z.B. Chirurgie, Hausarzt",
-                    "name" : "spezialisierung",
-                    "validate" : {
-                    }
-                },
-                {
-                    "type" : "text",
-                    "placeholder" : "PLZ, Ort",
-                    "name" : "region",
-                    "validate" : {
-                    }
-                }
-            ]
+            "type" : "text",
+            "title" : "z.B. Chirurgie, Hausarzt",
+            "placeholder" : "z.B. Chirurgie, Hausarzt",
+            "name" : "specialty",
+            "validate" : {
+            }
+        },
+        {
+            "type" : "text",
+            "title" : "PLZ, Ort oder City",
+            "placeholder" : "PLZ, Ort oder City",
+            "name" : "place",
+            "validate" : {
+            }
         },
         {
             "type" : "submit",

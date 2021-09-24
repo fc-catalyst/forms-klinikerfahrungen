@@ -61,6 +61,14 @@ class FCP_Forms {
         add_action( 'wp_head', function() {
             echo '<script>var fcp_forms_assets_url = "' . $this->assets .'";</script>'."\n";
         });
+
+/* ++load all the styles on the front if is demanded (not sure how demanded yet though), maybe unify with the fct1
+        add_action( 'wp_head', function() {
+            // https://wp-kama.ru/function/has_shortcode
+            global $post;
+            $post->post_content
+        }, 8);
+//*/
         
         // admin part
         add_action( 'admin_enqueue_scripts', [ $this, 'add_styles_scripts_admin' ] );

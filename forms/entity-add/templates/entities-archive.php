@@ -8,17 +8,23 @@ get_header();
     <div class="wrap-width">
     <?php //the_archive_title( '<h1>', '</h1>' ) ?>
     <h1>Clinics and Doctors</h1>
+    
+    <?php echo do_shortcode('[fcp-form dir="entity-search"]') ?>
+    
 <?php
 
-$wp_query = new WP_Query( [
+$args = [
     'post_type'        => ['clinic', 'doctor'],
     'orderby'          => 'date',
     'order'            => 'DESC',
     'posts_per_page'   => '12',
     'paged'            => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
-    'post_status'      => ['publish', 'private'], // ++test it
-    
-]);
+    'post_status'      => ['publish', 'private'],
+];
+
+$args['meta_query'] = fct_archive_filters();
+
+$wp_query = new WP_Query( $args );
 
 if ( $wp_query->have_posts() ) {
     while ( $wp_query->have_posts() ) {
@@ -51,7 +57,7 @@ if ( $wp_query->have_posts() ) {
             </div>
         <?php } ?>
         <h2 class="entry-title" itemprop="headline">
-            <a rel="bookmark" href="<?php the_permalink() ?>"><?php the_title() ?></a>
+            <a rel="bookmark" href="<?php the_permalink() ?>"><?php //the_title() ?><?php fct_print_meta( 'entity-specialty' ) ?></a>
         </h2>
     </header>
     <div class="entry-details">
@@ -100,4 +106,48 @@ function fct_print_meta($name = '', $return = false, $before = '', $after = '') 
         return $result;
     }
     echo $result;
+}
+
+function fct_archive_filters() {
+    global $wpdb;
+
+    $query_meta = [];
+
+    if ( $_GET['place'] ) {
+        $val = $wpdb->_real_escape( htmlspecialchars( urldecode( $_GET['place'] ) ) );
+
+        $query_meta[] = [
+            'relation' => 'OR',
+            [
+                'key' => 'entity-region',
+                'value' => $val
+            ],
+            [
+                'key' => 'entity-geo-city',
+                'value' => $val
+            ],
+            [
+                'key' => 'entity-geo-postcode',
+                'value' => $val
+            ]
+        ];
+    }
+
+    if ( $_GET['specialty'] ) {
+        $val = $wpdb->_real_escape( htmlspecialchars( urldecode( $_GET['specialty'] ) ) );
+
+        $query_meta[] = [ [
+                'key' => 'entity-specialty',
+                'value' => $val
+            ]
+        ];
+    }
+
+
+    if ( count( $query_meta ) > 1 ) {
+        $query_meta['relation'] = 'AND';
+        return $query_meta;
+    }
+    
+    return $query_meta[0];
 }

@@ -230,7 +230,7 @@
 .wp-editor-container textarea {
     width:100%;
 }
-/* hide the links options button */
+/* hide the links options button ++move to some custom */
 .wp-link-input ~ .mce-widget.mce-btn.mce-last {
     display:none;
 }
