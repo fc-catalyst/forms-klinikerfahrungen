@@ -24,8 +24,8 @@ $wp_query = new WP_Query( $args );
     <h1>Clinics and Doctors</h1>
     
     <?php fct_search_stats( '<p style="margin-top:-25px;opacity:0.45">', '.</p>' ) ?>
-    
-    <?php echo do_shortcode('[fcp-form dir="entity-search" notcontent firstscreen]') ?>
+
+    <?php echo do_shortcode('[fcp-form dir="entity-search" notcontent]') ?>
     
 <?php
 
@@ -88,7 +88,7 @@ if ( $wp_query->have_posts() ) {
     get_template_part( 'template-parts/pagination' );
     ?></div><?php
 } else {
-    fct_search_stats( '<h2 style="text-align:center">', '</h2>.' );
+    fct_search_stats( '<h2 style="text-align:center">', '</h2>' );
 }
 wp_reset_query();
 

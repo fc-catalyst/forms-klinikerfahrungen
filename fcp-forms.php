@@ -61,14 +61,14 @@ class FCP_Forms {
 
         // allow js track the helpers' urls
         add_action( 'wp_head', function() {
-            echo '<script>var fcp_forms_assets_url = "' . $this->assets .'";</script>'."\n";
+            echo '<script>window.fcp_forms_assets_url="' . $this->assets .'";window.fcp_forms_data={};</script>'."\n";
         }, 8);
 
         add_action( 'wp_enqueue_scripts', function() {
             wp_enqueue_script( 'fcp-forms', $this->self_url . 'scripts.js', ['jquery'], $this->js_ver, true );
         });
 
-        // load styles (layout, common, private styles)
+        // load styles (layout, common, private styles) ++move to a separate function ++separate to track shortcode & styles & some other
         add_action( 'wp_head', function() {
             
             if ( is_home() || is_archive() ) { return; }
@@ -340,6 +340,8 @@ class FCP_Forms {
                 );
             }
         }
+
+        @include_once $this->forms_path . $atts['dir'] . '/' . 'if-shortcode.php';
 
         return $this->generate_form( $atts );
 
