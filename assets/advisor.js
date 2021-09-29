@@ -1,13 +1,14 @@
 ;'use strict';
+function FCP_Advisor($input, arr, cache) {
+
+    const $ = jQuery,
+        css_class = 'fcp-advisor-holder';
+    let init_val = '';
+
+    if ( !$input || !$input instanceof $ || !arr ) { return }
     
-function FCP_Advisor($input, arr) {
-
-    var $ = jQuery,
-        css_class = 'fcp-advisor-holder',
-        init_val = '';
-
-    if ( !$input || !$input instanceof $ || !arr ) {
-        return;
+    if ( $input.is( ':focus' ) ) {
+        list_holder_fill();
     }
 
     $input.on( 'focus', function() {
@@ -16,7 +17,6 @@ function FCP_Advisor($input, arr) {
     $input.on( 'input', function() {
         list_holder_fill();
     });
-
     $input.on( 'keydown', function(e) {
         if ( ~['ArrowDown','ArrowUp'].indexOf( e.key ) ) {
             e.preventDefault();
@@ -53,11 +53,9 @@ function FCP_Advisor($input, arr) {
     }
 
     function list_holder_add() {
-        if ( $holder().length ) {
-            return;
-        }
+        if ( $holder().length ) { return }
         
-        var width = $input.outerWidth(),
+        const width = $input.outerWidth(),
             height = $input.outerHeight(),
             position = $input.position();
 
@@ -69,13 +67,13 @@ function FCP_Advisor($input, arr) {
         }) );
 
         document.addEventListener( 'click', list_holder_remove ); // blur event doesn't pass through the click
-
+        
+        // $input.next()[0].attachShadow( { mode: 'open' } ); // not sure I need this here, so it's not
+        
     }
     
     function list_holder_remove(e) {
-        if ( e && e.target === $input[0] ) {
-            return;
-        }
+        if ( e && e.target === $input[0] ) { return }
         $holder().remove();
         document.removeEventListener( 'click', list_holder_remove, false );
     }
@@ -92,28 +90,35 @@ function FCP_Advisor($input, arr) {
         init_val = $input.val();
 
         list_holder_content();
-
-        $holder().children().each( function() {
-            $( this ).click( function() {
-                $input.val( $( this ).text() );
-                list_holder_remove();
-            });
-        });
     }
 
-    function list_holder_content() {
-        var value = $input.val().toLowerCase(),
-            content = [],
-            arr_low = [];
+    async function list_holder_content() {
+        const value = $input.val().toLowerCase();
+        let content = [],
+            arr_low = [],
+            list = [];
 
-        arr.forEach( function(v, i) {
-            this[i] = v.toLowerCase();
+        if ( typeof arr === 'function' ) {
+            list = await arr();
+            arr = cache ? list : arr;
+        } else
+        if ( Array.isArray( arr ) ) {
+            list = arr;
+        }
+
+        list.forEach( function(v, i) {
+            this[i] = v
+                .toLowerCase()
+                .replace( /&amp;|&lt;|&gt;|&quot;|&#039;/g, function(a) {
+                    return { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#039;': '\'' }[a];
+                });
+                // $('<div/>').html(value).text(); // as an option for replace
         }, arr_low );
 
-        for ( var i = 0, j = arr_low.length; i < j; i++ ) {
+        for ( let i = 0, j = arr_low.length; i < j; i++ ) {
 
             if ( arr_low[i].indexOf( value ) === 0 && arr_low[i] !== value ) {
-                content.push( '<button tabindex="-1">'+arr[i]+'</button>' );
+                content.push( '<button tabindex="-1">'+list[i]+'</button>' );
             }                
 
             if ( content.length > 4 ) {
@@ -126,6 +131,13 @@ function FCP_Advisor($input, arr) {
         }
 
         $holder().empty().append( content.join( '' ) );
+        
+        $holder().children().each( function() {
+            $( this ).click( function() {
+                $input.val( $( this ).text() );
+                list_holder_remove();
+            });
+        });
 
     }
 
@@ -136,9 +148,7 @@ function FCP_Advisor($input, arr) {
         list_holder_select( 'prev' );
     }
     function list_holder_select(a) {
-        if ( !~['next','prev'].indexOf( a ) ) {
-            return;
-        }
+        if ( !~['next','prev'].indexOf( a ) ) { return }
         if ( !$holder().length ) {
             list_holder_fill();
         }
@@ -156,6 +166,7 @@ function FCP_Advisor($input, arr) {
     }
     
     function list_holder_apply() {
+        if ( !$active().length ) { return }
         $input.val( $active().text() );
     }
 

@@ -4,15 +4,6 @@ $imgs_dir = str_replace( ABSPATH, get_site_url() . '/', dirname( __DIR__ ) . '/t
 
 get_header();
 
-?>
-    <div class="wrap-width">
-    <?php //the_archive_title( '<h1>', '</h1>' ) ?>
-    <h1>Clinics and Doctors</h1>
-    
-    <?php echo do_shortcode('[fcp-form dir="entity-search"]') ?>
-    
-<?php
-
 $args = [
     'post_type'        => ['clinic', 'doctor'],
     'orderby'          => 'date',
@@ -25,6 +16,18 @@ $args = [
 $args['meta_query'] = fct_archive_filters();
 
 $wp_query = new WP_Query( $args );
+
+
+?>
+    <div class="wrap-width">
+    <?php //the_archive_title( '<h1>', '</h1>' ) ?>
+    <h1>Clinics and Doctors</h1>
+    
+    <?php fct_search_stats( '<p style="margin-top:-25px;opacity:0.45">', '.</p>' ) ?>
+    
+    <?php echo do_shortcode('[fcp-form dir="entity-search" notcontent firstscreen]') ?>
+    
+<?php
 
 if ( $wp_query->have_posts() ) {
     while ( $wp_query->have_posts() ) {
@@ -84,6 +87,8 @@ if ( $wp_query->have_posts() ) {
     }
     get_template_part( 'template-parts/pagination' );
     ?></div><?php
+} else {
+    fct_search_stats( '<h2 style="text-align:center">', '</h2>.' );
 }
 wp_reset_query();
 
@@ -150,4 +155,22 @@ function fct_archive_filters() {
     }
     
     return $query_meta[0];
+}
+
+function fct_search_stats($before = '', $after = '') {
+    if ( !$_GET['specialty'] && !$_GET['place'] ) { return; }
+    
+    global $wp_query;
+    if ( $wp_query->have_posts() ) {
+        $count = $wp_query->post_count . ' results';
+    } else {
+        $count = 'Nothing';
+    }
+    
+    echo $before .
+        $count . ' found' .
+        ( $_GET['specialty'] ? ' for <strong>' . $_GET['specialty'] . '</strong>' : '' ) .
+        ( $_GET['place'] ? ' in <strong>' . $_GET['place'] . '</strong>' : '' ) .
+        $after;
+    
 }

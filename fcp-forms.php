@@ -22,6 +22,8 @@ class FCP_Forms {
                   $tmp_dir = 'fcp-forms-tmps',
                   $text_domain = 'fcp-forms',
                   $prefix = 'fcpf';
+                  
+    private $forms = [];
 	
 	private function plugin_setup() {
 
@@ -52,23 +54,136 @@ class FCP_Forms {
         register_deactivation_hook( __FILE__, [ $this, 'uninstall' ] );
 
         // initial forms settings, which must have even without the form on the page
-        $forms = array_diff( scandir( $this->forms_path ), [ '.', '..' ] );
-        foreach ( $forms as $dir ) {
+        $this->forms = array_values( array_diff( scandir( $this->forms_path ), [ '.', '..' ] ) );
+        foreach ( $this->forms as $dir ) {
             @include_once $this->forms_path . $dir . '/' . 'index.php';
         }
 
         // allow js track the helpers' urls
         add_action( 'wp_head', function() {
             echo '<script>var fcp_forms_assets_url = "' . $this->assets .'";</script>'."\n";
+        }, 8);
+
+        add_action( 'wp_enqueue_scripts', function() {
+            wp_enqueue_script( 'fcp-forms', $this->self_url . 'scripts.js', ['jquery'], $this->js_ver, true );
         });
 
-/* ++load all the styles on the front if is demanded (not sure how demanded yet though), maybe unify with the fct1
+        // load styles (layout, common, private styles)
         add_action( 'wp_head', function() {
-            // https://wp-kama.ru/function/has_shortcode
+            
+            if ( is_home() || is_archive() ) { return; }
+            
             global $post;
-            $post->post_content
+            if ( !$post->post_content || strpos( $post->post_content, '[fcp-form' ) === false ) { return; }
+            
+            preg_match_all(
+                '/\[fcp\-form(\s+[^\]]+)\]/i',
+                $post->post_content, $matches, PREG_SET_ORDER
+            );
+
+            $first_screen = [];
+            $second_screen = [];
+
+            foreach ( $matches as $v ) { // fullscreen, dir name, fullscreen
+            
+                preg_match( '/\s+dir=([^\s]+)\s?/i', $v[1], $matches1 );
+                $dir = trim( $matches1[1], '\'"');
+
+                if ( strpos( $v[1], 'firstscreen' ) !== false ) {
+                    $first_screen[] = $dir;
+                    continue;
+                }
+                
+                $second_screen[] = $dir;
+
+            }
+
+            if ( !$first_screen[0] && !$second_screen[0] ) { return; }
+
+            // if a form has its own style.css - don't use main style.css at all;
+            // always use layout (if a form is found), just vary if on first screen or second.
+
+            // first screen styles
+
+            $default_layout_first_loaded = false;
+            $default_style_first_loaded = false;
+
+            if ( $first_screen[0] ) {
+                echo '<style>';
+
+                // main layout load
+                echo "\n\n".'/*---------- main layout.css ----------*'.'/'."\n";
+                @include_once $this->self_path . 'layout.css'; // main layout goes firstscreen, if at least one is fs
+                $default_layout_first_loaded = true;
+
+                // main style load if a form has no own style
+                foreach ( $first_screen as $dir ) {
+                    if ( is_file( $this->forms_path . $dir . '/' . 'style.css' ) ) { continue; }
+                    
+                    echo "\n\n".'/*---------- ' . $dir . ' <- main style.css ----------*'.'/'."\n";
+                    @include_once $this->self_path . 'style.css';
+                    $default_style_first_loaded = true;
+                    break;
+                }
+
+                // private styles load
+                foreach ( $first_screen as $dir ) {
+                    if ( !is_file( $this->forms_path . $dir . '/' . 'style.css' ) ) { continue; }
+
+                    echo "\n\n".'/*---------- '.$dir.'/style.css ----------*'.'/'."\n";
+                    include_once $this->forms_path . $dir . '/' . 'style.css';
+                }
+
+                echo '</style>';
+            }
+
+
+            // not first screen styles
+            if ( !$second_screen[0] ) { return; }
+
+            $styles_depend_on = [];
+            
+            // main layout load
+            if ( !$default_layout_first_loaded ) {
+                wp_enqueue_style(
+                    'fcp-forms--layout',
+                    $this->self_url . 'layout.css',
+                    [],
+                    $this->css_ver
+                );
+                $styles_depend_on[] = 'fcp-forms--layout';
+            }
+
+            // main style load if a form has no own style
+            if ( !$default_style_first_loaded ) {
+                foreach ( $second_screen as $dir ) {
+                    if ( is_file( $this->forms_path . $dir . '/' . 'style.css' ) ) { continue; }
+
+                    wp_enqueue_style(
+                        'fcp-forms--style',
+                        $this->self_url . 'style.css',
+                        $styles_depend_on,
+                        $this->css_ver
+                    );
+                    $styles_depend_on[] = 'fcp-forms--style';
+                    break;
+                }
+            }
+            
+            // private styles load
+            foreach ( $second_screen as $dir ) {
+                if ( !is_file( $this->forms_path . $dir . '/' . 'style.css' ) ) { continue; }
+
+                wp_enqueue_style(
+                    'fcp-forms-' . $dir,
+                    $this->forms_url . $dir . '/style.css',
+                    $styles_depend_on,
+                    $this->css_ver
+                );
+            }
+            
         }, 8);
-//*/
+
         
         // admin part
         add_action( 'admin_enqueue_scripts', [ $this, 'add_styles_scripts_admin' ] );
@@ -181,7 +296,9 @@ class FCP_Forms {
 
         $allowed = [
 			'dir' => '',
-			'ignore_hide_on_GET' => false
+			'ignore_hide_on_GET' => false,
+			'notcontent' => false, // if shortcode is rendered not from page-content
+			'firstscreen' => false
 		];
 		$atts = $this->fix_shortcode_atts( $allowed, $atts );
 		$atts = shortcode_atts( $allowed, $atts );
@@ -189,8 +306,40 @@ class FCP_Forms {
 		if ( !$atts['dir'] || !self::form_exists( $atts['dir'] ) ) {
 			return '';
         }
+
+        // add custom script from the form's dir
+        if ( is_file( $this->forms_path . $atts['dir'] . '/scripts.js' ) ) {
+            wp_enqueue_script(
+                'fcp-forms-' . $atts['dir'],
+                $this->forms_url . $atts['dir'] . '/scripts.js',
+                [ 'jquery', 'fcp-forms' ],
+                $this->js_ver,
+                true
+            );
+        }
         
-        $this->add_styles_scripts( $atts['dir'] );
+        if ( $atts['notcontent'] ) { // ++this is fast solution for single form - improve!!
+            wp_enqueue_style(
+                'fcp-forms--layout',
+                $this->self_url . 'layout.css',
+                [],
+                $this->css_ver
+            );
+            wp_enqueue_style(
+                'fcp-forms--style',
+                $this->self_url . 'style.css',
+                ['fcp-forms--layout'],
+                $this->css_ver
+            );
+            if ( is_file( $this->forms_path . $atts['dir'] . '/style.css' ) ) {
+                wp_enqueue_style(
+                    'fcp-forms-'.$atts['dir'],
+                    $this->forms_url . $atts['dir'] . '/style.css',
+                    ['fcp-forms--layout', 'fcp-forms--style'],
+                    $this->css_ver
+                );
+            }
+        }
 
         return $this->generate_form( $atts );
 
@@ -214,32 +363,6 @@ class FCP_Forms {
         return $atts;
 	}
 
-	private function add_styles_scripts($dir) {
-
-        wp_enqueue_style( 'fcp-forms-layout', $this->self_url . 'layout.css', [], $this->css_ver );
-        wp_enqueue_style( 'fcp-forms-style', $this->self_url . 'style.css', ['fcp-forms-layout'], $this->css_ver );
-        wp_enqueue_script( 'fcp-forms', $this->self_url . 'scripts.js', ['jquery'], $this->js_ver );
-
-        // custom forms styling
-        if ( is_file( $this->forms_path . $dir . '/style.css' ) ) {
-            wp_enqueue_style(
-                'fcp-forms-style-'.$dir,
-                $this->forms_url . $dir . '/style.css',
-                [ 'fcp-forms-layout', 'fcp-forms-style' ],
-                $this->css_ver
-            );
-        }
-        if ( is_file( $this->forms_path . $dir . '/scripts.js' ) ) {
-            wp_enqueue_script(
-                'fcp-forms-'.$dir,
-                $this->forms_url . $dir . '/scripts.js',
-                [ 'jquery', 'fcp-forms' ],
-                $this->js_ver
-            );
-        }
-
-	}
-	
     public function add_styles_scripts_admin($hook) {
 
         if ( !in_array( $hook, ['post.php', 'post-new.php'] ) ) {

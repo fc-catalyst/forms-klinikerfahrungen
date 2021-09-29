@@ -1,28 +1,38 @@
 !function(){let a=setInterval(function(){let b=document.readyState;if(b!=='complete'&&b!=='interactive'||typeof jQuery==='undefined'){return}let $=jQuery;clearInterval(a);a=null;
 
-    const workhours_popup = new FCP_Forms_Hidden( '#entity-working-hours' );
-    $( '#entity-working-hours_entity-add' ).on( 'click', function() {
-        workhours_popup.show( this );
-    });
-    
-    const gmap_popup = new FCP_Forms_Hidden( '#entity-specify-map' );
-    $( '#entity-map_entity-add' ).on( 'click', function() {
-        gmap_popup.show( this );
-        
-        /* add map by class */
-        if ( !$( '.fct-gmap-pick' ).length ) { return }
-        fcLoadScriptVariable(
-            '/wp-content/themes/fct1/assets/smarts/gmap-pick.js?' + + new Date(),
-            'fcAddGmapPick',
-            function() { fcAddGmapPick( '.fct-gmap-pick' ) },
-            ['google']
-        );
-    });
+    fcLoadScriptVariable(
+        window.fcp_forms_assets_url + 'popup.js',
+        'FCP_Forms_Popup',
+        function() {
+            
+            const workhours_popup = new FCP_Forms_Popup( '#entity-working-hours' );
+            $( '#entity-working-hours_entity-add' ).on( 'click', function() {
+                workhours_popup.show( this );
+            });
+
+            const gmap_popup = new FCP_Forms_Popup( '#entity-specify-map' );
+            $( '#entity-map_entity-add' ).on( 'click', function() {
+                gmap_popup.show( this );
+                
+                /* add map by class */
+                if ( !$( '.fct-gmap-pick' ).length ) { return }
+                fcLoadScriptVariable(
+                    '/wp-content/themes/fct1/assets/smarts/gmap-pick.js?' + + new Date(),
+                    'fcAddGmapPick',
+                    function() { fcAddGmapPick( '.fct-gmap-pick' ) },
+                    ['google']
+                );
+            });
+        },
+        [],
+        true
+    );
     
     fcLoadScriptVariable(
         'https://maps.googleapis.com/maps/api/js?key='+fcGmapKey+'&libraries=places&&language=de-DE',
         'google',
         function() {
+
             let autocompleteFilled = false; // make sure, the visitor used the autocomplete popup
             const $autocompleteInput = $( '#entity-address_entity-add' ),
                 autocomplete = new google.maps.places.Autocomplete(
@@ -34,7 +44,7 @@
                     }
                 );
 
-            autocomplete.addListener( 'place_changed', function() { // ++replace with local autocomplete?
+            autocomplete.addListener( 'place_changed', function() { // ++better replace with local autocomplete?
                 fillInValues( autocomplete.getPlace() );
             });
 
@@ -63,11 +73,17 @@
                             fillInValues( results[0] );
                         }
                     );
-                }, 1000 );
+                }, 1000 ); // ++can add a loading icon
 
             });
+            
+            $autocompleteInput.keydown( function (e) {
+                if ( e.key === 'Enter' && $( '.pac-container:visible' ).length ) {
+                    e.preventDefault();
+                }
+            });
 
-    
+
             function fillInValues(result) {
 
                 autocompleteFilled = true;
@@ -96,8 +112,8 @@
                     }
                 }
 
-                //$( '#entity-region_entity-add' ).val();
-                //$( '#entity-geo-city_entity-add' ).val();
+                //$( '#entity-region_entity-add' ).val(); // ^
+                //$( '#entity-geo-city_entity-add' ).val(); // ^
                 $( '#entity-geo-postcode_entity-add' ).val( postcode );
 
                 $( '#entity-geo-lat_entity-add' ).val( result.geometry.location.lat() );
@@ -106,10 +122,10 @@
                 // format the main address field
                 $autocompleteInput.val( result.formatted_address );
                 
-                //++process the invalid address somehow
+                // ++process the invalid address somehow
             }
 
         }
     );
 
-},300)}();
+},300 )}();
