@@ -292,7 +292,7 @@ class FCP_Forms {
 
 	}
     
-	public function add_shortcode( $atts = [] ) {
+	public function add_shortcode($atts = []) {
 
         $allowed = [
 			'dir' => '',

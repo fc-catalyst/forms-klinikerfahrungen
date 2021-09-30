@@ -60,7 +60,7 @@ if ( $wp_query->have_posts() ) {
             </div>
         <?php } ?>
         <h2 class="entry-title" itemprop="headline">
-            <a rel="bookmark" href="<?php the_permalink() ?>"><?php //the_title() ?><?php fct_print_meta( 'entity-specialty' ) ?></a>
+            <a href="<?php the_permalink() ?>"><?php the_title() ?></a>
         </h2>
     </header>
     <div class="entry-details">

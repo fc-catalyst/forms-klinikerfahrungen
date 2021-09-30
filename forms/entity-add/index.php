@@ -129,3 +129,49 @@ new FCP_Add_Meta_Boxes( $json, (object) [
     'context' => 'normal',
     'priority' => 'high'
 ] );
+
+
+add_shortcode( 'fcp-form-entities', function($atts = []) {
+
+    $allowed = [
+        'type' => ['clinic','doctor'],
+        'orderby' => 'date',
+        'order' => 'DESC',
+        'tariff' => 'any',
+        'ppp' => 10,
+        'class' => ''
+    ];
+    $atts = shortcode_atts( $allowed, $atts );
+    
+    $args = [
+        'post_type'        => $atts['type'],
+        'orderby'          => $atts['orderby'],
+        'order'            => $atts['order'],
+        'posts_per_page'   => $atts['ppp'],
+        'post_status'      => 'publish'
+    ];
+
+    if ( $atts['tariff'] != 'any' ) {
+        $args['meta_query'] = [
+            [
+                'key' => 'entity-tariff',
+                'value' => $atts['tariff']
+            ]
+        ];
+    }
+
+    $wp_query = new WP_Query( $args );
+    
+    if ( !$wp_query->have_posts() ) { return; }
+
+    $return = '<ul' . ( $atts['class'] ? ' class="' . $atts['class'] . '"' : '' ) . '>' . "\n";
+    while ( $wp_query->have_posts() ) {
+        $wp_query->the_post();
+        $return .= '<li><a rel="bookmark" href="' . get_the_permalink() . '">' . get_the_title() . '</a></li>' . "\n";
+    }
+    $return .= '</ul>' . "\n";
+    
+    return $return;
+    
+    wp_reset_query();
+});
