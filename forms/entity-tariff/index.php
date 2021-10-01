@@ -19,3 +19,21 @@ new FCP_Add_Meta_Boxes( $json, (object) [
     'context' => 'side',
     'priority' => 'default'
 ] );
+
+
+add_action( 'admin_enqueue_scripts', function() {
+    wp_enqueue_script( 'jquery-ui-datepicker' );
+    wp_enqueue_style( 'jquery-ui-css', $this->self_url . 'forms/' . basename( __DIR__ ) . '/assets/jquery-ui.css' );
+});
+
+add_action( 'admin_footer', function() {
+    ?>
+    <script type="text/javascript">
+        jQuery( document ).ready( function($){
+            $( '#entity-tariff-till_entity-tariff' ).datepicker( {
+                dateFormat : 'dd.mm.yy'
+            });
+        });
+    </script>
+    <?php
+});

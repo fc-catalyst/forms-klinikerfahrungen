@@ -76,6 +76,8 @@ class FCP_Add_Meta_Boxes {
             } );
         }
 
+        @include_once( plugin_dir_path( __FILE__ ) . '../forms/' . $this->s->options->form_name . '/override-admin.php' );
+
         // print meta fields
         $draw = new FCP_Forms__Draw( $this->s, $values );
 
@@ -119,7 +121,7 @@ class FCP_Add_Meta_Boxes {
             
             //update_post_meta( $postID, 'test', include( plugin_dir_path( __FILE__ ) . '../forms/' . $this->s->options->form_name . '/process-admin.php' ) ); exit;
 
-            // main processing
+            // modify data before save && process files
             @include_once( plugin_dir_path( __FILE__ ) . '../forms/' . $this->s->options->form_name . '/process-admin.php' );
 
         }

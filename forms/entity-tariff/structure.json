@@ -14,6 +14,7 @@
             "placeholder" : "dd.mm.yyyy",
             "name" : "entity-tariff-till",
             "meta_box" : true,
+            "autocomplete" : "off",
             "roles_edit" : [
                 "administrator"
             ],
