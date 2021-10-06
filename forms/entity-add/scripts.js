@@ -34,8 +34,10 @@
         function() {
 
             let autocompleteFilled = false; // make sure, the visitor used the autocomplete popup
-            const $autocompleteInput = $( '#entity-address_entity-add' ),
-                autocomplete = new google.maps.places.Autocomplete(
+            const $autocompleteInput = $( '#entity-address_entity-add' );
+            if ( !$autocompleteInput.length ) { return }
+
+            const autocomplete = new google.maps.places.Autocomplete(
                     $autocompleteInput[0],
                     {
                         componentRestrictions: { country: ['de'] },

@@ -61,5 +61,22 @@
     function empty_button($self) {
         $self.addClass( s.empty_class );
     }
+    
+    // tabs labels active
+    $( '.fcp-forms--tabs label' ).on( 'click', function() {
+        let $self = $( this ),
+            active = 'fcp-active';
+        setTimeout( function() {
+            
+            $self.parent().find( 'label' ).each( function() {
+                $( this ).removeClass( active );
+            });
+            
+            let for_attr = $self.attr( 'for' );
+            if ( $( '#' + for_attr ).is(':checked') ) {
+                $self.addClass( active );
+            }
+        });
+    });
 
 }, 300 )}();

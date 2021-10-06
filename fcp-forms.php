@@ -48,6 +48,7 @@ class FCP_Forms {
         $this->plugin_setup();
 
         add_shortcode( 'fcp-form', [ $this, 'add_shortcode' ] );
+        add_shortcode( 'fcp-forms-tabs', [ $this, 'add_shortcode_tabs' ] );
         add_action( 'template_redirect', [ $this, 'process' ] );
         
         register_activation_hook( __FILE__, [ $this, 'install' ] );
@@ -77,26 +78,33 @@ class FCP_Forms {
             if ( !$post->post_content || strpos( $post->post_content, '[fcp-form' ) === false ) { return; }
             
             preg_match_all(
-                '/\[fcp\-form(\s+[^\]]+)\]/i',
+                '/\[fcp\-form(?:s\-tabs)(\s+[^\]]+)\]/i',
                 $post->post_content, $matches, PREG_SET_ORDER
             );
 
             $first_screen = [];
             $second_screen = [];
 
-            foreach ( $matches as $v ) { // fullscreen, dir name, fullscreen
+            foreach ( $matches as $v ) { // get dir name / dirs' names
             
-                preg_match( '/\s+dir=([^\s]+)\s?/i', $v[1], $matches1 );
-                $dir = trim( $matches1[1], '\'"');
-
-                if ( strpos( $v[1], 'firstscreen' ) !== false ) {
-                    $first_screen[] = $dir;
-                    continue;
-                }
+                preg_match( '/\s+dirs?=([^\s]+)\s?/i', $v[1], $matches1 );
                 
-                $second_screen[] = $dir;
+                $dirs = array_map( 'trim', explode( ',', trim( $matches1[1], '\'"') ) );
+
+                foreach ( $dirs as $dir ) {
+                
+                    if ( strpos( $v[1], 'firstscreen' ) !== false ) {
+                        $first_screen[] = $dir;
+                        continue;
+                    }
+                    
+                    $second_screen[] = $dir;
+                }
 
             }
+            
+            $first_screen = array_values( array_unique( $first_screen ) );
+            $second_screen = array_values( array_unique( $second_screen ) );
 
             if ( !$first_screen[0] && !$second_screen[0] ) { return; }
 
@@ -303,12 +311,62 @@ class FCP_Forms {
 		$atts = $this->fix_shortcode_atts( $allowed, $atts );
 		$atts = shortcode_atts( $allowed, $atts );
 
-		if ( !$atts['dir'] || !self::form_exists( $atts['dir'] ) ) {
-			return '';
+		return $this->add_shortcode_main( $atts );
+
+	}
+	
+	public function add_shortcode_tabs($atts = []) {
+
+        $allowed = [
+			'dirs' => '',
+			'tabs' => '',
+			'notcontent' => false, // if shortcode is rendered not from page-content
+			'firstscreen' => false
+		];
+		$atts = $this->fix_shortcode_atts( $allowed, $atts );
+		$atts = shortcode_atts( $allowed, $atts );
+
+		$dirs = array_map( 'trim', explode( ',', $atts['dirs'] ) );
+		$tabs = array_map( 'trim', explode( ',', $atts['tabs'] ) );
+		
+		if ( !$dirs[1] ) { // no tabs for single form
+            $this->add_shortcode_main( ['dir' => $dirs[0]] + $atts );
+		}
+		
+		$forms = [];
+		$labels = [];
+		foreach( $dirs as $k => $dir ) {
+            $form = $this->add_shortcode_main( ['dir' => $dir] + $atts );
+            if ( !$form ) { continue; }
+            
+            $labels[] = $tabs[ $k ] ? $tabs[ $k ] : $dir;
+            $forms[] = $form;
         }
+        
+        if ( !$forms[0] ) { return; }
+        
+        if ( !$forms[1] ) {
+            return $forms[1];
+        }
+        
+        $unique_group = substr( md5( time() ), 0, 5 );
+        foreach ( $labels as $k => &$v ) {
+            $name = 'fcp-forms--tab-' . $unique_group;
+            $id = $name . '-' . $k;
+            $v = '<label for="'.$id.'"'.( $k ? '' : ' class="fcp-active"' ).'>' . $v . '</label>';
+            $forms[ $k ] = '<input type="radio" name="'.$name.'" id="'.$id.'"'.( $k ? '' : ' checked' ).'>' .
+                $forms[ $k ];
+        }
+        return '<div class="fcp-forms--tabs">' . implode( '', $labels ) . '</div>' . implode( '', $forms );
+
+	}
+	
+	private function add_shortcode_main($atts) {
+
+        if ( !$atts['dir'] || !self::form_exists( $atts['dir'] ) ) { return; }
 
         // add custom script from the form's dir
-        if ( is_file( $this->forms_path . $atts['dir'] . '/scripts.js' ) ) {
+        if ( is_file( $this->forms_path . $atts['dir'] . '/scripts.js' ) ) { // ++doesn't work for reusable blocks
             wp_enqueue_script(
                 'fcp-forms-' . $atts['dir'],
                 $this->forms_url . $atts['dir'] . '/scripts.js',
@@ -344,8 +402,8 @@ class FCP_Forms {
         @include_once $this->forms_path . $atts['dir'] . '/' . 'if-shortcode.php';
 
         return $this->generate_form( $atts );
-
 	}
+	
 	private function fix_shortcode_atts($allowed, $atts) { // turns isset to = true and fixes the default lowercase
         foreach ( $allowed as $k => $v ) {
             $l = strtolower( $k );
