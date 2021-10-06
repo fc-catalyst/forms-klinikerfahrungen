@@ -78,7 +78,7 @@ class FCP_Forms {
             if ( !$post->post_content || strpos( $post->post_content, '[fcp-form' ) === false ) { return; }
             
             preg_match_all(
-                '/\[fcp\-form(?:s\-tabs)(\s+[^\]]+)\]/i',
+                '/\[fcp\-form(?:s\-tabs)?(\s+[^\]]+)\]/i',
                 $post->post_content, $matches, PREG_SET_ORDER
             );
 
@@ -102,7 +102,7 @@ class FCP_Forms {
                 }
 
             }
-            
+
             $first_screen = array_values( array_unique( $first_screen ) );
             $second_screen = array_values( array_unique( $second_screen ) );
 
@@ -335,12 +335,16 @@ class FCP_Forms {
 		
 		$forms = [];
 		$labels = [];
+		$at = 0; // active tab
 		foreach( $dirs as $k => $dir ) {
             $form = $this->add_shortcode_main( ['dir' => $dir] + $atts );
             if ( !$form ) { continue; }
             
             $labels[] = $tabs[ $k ] ? $tabs[ $k ] : $dir;
             $forms[] = $form;
+            if ( $_POST['fcp-form-name'] && $dir == $_POST['fcp-form-name'] ) {
+                $at = array_key_last( $forms );
+            }
         }
         
         if ( !$forms[0] ) { return; }
@@ -353,8 +357,8 @@ class FCP_Forms {
         foreach ( $labels as $k => &$v ) {
             $name = 'fcp-forms--tab-' . $unique_group;
             $id = $name . '-' . $k;
-            $v = '<label for="'.$id.'"'.( $k ? '' : ' class="fcp-active"' ).'>' . $v . '</label>';
-            $forms[ $k ] = '<input type="radio" name="'.$name.'" id="'.$id.'"'.( $k ? '' : ' checked' ).'>' .
+            $v = '<label for="'.$id.'"'.( $k == $at ? ' class="fcp-active"' : '' ).'>' . $v . '</label>';
+            $forms[ $k ] = '<input type="radio" name="'.$name.'" id="'.$id.'"'.( $k == $at ? ' checked' : '' ).'>' .
                 $forms[ $k ];
         }
         return '<div class="fcp-forms--tabs">' . implode( '', $labels ) . '</div>' . implode( '', $forms );
