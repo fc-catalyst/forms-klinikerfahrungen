@@ -9,8 +9,8 @@
     "fields" : [
         {
             "gtype" : "section",
-            "title" : "eine Klinik oder einen Arzt registrieren",
-            "title_tag" : "h2",
+            "title_x" : "eine Klinik oder einen Arzt registrieren",
+            "title_tag_x" : "h2",
             "fields" : [
                 {
                     "gtype" : "row",

@@ -1,0 +1,20 @@
+{
+    "options" : {
+        "method" : "post",
+        "print_method" : "server",
+        "required_mark" : "*"
+    },
+    "fields" : [
+        {
+            "type" : "checkbox",
+            "name" : "hide-h1",
+            "meta_box" : "only",
+            "options" : {
+                "1" : "Hide the H1 headline"
+            },
+            "roles_edit" : [
+                "administrator"
+            ]
+        }
+    ]
+}

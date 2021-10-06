@@ -9,8 +9,8 @@
     "fields" : [
         {
             "gtype" : "section",
-            "title" : "Login",
-            "title_tag" : "h2",
+            "title_x" : "Login",
+            "title_tag_x" : "h2",
             "fields" : [
                 {
                     "type" : "text",

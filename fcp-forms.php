@@ -596,62 +596,14 @@ class FCP_Forms {
 new FCP_Forms();
 
 /*
-    if the form is only for admin - unify the shortcode overrides
-    FCP_Add_Meta_Boxes get the title from json
     refactor delegate register styles
-    redirect to the editor works strange for admins - test for delegates
     filter multiple fields empty values, as schedule fills in too many rows
-    add meta boxes automatically, if are mentioned in the structure (now in forms' index.php)
     add_styles_scripts_admin - a all mentioned post types
     exclude dirs, starting from -- - take from gutenberg
-    add default checkboxes & radios checked
-    !! check is_admin in saveMetaBoxes !!
-    clinic meta boxes to proper ones
-        just process the common process in that function, just silengly
-        dunno about files - find out
-
-        company-image
-        if on edit post submit or if on just clinic add
-        ADD THE FREE PASS TRIGGER IF VALIDATION IS DONE CORRECTLY NOT ON ADMIN SIDE
-        front-end validation visible
-        maybe learn how meta boxes gotta be added not semi-manually
-
-    warnings are not attached to particular form as well as other fields, which names might repeat on other forms on the page
-    files uploading add checkboxes to delete files on submit (as well as thumbnails)
-    clinic meta boxes - change title and slug on meta title change.. or remove title from meta
-    check if first screen css can be picked differently
     make the password validate simple test
-    rename classes files and delete not used?
-    saveMetaBoxes seem to work wrong for not logged in users??
-    login form, styling refactor, all the website, registration+login form, refactor back-end, front-end, payment details, ratings
-    new clinic - email immediately to review!!
-    limit the number of multiple files
-    the plugin unique value create
-    remember about the worktime for the kliniks && location
-    reorganize the css classes names
-    recaptcha
     front-end validation
         autofill with front-end validation
-    ++include the modify values file before the validator for converting numbers and resizing images, maybe, renaming files, adding smilies
     ++aria
-    ++css grid variant
-    ++multiple text and other fields
-    use array_map instead of circles where can?
-    aa_aa for public and aaAa for privates?
-    fcp-form-a-nonce to some semi-random thing
-        nonce goes only after init, and works only for logged in users
-    delete the form file if empty or "delete" checkbox is clicked??
-    ++if same files are uploaded via different fields - don't upload twice
-    file default validation with no mentioning in json, notEmpry
-
-        ++file not empty validation works wrong - gotta mention hiddens!!
-        ++commaspace is not a good separator, as can be containd by a file
-
-    uploading for meta boxes
-    fcp-form-a-nonce to something unique
-    approve panding article: https://wordpress.stackexchange.com/questions/229840/is-it-possible-to-change-an-existing-post-status-from-pending-to-publish-via
-    use pending review, instead of private??
-    replace ", " with just comma and trim (or trim is included in sanitize)
     on clear trash - remove the clinic logo dir
     img preview to admin (mk thumbnail??)
 //*/

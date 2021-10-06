@@ -36,11 +36,15 @@ $user = wp_signon( $creds, false );
 
 if ( is_wp_error( $user ) ) {
    $warning = $user->get_error_message();
+   return;
+}
+
+if ( is_home() ) {
+    $redirect = get_option( 'siteurl' ) . '/unternehmen-eintragen/?registration_step=2';
+    return;
 }
 
 $redirect = $_POST['_wp_http_referer'] ? $_POST['_wp_http_referer'] : get_permalink();
-/*
 $redirect = add_query_arg( [
     'registration_step' => 2
 ], $redirect );
-//*/

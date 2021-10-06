@@ -24,6 +24,7 @@ new FCP_Add_Meta_Boxes( $json, (object) [
 add_action( 'admin_enqueue_scripts', function() {
     wp_enqueue_script( 'jquery-ui-datepicker' );
     wp_enqueue_style( 'jquery-ui-css', $this->self_url . 'forms/' . basename( __DIR__ ) . '/assets/jquery-ui.css' );
+    // ++add the images folder as demanded
 });
 
 add_action( 'admin_footer', function() {

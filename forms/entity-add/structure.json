@@ -14,8 +14,8 @@
     "fields" : [
         {
             "gtype" : "section",
-            "title" : "Unternehmen",
-            "title_tag" : "h3",
+            "title_x" : "Unternehmen",
+            "title_tag_x" : "h3",
             "fields" : [
                 {
                     "gtype" : "row",

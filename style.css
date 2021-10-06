@@ -55,9 +55,6 @@
     color:var(--color);
     -webkit-appearance:none;
 }
-.fcp-form--main textarea {
-    font-size:12px;
-}
 .fcp-form--main option {
     font-weight:400;
     text-transform:none;
@@ -134,6 +131,7 @@
 .fcp-form--main button::before {
     content:'>';
     display:inline-block;
+    line-height:1;
     float:right;
     transform:scale(1, 1.8);
 }
@@ -179,6 +177,8 @@
     height:14px;
     border-radius:2.5px;
     top:4.5px;
+    border: 1px solid var(--bg);
+    box-sizing: border-box;
 }
 .fcp-form--main fieldset label > input[type=checkbox]:focus + span::before {
     width:20px;
@@ -192,6 +192,8 @@
     height:15px;
     border-radius:7.5px;
     top:3.5px;
+    border: 1px solid var(--bg);
+    box-sizing: border-box;
 }
 .fcp-form--main fieldset label > input[type=radio]:focus + span::before {
     width:21px;

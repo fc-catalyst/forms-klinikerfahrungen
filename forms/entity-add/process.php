@@ -73,7 +73,7 @@ if ( $authors_billing->post_count > 0 ) {
     return;
 }
 
-$redirect = $_POST['_wp_http_referer'] ? $_POST['_wp_http_referer'] : get_permalink();
+// $redirect = $_POST['_wp_http_referer'] ? $_POST['_wp_http_referer'] : get_permalink();
 $redirect = add_query_arg( [
     'add_billing' => ''
 ], $redirect );
