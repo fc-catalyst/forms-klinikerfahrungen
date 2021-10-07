@@ -9,12 +9,16 @@ body.edit-php .table-view-excerpt.posts {
 body.post-php h1.wp-heading-inline {
     margin-top:25px;
 }
+body.post-new-php #entity-add,
+body.post-new-php #billing-add,
 body.post-php #entity-add,
-body.post-php #billing-add{
+body.post-php #billing-add {
     margin-top:40px;
     border:1px solid #23667b4a;
 }
 
+body.post-new-php #entity-add,
+body.post-new-php #billing-add,
 body.post-php #entity-add,
 body.post-php #billing-add,
 body.edit-php .table-view-list.posts,

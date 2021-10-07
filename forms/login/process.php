@@ -17,3 +17,5 @@ $user = wp_signon( $creds, false );
 if ( is_wp_error( $user ) ) {
    $warning = $user->get_error_message();
 }
+
+$redirect = get_option( 'siteurl' ) . '/wp-admin/edit.php?post_type=clinic';

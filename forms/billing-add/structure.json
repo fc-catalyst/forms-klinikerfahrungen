@@ -27,16 +27,16 @@
                             "validate" : {
                                 "notEmpty" : true
                             },
-                            "meta_box" : "only"
+                            "meta_box" : "true"
                         },
                         {
                             "type" : "text",
-                            "title" : "Person name?",
-                            "name" : "billing-name",
+                            "title" : "Rechnungsadresse",
+                            "name" : "billing-address",
                             "validate" : {
                                 "notEmpty" : true
                             },
-                            "meta_box" : "only"
+                            "meta_box" : true
                         }
                     ]
                 },
@@ -46,12 +46,12 @@
                     "fields" : [
                         {
                             "type" : "text",
-                            "title" : "Rechnungsadresse",
-                            "name" : "billing-address",
+                            "title" : "Person name",
+                            "name" : "billing-name",
                             "validate" : {
                                 "notEmpty" : true
                             },
-                            "meta_box" : true
+                            "meta_box" : "true"
                         },
                         {
                             "type" : "text",
@@ -64,6 +64,10 @@
                             "meta_box" : true
                         }
                     ]
+                },
+                {
+                    "type" : "notice",
+                    "text" : "<p>Nach der Bestätigung Ihrer Zahlung und der Kontrolle Ihrer gemachten Angaben schalten wir Ihren Eintrag für 365 Tage auf unserer Plattform frei. Da wir nur aktuelle Ergebnisse in unseren Unternehmenskatalog anzeigen wollen, ist dieser Schritt nötig, um kontrollieren zu können, welche Unternehmen geschlossen und aktiv sind.</p><p>Der gemachte Backlink und die Adressdaten sollten Ihrer Praxis / Klinik bei der Positionierung in den Google-Ergebnissen helfen. Diesen Umstand können Sie unterstützen, in dem Sie Ihren Eintrag auf unserer Plattform so relevant wie möglich halten.</p>"
                 }
             ]
         },

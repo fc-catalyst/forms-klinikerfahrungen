@@ -4,7 +4,8 @@
         "print_method" : "server",
         "json_validate" : 1,
         "required_mark" : "*",
-        "reduce_font_after" : 36
+        "reduce_font_after" : 36,
+        "tab" : "Login"
     },
     "fields" : [
         {
@@ -22,7 +23,7 @@
                     }
                 },
                 {
-                    "type" : "text",
+                    "type" : "password",
                     "placeholder" : "Password",
                     "name" : "user-password",
                     "validate" : {

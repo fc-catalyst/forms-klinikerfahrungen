@@ -19,8 +19,13 @@ if ( $warning || !empty( $warns->result ) ) {
 }
 
 // create new post
+$title = $_POST['billing-company'] .
+    ( $_POST['billing-email'] ? ', ' : '' ) .
+    substr( $_POST['billing-email'], 0, strpos( $_POST['billing-email'], '@' ) + 3 ) .
+    '…';
+
 $id = wp_insert_post( [
-    'post_title' => sanitize_text_field( $_POST['billing-company'] ),
+    'post_title' => sanitize_text_field( $title ),
     'post_content' => '',
     'post_status' => 'publish',
     'post_author' => wp_get_current_user()->ID,
@@ -34,8 +39,9 @@ if ( $id === 0 ) {
     return;
 }
 
-// autofill the entity billing information
-// picking the new clinic (the only, actually)
+// autofill the entity billing information if there is a single clinic
+
+// picking the new entity
 $authors_entitiy = new WP_Query([
     'author' => wp_get_current_user()->ID,
     'post_type' => ['clinic', 'doctor'],
