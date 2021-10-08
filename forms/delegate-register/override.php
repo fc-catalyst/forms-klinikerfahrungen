@@ -3,12 +3,13 @@
 Print something else instead of the form
 */
 
+if ( $attr['override'] == 'registered-empty' && is_user_logged_in() ) {
+    $override = '';
+    unset( $json->fields );
+    return;
+}
+
 if ( is_user_logged_in() ) {
-    if ( !is_front_page() ) {
-        $override = '';
-        unset( $json->fields );
-        return;        
-    }
 
     ob_start();
     
@@ -25,6 +26,7 @@ if ( is_user_logged_in() ) {
                 <li>manage your existing <a href="<?php echo get_option( 'siteurl' ) . '/wp-admin/edit.php?post_type=clinic' ?>">clinics</a> and <a href="<?php echo get_option( 'siteurl' ) . '/wp-admin/edit.php?post_type=doctor' ?>">doctors</a>?</a></li>
                 <li><a href="<?php echo get_edit_profile_url() ?>">manage your profile?</a></li>
                 <li><a href="<?php echo get_option( 'siteurl' ) . '/wp-admin/edit.php?post_type=billing' ?>">add or manage your billing information?</a></li>
+                <li><a href="<?php echo wp_logout_url() ?>">LOGOUT</a></li>
             </ul>
         </div>
         <?php
@@ -49,6 +51,9 @@ if ( is_user_logged_in() ) {
     }
     .logged-in-message > *:first-child {
         margin-top:0;
+    }
+    .logged-in-message * {
+        color:#fff;
     }
     </style>
     <?php

@@ -32,7 +32,7 @@ $creds['user_login'] = $params['user_login'];
 $creds['user_password'] = $_POST['user-password'];
 $creds['remember'] = false;
 
-$user = wp_signon( $creds, false );
+$user = wp_signon( $creds );
 
 if ( is_wp_error( $user ) ) {
    $warning = $user->get_error_message();

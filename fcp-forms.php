@@ -23,7 +23,8 @@ class FCP_Forms {
                   $text_domain = 'fcp-forms',
                   $prefix = 'fcpf';
                   
-    private $forms = [];
+    private $forms = [],
+            $form_tab = [];
 	
 	private function plugin_setup() {
 
@@ -108,7 +109,7 @@ class FCP_Forms {
 
             if ( !$first_screen[0] && !$second_screen[0] ) { return; }
 
-            // if a form has its own style.css - don't use main style.css at all;
+            // if a form has its own style.css - don't use main style.css at all; ++maybe add attr or an option to avoid
             // always use layout (if a form is found), just vary if on first screen or second.
 
             // first screen styles
@@ -290,6 +291,11 @@ class FCP_Forms {
         }
 
         // success
+
+        if ( $_POST['fcp--redirect'] ) { // process.php redirect override with the shortcode attribute
+            $redirect = $_POST['fcp--redirect'];
+        }
+
         if ( $redirect ) {
             wp_redirect( $redirect );
             exit;
@@ -306,7 +312,11 @@ class FCP_Forms {
 			'dir' => '',
 			'ignore_hide_on_GET' => false,
 			'notcontent' => false, // if shortcode is rendered not from page-content
-			'firstscreen' => false
+			'firstscreen' => false,
+			'title' => false,
+			'title_tag' => false,
+			'override' => true,
+			'redirect' => false,
 		];
 		$atts = $this->fix_shortcode_atts( $allowed, $atts );
 		$atts = shortcode_atts( $allowed, $atts );
@@ -321,7 +331,11 @@ class FCP_Forms {
 			'dirs' => '',
 			'tabs' => '',
 			'notcontent' => false, // if shortcode is rendered not from page-content
-			'firstscreen' => false
+			'firstscreen' => false,
+			'title' => false,
+			'title_tag' => false,
+			'override' => true,
+			'redirect' => false,
 		];
 		$atts = $this->fix_shortcode_atts( $allowed, $atts );
 		$atts = shortcode_atts( $allowed, $atts );
@@ -332,36 +346,43 @@ class FCP_Forms {
 		if ( !$dirs[1] ) { // no tabs for single form
             $this->add_shortcode_main( ['dir' => $dirs[0]] + $atts );
 		}
-		
-		$forms = [];
+
+		$inputs = '';
 		$labels = [];
+		$forms = '';
 		$at = 0; // active tab
+
 		foreach( $dirs as $k => $dir ) {
             $form = $this->add_shortcode_main( ['dir' => $dir] + $atts );
             if ( !$form ) { continue; }
             
-            $labels[] = $tabs[ $k ] ? $tabs[ $k ] : $dir;
-            $forms[] = $form;
+            $labels[] = $tabs[ $k ] ? $tabs[ $k ] : 
+                $this->form_tab[ $dir ] ? $this->form_tab[ $dir ] : $dir;
+            $forms .= $form;
             if ( $_POST['fcp-form-name'] && $dir == $_POST['fcp-form-name'] ) {
-                $at = array_key_last( $forms );
+                $at = array_key_last( $labels );
             }
         }
         
-        if ( !$forms[0] ) { return; }
+        if ( !$labels[0] ) { return; }
         
-        if ( !$forms[1] ) {
-            return $forms[1];
+        if ( !$labels[1] ) {
+            return $forms;
         }
-        
+
         $unique_group = substr( md5( time() ), 0, 5 );
         foreach ( $labels as $k => &$v ) {
             $name = 'fcp-forms--tab-' . $unique_group;
             $id = $name . '-' . $k;
-            $v = '<label for="'.$id.'"'.( $k == $at ? ' class="fcp-active"' : '' ).'>' . $v . '</label>';
-            $forms[ $k ] = '<input type="radio" name="'.$name.'" id="'.$id.'"'.( $k == $at ? ' checked' : '' ).'>' .
-                $forms[ $k ];
+            
+            $inputs .= '<input type="radio" name="'.$name.'" id="'.$id.'"'.( $k == $at ? ' checked' : '' ).'>';
+            $v = '<label for="'.$id.'">' . $v . '</label>';
         }
-        return '<div class="fcp-forms--tabs">' . implode( '', $labels ) . '</div>' . implode( '', $forms );
+        return '<div class="fcp-forms--tabbed">' .
+                    $inputs .
+                    '<div class="fcp-forms--tabs">' . implode( '', $labels ) . '</div>' .
+                    '<div class="fcp-forms--forms">' . $forms . '</div>' .
+               '</div>';
 
 	}
 	
@@ -403,20 +424,23 @@ class FCP_Forms {
             }
         }
 
-        @include_once $this->forms_path . $atts['dir'] . '/' . 'if-shortcode.php';
+        @include_once $this->forms_path . $atts['dir'] . '/' . 'if-shortcode.php'; // like, create a js data array or style some fields with conditions
 
         return $this->generate_form( $atts );
 	}
-	
+
 	private function fix_shortcode_atts($allowed, $atts) { // turns isset to = true and fixes the default lowercase
         foreach ( $allowed as $k => $v ) {
             $l = strtolower( $k );
-            if ( $atts[ $l ] && !$atts[ $k ] ) {
+            if ( $atts[ $l ] === 'false' ) { // 'false' value to boolean
+                $atts[ $l ] = false;
+            }
+            if ( $atts[ $l ] && !$atts[ $k ] ) { // fix the default atts lowercase attr key
                 $atts[ $k ] = $atts[ $l ];
                 unset( $atts[ $l ] );
                 continue;
             }
-            if ( in_array( $k, $atts ) ) {
+            if ( in_array( $k, $atts ) ) { // isset attr true to value true ([override] => false [0] => firstscreen)
                 $m = array_search( $k, $atts );
                 if ( is_numeric( $m ) ) {
                     $atts[ $k ] = true;
@@ -448,7 +472,9 @@ class FCP_Forms {
         $json = self::structure( $dir );
         if ( $json === false ) { return; }
 
-        // override (hide) if $_GET
+        $this->form_tab[ $dir ] = $json->options->tab ? $json->options->tab : '';
+
+        // hide if $_GET
         if ( isset( $json->options->hide_on_GET ) && !$atts['ignore_hide_on_GET'] ) {
             foreach ( (array) $json->options->hide_on_GET as $k => $v ) {
 
@@ -456,20 +482,37 @@ class FCP_Forms {
                     $v = [ $v ];
                 }
 
-                // any $_GET element value --> hide
+                // isset( $_GET[ $k ] ) -> hide
                 if ( isset( $_GET[ $k ] ) && in_array( true, $v, true ) ) { return; }
-                // no $_GET element with such key in the url --> hide
+                // !isset( $_GET[ $k ] ) -> hide
                 if ( !isset( $_GET[ $k ] ) && in_array( false, $v, true ) ) { return; }
-                // match the value to hide
+                // $_GET[ $k ] == $v -> hide
                 if ( !empty( $_GET[ $k ] ) && in_array( $_GET[ $k ], $v ) ) { return; }
 
             }
         }
 
         // custom handler ++ can try to place it before fetching json?
-        @include_once( $this->forms_path . $dir . '/override.php' );
-        if ( isset( $override ) ) {
-            return $override;
+        if ( $atts['override'] !== false ) { // can have a text value to process in override.php
+            @include_once( $this->forms_path . $dir . '/override.php' );
+            if ( isset( $override ) ) {
+                return $override;
+            }
+        }
+
+        // overriding json with shortcode atts
+        if ( $json->fields[0]->gtype == 'section' ) {
+            $json->fields[0]->title = $atts['title'] !== false ?
+                $atts['title'] : $json->fields[0]->title;
+            $json->fields[0]->title_tag = $atts['title_tag'] !== false ?
+                $atts['title_tag'] : $json->fields[0]->title_tag;
+        }
+        if ( $atts['redirect'] ) {
+            $json->fields[] = (object) [
+                'type' => 'hidden',
+                'name' => 'fcp--redirect',
+                'value' => $atts['redirect']
+            ];
         }
 
         if ( $json->options->print_method == 'client' ) { // ++ not ready yet
