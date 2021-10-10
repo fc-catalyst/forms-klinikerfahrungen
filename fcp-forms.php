@@ -475,7 +475,7 @@ class FCP_Forms {
         $this->form_tab[ $dir ] = $json->options->tab ? $json->options->tab : '';
 
         // hide if $_GET
-        if ( isset( $json->options->hide_on_GET ) && !$atts['ignore_hide_on_GET'] ) {
+        if ( isset( $json->options->hide_on_GET ) && !$atts['ignore_hide_on_GET'] ) { // ++to atts
             foreach ( (array) $json->options->hide_on_GET as $k => $v ) {
 
                 if ( !is_array( $v ) ) {

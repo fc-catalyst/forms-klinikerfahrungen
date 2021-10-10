@@ -24,7 +24,13 @@
                                 "notEmpty" : true,
                                 "email" : true
                             }
-                        },
+                        }
+                    ]
+                },
+                {
+                    "gtype" : "row",
+                    "cols" : 2,
+                    "fields" : [
                         {
                             "type" : "password",
                             "placeholder" : "Password",
