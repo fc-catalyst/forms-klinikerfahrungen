@@ -3,6 +3,7 @@
 Print something else instead of the form
 */
 
+// fill in the search values to inputs
 if ( !$_GET['specialty'] && !$_GET['place'] ) { return; }
 
 foreach ( $json->fields as $k => $v ) { 

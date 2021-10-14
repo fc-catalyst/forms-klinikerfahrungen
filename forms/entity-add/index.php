@@ -139,7 +139,8 @@ add_shortcode( 'fcp-form-entities', function($atts = []) {
         'order' => 'DESC',
         'tariff' => 'any',
         'ppp' => 10,
-        'class' => ''
+        'class' => '',
+        'template' => ''
     ];
     $atts = shortcode_atts( $allowed, $atts );
     
@@ -164,14 +165,36 @@ add_shortcode( 'fcp-form-entities', function($atts = []) {
     
     if ( !$wp_query->have_posts() ) { return; }
 
-    $return = '<ul' . ( $atts['class'] ? ' class="' . $atts['class'] . '"' : '' ) . '>' . "\n";
+    if ( $atts['template'] ) {
+        return '<h2 color:var(--h-color);">Featured / recommended Clinics / Doctors</h2>';
+    }
+/*
+    ob_start();
+    
+    if ( $atts['template'] ) {
+        $template = __DIR__ . '/templates/template-parts/list-' . $atts['template'] . '.php';
+        if ( is_file( $template ) ) {
+            while ( $wp_query->have_posts() ) {
+                $wp_query->the_post();
+               
+                //include( $template ); // ++do like get_template_part()
+            }
+        }
+    }
+    
+    $content = ob_get_contents();
+    ob_end_clean();
+//*/
+    
+    // default template as a list // ++convert to html?
+    $content = '<ul' . ( $atts['class'] ? ' class="' . $atts['class'] . '"' : '' ) . '>' . "\n";
     while ( $wp_query->have_posts() ) {
         $wp_query->the_post();
-        $return .= '<li><a rel="bookmark" href="' . get_the_permalink() . '">' . get_the_title() . '</a></li>' . "\n";
+        $content .= '<li><a rel="bookmark" href="' . get_the_permalink() . '">' . get_the_title() . '</a></li>' . "\n";
     }
-    $return .= '</ul>' . "\n";
-    
-    return $return;
-    
+    $content .= '</ul>' . "\n";
+
     wp_reset_query();
+
+    return $content;
 });

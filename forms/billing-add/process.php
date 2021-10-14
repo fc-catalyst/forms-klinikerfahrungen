@@ -41,7 +41,7 @@ if ( $id === 0 ) {
 
 // autofill the entity billing information if there is a single clinic
 
-// picking the new entity
+// picking the only one entity
 $authors_entitiy = new WP_Query([
     'author' => wp_get_current_user()->ID,
     'post_type' => ['clinic', 'doctor'],
@@ -51,13 +51,14 @@ $authors_entitiy = new WP_Query([
     'posts_per_page' => 2,
 ]);
 
-// checking if there is only one billing method (the just added one)
+// checking if there is only one billing method - the just added one
 $authors_billing = new WP_Query([
     'author' => wp_get_current_user()->ID,
     'post_type' => 'billing',
     'posts_per_page' => 2
 ]);
 
+// attach the billing method to the entity
 if ( $authors_entitiy->post_count === 1 && $authors_billing->post_count === 1 ) {
     update_post_meta( $authors_entitiy->posts[0]->ID, 'entity-billing', $id );
     $redirect = get_permalink( $authors_entitiy->posts[0]->ID );

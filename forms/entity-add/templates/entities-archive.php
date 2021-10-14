@@ -33,7 +33,6 @@ if ( $wp_query->have_posts() ) {
     while ( $wp_query->have_posts() ) {
         $wp_query->the_post();
 
-        fct_print_meta(); // reset
 ?>
 
 <article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-<?php echo get_post_status() ?> entry" itemscope="" itemtype="https://schema.org/CreativeWork">
@@ -43,11 +42,11 @@ if ( $wp_query->have_posts() ) {
     <header class="entry-header">
         <div class="entity-badges">
             <img loading="lazy" width="23" height="38" src="<?php echo $imgs_dir . 'verified.png' ?>" alt="Verified" title="Verified" />
-            <?php if ( fct_print_meta( 'entity-featured', true ) ) { ?>
+            <?php if ( fct1_meta_print( 'entity-featured', true ) ) { ?>
                 <img loading="lazy" width="23" height="38" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="Featured" title="Featured" />
             <?php } ?>
         </div>
-        <?php if ( $back_img = fct_print_meta( 'entity-photo', true )[0] ) { ?>
+        <?php if ( $back_img = fct1_meta_print( 'entity-photo', true )[0] ) { ?>
             <div class="entry-photo">
                 <?php
                     fct1_image_print(
@@ -64,14 +63,14 @@ if ( $wp_query->have_posts() ) {
         </h2>
     </header>
     <div class="entry-details">
-        <?php if ( $ava = fct_print_meta( 'entity-avatar', true )[0] ) { ?>
+        <?php if ( $ava = fct1_meta_print( 'entity-avatar', true )[0] ) { ?>
         <div class="entity-avatar">
             <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $ava, [74,74], 0, get_the_title() . ' Icon' ) ?>
         </div>
         <?php } ?>
         <div class="entity-about">
             <p>
-                <?php fct_print_meta( 'entity-specialty' ); fct_print_meta( 'entity-geo-city', false, ' in ' ) ?>
+                <?php fct1_meta_print( 'entity-specialty' ); fct1_meta_print( 'entity-geo-city', false, ' in ' ) ?>
             </p>
             <?php if ( method_exists( 'FCP_Comment_Rate', 'print_stars_total' ) ) { ?>
                 <?php FCP_Comment_Rate::print_stars_total() ?>
@@ -94,24 +93,6 @@ wp_reset_query();
 
 get_footer();
 
-function fct_print_meta($name = '', $return = false, $before = '', $after = '') {
-    static $a = null;
-    if ( !$name ) { $a = null; return; }
-    if ( $a === null ) {
-        $a = get_post_meta( get_the_ID(), '' );
-    }
-
-    if ( is_serialized( $a[ $name ][0] ) ) {
-        $result = unserialize( $a[ $name ][0] );
-    } else {
-        $result = trim( $a[ $name ][0] ) ? $before . $a[ $name ][0] . $after : '';
-    }
-
-    if ( $return ) {
-        return $result;
-    }
-    echo $result;
-}
 
 function fct_archive_filters() {
     global $wpdb;

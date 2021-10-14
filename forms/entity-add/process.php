@@ -47,8 +47,10 @@ $dir = wp_get_upload_dir()['basedir'] . '/entity/' . $id;
 if ( !$uploads->upload_tmp_main([
     'entity-avatar' => $dir
 ])) {
+    //$redirect = get_edit_post_link( $id, '' );
     return;
 }
+//print_r( $uploads->warns ); exit;
 
 $update_list = $uploads->format_for_storing();
 foreach ( $update_list as $k => $v ) {
@@ -73,7 +75,7 @@ if ( $authors_billing->post_count > 0 ) {
     return;
 }
 
-// $redirect = $_POST['_wp_http_referer'] ? $_POST['_wp_http_referer'] : get_permalink();
+$redirect = $_POST['_wp_http_referer'] ? $_POST['_wp_http_referer'] : get_permalink();
 $redirect = add_query_arg( [
     'add_billing' => ''
 ], $redirect );

@@ -1,7 +1,7 @@
 <?php
 
 function fct_print_video() {
-    $url = fct_print_meta( 'entity-video', true );
+    $url = fct1_meta_print( 'entity-video', true );
 
     if ( !$url ) { return; }
 
@@ -39,10 +39,10 @@ function fct_print_video() {
 
 function fct_print_gmap() {
     
-    $lat = fct_print_meta( 'entity-geo-lat', true );
-    $long = fct_print_meta( 'entity-geo-long', true );
-    $addr = fct_print_meta( 'entity-address', true );
-    $zoom = fct_print_meta( 'entity-zoom', true );
+    $lat = fct1_meta_print( 'entity-geo-lat', true );
+    $long = fct1_meta_print( 'entity-geo-long', true );
+    $addr = fct1_meta_print( 'entity-address', true );
+    $zoom = fct1_meta_print( 'entity-zoom', true );
 
     ?>
     <div class="fct-gmap-view"
@@ -56,10 +56,10 @@ function fct_print_gmap() {
 }
 
 function fct_print_contact_buttons($meta, $name) {
-    $button = fct_print_meta( $meta, true );
+    $button = fct1_meta_print( $meta, true );
     if ( !$button ) { return; }
     
-    $commercial = !fct_free_account( fct_print_meta( 'entity-tariff', true ) );
+    $commercial = !fct_free_account( fct1_meta_print( 'entity-tariff', true ) );
 
     if ( strpos( $meta, 'phone' ) !== false ) { $prefix = 'tel:'; }
     if ( strpos( $meta, 'mail' ) !== false ) { $prefix = 'mailto:'; }
@@ -87,8 +87,8 @@ function fct_entity_print_schedule($toggle_in = false) {
 
     $values = [];
     foreach ( $fields as $k => $v ) {
-        $open = fct_print_meta( $k . '-open', true );
-        $close = fct_print_meta( $k . '-close', true );
+        $open = fct1_meta_print( $k . '-open', true );
+        $close = fct1_meta_print( $k . '-close', true );
 
         if ( !empty( $open ) ) {
             foreach ( $open as $l => $w ) {
@@ -133,7 +133,7 @@ function fct_entity_print_schedule($toggle_in = false) {
 
 function fct_entity_print_gallery() {
 
-    $gallery = fct_print_meta( 'gallery-images', true );
+    $gallery = fct1_meta_print( 'gallery-images', true );
     if ( empty( $gallery ) ) { return; }
 
 ?>
@@ -151,59 +151,9 @@ function fct_entity_print_gallery() {
 <?
 }
 
-
-function fct_print_meta($name, $return = false, $before = '', $after = '') { // ++ add reset for lists ++ move to common ++ maybe wrap in class
-    static $a = null;
-    if ( !$name ) { return ''; }
-    if ( $a === null ) {
-        $a = get_post_meta( get_the_ID(), '' );
-    }
-
-    if ( is_serialized( $a[ $name ][0] ) ) {
-        $result = unserialize( $a[ $name ][0] );
-    } else {
-        $result = trim( $a[ $name ][0] ) ? $before . $a[ $name ][0] . $after : '';
-    }
-
-    if ( $return ) {
-        return $result;
-    }
-    echo $result;
-}
-
-
 function fct_entity_content_filter($content, $tariff = '') {
-
     if ( !$content ) { return; }
-
-    $filter = function ($text, $commercial = false) {
-
-        $result = preg_replace_callback(
-            '/<a\s+[^>]+>/i',
-            function( $matches ) use ( $commercial ) {
-
-                $matches[0] = preg_replace_callback(
-                    '/\s*(\w+)="([^"]+)"/i',
-                    function( $matches ) use ( $commercial ) {
-                        if ( $matches[1] != 'href' ) { return; }
-                        
-                        return  ' ' . $matches[1] . '="' . $matches[2] . '"' .
-                                ( $commercial ? ' rel="noopener"' : ' rel="nofollow noopener noreferrer"' ) .
-                                ' target="_blank"';
-                    },
-                    $matches[0]
-                );
-
-                return $matches[0];
-
-            },
-            $text
-        );
-        
-        return $result;
-    };
-
-    return $filter( $content, !fct_free_account( $tariff ) );
+    return fct1_a_clear( $content, !fct_free_account( $tariff ) );
 }
 
 function fct_free_account($tariff) {
