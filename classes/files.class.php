@@ -171,10 +171,11 @@ class FCP_Forms__Files {
     
     public function upload_tmp_main($dirs = []) { // [ field => dir, field => dir ] ++ can go to upload() top
         if ( empty( $dirs ) ) { return; }
-        $this->warns = [];
+        $this->warns = []; // only server errors
 
         foreach ( $this->s->fields as $v ) { // mk dirs
             if ( $v->type !=='file' ) { continue; }
+            if ( !isset( $dirs[ $v->name ] ) ) { continue; }
 
             if ( !is_dir( $dirs[ $v->name ] ) ) {
                 if ( !mkdir( $dirs[ $v->name ], 0777, true ) ) {
