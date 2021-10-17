@@ -8,27 +8,47 @@ if ( !is_user_logged_in() ) {
     $override = '';
     return;
 }
-/*
-// autofill
+
+// autofill some values
+
 // pick the newes entity meta
-$authors_entitiy = new WP_Query([
+$wp_query = new WP_Query([
     'author' => wp_get_current_user()->ID,
     'post_type' => ['clinic', 'doctor'],
     'orderby' => 'ID',
     'order'   => 'DESC',
     'post_status' => 'any',
-    'posts_per_page' => 2,
+    'posts_per_page' => 1,
 ]);
-if ( $authors_entitiy->post_count === 1 ) {
-    //$authors_entitiy->posts[0]->ID
-}
+// ++ sanitize values before printing to input
+//billing-company - get_the_title()
+$autofill = [
+    'billing-address' => 'entity-address',
+    'billing-region' => 'entity-region',
+    'billing-city' => 'entity-geo-city',
+    'billing-postcode' => 'entity-geo-postcode',
+    'billing-email' => 'entity-email',
+];
 
-foreach ( $json->fields as $k => $v ) { 
-    if ( $v->name == 'specialty' && $_GET['specialty'] ) {
-        $json->fields[$k]->value = htmlspecialchars( urldecode( $_GET['specialty'] ) );
-    }
-    if ( $v->name == 'place' && $_GET['place'] ) {
-        $json->fields[$k]->value = htmlspecialchars( urldecode( $_GET['place'] ) );
+if ( $wp_query->have_posts() ) {
+    while ( $wp_query->have_posts() ) {
+        $wp_query->the_post();
+
+        $json->fields = FCP_Forms::json_change_field( $json->fields,
+            'billing-company',
+            'value',
+            get_the_title()
+        );
+
+        foreach( $autofill as $k => $v ) {
+            $json->fields = FCP_Forms::json_change_field( $json->fields,
+                $k,
+                'value',
+                fct1_meta_print( $v, true )
+            );
+        }
+
+        break;
     }
 }
-//*/
+wp_reset_query();

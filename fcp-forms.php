@@ -548,6 +548,29 @@ class FCP_Forms {
         return $return;
     }
     
+    public static function json_change_field(&$fields, $field, $name, $value) {
+
+        foreach ( $fields as &$f ) {
+
+            if ( $f->type ) {
+                if ( $f->name === $field ) {
+                    $f->{ $name } = $value;
+                }
+                // ++ unset attr
+                // ++ unset field
+                continue;
+            }
+
+            if ( $f->gtype ) {
+                self::json_change_field( $f->fields, $field, $name, $value );
+            }
+
+        }
+        
+        return $fields;
+
+    }
+    
     public static function unique($match = '', $length = 9) {
         $rnds = [ md5( rand() ), uniqid() ];
 

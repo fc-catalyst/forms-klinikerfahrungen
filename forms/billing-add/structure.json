@@ -37,6 +37,21 @@
                                 "notEmpty" : true
                             },
                             "meta_box" : true
+                        },
+                        {
+                            "type" : "hidden",
+                            "name" : "billing-region",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "hidden",
+                            "name" : "billing-city",
+                            "meta_box" : true
+                        },
+                        {
+                            "type" : "hidden",
+                            "name" : "billing-postcode",
+                            "meta_box" : true
                         }
                     ]
                 },
