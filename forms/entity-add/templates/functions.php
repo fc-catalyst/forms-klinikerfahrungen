@@ -133,7 +133,7 @@ function fct_entity_print_schedule($toggle_in = false) {
 
 function fct_entity_print_gallery() {
 
-    $gallery = fct1_meta_print( 'gallery-images', true );
+    $gallery = fct1_meta( 'gallery-images' );
     if ( empty( $gallery ) ) { return; }
 
 ?>

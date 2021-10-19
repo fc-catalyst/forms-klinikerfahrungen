@@ -8,12 +8,11 @@ if ( post_password_required() ) {
 }
 
 ?>
-
 <div id="comments" class="comments-area">
 
 	<?php
 
-	if ( have_comments() ) :
+	if ( have_comments() ) {
 
     ?>
         <div class="wp-block-columns">
@@ -38,17 +37,15 @@ if ( post_password_required() ) {
         
         <?php
 
-	endif;
-
-	if ( !comments_open() && get_comments_number() && post_type_supports( get_post_type(), 'comments' ) ) {
-		?>
-
-		<p class="no-comments"><?php _e( 'Comments are closed.' ) ?></p>
-
-		<?php
 	}
 
-    comment_form();
+	if ( comments_open() ) {
+        comment_form();
+	} else {
+		?>
+		<p class="no-comments"><?php _e( 'Comments are closed.' ) ?></p>
+		<?php
+    }
 
 	?>
 

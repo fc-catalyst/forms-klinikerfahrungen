@@ -267,6 +267,7 @@
     letter-spacing:1px;
     color:inherit;
 }
+.fcp-form--main input[type=submit]:focus,
 .fcp-form--main input[type=submit]:hover {
     background-color:var(--bg);
 }

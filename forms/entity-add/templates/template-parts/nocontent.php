@@ -4,8 +4,8 @@
         <h2>Über</h2>
 
         <?php echo fct_entity_content_filter( 
-            fct1_meta_print( 'entity-content', true ),
-            fct1_meta_print( 'entity-tariff', true )
+            fct1_meta( 'entity-content' ),
+            fct1_meta( 'entity-tariff' )
         ) ?>
 
         <?php fct1_meta_print( 'entity-tags', false, '<h2>Unser Behandlungsspektrum</h2><p>', '</p>' ) ?>

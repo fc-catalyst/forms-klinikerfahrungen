@@ -23,13 +23,13 @@ if ( have_posts() ) :
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:66.66%">
         <div class="fct-entity-badges">
             <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'verified.png' ?>" alt="Verified" title="Verified" />
-            <?php if ( fct_print_meta( 'entity-featured', true ) ) { ?>
+            <?php if ( fct1_meta( 'entity-featured' ) ) { ?>
                 <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="Featured" title="Featured" />
             <?php } ?>
         </div>
         
         <h1><?php the_title() ?></h1>
-        <p><?php fct_print_meta( 'entity-specialty' ); fct_print_meta( 'entity-geo-city', false, ' in ' ) ?></p>
+        <p><?php fct1_meta_print( 'entity-specialty' ); fct1_meta_print( 'entity-geo-city', false, ' in ' ) ?></p>
         
         <?php if ( method_exists( 'FCP_Comment_Rate', 'print_rating_summary_short' ) ) { ?>
             <?php FCP_Comment_Rate::print_rating_summary_short() ?>
@@ -45,7 +45,7 @@ if ( have_posts() ) :
     </div>
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:33.33%">
-        <?php if ( $logo = fct_print_meta( 'entity-avatar', true )[0] ) { ?>
+        <?php if ( $logo = fct1_meta( 'entity-avatar' )[0] ) { ?>
         <div class="fct-entity-photo">
             <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $logo, [600,600], 0, get_the_title() . ' Logo' ) ?>
         </div>
@@ -61,15 +61,15 @@ if ( have_posts() ) :
     $template = [];
     $template[] = 'full';
     
-    $countcont = strlen( strip_tags( fct_print_meta( 'entity-content', true ) ) );
-    if ( $countcont < 800 && !fct_print_meta( 'entity-tags', true ) || $countcont < 400 ) {
+    $countcont = strlen( strip_tags( fct1_meta( 'entity-content' ) ) );
+    if ( $countcont < 800 && !fct1_meta( 'entity-tags' ) || $countcont < 400 ) {
         $template[] = 'nocontent';
     }
     
-    if ( empty( fct_print_meta( 'gallery-images', true ) ) ) {
+    if ( empty( fct1_meta( 'gallery-images' ) ) ) {
         $template[] = 'nogallery';
     }
-    if ( !fct_print_meta( 'entity-video', true ) ) {
+    if ( !fct1_meta( 'entity-video' ) ) {
         $template[] = 'novideo';
     }
     
@@ -91,10 +91,12 @@ if ( have_posts() ) :
 <div class="entry-content" id="bewertungen">
     <?php comments_template() ?>
 </div>
-	
+
+<div style="height:80px" aria-hidden="true" class="wp-block-spacer"></div>
+
 <?php
 
-        if ( $back_img = fct_print_meta( 'entity-photo', true )[0] ) {
+        if ( $back_img = fct1_meta( 'entity-photo' )[0] ) {
             $back_img = fct1_image_src( 'entity/' . get_the_ID() . '/' . $back_img, [1440,1440], ['center','top'] );
             ?><style>
                 .post-<?php the_ID() ?> .fct-entity-hero {

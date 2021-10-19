@@ -85,10 +85,15 @@ if ( $wp_query->have_posts() ) {
         
     }
     get_template_part( 'template-parts/pagination' );
-    ?></div><?php
+    ?></div><!-- /wrap-width --><?php
 } else {
     fct_search_stats( '<h2 style="text-align:center">', '</h2>' );
 }
+
+?>
+<div style="height:80px" aria-hidden="true" class="wp-block-spacer"></div>
+<?php
+
 wp_reset_query();
 
 get_footer();

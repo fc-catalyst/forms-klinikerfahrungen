@@ -219,6 +219,11 @@
             ]
         },
         {
+            "type" : "submit",
+            "name" : "entity-submit",
+            "value" : "Weiter"
+        },
+        {
             "gtype" : "hidden",
             "title" : "Öffnungszeiten (optional)",
             "title_tag" : "h3",
@@ -453,11 +458,6 @@
                     "value" : 17
                 }
             ]
-        },
-        {
-            "type" : "submit",
-            "name" : "entity-submit",
-            "value" : "Weiter"
         }
     ]
 }
