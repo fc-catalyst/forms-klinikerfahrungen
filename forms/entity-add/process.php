@@ -69,8 +69,8 @@ if ( $authors_billing->post_count === 1 ) {
     update_post_meta( $id, 'entity-billing', $authors_billing->posts[0]->ID );
 }
 
-// if billing exists - redirect to the page, else - redirect to step 3 to create the billing
-if ( $authors_billing->post_count > 0 ) {
+// if billing exists or the tariff is free - redirect to the page, else - redirect to step 3 to create the billing
+if ( $authors_billing->post_count > 0 || $_POST['entity-tariff'] === 'kostenloser_eintrag' ) {
     $redirect = get_permalink( $id );
     return;
 }
