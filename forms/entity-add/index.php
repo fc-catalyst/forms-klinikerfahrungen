@@ -91,10 +91,10 @@ add_action( 'pre_get_posts', function( $query ) {
 } );
 */
 
-// style the wp-admin // ++move to main maybe?
+// style the wp-admin // ++move to main maybe? ++attach to particular pages
 add_action( 'admin_enqueue_scripts', function() use ($dir) {
     wp_enqueue_script(
-        'fcp-forms-entitiy-admin',
+        'fcp-forms-entity-admin',
         $this->forms_url . $dir . '/scripts-admin.js',
         ['jquery'],
         $this->js_ver 
@@ -129,72 +129,3 @@ new FCP_Add_Meta_Boxes( $json, (object) [
     'context' => 'normal',
     'priority' => 'high'
 ] );
-
-
-add_shortcode( 'fcp-form-entities', function($atts = []) {
-
-    $allowed = [
-        'type' => ['clinic','doctor'],
-        'orderby' => 'date',
-        'order' => 'DESC',
-        'tariff' => 'any',
-        'ppp' => 10,
-        'class' => '',
-        'template' => ''
-    ];
-    $atts = shortcode_atts( $allowed, $atts );
-    
-    $args = [
-        'post_type'        => $atts['type'],
-        'orderby'          => $atts['orderby'],
-        'order'            => $atts['order'],
-        'posts_per_page'   => $atts['ppp'],
-        'post_status'      => 'publish'
-    ];
-
-    if ( $atts['tariff'] != 'any' ) {
-        $args['meta_query'] = [
-            [
-                'key' => 'entity-tariff',
-                'value' => $atts['tariff']
-            ]
-        ];
-    }
-
-    $wp_query = new WP_Query( $args );
-    
-    if ( !$wp_query->have_posts() ) { return; }
-
-    if ( $atts['template'] ) {
-        return '<h2 color:var(--h-color);">Featured / recommended Clinics / Doctors</h2>';
-    }
-/*
-    ob_start();
-    
-    if ( $atts['template'] ) {
-        $template = __DIR__ . '/templates/template-parts/list-' . $atts['template'] . '.php';
-        if ( is_file( $template ) ) {
-            while ( $wp_query->have_posts() ) {
-                $wp_query->the_post();
-               
-                //include( $template ); // ++do like get_template_part()
-            }
-        }
-    }
-    
-    $content = ob_get_contents();
-    ob_end_clean();
-//*/
-    
-    // default template as a list // ++convert to html?
-    $content = '<ul' . ( $atts['class'] ? ' class="' . $atts['class'] . '"' : '' ) . '>' . "\n";
-    while ( $wp_query->have_posts() ) {
-        $wp_query->the_post();
-        $content .= '<li><a rel="bookmark" href="' . get_the_permalink() . '">' . get_the_title() . '</a></li>' . "\n";
-    }
-    $content .= '</ul>' . "\n";
-
-    wp_reset_query();
-
-    return $content;
-});

@@ -53,3 +53,13 @@ add_filter( 'gettext', function ( $translation, $text ) {
     }
     return $translation;
 }, 10, 2 );
+
+// style the wp-admin // ++move to main maybe? ++attach to particular pages
+add_action( 'admin_enqueue_scripts', function() use ($dir) {
+    wp_enqueue_script(
+        'fcp-forms-billing-admin',
+        $this->forms_url . $dir . '/scripts-admin.js',
+        ['jquery'],
+        $this->js_ver 
+    );
+});

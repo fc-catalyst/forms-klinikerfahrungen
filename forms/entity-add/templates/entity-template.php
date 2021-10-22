@@ -35,6 +35,7 @@ if ( have_posts() ) :
             <?php FCP_Comment_Rate::print_rating_summary_short() ?>
         <?php } ?>
         
+        <?php if ( comments_open() || wp_count_comments( get_the_ID() )->approved ) { ?>
         <div class="wp-block-buttons">
             <div class="wp-block-button is-style-outline">
                 <a class="wp-block-button__link has-white-color has-text-color" href="#bewertungen">
@@ -42,6 +43,7 @@ if ( have_posts() ) :
                 </a>
             </div>
         </div>
+        <?php } ?>
     </div>
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:33.33%">

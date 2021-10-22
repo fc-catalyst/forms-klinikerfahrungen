@@ -42,11 +42,11 @@ if ( $wp_query->have_posts() ) {
     <header class="entry-header">
         <div class="entity-badges">
             <img loading="lazy" width="23" height="38" src="<?php echo $imgs_dir . 'verified.png' ?>" alt="Verified" title="Verified" />
-            <?php if ( fct1_meta_print( 'entity-featured', true ) ) { ?>
+            <?php if ( fct1_meta( 'entity-featured' ) ) { ?>
                 <img loading="lazy" width="23" height="38" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="Featured" title="Featured" />
             <?php } ?>
         </div>
-        <?php if ( $back_img = fct1_meta_print( 'entity-photo', true )[0] ) { ?>
+        <?php if ( $back_img = fct1_meta( 'entity-photo' )[0] ) { ?>
             <div class="entry-photo">
                 <?php
                     fct1_image_print(
