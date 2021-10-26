@@ -20,9 +20,8 @@ class FCPAddPostType {
 
     }
 
-    public function addPostType() {
+    public function addPostType($td = 'fcpfo') {
 
-        $td = FCP_Forms::$text_domain;
         $p = $this->p;
     
         $labels = [

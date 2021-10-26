@@ -108,13 +108,13 @@ class FCP_Forms__Files {
             if ( $v->type !=='file' ) { continue; }
 
             if ( !isset( $dirs[ $v->name ] ) ) {
-                $this->warns[ $v->name ][] = 'The folder for '.$v->name.' is not assigned';
+                $this->warns[ $v->name ][] = sprintf( __( 'The folder for %s is not assigned', 'fcpfo' ), $v->name );
                 unset( $this->s->fields[ $k ] );
                 continue;
             }
             if ( !is_dir( $dirs[ $v->name ] ) ) {
                 if ( !mkdir( $dirs[ $v->name ], 0777, true ) ) {
-                    $this->warns[ $v->name ][] = 'The folder for '.$v->name.' can not be created due to a server error';
+                    $this->warns[ $v->name ][] = sprintf( __( 'The folder for %s can not be created due to a server error', 'fcpfo' ), $v->name );
                     unset( $this->s->fields[ $k ] );
                     continue;
                 }
@@ -125,7 +125,7 @@ class FCP_Forms__Files {
 
         foreach ( $this->files as $k => $v ) { // upload new files
             if ( !move_uploaded_file( $v['tmp_name'], $dirs[ $v['field'] ] . '/' . $v['name'] ) ) {
-                $this->warns[ $v['field'] ][] = $v['name'] . ' not uploaded due to a server error';
+                $this->warns[ $v['field'] ][] = sprintf( __( '%s is not uploaded due to a server error', 'fcpfo' ), $v['name'] );
                 continue;
             }
 
@@ -179,7 +179,7 @@ class FCP_Forms__Files {
 
             if ( !is_dir( $dirs[ $v->name ] ) ) {
                 if ( !mkdir( $dirs[ $v->name ], 0777, true ) ) {
-                    $this->warns[ $v->name ][] = 'The folder '.$v->name.' can not be created due to a server error';
+                    $this->warns[ $v->name ][] = sprintf( __( 'The folder %s can not be created due to a server error', 'fcpfo' ), $v->name );
                     return;
                 }
             }
@@ -191,7 +191,7 @@ class FCP_Forms__Files {
                 self::tmp_dir()['dir'] . '/' . $v['field'] . '/' . $v['name'],
                 $dirs[ $v['field'] ] . '/' . $v['name']
             ) ) {
-                $this->warns[ $v['field'] ][] = $v['name'] . ' file moving failed due to a server error';
+                $this->warns[ $v['field'] ][] = sprintf( __( '%s file moving failed due to a server error', 'fcpfo' ), $v['name'] );
                 continue;
             }
         }
@@ -210,7 +210,7 @@ class FCP_Forms__Files {
         $keep = [];
 
         foreach ( $this->s->fields as $v ) {
-            if ( $v->type !=='file' ) { continue; }
+            if ( $v->type !== 'file' ) { continue; }
             if ( empty( $_POST[ $v->name . '--uploaded' ] ) ) { continue; }
             if ( $_POST[ $v->name . '--uploaded' ][0] == '' ) { continue; }
 

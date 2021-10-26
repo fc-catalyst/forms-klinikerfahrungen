@@ -10,7 +10,7 @@ Author: Firmcatalyst, Vadim Volkov
 Author URI: https://firmcatalyst.com
 License: GPL v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Text Domain: fcp-forms
+Text Domain: fcpfo
 Domain Path: /languages
 */
 
@@ -20,7 +20,7 @@ class FCP_Forms {
 
 	public static $dev = true,
                   $tmp_dir = 'fcp-forms-tmps',
-                  $text_domain = 'fcp-forms',
+                  $text_domain = 'fcpfo', // ++ delete or use
                   $prefix = 'fcpf';
                   
     private $forms = [],
@@ -207,6 +207,11 @@ class FCP_Forms {
             $args['block_formats'] = 'Paragraph=p;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6;Pre=pre';
             return $args;
         });
+        
+        // add translation languages
+        add_action( 'plugins_loaded', function() {
+            load_plugin_textdomain( 'fcpfo', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+        });
 
     }
     
@@ -272,7 +277,7 @@ class FCP_Forms {
         
         // get the array of wrong filled fields' warnings
         if ( !empty( $warns->result ) ) {
-            $warning = 'Some fields are not filled correctly:';
+            $warning = __( 'Some fields are not filled correctly:', 'fcpfo' );
         }
 
         // prepare the list of files to process
@@ -516,7 +521,7 @@ class FCP_Forms {
         }
 
         if ( $json->options->print_method == 'client' ) { // ++ not ready yet
-            return '<form class="fcp-form" data-structure="'.$dir.'">Loading..</form>';
+            return '<form class="fcp-form" data-structure="'.$dir.'">' . __( 'Loading..', 'fcpfo' ) . '</form>';
         }
 
         include_once $this->self_path . 'classes/draw-fields.class.php';
@@ -724,14 +729,16 @@ class FCP_Forms {
 new FCP_Forms();
 
 /*
-    refactor delegate register styles
+    globalize delegate register styles
     filter multiple fields empty values, as schedule fills in too many rows
     add_styles_scripts_admin - a all mentioned post types
     exclude dirs, starting from -- - take from gutenberg
     make the password validate simple test
+    add regexp filter
     front-end validation
         autofill with front-end validation
     ++aria
     on clear trash - remove the clinic logo dir
-    img preview to admin (mk thumbnail??)
+    img preview to admin
+    print tmp dir only if a file type exists
 //*/

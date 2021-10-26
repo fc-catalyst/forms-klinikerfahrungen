@@ -22,7 +22,7 @@ class FCP_Forms__Validate {
         if ( !$a || $a && $rule == true && preg_match( '/^[a-zA-Z0-9-_]+$/', $a ) ) {
             return false;
         }
-        return 'Must contain only letters, nubers or the following symbols: "-", "_"';
+        return __( 'Must contain only letters, numbers or the following symbols: "-", "_"', 'fcpfo' );
     }
 
     private function test_notEmpty($rule, $a) {
@@ -34,35 +34,35 @@ class FCP_Forms__Validate {
         if ( !empty( $a ) ) {
             return false;
         }
-        return 'The field is empty';
+        return __( 'The field is required', 'fcpfo' );
     }
     
     private function test_regExp($rule, $a) {
         if ( !$a || $a && preg_match( '/'.$rule[0].'/', $a ) ) {
             return false;
         }
-        return 'Doesn\'t fit the pattern '.$rule[1];
+        return sprintf( __( 'Doesn\'t fit the pattern %s', 'fcpfo' ), $rule[1] );
     }
 
     private function test_email($rule, $a) {
         if ( !$a || $a && $rule == true && is_email( $a ) ) {
             return false;
         }
-        return 'The email format is incorrect';
+        return __( 'The email format is incorrect', 'fcpfo' );
     }
 
     private function test_url($rule, $a) {
         if ( !$a || $a && $rule == true && filter_var( $a, FILTER_VALIDATE_URL ) ) {
             return false;
         }
-        return 'Please, start the link with https:// or http://';
+        return __( 'Please, start the link with https:// or http://', 'fcpfo' );
     }
 
     private function test_equals($rule, $a) {
         if ( !$a || $a && $a === $this->v[ $rule ] ) {
             return false;
         }
-        return 'The value has to match the previous field'; // ++ can add the title / placeholder here
+        return __( 'The value has to match the previous field', 'fcpfo' ); // ++ can add the title / placeholder here
     }
     
 // -----____--____FILES VALIDATION____----____---____
@@ -78,7 +78,7 @@ class FCP_Forms__Validate {
         if ( is_numeric( $rule ) && $a['size'] < $rule ) {
             return false;
         }
-        return 'The file <em>'.$a['name'].'</em> is too big. Max size is '.$rule;
+        return sprintf( __( 'The file %s is too big. Max size is %s', 'fcpfo' ), '<em>'.$a['name'].'</em>', $rule );
     }
     
     private function test_file_extension($rule, $a) {
@@ -89,7 +89,7 @@ class FCP_Forms__Validate {
         if ( is_array( $rule ) && in_array( $ext, $rule ) ) {
             return false;
         }
-        return 'The file <em>'.$a['name'].'</em> extension doesn\'t fit the allowed list: ' . implode( ', ', $rule );
+        return sprintf( __( 'The file %s extension doesn\'t fit the allowed list: %s', 'fcpfo' ), '<em>'.$a['name'].'</em>', implode( ', ', $rule );
     }
     
     private function test_file_default($a) { // this one goes silently with current server settings

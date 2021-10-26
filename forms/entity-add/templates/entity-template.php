@@ -27,7 +27,6 @@ if ( have_posts() ) :
                 <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="Featured" title="Featured" />
             <?php } ?>
         </div>
-        
         <h1><?php the_title() ?></h1>
         <p><?php fct1_meta_print( 'entity-specialty' ); fct1_meta_print( 'entity-geo-city', false, ' in ' ) ?></p>
         

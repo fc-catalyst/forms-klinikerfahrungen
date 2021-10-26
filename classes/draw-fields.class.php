@@ -90,7 +90,7 @@ class FCP_Forms__Draw {
                 continue;
             }
 
-            echo '<p>' . esc_attr( $v ? $v : 'No value set' ) . '</p>';
+            echo '<p>' . esc_attr( $v ? $v : __( 'No value set', 'fcpfo' ) ) . '</p>';
         
         }
     }
@@ -299,7 +299,9 @@ class FCP_Forms__Draw {
         if ( !empty( $a->uploaded_files ) ) {
             $count = count( $a->uploaded_files );
             //$label = $count == 1 ? $a->uploaded_files[0] : $count . ' Files Uploaded';
-            $label = ( $count == 1 ? '1 File' : $count . ' Files' ) . ' uploaded:';
+            $label = $count === 1 ?
+                __( '1 file uploaded:', 'fcpfo' ) :
+                sprintf( __( '%s files uploaded:', 'fcpfo' ), $count );
         }
     
         ?>
@@ -313,12 +315,12 @@ class FCP_Forms__Draw {
             "
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             <?php echo $a->multiple ? 'multiple' : '' ?>
-            data-select-file="<?php _e( 'Select File' ) ?>"
-            data-select-files="<?php _e( 'Select Files' ) ?>"
-            data-files-selected="<?php _e( 'files selected' ) ?>"
+            data-select-file="<?php _e( 'Select File', 'fcpfo' ) ?>"
+            data-select-files="<?php _e( 'Select Files', 'fcpfo' ) ?>"
+            data-files-selected="<?php _e( 'files selected', 'fcpfo' ) ?>"
         />
         <label for="<?php $this->e_field_id( $a->name ) ?>">
-            <?php echo $label ? $label : 'Select File' . ( $a->multiple ? 's' : '' ) ?>
+            <?php echo $label ? $label : __( $a->multiple ? 'Select Files' : 'Select File', 'fcpfo' ) ?>
         </label>
         <?php
 

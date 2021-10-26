@@ -58,7 +58,7 @@ class FCP_Add_Meta_Boxes {
         if ( $_COOKIE[ $p->warn_name ] ) {
             foreach ( $_COOKIE[ $p->warn_name ] as $k => $v ) {
                 $values[ $p->warn_name ][$k] = json_decode( stripslashes( $v ) );
-                $values[ $p->warn_name ][$k][] = 'The Initial value is restored';
+                $values[ $p->warn_name ][$k][] = __( 'The Initial value is restored', 'fcpfo' );
                 setcookie( $p->warn_name.'['.$k.']', '', time()-3600, '/' );
             }
             unset( $_COOKIE[ $p->warn_name ] );
@@ -67,7 +67,7 @@ class FCP_Add_Meta_Boxes {
                 ?>
                 <div class="notice error my-acf-notice is-dismissible" >
                     <p>
-                <?php _e( 'Some fields were not filled correctly. Please, correct the values and submit again.' ) ?>
+        <?php _e( 'Some fields were not filled correctly. Please, correct the values and submit again.', 'fcpfo' ) ?>
                     </p>
                     <style>#message{display:none;}</style>
                 </div>

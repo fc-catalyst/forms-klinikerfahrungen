@@ -1,0 +1,104 @@
+#. fcp-forms.php
+msgid "Some fields are not filled correctly:"
+msgstr ""
+
+msgid "Loading.."
+msgstr ""
+
+#. classes/add-meta-boxes
+msgid "The Initial value is restored"
+msgstr ""
+
+msgid "Some fields were not filled correctly. Please, correct the values and submit again."
+msgstr ""
+
+#. classes/draw-fields
+msgid "No value set"
+msgstr ""
+
+msgid "1 file uploaded:"
+msgstr ""
+
+msgid "%s files uploaded:"
+msgstr ""
+
+msgid "Select File"
+msgstr ""
+
+msgid "Select Files"
+msgstr ""
+
+msgid "files selected"
+msgstr ""
+
+#. classes/files
+#. %s here and next  is the file picker field name
+msgid "The folder for %s is not assigned"
+msgstr ""
+
+msgid "The folder for %s can not be created due to a server error"
+msgstr ""
+
+#. %s here is for a file name
+msgid "%s is not uploaded due to a server error"
+msgstr ""
+
+msgid "%s file moving failed due to a server error"
+msgstr ""
+
+#. %s is for the folder name
+msgid "The folder %s can not be created due to a server error"
+msgstr ""
+
+#. classes/validate
+msgid "Must contain only letters, numbers or the following symbols: \"-\", \"_\""
+msgstr ""
+
+msgid "The field is required"
+msgstr ""
+
+#. there is a pattern, which the field value gotta fit, and it looks like %s
+msgid "Doesn't fit the pattern %s"
+msgstr ""
+
+msgid "The email format is incorrect"
+msgstr ""
+
+msgid "Please, start the link with https:// or http://"
+msgstr ""
+
+#. meaning, the previous and current values gotta be equal
+msgid "The value has to match the previous field"
+msgstr ""
+
+#. the first %s is for the file name, second is for the file size
+msgid "The file %s is too big. Max size is %s"
+msgstr ""
+
+#. the first %s is for the file name, second is for the list of extensions
+msgid "The file %s extension doesn\'t fit the allowed list: %s"
+msgstr ""
+
+msgid "Your Reply"
+msgstr ""
+
+msgid "Your Reply"
+msgstr ""
+
+msgid "Your Reply"
+msgstr ""
+
+msgid "Your Reply"
+msgstr ""
+
+msgid "Your Reply"
+msgstr ""
+
+msgid "Your Reply"
+msgstr ""
+
+msgid "Your Reply"
+msgstr ""
+
+msgid "Your Reply"
+msgstr ""
