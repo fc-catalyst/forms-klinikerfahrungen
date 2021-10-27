@@ -131,7 +131,7 @@ FCP_Forms::save_options( 'entity-specialty', $options );
 
 
 new FCP_Add_Meta_Boxes( $json, (object) [
-    'title' => 'The Information',
+    'title' => 'Unternehmensinformationen',
     'post_types' => ['clinic', 'doctor'],
     'context' => 'normal',
     'priority' => 'high'

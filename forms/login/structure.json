@@ -5,17 +5,17 @@
         "json_validate" : 1,
         "required_mark" : "*",
         "reduce_font_after" : 36,
-        "tab" : "Login"
+        "tab" : "Einloggen"
     },
     "fields" : [
         {
             "gtype" : "section",
-            "title" : "Login",
+            "title" : "Einloggen",
             "title_tag" : "h2",
             "fields" : [
                 {
                     "type" : "text",
-                    "placeholder" : "E-mail",
+                    "placeholder" : "Emailadresse",
                     "name" : "user-email",
                     "validate" : {
                         "notEmpty" : true,
@@ -24,7 +24,7 @@
                 },
                 {
                     "type" : "password",
-                    "placeholder" : "Password",
+                    "placeholder" : "Passwort",
                     "name" : "user-password",
                     "validate" : {
                         "notEmpty" : true,
@@ -35,7 +35,7 @@
                     "type" : "checkbox",
                     "name" : "rememberme",
                     "options" : {
-                        "1" : "Remember me"
+                        "1" : "Eingeloggt bleiben"
                     }
                 }
             ]
@@ -43,7 +43,7 @@
         {
             "type" : "submit",
             "name" : "user-submit",
-            "value" : "Login"
+            "value" : "Einloggen"
         }
     ]
 }

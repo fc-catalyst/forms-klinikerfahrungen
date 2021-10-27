@@ -6,7 +6,7 @@
         "required_mark" : "*",
         "reduce_font_after" : 36,
         "width" : "half",
-        "tab" : "Register"
+        "tab" : "Registrieren"
     },
     "fields" : [
         {
@@ -19,7 +19,7 @@
                     "fields" : [
                         {
                             "type" : "text",
-                            "placeholder" : "E-mail",
+                            "placeholder" : "Ihre Emailadresse",
                             "name" : "user-email",
                             "validate" : {
                                 "notEmpty" : true,
@@ -34,7 +34,7 @@
                     "fields" : [
                         {
                             "type" : "password",
-                            "placeholder" : "Password",
+                            "placeholder" : "Passwort festlegen",
                             "name" : "user-password",
                             "validate" : {
                                 "notEmpty" : true,
@@ -43,7 +43,7 @@
                         },
                         {
                             "type" : "password",
-                            "placeholder" : "Repeat Password",
+                            "placeholder" : "Passwort weiederholen",
                             "name" : "user-password-repeat",
                             "validate" : {
                                 "notEmpty" : true,
@@ -60,7 +60,7 @@
                             "type" : "checkbox",
                             "name" : "user-datenschutzhinweise",
                             "options" : {
-                                "Datenschutzhinweise bestätigt" : "Datenschutzhinweise"
+                                "Datenschutzhinweise bestätigt" : "Datenschutzhinweise gelesen"
                             },
                             "validate" : {
                                 "notEmpty" : true
@@ -70,7 +70,7 @@
                             "type" : "checkbox",
                             "name" : "user-nutzungsbedingungen",
                             "options" : {
-                                "Nutzungsbedingungen bestätigt" : "Nutzungsbedingungen"
+                                "Nutzungsbedingungen bestätigt" : "Nutzungsbedingungen akzeptiert"
                             },
                             "validate" : {
                                 "notEmpty" : true
@@ -82,7 +82,7 @@
                     "type" : "checkbox",
                     "name" : "user-agb",
                     "options" : {
-                        "AGB bestätigt" : "AGB"
+                        "AGB bestätigt" : "AGB akzeptiert"
                     },
                     "validate" : {
                         "notEmpty" : true
@@ -97,7 +97,7 @@
         {
             "type" : "submit",
             "name" : "user-submit",
-            "value" : "Register"
+            "value" : "Registrieren"
         }
     ]
 }

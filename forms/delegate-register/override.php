@@ -30,6 +30,7 @@ if ( is_user_logged_in() ) {
             <li><a href="<?php echo get_edit_profile_url() ?>">ihr Profil bearbeiten?</a></li>
             <li><a href="<?php echo get_option( 'siteurl' ) . '/wp-admin/edit.php?post_type=billing' ?>">ihre Rechnungsdaten aktualisieren?</a></li>
             <li style="text-transform:uppercase"><a href="<?php echo wp_logout_url() ?>"><?php _e( 'Logout', 'fcpfo' ) ?></a></li>
+            <li><a href="/kontakt/">unseren Support kontaktieren?</a></li>
         </ul>
         <?php
 

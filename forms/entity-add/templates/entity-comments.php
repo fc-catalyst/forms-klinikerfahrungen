@@ -41,10 +41,11 @@ if ( post_password_required() ) {
 
 	if ( comments_open() ) {
         comment_form();
-	} else {
+/*	} else {
 		?>
 		<p class="no-comments"><?php _e( 'Comments are closed.' ) ?></p>
 		<?php
+//*/
     }
 
 	?>

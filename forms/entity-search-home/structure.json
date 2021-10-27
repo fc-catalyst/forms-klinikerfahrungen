@@ -21,7 +21,7 @@
                 },
                 {
                     "type" : "text",
-                    "placeholder" : "PLZ, Ort oder City",
+                    "placeholder" : "Postleitzahl oder Stadt",
                     "name" : "place",
                     "validate" : {
                     }

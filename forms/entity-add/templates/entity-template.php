@@ -38,7 +38,7 @@ if ( have_posts() ) :
         <div class="wp-block-buttons">
             <div class="wp-block-button is-style-outline">
                 <a class="wp-block-button__link has-white-color has-text-color" href="#bewertungen">
-                    <?php _e( wp_count_comments( get_the_ID() )->approved ? 'Reviews' : 'Rate', 'fcpcr' ) ?>
+                    <?php _e( wp_count_comments( get_the_ID() )->approved ? 'Reviews' : 'Review and Rate', 'fcpcr' ) ?>
                 </a>
             </div>
         </div>

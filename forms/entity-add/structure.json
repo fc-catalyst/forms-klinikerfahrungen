@@ -14,8 +14,8 @@
     "fields" : [
         {
             "gtype" : "section",
-            "title" : "Unternehmen",
-            "title_tag" : "h2",
+            "x_title" : "Unternehmen",
+            "x_title_tag" : "h2",
             "fields" : [
                 {
                     "gtype" : "row",
@@ -25,8 +25,8 @@
                             "cols" : 2,
                             "name" : "entity-entity",
                             "options" : {
-                                "clinic" : "Klinik",
-                                "doctor" : "Doctor"
+                                "clinic" : "Eintrag für Klinik",
+                                "doctor" : "Eintrag für Arzt"
                             },
                             "validate" : {
                                 "notEmpty" : true
@@ -48,7 +48,7 @@
                         },
                         {
                             "type" : "text",
-                            "title" : "Telefonnummer der Klinik",
+                            "title" : "Telefonnummer",
                             "name" : "entity-phone",
                             "validate" : {
                                 "notEmpty" : true
@@ -75,7 +75,7 @@
                     "fields" : [
                         {
                             "type" : "text",
-                            "title" : "EMail Adresse für Kontaktanfrage",
+                            "title" : "Emailadresse für Kontaktanfrage",
                             "name" : "entity-email",
                             "validate" : {
                                 "email" : true
@@ -84,7 +84,7 @@
                         },
                         {
                             "type" : "text",
-                            "title" : "Website der Klinik",
+                            "title" : "Webseite des Unternehmens",
                             "name" : "entity-website",
                             "validate" : {
                                 "notEmpty" : true,
@@ -100,7 +100,7 @@
                     "fields" : [
                         {
                             "type" : "text",
-                            "title" : "Adresse",
+                            "title" : "Unternhmensadresse",
                             "name" : "entity-address",
                             "autocomplete" : "nope1",
                             "validate" : {
@@ -111,7 +111,7 @@
                         {
                             "type" : "button",
                             "title" : "&nbsp;",
-                            "value" : "Specify on map",
+                            "value" : "In Google Maps auswählen",
                             "name" : "entity-map"
                         },
                         {
@@ -128,7 +128,7 @@
                         {
                             "type" : "button",
                             "title" : "&nbsp;",
-                            "value" : "Specify working hours",
+                            "value" : "Öffnungszeiten hinterlegen",
                             "name" : "entity-working-hours"
                         }
                     ]
@@ -139,7 +139,7 @@
                     "fields" : [
                         {
                             "type" : "file",
-                            "title" : "Logo Ihrer Klinik / Doctor Photo",
+                            "title" : "Logo Ihrer Klinik oder des Arztes",
                             "name" : "entity-avatar",
                             "validate" : {
                                 "default" : true,
@@ -155,7 +155,7 @@
                         },
                         {
                             "type" : "file",
-                            "title" : "Photo Ihrer Klinik",
+                            "title" : "Foto Ihrer Klinik",
                             "name" : "entity-photo",
                             "validate" : {
                                 "default" : true,
@@ -169,7 +169,7 @@
                         },
                         {
                             "type" : "text",
-                            "title" : "Video zum Profil hinzufügen",
+                            "title" : "YouTube Video zum Profil hinzufügen",
                             "name" : "entity-video",
                             "validate" : {
                                 "url" : true
@@ -191,7 +191,7 @@
                         {
                             "type" : "radio",
                             "cols" : 3,
-                            "title" : "Ich Wähle Einen",
+                            "title" : "Ich wähle einen",
                             "name" : "entity-tariff",
                             "options" : {
                                 "standardeintrag" : "Standardeintrag",
@@ -207,7 +207,7 @@
                 },
                 {
                     "type" : "textarea",
-                    "title" : "Unternehmens Beschreibung",
+                    "title" : "Beschreiben Sie Ihr Unternehmen",
                     "name" : "entity-content",
                     "rows" : 8,
                     "validate" : {
@@ -228,7 +228,7 @@
             "title" : "Öffnungszeiten (optional)",
             "title_tag" : "h3",
             "id" : "entity-working-hours",
-            "description" : "<p>Keep empty if days are not work-days</p>",
+            "x_description" : "<p>Keep empty if days are not work-days</p>",
             "fields" : [
                 {
                     "gtype" : "row",
@@ -237,7 +237,7 @@
                         {
                             "type" : "text",
                             "name" : "entity-mo-open",
-                            "title" : "Monday",
+                            "title" : "Montag",
                             "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
@@ -263,7 +263,7 @@
                         {
                             "type" : "text",
                             "name" : "entity-tu-open",
-                            "title" : "Tuesday",
+                            "title" : "Dienstag",
                             "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
@@ -289,7 +289,7 @@
                         {
                             "type" : "text",
                             "name" : "entity-we-open",
-                            "title" : "Wednesday",
+                            "title" : "Mittwoch",
                             "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
@@ -315,7 +315,7 @@
                         {
                             "type" : "text",
                             "name" : "entity-th-open",
-                            "title" : "Thursday",
+                            "title" : "Donnerstag",
                             "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
@@ -341,7 +341,7 @@
                         {
                             "type" : "text",
                             "name" : "entity-fr-open",
-                            "title" : "Friday",
+                            "title" : "Freitag",
                             "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
@@ -367,7 +367,7 @@
                         {
                             "type" : "text",
                             "name" : "entity-sa-open",
-                            "title" : "Saturday",
+                            "title" : "Samstag",
                             "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
@@ -393,7 +393,7 @@
                         {
                             "type" : "text",
                             "name" : "entity-su-open",
-                            "title" : "Sunday",
+                            "title" : "Sonntag",
                             "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,

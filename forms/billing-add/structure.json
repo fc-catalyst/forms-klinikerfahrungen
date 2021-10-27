@@ -14,7 +14,7 @@
     "fields" : [
         {
             "gtype" : "section",
-            "title" : "Rechnungsdaten",
+            "title" : "Rechnungsdaten hinterlegen",
             "title_tag" : "h3",
             "fields" : [
                 {
@@ -70,7 +70,7 @@
                         },
                         {
                             "type" : "text",
-                            "title" : "EMail Adresse für Rechnung",
+                            "title" : "Emailadresse für Rechnung",
                             "name" : "billing-email",
                             "validate" : {
                                 "notEmpty" : true,
@@ -81,8 +81,16 @@
                     ]
                 },
                 {
+                    "type" : "text",
+                    "title" : "Umsatzsteuernummer VAT ID (optional)",
+                    "name" : "billing-vat",
+                    "validate" : {
+                    },
+                    "meta_box" : "true"
+                },
+                {
                     "type" : "notice",
-                    "text" : "<p>Nach der Bestätigung Ihrer Zahlung und der Kontrolle Ihrer gemachten Angaben schalten wir Ihren Eintrag für 365 Tage auf unserer Plattform frei. Da wir nur aktuelle Ergebnisse in unseren Unternehmenskatalog anzeigen wollen, ist dieser Schritt nötig, um kontrollieren zu können, welche Unternehmen geschlossen und aktiv sind.</p><p>Der gemachte Backlink und die Adressdaten sollten Ihrer Praxis / Klinik bei der Positionierung in den Google-Ergebnissen helfen. Diesen Umstand können Sie unterstützen, in dem Sie Ihren Eintrag auf unserer Plattform so relevant wie möglich halten.</p>"
+                    "text" : "<p>Nach der Bestätigung Ihrer Zahlung und der Kontrolle Ihrer gemachten Angaben schalten wir Ihren Eintrag für 365 Tage auf unserer Plattform frei. Da wir nur aktuelle Ergebnisse in unseren Unternehmenskatalog anzeigen wollen, ist dieser Schritt nötig, um kontrollieren zu können, welche Unternehmen geschlossen und aktiv sind.</p><p>Haben Sie sich für einen kostenlosen Eintrag entschieden, erhalten Sie keine Rechnung von uns.</p>"
                 }
             ]
         },
