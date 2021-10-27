@@ -21,15 +21,15 @@ if ( is_user_logged_in() ) {
     if ( in_array( 'entity_delegate', $roles ) || in_array( 'administrator', $roles ) ) {
     
         ?>
-        <h2>Hello, <?php echo wp_get_current_user()->display_name ?></h2>
+        <h2><?php echo sprintf( __( 'Hello, %s', 'fcpfo' ), wp_get_current_user()->display_name ) ?></h2>
         
-        <p>Would you like to:</p>
+        <p>Möchten Sie:</p>
         <ul>
-            <li>add a new <a href="<?php echo get_option( 'siteurl' ) . '/wp-admin/post-new.php?post_type=clinic' ?>">clinic</a> or a <a href="<?php echo get_option( 'siteurl' ) . '/wp-admin/post-new.php?post_type=doctor' ?>">doctor</a>?</a></li>
-            <li>manage your existing <a href="<?php echo get_option( 'siteurl' ) . '/wp-admin/edit.php?post_type=clinic' ?>">clinics</a> and <a href="<?php echo get_option( 'siteurl' ) . '/wp-admin/edit.php?post_type=doctor' ?>">doctors</a>?</a></li>
-            <li><a href="<?php echo get_edit_profile_url() ?>">manage your profile?</a></li>
-            <li><a href="<?php echo get_option( 'siteurl' ) . '/wp-admin/edit.php?post_type=billing' ?>">add or manage your billing information?</a></li>
-            <li><a href="<?php echo wp_logout_url() ?>">LOGOUT</a></li>
+            <li>eine neue <a href="<?php echo get_option( 'siteurl' ) . '/wp-admin/post-new.php?post_type=clinic' ?>">Klinik</a> oder einen <a href="<?php echo get_option( 'siteurl' ) . '/wp-admin/post-new.php?post_type=doctor' ?>">Doktor</a> hinzufügen?</li>
+            <li>ihre bestehenden <a href="<?php echo get_option( 'siteurl' ) . '/wp-admin/edit.php?post_type=clinic' ?>">Einträge</a> bearbeiten?</li>
+            <li><a href="<?php echo get_edit_profile_url() ?>">ihr Profil bearbeiten?</a></li>
+            <li><a href="<?php echo get_option( 'siteurl' ) . '/wp-admin/edit.php?post_type=billing' ?>">ihre Rechnungsdaten aktualisieren?</a></li>
+            <li style="text-transform:uppercase"><a href="<?php echo wp_logout_url() ?>"><?php _e( 'Logout', 'fcpfo' ) ?></a></li>
         </ul>
         <?php
 

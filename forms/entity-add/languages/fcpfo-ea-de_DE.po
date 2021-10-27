@@ -1,0 +1,129 @@
+#. The main register clinic / doctor form
+msgid "Clinic"
+msgstr ""
+
+msgid "Clinics"
+msgstr ""
+
+msgid "View All Clinics"
+msgstr ""
+
+msgid "View Clinic"
+msgstr ""
+
+msgid "Add New"
+msgstr ""
+
+msgid "Add New Clinic"
+msgstr ""
+
+msgid "Edit Clinic"
+msgstr ""
+
+msgid "Update Clinic"
+msgstr ""
+
+msgid "Search Clinic"
+msgstr ""
+
+msgid "Clinic Not Found"
+msgstr ""
+
+msgid "Clinic Not found in Trash"
+msgstr ""
+
+msgid "The list of clinics, registered by you"
+msgstr ""
+
+msgid "Doctor"
+msgstr ""
+
+msgid "Doctors"
+msgstr ""
+
+msgid "View All Doctors"
+msgstr ""
+
+msgid "View Doctor"
+msgstr ""
+
+msgid "Add New"
+msgstr ""
+
+msgid "Add New Doctor"
+msgstr ""
+
+msgid "Edit Doctor"
+msgstr ""
+
+msgid "Update Doctor"
+msgstr ""
+
+msgid "Search Doctor"
+msgstr ""
+
+msgid "Doctor Not Found"
+msgstr ""
+
+msgid "Doctor Not found in Trash"
+msgstr ""
+
+msgid "The list of doctors, registered by you"
+msgstr ""
+
+msgid "You don't have permission to add / edit a clinic or a doctor"
+msgstr ""
+
+#. templates
+msgid "Clinics and Doctors"
+msgstr ""
+
+msgid "Verified"
+msgstr ""
+
+msgid "Featured"
+msgstr ""
+
+msgid "Photo"
+msgstr ""
+
+msgid "Icon"
+msgstr ""
+
+msgid "Logo"
+msgstr ""
+
+msgid "E-mail"
+msgstr ""
+
+msgid "Website"
+msgstr ""
+
+msgid "Contact"
+msgstr ""
+
+msgid "About"
+msgstr ""
+
+msgid "Your browser does not support HTML video."
+msgstr ""
+
+msgid "Working hours"
+msgstr ""
+
+#. tags, actually
+msgid "Our range of treatments"
+msgstr ""
+
+#. search results
+msgid "Nothing"
+msgstr ""
+
+msgid "1 result"
+msgstr ""
+
+msgid "%s results"
+msgstr ""
+
+msgid "%s found"
+msgstr ""

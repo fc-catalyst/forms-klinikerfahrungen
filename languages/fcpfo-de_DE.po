@@ -1,59 +1,135 @@
-#. 
-msgid "Your review is awaiting moderation."
-msgstr "Deine Bewertung wird geprüft."
+#. fcp-forms.php
+msgid "Some fields are not filled correctly:"
+msgstr ""
 
-#. Leave a reply to THE COMMENT AUTHOR'S NAME
-msgid "Leave a reply to"
-msgstr "Hinterlasse eine Antwort an"
+msgid "Loading.."
+msgstr ""
 
-#. 
-msgid "Leave a Review"
-msgstr "Hinterlasse eine Bewertung"
+#. classes/add-meta-boxes
+msgid "The Initial value is restored"
+msgstr ""
 
-#. the author's or admin's reply to a review
-msgid "Your Reply"
-msgstr "Deine Antwort"
+msgid "Some fields were not filled correctly. Please, correct the values and submit again."
+msgstr ""
 
-#. 
-msgid "Your Review"
-msgstr "Deine Bewertung"
+#. classes/draw-fields
+msgid "No value set"
+msgstr ""
 
-#. submit button title
-msgid "Reply"
-msgstr "Antworten"
+msgid "1 file uploaded:"
+msgstr ""
 
-#. submit button title
-msgid "Post Review"
-msgstr "Bewertung veröffentlichen"
+msgid "%s files uploaded:"
+msgstr ""
 
-#. imperative verb for the headline
-msgid "Rate"
-msgstr "Bewerte"
+msgid "Select File"
+msgstr ""
 
-#. 
-msgid "Reviews"
-msgstr "Bewertungen"
+msgid "Select Files"
+msgstr ""
 
-#. 
-msgid "Rating"
-msgstr "Bewertung"
+msgid "files selected"
+msgstr ""
 
-#. 
-msgid "Reply to this review"
-msgstr "Antworte auf diese Bewertung"
+#. classes/files
+#. %s here and next  is the file picker field name
+msgid "The folder for %s is not assigned"
+msgstr ""
 
-#. Conditional
-msgid "Expertise"
-msgstr "Kompetenz"
+msgid "The folder for %s can not be created due to a server error"
+msgstr ""
 
-#. Conditional
-msgid "Kindness"
-msgstr "Freundlichkeit"
+#. %s here is for a file name
+msgid "%s is not uploaded due to a server error"
+msgstr ""
 
-#. Conditional
-msgid "Waiting time for an appointment"
-msgstr "Wartezeit für Termin"
+msgid "%s file moving failed due to a server error"
+msgstr ""
 
-#. Conditional
-msgid "Facilities"
-msgstr "Räumlichkeit"
+#. %s is for the folder name
+msgid "The folder %s can not be created due to a server error"
+msgstr ""
+
+#. classes/validate
+msgid "Must contain only letters, numbers or the following symbols: \"-\", \"_\""
+msgstr ""
+
+msgid "The field is required"
+msgstr ""
+
+#. there is a pattern, which the field value gotta fit, and it looks like %s
+msgid "Doesn't fit the pattern %s"
+msgstr ""
+
+msgid "The email format is incorrect"
+msgstr ""
+
+msgid "Please, start the link with https:// or http://"
+msgstr ""
+
+#. meaning, the previous and current values gotta be equal
+msgid "The value has to match the previous field"
+msgstr ""
+
+#. the first %s is for the file name, second is for the file size
+msgid "The file %s is too big. Max size is %s"
+msgstr ""
+
+#. the first %s is for the file name, second is for the list of extensions
+msgid "The file %s extension doesn\'t fit the allowed list: %s"
+msgstr ""
+
+#. the forms common
+msgid "Activate"
+msgstr ""
+
+msgid "Active"
+msgstr ""
+
+msgid "Please log in to use the form"
+msgstr ""
+
+msgid "You don't have permission to add / edit a billing data"
+msgstr ""
+
+msgid "Unexpected WordPress error"
+msgstr ""
+
+msgid "This form is only for the the admin area"
+msgstr ""
+
+msgid "Hello, %s"
+msgstr ""
+
+msgid "Logout"
+msgstr ""
+
+msgid "Page options"
+msgstr ""
+
+#. particular smaller forms
+#. billing
+msgid "Billing Details"
+msgstr ""
+
+#. delegate
+msgid "Clinic / Doctor"
+msgstr ""
+
+#. gallery
+msgid "Gallery"
+msgstr ""
+
+#. tariff
+msgid "Tariff is active till"
+msgstr ""
+
+#. about dates
+msgid "Ends today"
+msgstr ""
+
+msgid "Not set or ended recently"
+msgstr ""
+
+msgid "Not limited"
+msgstr ""

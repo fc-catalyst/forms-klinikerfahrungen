@@ -14,7 +14,7 @@ function fct_print_video() {
         <div class="fct-video">
             <video width="600" controls>
                 <source src="<?php echo $url ?>" type="video/<?php echo $format ?>">
-                Your browser does not support HTML video.
+                <?php _e( 'Your browser does not support HTML video.', 'fcpfo-ea' ) ?>
             </video>
         </div>
         <?php
@@ -55,11 +55,17 @@ function fct_print_gmap() {
     <?php
 }
 
-function fct_print_contact_buttons($meta, $name) {
+function fct_print_contact_buttons() {
+    fct_print_contact_buttons( 'entity-phone', fct1_meta( 'entity-phone' ) );
+    fct_print_contact_buttons( 'entity-email', __( 'E-mail', 'fcpfo-ea' ) );
+    fct_print_contact_buttons( 'entity-website', __( 'Website', 'fcpfo-ea' ) );
+}
+
+function fct_print_contact_button($meta, $name) {
     $button = fct1_meta_print( $meta, true );
     if ( !$button ) { return; }
     
-    $commercial = !fct_free_account( fct1_meta_print( 'entity-tariff', true ) );
+    $commercial = !fct_free_account( fct1_meta( 'entity-tariff' ) );
 
     if ( strpos( $meta, 'phone' ) !== false ) { $prefix = 'tel:'; }
     if ( strpos( $meta, 'mail' ) !== false ) { $prefix = 'mailto:'; }
@@ -100,7 +106,7 @@ function fct_entity_print_schedule($toggle_in = false) {
             if ( !empty( $values[ $k ] ) ) { continue; }
         }
         
-        $values[ $k ][] = '<small>' . __( 'Closed' ) . '</small>';
+        $values[ $k ][] = '<small>' . __( 'Closed', 'fcpfo-ea' ) . '</small>';
 
     }
     
@@ -109,7 +115,7 @@ function fct_entity_print_schedule($toggle_in = false) {
     ?>
     <div class="wp-block-button is-style-outline fct-button-select fct-open-next<?php echo $toggle_in ? ' fct-active' : '' ?>">
         <a class="wp-block-button__link has-text-color" href="#" style="color:var(--h-color)">
-            <strong>Öffnungszeiten</strong>
+            <strong><?php _e( 'Working hours', 'fcpfo-ea' ) ?></strong>
         </a>
     </div>
     <dl class="fct-schedule-list">
@@ -137,7 +143,7 @@ function fct_entity_print_gallery() {
     if ( empty( $gallery ) ) { return; }
 
 ?>
-    <h2 class="with-line">Gallerie</h2>
+    <h2 class="with-line"><?php _e( 'Gallery', 'fcpfo' ) ?></h2>
 
     <div id="entity-gallery">
         <?php foreach ( $gallery as $v ) { ?>
@@ -154,6 +160,11 @@ function fct_entity_print_gallery() {
 function fct_entity_content_filter($content, $tariff = '') {
     if ( !$content ) { return; }
     return fct1_a_clear( $content, !fct_free_account( $tariff ) );
+}
+
+function fct_entity_print_tags() {
+    fct1_meta_print( 'entity-tags', false, '<h2>'.__( 'Our range of treatments', 'fcpfo-ea' ).'</h2><p>', '</p>' );
+    // Unser Behandlungsspektrum
 }
 
 function fct_free_account($tariff) {

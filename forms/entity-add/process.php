@@ -4,13 +4,13 @@ Process the form data
 */
 
 if ( !is_user_logged_in() ) {
-    $warning = 'Please log in to use the form';
+    $warning = __( 'Please log in to use the form', 'fcpfo' );
     return;
 }
 
 // if can create this post type
 if ( !get_userdata( wp_get_current_user()->ID )->allcaps['edit_entities'] ) {
-    $warning = 'You don\'t have permission to add / edit a clinic or a doctor';
+    $warning = __( 'You don\'t have permission to add / edit a clinic or a doctor', 'fcpfo-ea' );
     return;
 }
 
@@ -37,7 +37,7 @@ $id = wp_insert_post( [
 // meta boxes are filled automatically with save_post hooked
 
 if ( $id === 0 ) {
-    $warning = 'Unexpected WordPress error';
+    $warning = __( 'Unexpected WordPress error', 'fcpfo' );
     return;
 }
 

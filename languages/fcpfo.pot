@@ -79,26 +79,57 @@ msgstr ""
 msgid "The file %s extension doesn\'t fit the allowed list: %s"
 msgstr ""
 
-msgid "Your Reply"
+#. the forms common
+msgid "Activate"
 msgstr ""
 
-msgid "Your Reply"
+msgid "Active"
 msgstr ""
 
-msgid "Your Reply"
+msgid "Please log in to use the form"
 msgstr ""
 
-msgid "Your Reply"
+msgid "You don't have permission to add / edit a billing data"
 msgstr ""
 
-msgid "Your Reply"
+msgid "Unexpected WordPress error"
 msgstr ""
 
-msgid "Your Reply"
+msgid "This form is only for the the admin area"
 msgstr ""
 
-msgid "Your Reply"
+msgid "Hello, %s"
 msgstr ""
 
-msgid "Your Reply"
+msgid "Logout"
+msgstr ""
+
+msgid "Page options"
+msgstr ""
+
+#. particular smaller forms
+#. billing
+msgid "Billing Details"
+msgstr ""
+
+#. delegate
+msgid "Clinic / Doctor"
+msgstr ""
+
+#. gallery
+msgid "Gallery"
+msgstr ""
+
+#. tariff
+msgid "Tariff is active till"
+msgstr ""
+
+#. about dates
+msgid "Ends today"
+msgstr ""
+
+msgid "Not set or ended recently"
+msgstr ""
+
+msgid "Not limited"
 msgstr ""

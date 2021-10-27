@@ -22,9 +22,9 @@ if ( have_posts() ) :
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:66.66%">
         <div class="fct-entity-badges">
-            <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'verified.png' ?>" alt="Verified" title="Verified" />
+            <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'verified.png' ?>" alt="" title="<?php _e( 'Verified', 'fcpfo-ea' ) ?>" />
             <?php if ( fct1_meta( 'entity-featured' ) ) { ?>
-                <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="Featured" title="Featured" />
+                <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="" title="<?php _e( 'Featured', 'fcpfo-ea' ) ?>" />
             <?php } ?>
         </div>
         <h1><?php the_title() ?></h1>
@@ -38,7 +38,7 @@ if ( have_posts() ) :
         <div class="wp-block-buttons">
             <div class="wp-block-button is-style-outline">
                 <a class="wp-block-button__link has-white-color has-text-color" href="#bewertungen">
-                    <?php echo wp_count_comments( get_the_ID() )->approved ? 'Bewertungen' : 'Bewerten' ?>
+                    <?php _e( wp_count_comments( get_the_ID() )->approved ? 'Reviews' : 'Rate', 'fcpcr' ) ?>
                 </a>
             </div>
         </div>
@@ -48,7 +48,7 @@ if ( have_posts() ) :
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:33.33%">
         <?php if ( $logo = fct1_meta( 'entity-avatar' )[0] ) { ?>
         <div class="fct-entity-photo">
-            <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $logo, [600,600], 0, get_the_title() . ' Logo' ) ?>
+            <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $logo, [600,600], 0, get_the_title() . ' ' . __( 'Logo', 'fcpfo-ea' ) ) ?>
         </div>
         <?php } ?>
     </div>

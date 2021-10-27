@@ -10,11 +10,9 @@ if ( ( $atts['override'] === 'logged-in-registered-empty' || $atts['override'] =
 }
 
 if ( is_user_logged_in() ) {
-    $override = '<div class="logged-in-message">
-        Hello,
-        <a href="' . get_edit_profile_url() . '">
-            <strong>' . wp_get_current_user()->display_name . '</strong>
-        </a>
-    </div>';
+    $override  =
+        '<div class="logged-in-message">' .
+        sprintf( __( 'Hello, %s', 'fcpfo' ), '<a href="' . get_edit_profile_url() . '"><strong>' . wp_get_current_user()->display_name . '</strong></a>' ) .
+        '</div>';
     return;
 }

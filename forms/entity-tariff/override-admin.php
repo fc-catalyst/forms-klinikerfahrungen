@@ -16,10 +16,10 @@ if ( $values['entity-tariff-till'] ) {
 
     if ( $values['entity-tariff-till'] < time() ) {
         if ( time() - $values['entity-tariff-till'] < 60*60*24 ) {
-            $values['entity-tariff-till'] = 'Ends today';
+            $values['entity-tariff-till'] = __( 'Ends today', 'fcpfo' );
             return;
         }
-        $values['entity-tariff-till'] = 'Not set or ended recently';
+        $values['entity-tariff-till'] = __( 'Not set or ended recently', 'fcpfo' );
         return;
     }
 
@@ -27,4 +27,4 @@ if ( $values['entity-tariff-till'] ) {
     return;
 }
 
-$values['entity-tariff-till'] = 'Not limited'; // 0
+$values['entity-tariff-till'] = __( 'Not limited', 'fcpfo' ); // 0

@@ -6,7 +6,7 @@
 // add new user type
 register_activation_hook( $this->self_path_file, function() {
 
-    add_role( 'entity_delegate', 'Clinic / Doctor', [
+    add_role( 'entity_delegate', __( 'Clinic / Doctor', 'fcpfo' ), [
         'level_0' => true,
         'read' => true,
 

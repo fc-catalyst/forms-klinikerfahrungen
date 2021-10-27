@@ -36,7 +36,7 @@ $json = FCP_Forms::structure( $dir );
 if ( $json === false ) { return; }
 
 new FCP_Add_Meta_Boxes( $json, (object) [
-    'title' => 'Rechnungsdaten',
+    'title' => __( 'Billing Details', 'fcpfo' ), // Rechnungsdaten
     'post_types' => ['billing'],
     'context' => 'normal',
     'priority' => 'high'
@@ -46,10 +46,10 @@ new FCP_Add_Meta_Boxes( $json, (object) [
 add_filter( 'gettext', function ( $translation, $text ) {
     if ( get_post_type() != 'billing' ) { return $translation; }
     if ( $text == 'Publish' ) {
-        $translation = 'Activate';
+        $translation = __( 'Activate', 'fcpfo' );
     }
     if ( $text == 'Published' ) {
-        $translation = 'Active';
+        $translation = __( 'Active', 'fcpfo' );
     }
     return $translation;
 }, 10, 2 );

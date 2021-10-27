@@ -7,7 +7,7 @@ if ( !class_exists( 'FCPAddPostType' ) ) {
 }
 
 new FCPAddPostType( [
-    'name' => 'Clinic',
+    'name' => 'Clinic', // the translation goes inside the class
     'type' => 'clinic',
     'slug' => 'kliniken',
     'plural' => 'Clinics',
@@ -27,7 +27,7 @@ new FCPAddPostType( [ // basically the clone of clinics for now
     'type' => 'doctor',
     'slug' => 'doctor',
     'plural' => 'Doctors',
-    'description' => 'The list of registered doctors, registered by you',
+    'description' => 'The list of doctors, registered by you',
     'fields' => ['title', 'comments', 'author', 'revisions'],
     'hierarchical' => false,
     'public' => true,
@@ -100,6 +100,13 @@ add_action( 'admin_enqueue_scripts', function() use ($dir) {
         $this->js_ver 
     );
 });
+
+
+// add translation languages
+add_action( 'plugins_loaded', function() {
+    load_plugin_textdomain( 'fcpfo-ea', false, 'languages' );
+});
+
 
 // meta fields for new post types on basis of the form structure
 

@@ -28,7 +28,7 @@ FCP_Forms::add_options( $json, 'entity-billing', $options, 'ID', 'post_title' );
 
 
 new FCP_Add_Meta_Boxes( $json, (object) [
-    'title' => 'Rechnungsdaten',
+    'title' => __( 'Billing Details', 'fcpfo' ),
     'post_types' => ['clinic', 'doctor'],
     'context' => 'side',
     'priority' => 'default'

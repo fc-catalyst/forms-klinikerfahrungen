@@ -21,7 +21,7 @@ $wp_query = new WP_Query( $args );
 ?>
     <div class="wrap-width">
     <?php //the_archive_title( '<h1>', '</h1>' ) ?>
-    <h1>Clinics and Doctors</h1>
+    <h1><?php _e( 'Clinics and Doctors', 'fcpfo-ea' ) ?></h1>
     
     <?php fct_search_stats( '<p style="margin-top:-25px;opacity:0.45">', '.</p>' ) ?>
 
@@ -41,9 +41,9 @@ if ( $wp_query->have_posts() ) {
 
     <header class="entry-header">
         <div class="entity-badges">
-            <img loading="lazy" width="23" height="38" src="<?php echo $imgs_dir . 'verified.png' ?>" alt="Verified" title="Verified" />
+            <img loading="lazy" width="23" height="38" src="<?php echo $imgs_dir . 'verified.png' ?>" alt="" title="<?php _e( 'Verified', 'fcpfo-ea' ) ?>" />
             <?php if ( fct1_meta( 'entity-featured' ) ) { ?>
-                <img loading="lazy" width="23" height="38" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="Featured" title="Featured" />
+                <img loading="lazy" width="23" height="38" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="" title="<?php _e( 'Featured', 'fcpfo-ea' ) ?>" />
             <?php } ?>
         </div>
         <?php if ( $back_img = fct1_meta( 'entity-photo' )[0] ) { ?>
@@ -53,7 +53,7 @@ if ( $wp_query->have_posts() ) {
                         'entity/' . get_the_ID() . '/' . $back_img,
                         [454, 210],
                         ['center', 'top'],
-                        get_the_title() . ' Photo'
+                        get_the_title() . ' ' . __( 'Photo', 'fcpfo-ea' )
                     )
                 ?>
             </div>
@@ -65,7 +65,7 @@ if ( $wp_query->have_posts() ) {
     <div class="entry-details">
         <?php if ( $ava = fct1_meta_print( 'entity-avatar', true )[0] ) { ?>
         <div class="entity-avatar">
-            <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $ava, [74,74], 0, get_the_title() . ' Icon' ) ?>
+            <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $ava, [74,74], 0, get_the_title() . ' ' . __( 'Icon', 'fcpfo-ea' ) ) ?>
         </div>
         <?php } ?>
         <div class="entity-about">
@@ -148,14 +148,18 @@ function fct_search_stats($before = '', $after = '') {
     
     global $wp_query;
     if ( $wp_query->have_posts() ) {
-        $count = $wp_query->post_count . ' results';
+        if ( $wp_query->post_count === 1 ) {
+            $count = __( '1 result', 'fcpfo-ea' );
+        } else {
+            $count = sprintf( __( '%s results', 'fcpfo-ea' ), $wp_query->post_count );
+        }
     } else {
-        $count = 'Nothing';
+        $count = __( 'Nothing', 'fcpfo-ea' );
     }
     
     echo $before .
-        $count . ' found' .
-        ( $_GET['specialty'] ? ' for <strong>' . $_GET['specialty'] . '</strong>' : '' ) .
+        sprintf( __( '%s found', 'fcpfo-ea' ), $count ) . 
+        ( $_GET['specialty'] ? ' für <strong>' . $_GET['specialty'] . '</strong>' : '' ) .
         ( $_GET['place'] ? ' in <strong>' . $_GET['place'] . '</strong>' : '' ) .
         $after;
     
