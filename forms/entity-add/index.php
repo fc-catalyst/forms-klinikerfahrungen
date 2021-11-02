@@ -19,7 +19,8 @@ new FCPAddPostType( [
     'menu_position' => 21,
     'menu_icon' => 'dashicons-plus-alt',
     'has_archive' => true,
-    'capability_type' => ['entity', 'entities']
+    'capability_type' => ['entity', 'entities'],
+    'text_domain' => 'fcpfo-ea',
 ] );
 
 new FCPAddPostType( [ // basically the clone of clinics for now
@@ -35,7 +36,8 @@ new FCPAddPostType( [ // basically the clone of clinics for now
     'menu_position' => 22,
     'menu_icon' => 'dashicons-insert',
     'has_archive' => true,
-    'capability_type' => ['entity', 'entities']
+    'capability_type' => ['entity', 'entities'],
+    'text_domain' => 'fcpfo-ea',
 ] );
 
 
@@ -91,7 +93,7 @@ add_action( 'pre_get_posts', function( $query ) {
 } );
 */
 
-// style the wp-admin // ++move to main maybe? ++attach to particular pages
+// style the wp-admin // it is here as it might have more conditions to appear
 add_action( 'admin_enqueue_scripts', function() use ($dir) {
     wp_enqueue_script(
         'fcp-forms-entity-admin',
@@ -104,7 +106,7 @@ add_action( 'admin_enqueue_scripts', function() use ($dir) {
 
 // add translation languages
 add_action( 'plugins_loaded', function() {
-    load_plugin_textdomain( 'fcpfo-ea', false, 'languages' );
+    load_plugin_textdomain( 'fcpfo-ea', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 });
 
 
@@ -136,3 +138,23 @@ new FCP_Add_Meta_Boxes( $json, (object) [
     'context' => 'normal',
     'priority' => 'high'
 ] );
+
+// ++it is here, because I haven't found a better place for it yet
+add_shortcode( 'fcp-get-to-print', function($atts = []) {
+
+    $allowed = [
+        '_get' => '',
+        '_post' => '',
+        'html' => '',
+    ];
+
+    $atts = shortcode_atts( $allowed, $atts ); // ++ add that modifying function of mine to change a="" to just a
+    
+    if ( $atts['_get'] && isset( $_GET[ $atts['_get'] ] ) && $atts['html'] ) {
+        return $atts['html'];
+    }
+    
+    if ( $atts['_post'] && isset( $_GET[ $atts['_post'] ] ) && $atts['html'] ) {
+        return $atts['html'];
+    }
+});

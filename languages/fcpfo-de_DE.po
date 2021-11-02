@@ -1,135 +1,148 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de_DE\n"
+"X-Generator: Poedit 3.0\n"
+
 #. fcp-forms.php
 msgid "Some fields are not filled correctly:"
-msgstr ""
+msgstr "Manche Eingabefelder sind nicht korrekt ausgefüllt."
 
 msgid "Loading.."
-msgstr ""
+msgstr "Lädt…"
 
 #. classes/add-meta-boxes
 msgid "The Initial value is restored"
-msgstr ""
+msgstr "Der ursprüngliche Wert wurde wiederhergestellt"
 
 msgid "Some fields were not filled correctly. Please, correct the values and submit again."
-msgstr ""
+msgstr "Manche Eingaben konnten nicht korrekt verarbeitet werden. Bitte korrigiere die Fehler und probiere es erneut."
 
 #. classes/draw-fields
 msgid "No value set"
-msgstr ""
+msgstr "Kein Wert ausgewählt"
 
 msgid "1 file uploaded:"
-msgstr ""
+msgstr "Eine Datei hochgeladen:"
 
 msgid "%s files uploaded:"
-msgstr ""
+msgstr "%s Dateien hochgeladen:"
 
 msgid "Select File"
-msgstr ""
+msgstr "Datei auswählen"
 
 msgid "Select Files"
-msgstr ""
+msgstr "Dateien auswählen"
 
 msgid "files selected"
-msgstr ""
+msgstr "Dateien ausgewählt"
 
 #. classes/files
 #. %s here and next  is the file picker field name
 msgid "The folder for %s is not assigned"
-msgstr ""
+msgstr "Der Ordner %s ist nirgends zugeordnet"
 
 msgid "The folder for %s can not be created due to a server error"
-msgstr ""
+msgstr "Der Ordner %s kann durch einen Serverfehler nicht erstellt werden"
 
 #. %s here is for a file name
 msgid "%s is not uploaded due to a server error"
-msgstr ""
+msgstr "%s konnte durch einen Serverfehler nicht hochgeladen werden"
 
 msgid "%s file moving failed due to a server error"
-msgstr ""
+msgstr "%s das Bewegen der Datei ist durch einen Serverfehler fehlgeschlagen"
 
 #. %s is for the folder name
 msgid "The folder %s can not be created due to a server error"
-msgstr ""
+msgstr "Der Ordner %s konnte durch einen Server Fehler nicht erstellt werden"
 
 #. classes/validate
 msgid "Must contain only letters, numbers or the following symbols: \"-\", \"_\""
-msgstr ""
+msgstr "Darf nur Buchstaben, Namen oder die Symbole \"-\", \"_\"  enthalten"
 
 msgid "The field is required"
-msgstr ""
+msgstr "Pflichtfeld"
 
 #. there is a pattern, which the field value gotta fit, and it looks like %s
 msgid "Doesn't fit the pattern %s"
-msgstr ""
+msgstr "Entspricht nicht dem Schema %s"
 
 msgid "The email format is incorrect"
-msgstr ""
+msgstr "Das Emailformat ist nicht korrekt"
 
 msgid "Please, start the link with https:// or http://"
-msgstr ""
+msgstr "Der Link zur Webseite muss mit http:// oder https:// starten"
 
 #. meaning, the previous and current values gotta be equal
 msgid "The value has to match the previous field"
-msgstr ""
+msgstr "Die Eingabe stimmt nicht mit der vorigen Eingabe überein"
 
 #. the first %s is for the file name, second is for the file size
 msgid "The file %s is too big. Max size is %s"
-msgstr ""
+msgstr "Die Datei %s ist zu groß. Die maximale Dateigröße ist %s"
 
 #. the first %s is for the file name, second is for the list of extensions
-msgid "The file %s extension doesn\'t fit the allowed list: %s"
-msgstr ""
+msgid "The file %s extension doesn't fit the allowed list: %s"
+msgstr "Dieses Dateiformat ist auf unserer Webseite nicht erlaubt: %s"
 
 #. the forms common
 msgid "Activate"
-msgstr ""
+msgstr "Aktivieren"
 
 msgid "Active"
-msgstr ""
+msgstr "Aktiv"
 
 msgid "Please log in to use the form"
-msgstr ""
+msgstr "Bitte loggen Sie sich ein, um das Formular zu verwenden"
 
 msgid "You don't have permission to add / edit a billing data"
-msgstr ""
+msgstr "Sie haben keine Rechte um die Rechnungsdaten zu verändern"
 
 msgid "Unexpected WordPress error"
-msgstr ""
+msgstr "Unerwarteter WordPress Fehler"
 
 msgid "This form is only for the the admin area"
-msgstr ""
+msgstr "Dieses Formular ist nur für Admins zugänglich"
 
 msgid "Hello, %s"
-msgstr ""
+msgstr "Hallo, %s"
 
 msgid "Logout"
-msgstr ""
+msgstr "Ausloggen"
 
 msgid "Page options"
-msgstr ""
+msgstr "Seiten Optionen"
 
 #. particular smaller forms
 #. billing
 msgid "Billing Details"
-msgstr ""
+msgstr "Rechnungsdaten"
 
 #. delegate
 msgid "Clinic / Doctor"
-msgstr ""
+msgstr "Klinik / Arzt"
 
 #. gallery
 msgid "Gallery"
-msgstr ""
+msgstr "Gallerie"
 
 #. tariff
 msgid "Tariff is active till"
-msgstr ""
+msgstr "Tarif ist aktiv bis"
 
 #. about dates
 msgid "Ends today"
-msgstr ""
+msgstr "Läuft heute aus"
 
 msgid "Not set or ended recently"
-msgstr ""
+msgstr "Kein Enddatum hinterlegt oder kürzlich geendet"
 
 msgid "Not limited"
-msgstr ""
+msgstr "Unbegrenzt"

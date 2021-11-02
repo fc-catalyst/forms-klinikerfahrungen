@@ -6,10 +6,7 @@
         "json_validate" : 1,
         "required_mark" : "*",
         "width" : "half",
-        "reduce_font_after" : 26,
-        "hide_on_GET" : {
-            "add_billing" : false
-        }
+        "reduce_font_after" : 26
     },
     "fields" : [
         {
@@ -87,10 +84,6 @@
                     "validate" : {
                     },
                     "meta_box" : "true"
-                },
-                {
-                    "type" : "notice",
-                    "text" : "<p>Nach der Bestätigung Ihrer Zahlung und der Kontrolle Ihrer gemachten Angaben schalten wir Ihren Eintrag für 365 Tage auf unserer Plattform frei. Da wir nur aktuelle Ergebnisse in unseren Unternehmenskatalog anzeigen wollen, ist dieser Schritt nötig, um kontrollieren zu können, welche Unternehmen geschlossen und aktiv sind.</p><p>Haben Sie sich für einen kostenlosen Eintrag entschieden, erhalten Sie keine Rechnung von uns.</p>"
                 }
             ]
         },

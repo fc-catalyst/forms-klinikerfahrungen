@@ -56,9 +56,9 @@ function fct_print_gmap() {
 }
 
 function fct_print_contact_buttons() {
-    fct_print_contact_buttons( 'entity-phone', fct1_meta( 'entity-phone' ) );
-    fct_print_contact_buttons( 'entity-email', __( 'E-mail', 'fcpfo-ea' ) );
-    fct_print_contact_buttons( 'entity-website', __( 'Website', 'fcpfo-ea' ) );
+    fct_print_contact_button( 'entity-phone', fct1_meta( 'entity-phone' ) );
+    fct_print_contact_button( 'entity-email', __( 'E-mail', 'fcpfo-ea' ) );
+    fct_print_contact_button( 'entity-website', __( 'Website', 'fcpfo-ea' ) );
 }
 
 function fct_print_contact_button($meta, $name) {

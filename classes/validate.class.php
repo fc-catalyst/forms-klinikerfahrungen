@@ -89,7 +89,7 @@ class FCP_Forms__Validate {
         if ( is_array( $rule ) && in_array( $ext, $rule ) ) {
             return false;
         }
-        return sprintf( __( 'The file %s extension doesn\'t fit the allowed list: %s', 'fcpfo' ), '<em>'.$a['name'].'</em>', implode( ', ', $rule );
+        return sprintf( __( 'The file %s extension doesn\'t fit the allowed list: %s', 'fcpfo' ), '<em>'.$a['name'].'</em>', implode( ', ', $rule ) );
     }
     
     private function test_file_default($a) { // this one goes silently with current server settings

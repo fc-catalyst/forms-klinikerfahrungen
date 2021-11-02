@@ -3,12 +3,6 @@
 Print something else instead of the form
 */
 
-if ( ( $atts['override'] === 'logged-in-registered-empty' || $atts['override'] === 'logged-in-empty' ) && is_user_logged_in() ) {
-    $override = '';
-    unset( $json->fields );
-    return;
-}
-
 if ( is_user_logged_in() ) {
     $override  =
         '<div class="logged-in-message">' .

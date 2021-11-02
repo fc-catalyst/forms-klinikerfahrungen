@@ -194,7 +194,7 @@ class FCP_Forms {
         }, 8);
 
         
-        // admin part
+        // admin part // make the layout base work
         add_action( 'admin_enqueue_scripts', [ $this, 'add_styles_scripts_admin' ] );
         
         // admin form allow uploading ++move to particular indexes
@@ -210,6 +210,7 @@ class FCP_Forms {
         
         // add translation languages
         add_action( 'plugins_loaded', function() {
+            // fcp-forms/languages
             load_plugin_textdomain( 'fcpfo', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
         });
 
@@ -462,7 +463,7 @@ class FCP_Forms {
             return;
         }
         $screen = get_current_screen();
-        if ( !isset( $screen ) || !is_object( $screen ) ) { // || $screen->post_type != 'clinic'
+        if ( !isset( $screen ) || !is_object( $screen ) ) {
             return;
         }
 
@@ -498,7 +499,7 @@ class FCP_Forms {
         }
 
         // custom handler ++ can try to place it before fetching json?
-        if ( $atts['override'] !== false ) { // can have a text value to process in override.php
+        if ( $atts['override'] !== false ) { // contains a variable name to process in override.php
             @include_once( $this->forms_path . $dir . '/override.php' );
             if ( isset( $override ) ) {
                 return $override;
@@ -731,7 +732,6 @@ new FCP_Forms();
 /*
     globalize delegate register styles
     filter multiple fields empty values, as schedule fills in too many rows
-    add_styles_scripts_admin - a all mentioned post types
     exclude dirs, starting from -- - take from gutenberg
     make the password validate simple test
     add regexp filter

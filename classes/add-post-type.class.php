@@ -20,9 +20,10 @@ class FCPAddPostType {
 
     }
 
-    public function addPostType($td = 'fcpfo') {
+    public function addPostType() {
 
         $p = $this->p;
+        $td = $p['text_domain'] ? $p['text_domain'] : 'fcpfo';
     
         $labels = [
             'name'                => __( $p['plural'], $td ),

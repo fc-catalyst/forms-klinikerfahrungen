@@ -251,6 +251,11 @@
 .fcp-form--main input[type=file].fcp-f-invalid + label {
     border-bottom:2px solid var(--not-valid);
 }
+
+.fcp-form-warning {
+    margin-bottom:10px;
+    color:var(--not-valid);
+}
 .fcp-form-field-warn > li {
     color:var(--not-valid);
 }

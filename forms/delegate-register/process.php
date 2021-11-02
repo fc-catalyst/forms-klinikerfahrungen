@@ -39,4 +39,4 @@ if ( is_wp_error( $user ) ) {
    return;
 }
 
-//$redirect = get_option( 'siteurl' ) . '/unternehmen-eintragen/';
+$redirect = get_option( 'siteurl' ) . '/unternehmen-eintragen/?step2';

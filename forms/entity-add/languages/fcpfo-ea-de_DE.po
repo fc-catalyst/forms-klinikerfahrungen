@@ -1,129 +1,139 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de_DE\n"
+"X-Generator: Poedit 3.0\n"
+
 #. The main register clinic / doctor form
 msgid "Clinic"
-msgstr ""
+msgstr "Klinik"
 
 msgid "Clinics"
-msgstr ""
+msgstr "Kliniken"
 
 msgid "View All Clinics"
-msgstr ""
+msgstr "Alle Kliniken betrachten"
 
 msgid "View Clinic"
-msgstr ""
+msgstr "Klinik betrachten"
 
 msgid "Add New"
-msgstr ""
+msgstr "Neu hinzufügen"
 
 msgid "Add New Clinic"
-msgstr ""
+msgstr "Neue Klinik hinzufügen"
 
 msgid "Edit Clinic"
-msgstr ""
+msgstr "Klinik bearbeiten"
 
 msgid "Update Clinic"
-msgstr ""
+msgstr "Klinik aktualisieren"
 
 msgid "Search Clinic"
-msgstr ""
+msgstr "Nach Klinik suchen"
 
 msgid "Clinic Not Found"
-msgstr ""
+msgstr "Klinik nicht gefunden"
 
 msgid "Clinic Not found in Trash"
-msgstr ""
+msgstr "Klinik nicht unter gelöschten Einträgen gefunden"
 
 msgid "The list of clinics, registered by you"
-msgstr ""
+msgstr "Liste der Kliniken, die durch deinen Account registriert wurden"
 
 msgid "Doctor"
-msgstr ""
+msgstr "Arzt"
 
 msgid "Doctors"
-msgstr ""
+msgstr "Ärzte"
 
 msgid "View All Doctors"
-msgstr ""
+msgstr "Alle Ärzte betrachten"
 
 msgid "View Doctor"
-msgstr ""
-
-msgid "Add New"
-msgstr ""
+msgstr "Arzt betrachten"
 
 msgid "Add New Doctor"
-msgstr ""
+msgstr "Neuen Arzt hinzufügen"
 
 msgid "Edit Doctor"
-msgstr ""
+msgstr "Arzt bearbeiten"
 
 msgid "Update Doctor"
-msgstr ""
+msgstr "Arzt aktualisieren"
 
 msgid "Search Doctor"
-msgstr ""
+msgstr "Nach Arzt suchen"
 
 msgid "Doctor Not Found"
-msgstr ""
+msgstr "Arzt nicht gefunden"
 
 msgid "Doctor Not found in Trash"
-msgstr ""
+msgstr "Arzt nicht unter gelöschten Einträgen gefunden"
 
 msgid "The list of doctors, registered by you"
-msgstr ""
+msgstr "Die Liste der Ärzte, die mit deinem Benutzeraccount registriert wurden"
 
 msgid "You don't have permission to add / edit a clinic or a doctor"
-msgstr ""
+msgstr "Du hast keine Rechte einen neuen Arzt oder eine neue Klinik hinzuzufügen"
 
 #. templates
 msgid "Clinics and Doctors"
-msgstr ""
+msgstr "Kliniken und Ärzte"
 
 msgid "Verified"
-msgstr ""
+msgstr "Verifiziert"
 
 msgid "Featured"
-msgstr ""
+msgstr "Empfohlen"
 
 msgid "Photo"
-msgstr ""
+msgstr "Foto"
 
 msgid "Icon"
-msgstr ""
+msgstr "Icon"
 
 msgid "Logo"
-msgstr ""
+msgstr "Logo"
 
 msgid "E-mail"
-msgstr ""
+msgstr "Emailadresse"
 
 msgid "Website"
-msgstr ""
+msgstr "Webseite"
 
 msgid "Contact"
-msgstr ""
+msgstr "Kontakt"
 
 msgid "About"
-msgstr ""
+msgstr "Über"
 
 msgid "Your browser does not support HTML video."
-msgstr ""
+msgstr "Dein Browser unterstützt keine HTML Videos."
 
 msgid "Working hours"
-msgstr ""
+msgstr "Öffnungszeiten"
 
 #. tags, actually
 msgid "Our range of treatments"
-msgstr ""
+msgstr "Unsere angebotenen Behandlungen"
 
 #. search results
 msgid "Nothing"
-msgstr ""
+msgstr "Keine"
 
 msgid "1 result"
-msgstr ""
+msgstr "Ein Ergebnis"
 
 msgid "%s results"
-msgstr ""
+msgstr "% Ergebnisse"
 
 msgid "%s found"
-msgstr ""
+msgstr "%s Ergebnisse gefunden"

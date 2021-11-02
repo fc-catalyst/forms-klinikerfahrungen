@@ -39,31 +39,25 @@ if ( $id === 0 ) {
     return;
 }
 
-// autofill the entity billing information if there is a single clinic
+// REDIRECT
 
-// picking the only one entity
-$authors_entitiy = new WP_Query([
-    'author' => wp_get_current_user()->ID,
-    'post_type' => ['clinic', 'doctor'],
-    'orderby' => 'ID',
-    'order'   => 'DESC',
-    'post_status' => 'any',
-    'posts_per_page' => 2,
-]);
+if ( isset( $_GET['step3'] ) ) {
 
-// checking if there is only one billing method - the just added one
-$authors_billing = new WP_Query([
-    'author' => wp_get_current_user()->ID,
-    'post_type' => 'billing',
-    'posts_per_page' => 2
-]);
-
-// attach the billing method to the entity
-if ( $authors_entitiy->post_count === 1 && $authors_billing->post_count === 1 ) {
-    update_post_meta( $authors_entitiy->posts[0]->ID, 'entity-billing', $id );
-    $redirect = get_permalink( $authors_entitiy->posts[0]->ID );
-    return;
+    // pick the latest entity
+    $authors_entitiy = new WP_Query([
+        'author' => wp_get_current_user()->ID,
+        'post_type' => ['clinic', 'doctor'],
+        'orderby' => 'ID',
+        'order'   => 'DESC',
+        'post_status' => 'any',
+        'posts_per_page' => 1,
+    ]);
+    if (
+        $authors_entitiy->post_count > 0 &&
+        add_post_meta( $authors_entitiy->posts[0]->ID, 'entity-billing', $id, true )
+    ) {
+        $redirect = get_permalink( $authors_entitiy->posts[0]->ID ); // the entity post
+        return;
+    }
 }
-
-// redirect to the billing post editor
-$redirect = get_edit_post_link( $id, '' );
+$redirect = get_edit_post_link( $id, '' ); // edit the billing link

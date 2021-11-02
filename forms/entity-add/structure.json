@@ -169,7 +169,7 @@
                         },
                         {
                             "type" : "text",
-                            "title" : "YouTube Video zum Profil hinzufügen",
+                            "title" : "Tragen die Video-URL ein",
                             "name" : "entity-video",
                             "validate" : {
                                 "url" : true
@@ -180,7 +180,7 @@
                             "type" : "text",
                             "name" : "entity-tags",
                             "title" : "Tags",
-                            "placeholder" : "Example: dantist, orthodontist",
+                            "placeholder" : "Beispiel: Zahnarzt, Kieferorthopäde",
                             "meta_box" : "only"
                         }
                     ]
