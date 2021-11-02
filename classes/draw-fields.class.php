@@ -114,7 +114,7 @@ class FCP_Forms__Draw {
             type="button"
             name="<?php $this->e_field_name( $a->name ) ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
-            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
+            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?><?php echo $this->smaller_font( $a->title, $this->s->options - 2 ) ?>"
         ><?php echo $a->value ?></button>
         <?php
     }
@@ -372,11 +372,8 @@ class FCP_Forms__Draw {
         <?php
         
         if ( $a->title ) {
-            if ( $o->reduce_font_after && is_numeric( $o->reduce_font_after ) && strlen( $a->title ) > $o->reduce_font_after ) {
-                $smaller = true;
-            }
             ?>
-            <span class="fcp-form-field-h<?php echo $smaller ? ' fcp-form-small' : ''?>">
+            <span class="fcp-form-field-h<?php echo $this->smaller_font( $a->title, $o->reduce_font_after ) ?>">
                 <?php echo $a->title ?><?php
                     echo $a->validate->notEmpty ? ( $o->required_mark ? $o->required_mark : '*' ) : ''
                 ?>
@@ -546,6 +543,11 @@ class FCP_Forms__Draw {
     }
     private function __field_name ($field_name) {
         return $field_name;
+    }
+    
+    private function smaller_font($title, $max_length) {
+        if ( !$title || !is_numeric( $max_length ) || strlen( $title ) <= $max_length ) { return; }
+        return ' fcp-form-small';
     }
 
 

@@ -168,7 +168,7 @@ function fct_entity_print_tags() {
 }
 
 function fct_free_account($tariff) {
-    if ( !$tariff || $tariff == 'kostenloser_eintrag' ) {
+    if ( !$tariff || $tariff === 'kostenloser_eintrag' ) {
         return true;
     }
     return false;

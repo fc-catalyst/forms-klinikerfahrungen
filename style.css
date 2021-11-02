@@ -33,9 +33,17 @@
     text-transform:uppercase;
 }
 
-.fcp-form-field-w > span.fcp-form-small {
-    font-size:65%;
+@media( min-width:992px ) {
+    .fcp-form--half .fcp-form-small {
+        font-size:65%!important;
+    }
 }
+@media( min-width:1400px ) {
+    .fcp-form--half .fcp-form-small {
+        font-size:80%!important;
+    }
+}
+
 
 /* fields */
 
@@ -127,6 +135,7 @@
 /* button */
 .fcp-form--main button {
     text-align:left;
+    min-height:39px; /* for small font size variant */
 }
 .fcp-form--main button::before {
     content:'>';
@@ -134,6 +143,7 @@
     line-height:1;
     float:right;
     transform:scale(1, 1.8);
+    font-size:inherit;
 }
 .fcp-form--main .fct-gmap-pick button::before { /* just because ^ doesn't work with :not() O_o */
     content:none;

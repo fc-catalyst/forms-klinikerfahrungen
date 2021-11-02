@@ -298,7 +298,7 @@ class FCP_Forms {
 
         // success
 
-        if ( $_POST['fcp--redirect'] ) { // process.php redirect override with the shortcode attribute
+        if ( $_POST['fcp--redirect'] ) { // process.php $redirect overrides by $atts['redirect']
             $redirect = $_POST['fcp--redirect'];
         }
 
@@ -459,13 +459,10 @@ class FCP_Forms {
 
     public function add_styles_scripts_admin($hook) {
 
-        if ( !in_array( $hook, ['post.php', 'post-new.php'] ) ) {
-            return;
-        }
+        if ( !in_array( $hook, ['post.php', 'post-new.php'] ) ) { return; }
+
         $screen = get_current_screen();
-        if ( !isset( $screen ) || !is_object( $screen ) ) {
-            return;
-        }
+        if ( !isset( $screen ) || !is_object( $screen ) ) { return; }
 
         wp_enqueue_style( 'fcp-forms-layout', $this->self_url . 'layout.css', [], $this->css_ver );
         wp_enqueue_script( 'fcp-forms', $this->self_url . 'scripts.js', ['jquery'], $this->js_ver );

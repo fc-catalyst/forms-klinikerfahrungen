@@ -15,15 +15,17 @@ fcLoadScriptVariable(
 
         let autocompleteFilled = false; // make sure, the visitor used the autocomplete popup
         const $ = jQuery,
-            $autocompleteInput = $( '#entity-address_entity-add' ),
-            autocomplete = new google.maps.places.Autocomplete(
-                $autocompleteInput[0],
-                {
-                    componentRestrictions: { country: ['de'] },
-                    fields: ['address_components', 'formatted_address', 'geometry'], // ++'place_id'
-                    types: ['address']
-                }
-            );
+            $autocompleteInput = $( '#entity-address_entity-add' );
+        if ( !$autocompleteInput.length ) { return }
+        
+        const autocomplete = new google.maps.places.Autocomplete(
+            $autocompleteInput[0],
+            {
+                componentRestrictions: { country: ['de'] },
+                fields: ['address_components', 'formatted_address', 'geometry'], // ++'place_id'
+                types: ['address']
+            }
+        );
 
         // set up the initial map
         $( '.fct-gmap-pick' ).css( 'min-height', '312px' );

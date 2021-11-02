@@ -93,8 +93,16 @@ add_action( 'pre_get_posts', function( $query ) {
 } );
 */
 
-// style the wp-admin // it is here as it might have more conditions to appear
-add_action( 'admin_enqueue_scripts', function() use ($dir) {
+// style the wp-admin // it is not in fcp-forms.php as it might have more conditions to appear
+add_action( 'admin_enqueue_scripts', function($hook) use ($dir) {
+
+    if ( !in_array( $hook, ['post.php', 'post-new.php'] ) ) { return; }
+
+    $screen = get_current_screen();
+    if ( !isset( $screen ) || !is_object( $screen ) ) { return; }
+    
+    if ( !in_array( $screen->post_type, ['clinic', 'doctor'] ) ) { return; }
+
     wp_enqueue_script(
         'fcp-forms-entity-admin',
         $this->forms_url . $dir . '/scripts-admin.js',
