@@ -39,30 +39,32 @@ function fct_print_video() {
 
 function fct_print_gmap() {
     
-    $lat = fct1_meta_print( 'entity-geo-lat', true );
-    $long = fct1_meta_print( 'entity-geo-long', true );
-    $addr = fct1_meta_print( 'entity-address', true );
-    $zoom = fct1_meta_print( 'entity-zoom', true );
+    $lat = fct1_meta( 'entity-geo-lat' );
+    $long = fct1_meta( 'entity-geo-long' );
+    $addr = fct1_meta( 'entity-address' );
+    $zoom = fct1_meta( 'entity-zoom' );
 
     ?>
-    <div class="fct-gmap-view"
+    <div class="fct-gmap-view" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress"
         <?php echo $lat ? 'data-lat="'.$lat.'"' : '' ?>
         <?php echo $long ? 'data-long="'.$long.'"' : '' ?>
         <?php echo $zoom ? 'data-zoom="'.$zoom.'"' : '' ?>
         <?php echo $addr ? 'data-addr="'.$addr.'"' : '' ?>
         <?php echo 'data-title="'.get_the_title().'"' ?>
-    ></div>
+    >
+    <meta itemprop="streetAddress" content="<?php echo $addr ?>">
+    </div>
     <?php
 }
 
 function fct_print_contact_buttons() {
-    fct_print_contact_button( 'entity-phone', fct1_meta( 'entity-phone' ) );
+    fct_print_contact_button( 'entity-phone', fct1_meta( 'entity-phone' ), 'telephone' );
     fct_print_contact_button( 'entity-email', __( 'E-mail', 'fcpfo-ea' ) );
-    fct_print_contact_button( 'entity-website', __( 'Website', 'fcpfo-ea' ) );
+    fct_print_contact_button( 'entity-website', __( 'Website', 'fcpfo-ea' ), 'url' );
 }
 
-function fct_print_contact_button($meta, $name) {
-    $button = fct1_meta_print( $meta, true );
+function fct_print_contact_button($meta, $name, $itemprop = '') {
+    $button = fct1_meta( $meta );
     if ( !$button ) { return; }
     
     $commercial = !fct_free_account( fct1_meta( 'entity-tariff' ) );
@@ -73,7 +75,7 @@ function fct_print_contact_button($meta, $name) {
     ?>
         <div class="wp-block-button is-style-outline">
             <a class="wp-block-button__link has-text-color" href="<?php echo $prefix ?><?php echo $button ?>" style="color:var(--h-color)" rel="noopener<?php echo $commercial ? '' : ' nofollow noreferrer' ?>">
-                <strong><?php echo $name ?></strong>
+                <strong<?php echo $itemprop ? ' itemprop="'.$itemprop.'" content="'.$button.'" ' : '' ?>><?php echo $name ?></strong>
             </a>
         </div>
     <?php
@@ -82,19 +84,20 @@ function fct_print_contact_button($meta, $name) {
 function fct_entity_print_schedule($toggle_in = false) {
 
     $fields = [
-        'entity-mo' => __( 'Monday' ), // -open, -close
-        'entity-tu' => __( 'Tuesday' ),
-        'entity-we' => __( 'Wednesday' ),
-        'entity-th' => __( 'Thursday' ),
-        'entity-fr' => __( 'Friday' ),
-        'entity-sa' => __( 'Saturday' ),
-        'entity-su' => __( 'Sunday' )
+        'entity-mo' => 'Monday', // -open, -close, translation goes lower
+        'entity-tu' => 'Tuesday',
+        'entity-we' => 'Wednesday',
+        'entity-th' => 'Thursday',
+        'entity-fr' => 'Friday',
+        'entity-sa' => 'Saturday',
+        'entity-su' => 'Sunday'
     ];
 
     $values = [];
+    $schema = []; // ++use lunch breaks later
     foreach ( $fields as $k => $v ) {
-        $open = fct1_meta_print( $k . '-open', true );
-        $close = fct1_meta_print( $k . '-close', true );
+        $open = fct1_meta( $k . '-open' );
+        $close = fct1_meta( $k . '-close' );
 
         if ( !empty( $open ) ) {
             foreach ( $open as $l => $w ) {
@@ -102,6 +105,8 @@ function fct_entity_print_schedule($toggle_in = false) {
                     continue;
                 }
                 $values[ $k ][] = $open[ $l ] . ' - ' . $close[ $l ]; // format
+                $schema[ $k ]['open'] = $schema[ $k ]['open'] ? $schema[ $k ]['open'] : $open[ $l ];
+                $schema[ $k ]['close'] = $close[ $l ];
             }
             if ( !empty( $values[ $k ] ) ) { continue; }
         }
@@ -124,11 +129,17 @@ function fct_entity_print_schedule($toggle_in = false) {
     foreach ( $values as $k => $v ) {
         ?>
         <dt>
-            <?php echo $fields[ $k ] ?>
+            <?php echo __( $fields[ $k ] ) ?>
         </dt>
         <dd>
             <?php echo implode( '<br/>', $v ) ?>
         </dd>
+        <?php if ( !$schema[ $k ] ) { continue; } ?>
+        <meta itemprop="openingHours" content="<?php
+            echo substr( $fields[ $k ], 0, 2 ) . ' ' .
+                 $schema[ $k ]['open'] . '-' .
+                 $schema[ $k ]['close'];
+        ?>">
         <?php
     }
     

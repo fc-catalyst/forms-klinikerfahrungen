@@ -10,10 +10,11 @@ if ( have_posts() ) :
     while ( have_posts() ) :
         the_post();
 
+        $doctor = get_post_type() === 'doctor';
 ?>
 
-<article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-<?php echo get_post_status() ?> entry" itemscope="" itemtype="https://schema.org/CreativeWork">
-    <div class="post-content" itemprop="text">
+<article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-<?php echo get_post_status() ?> entry" itemscope itemtype="https://schema.org/MedicalClinic">
+    <div class="post-content">
         <div class="entry-content">
 
 <!-- gutenberg copy start -->
@@ -27,8 +28,10 @@ if ( have_posts() ) :
                 <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="" title="<?php _e( 'Featured', 'fcpfo-ea' ) ?>" />
             <?php } ?>
         </div>
-        <h1><?php the_title() ?></h1>
-        <p><?php fct1_meta_print( 'entity-specialty' ); fct1_meta_print( 'entity-geo-city', false, ' in ' ) ?></p>
+        <h1 itemprop="name"><?php the_title() ?></h1>
+        <p><?php
+                fct1_meta_print( 'entity-specialty', false, '<span itemprop="medicalSpecialty">', '</span>' ); fct1_meta_print( 'entity-geo-city', false, ' in ' );
+        ?></p>
         
         <?php if ( method_exists( 'FCP_Comment_Rate', 'print_rating_summary_short' ) ) { ?>
             <?php FCP_Comment_Rate::print_rating_summary_short() ?>
@@ -48,7 +51,7 @@ if ( have_posts() ) :
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:33.33%">
         <?php if ( $logo = fct1_meta( 'entity-avatar' )[0] ) { ?>
         <div class="fct-entity-photo">
-            <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $logo, [600,600], 0, get_the_title() . ' ' . __( 'Logo', 'fcpfo-ea' ) ) ?>
+            <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $logo, [600,600], 0, get_the_title() . ' ' . __( 'Logo', 'fcpfo-ea' ), $doctor ? 'photo' : 'logo' ) ?>
         </div>
         <?php } ?>
     </div>
@@ -85,6 +88,20 @@ if ( have_posts() ) :
 
         </div>
     </div>
+<?php
+
+        if ( $back_img = fct1_meta( 'entity-photo' )[0] ) { // ++to image && itemprop
+            $back_img = fct1_image_src( 'entity/' . get_the_ID() . '/' . $back_img, [1440,1440], ['center','top'] );
+            ?>
+            <style>
+                .post-<?php the_ID() ?> .fct-entity-hero {
+                    --entity-bg:url( '<?php echo $back_img[0] ?>' );
+                }
+            </style>
+            <meta itemprop="<?php echo $doctor ? 'image' : 'photo' ?>" content="<?php echo $back_img[0] ?>">
+            <?php
+        }
+?>
 </article>
 
 <div style="height:100px" aria-hidden="true" class="wp-block-spacer"></div>
@@ -96,15 +113,6 @@ if ( have_posts() ) :
 <div style="height:80px" aria-hidden="true" class="wp-block-spacer"></div>
 
 <?php
-
-        if ( $back_img = fct1_meta( 'entity-photo' )[0] ) {
-            $back_img = fct1_image_src( 'entity/' . get_the_ID() . '/' . $back_img, [1440,1440], ['center','top'] );
-            ?><style>
-                .post-<?php the_ID() ?> .fct-entity-hero {
-                    --entity-bg:url( '<?php echo $back_img[0] ?>' );
-                }
-            </style><?php
-        }
 
     endwhile;
 endif;

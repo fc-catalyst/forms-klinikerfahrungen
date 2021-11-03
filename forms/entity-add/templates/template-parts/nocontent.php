@@ -1,5 +1,5 @@
 <div class="wp-block-columns are-vertically-aligned-stretch">
-    <div class="wp-block-column" style="flex-basis:66.66%">
+    <div class="wp-block-column" style="flex-basis:66.66%" itemprop="description">
 
         <h2><?php _e( 'About', 'fcpfo-ea' ) ?></h2>
 
