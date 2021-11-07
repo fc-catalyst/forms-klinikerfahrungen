@@ -147,6 +147,13 @@ new FCP_Add_Meta_Boxes( $json, (object) [
     'priority' => 'high'
 ] );
 
+// disable yoast schema, as the types have their own markup
+add_filter( 'wpseo_json_ld_output', function() {
+    if ( is_singular( 'clinic' ) || is_singular( 'doctor' ) ) {
+        return false;
+    }
+});
+
 // ++it is here, because I haven't found a better place for it yet
 add_shortcode( 'fcp-get-to-print', function($atts = []) {
 

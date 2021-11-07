@@ -13,7 +13,7 @@ if ( have_posts() ) :
         $doctor = get_post_type() === 'doctor';
 ?>
 
-<article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-<?php echo get_post_status() ?> entry" itemscope itemtype="https://schema.org/MedicalClinic">
+<article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-<?php echo get_post_status() ?> entry" itemscope itemtype="https://schema.org/<?php echo $doctor ? 'MedicalOrganization' : 'MedicalClinic' ?>">
     <div class="post-content">
         <div class="entry-content">
 
@@ -98,7 +98,7 @@ if ( have_posts() ) :
                     --entity-bg:url( '<?php echo $back_img[0] ?>' );
                 }
             </style>
-            <meta itemprop="<?php echo $doctor ? 'image' : 'photo' ?>" content="<?php echo $back_img[0] ?>">
+            <meta itemprop="image" content="<?php echo $back_img[0] ?>">
             <?php
         }
 ?>

@@ -16,7 +16,7 @@ if ( $json === false ) { return; }
 // get list of billing methods id-name of the entity author
 $author_id = get_post_field( 'post_author', $_GET['post'] );
 
-global $wpdb;
+global $wpdb; // ++ if is admin? to not load on the front-end
 $options = $wpdb->get_results( '
     SELECT `ID`, `post_title`
     FROM `'.$wpdb->posts.'`

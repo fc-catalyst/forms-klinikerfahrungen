@@ -39,20 +39,22 @@ function fct_print_video() {
 
 function fct_print_gmap() {
     
+    $addr = fct1_meta( 'entity-address' );
     $lat = fct1_meta( 'entity-geo-lat' );
     $long = fct1_meta( 'entity-geo-long' );
-    $addr = fct1_meta( 'entity-address' );
     $zoom = fct1_meta( 'entity-zoom' );
 
     ?>
-    <div class="fct-gmap-view" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress"
+    <?php echo $addr ? '<meta itemprop="address" content="'.$addr.'">' : '' ?>
+    <div class="fct-gmap-view" itemprop="geo" itemscope itemtype="https://schema.org/GeoCoordinates"
+        <?php echo $addr ? 'data-addr="'.$addr.'"' : '' ?>
         <?php echo $lat ? 'data-lat="'.$lat.'"' : '' ?>
         <?php echo $long ? 'data-long="'.$long.'"' : '' ?>
         <?php echo $zoom ? 'data-zoom="'.$zoom.'"' : '' ?>
-        <?php echo $addr ? 'data-addr="'.$addr.'"' : '' ?>
         <?php echo 'data-title="'.get_the_title().'"' ?>
     >
-    <meta itemprop="streetAddress" content="<?php echo $addr ?>">
+        <?php echo $lat ? '<meta itemprop="latitude" content="'.$lat.'">' : '' ?>
+        <?php echo $long ? '<meta itemprop="longitude" content="'.$long.'">' : '' ?>
     </div>
     <?php
 }
@@ -61,6 +63,14 @@ function fct_print_contact_buttons() {
     fct_print_contact_button( 'entity-phone', fct1_meta( 'entity-phone' ), 'telephone' );
     fct_print_contact_button( 'entity-email', __( 'E-mail', 'fcpfo-ea' ) );
     fct_print_contact_button( 'entity-website', __( 'Website', 'fcpfo-ea' ), 'url' );
+
+    // schema part
+    ?>
+    <div itemprop="contactPoint" itemscope itemtype="https://schema.org/ContactPoint">
+        <meta itemprop="contactType" content="customer service">
+        <meta itemprop="telephone" content="<?php fct1_meta_print( 'entity-phone' ) ?>">
+    </div>
+    <?php
 }
 
 function fct_print_contact_button($meta, $name, $itemprop = '') {
