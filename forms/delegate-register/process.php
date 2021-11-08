@@ -28,7 +28,7 @@ wp_update_user([
 ]);
 
 // log in
-$creds['user_login'] = $params['user_login'];
+$creds['user_login'] = $_POST['user-email'];//$params['user_login'];
 $creds['user_password'] = $_POST['user-password'];
 $creds['remember'] = false;
 

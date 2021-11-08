@@ -6,6 +6,7 @@
         "json_validate" : 1,
         "required_mark" : "*",
         "width" : "half",
+        "tab" : "Rechnungsmethode hinzufügen",
         "reduce_font_after" : 26
     },
     "fields" : [

@@ -192,6 +192,7 @@ input[id^=fcp-forms--tab-] {
     border:1px solid transparent;
     border-bottom:1px solid #ccc;
     border-radius:4px 4px 0 0;
+    margin-top:-1px;
     margin-right:-1px;
     padding:4px 12px;
     cursor:pointer;

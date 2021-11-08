@@ -21,7 +21,7 @@ class FCP_Add_Meta_Boxes {
         $this->p = $p;
         $this->p->warn_name = 'fcp-form--'.$s->options->form_name.'--warnings';
 
-        add_action( 'add_meta_boxes', [ $this, 'addMetaBoxes' ] );
+        add_action( 'add_meta_boxes', [ $this, 'addMetaBoxes' ] ); // ++add post type filter as it treiggers on common pages too
         add_action( 'save_post', [ $this, 'saveMetaBoxes' ] );
     }
 
@@ -75,7 +75,8 @@ class FCP_Add_Meta_Boxes {
                 // ++ disable sending the email
             } );
         }
-
+        
+        // ++add the post_type filter here or even higher!!!
         @include_once( plugin_dir_path( __FILE__ ) . '../forms/' . $this->s->options->form_name . '/override-admin.php' );
 
         // print meta fields
@@ -83,7 +84,7 @@ class FCP_Add_Meta_Boxes {
 
 		add_meta_box(
             $this->s->options->form_name,
-            $p->title,
+            __( $p->title, $p->text_domain ),
             [ $draw, 'print_meta_boxes' ],
             $p->post_types,
             $p->context,

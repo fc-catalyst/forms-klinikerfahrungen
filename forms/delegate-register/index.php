@@ -65,6 +65,15 @@ add_action( 'plugins_loaded', function() {
     show_admin_bar( false );
 });
 
+// hide the comments & revisions meta boxes from delegates
+add_action( 'add_meta_boxes', function() {
+    if ( FCP_Forms::check_role( 'entity_delegate' ) ) {
+        remove_meta_box( 'revisionsdiv', ['clinic', 'doctor', 'billing'], 'normal' );
+        remove_meta_box( 'commentstatusdiv', ['clinic', 'doctor', 'billing'], 'normal' );
+        //remove_meta_box( 'commentsdiv', ['clinic', 'doctor', 'billing'], 'normal' ); // ++activate if can't handle the comments from wp-admin
+    }
+}, 99 );
+
 // style the wp-admin // ++move to main maybe?
 add_action( 'admin_enqueue_scripts', function() use ($dir) {
     wp_enqueue_style( 'fcp-forms-'.$dir.'-admin', $this->forms_url . $dir . '/style-admin.css', [], $this->css_ver );

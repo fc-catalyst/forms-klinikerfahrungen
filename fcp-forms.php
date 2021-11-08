@@ -523,9 +523,9 @@ class FCP_Forms {
         }
 
         include_once $this->self_path . 'classes/draw-fields.class.php';
-        $datalist = FCP_Forms::save_options();
+        $datalist = self::save_options();
         foreach ( $datalist as $k => $v ) {
-            FCP_Forms::add_options( $json, $k, $v );
+            self::add_options( $json, $k, $v );
         }
         $draw = new FCP_Forms__Draw( $json, $_POST, $_FILES );
         return $draw->result;
@@ -551,13 +551,13 @@ class FCP_Forms {
         return $return;
     }
     
-    public static function json_change_field(&$fields, $field, $name, $value) {
+    public static function json_change_field(&$fields, $field, $key, $value) {
 
         foreach ( $fields as &$f ) {
 
             if ( $f->type ) {
                 if ( $f->name === $field ) {
-                    $f->{ $name } = $value;
+                    $f->{ $key } = $value;
                 }
                 // ++ unset attr
                 // ++ unset field
@@ -565,7 +565,7 @@ class FCP_Forms {
             }
 
             if ( $f->gtype ) {
-                self::json_change_field( $f->fields, $field, $name, $value );
+                self::json_change_field( $f->fields, $field, $key, $value );
             }
 
         }

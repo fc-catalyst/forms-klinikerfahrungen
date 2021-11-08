@@ -145,8 +145,21 @@
     transform:scale(1, 1.8);
     font-size:inherit;
 }
-.fcp-form--main .fct-gmap-pick button::before { /* just because ^ doesn't work with :not() O_o */
+.fcp-form--main .fct-gmap-pick button::before { /* override the gmap buttons from a popup */
     content:none;
+}
+
+/* select */
+.fcp-form--main select.fcp-form-empty {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Ctext x='0' y='10' fill='%23fff' font-size='11' font-family='sans' font-weight='bold' style='transform:scale(1, 0.7)'%3EV%3C/text%3E%3C/svg%3E");
+}
+.fcp-form--main select,
+.fcp-form--main select:focus,
+.fcp-form--main select:focus-visible {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Ctext x='0' y='10' fill='%230b4562' font-size='11' font-family='sans' font-weight='bold' style='transform:scale(1, 0.7)'%3EV%3C/text%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 10px center;
+    background-size:10px 10px;
 }
 
 /* checkbox & radio */

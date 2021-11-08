@@ -39,25 +39,38 @@ if ( $id === 0 ) {
     return;
 }
 
+// assign the billing to an entity
+if ( $_POST['entity-id'] ) {
+
+    $entity = new WP_Query([ // the entity author is current user
+        'author'         => wp_get_current_user()->ID,
+        'post_type'      => ['clinic', 'doctor'],
+        'p'              => $_POST['entity-id'],
+        'posts_per_page' => 1,
+        'post_status'      => 'any',
+    ]);
+
+    if ( $entity->have_posts() ) {
+        update_post_meta( $entity->posts[0]->ID, 'entity-billing', $id );
+    }
+}
+
 // REDIRECT
 
 if ( isset( $_GET['step3'] ) ) {
 
     // pick the latest entity
-    $authors_entitiy = new WP_Query([
+    $entity = new WP_Query([
         'author' => wp_get_current_user()->ID,
         'post_type' => ['clinic', 'doctor'],
         'orderby' => 'ID',
         'order'   => 'DESC',
-        'post_status' => 'any',
+        'post_status' => 'any', // pending for delegates and public for administrators
         'posts_per_page' => 1,
     ]);
-    if (
-        $authors_entitiy->post_count > 0 &&
-        add_post_meta( $authors_entitiy->posts[0]->ID, 'entity-billing', $id, true )
-    ) {
-        $redirect = get_permalink( $authors_entitiy->posts[0]->ID ); // the entity post
+    if ( $entity->have_posts() && $entity->posts[0]->ID == $_POST['entity-id'] ) { // ++===??
+        $redirect = get_permalink( $entity->posts[0]->ID ); // the entity post
         return;
     }
 }
-$redirect = get_edit_post_link( $id, '' ); // edit the billing link
+$redirect = get_edit_post_link( $id, '' ); // edit the billing link // '' is for redirect - & stays &, not &amp;

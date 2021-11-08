@@ -9,46 +9,90 @@ if ( !is_user_logged_in() ) {
     return;
 }
 
-// autofill some values
+// autofill some values if we consider, that previous step was 2
+if ( isset( $_GET['step3'] ) ) {
 
-// pick the newes entity meta
+    // pick the newes entity meta
+    $wp_query = new WP_Query([
+        'author' => wp_get_current_user()->ID,
+        'post_type' => ['clinic', 'doctor'],
+        'orderby' => 'ID',
+        'order'   => 'DESC',
+        'post_status' => 'any',
+        'posts_per_page' => 1,
+    ]);
+
+    // billing-company - get_the_title()
+    $autofill = [
+        'billing-address' => 'entity-address',
+        'billing-region' => 'entity-region',
+        'billing-city' => 'entity-geo-city',
+        'billing-postcode' => 'entity-geo-postcode',
+        'billing-email' => 'entity-email',
+    ];
+
+    if ( $wp_query->have_posts() ) {
+        while ( $wp_query->have_posts() ) {
+            $wp_query->the_post();
+
+            $json->fields = FCP_Forms::json_change_field( $json->fields,
+                'billing-company',
+                'value',
+                get_the_title()
+            );
+
+            foreach( $autofill as $k => $v ) {
+                $json->fields = FCP_Forms::json_change_field( $json->fields,
+                    $k,
+                    'value',
+                    fct1_meta( $v )
+                );
+            }
+
+            // add the entity to assign the billing method to
+            array_push( $json->fields[0]->fields, (object) [
+                'type' => 'hidden',
+                'name' => 'entity-id',
+                'value' => get_the_ID(),
+            ]);
+            
+            break;
+        }
+        wp_reset_query();
+    }
+
+    return;
+}
+
+
+// add the select field to pick the entity
+// pick all entities of current user
 $wp_query = new WP_Query([
     'author' => wp_get_current_user()->ID,
     'post_type' => ['clinic', 'doctor'],
-    'orderby' => 'ID',
-    'order'   => 'DESC',
+    'orderby' => 'post_title',
+    'order'   => 'ASC',
     'post_status' => 'any',
-    'posts_per_page' => 1,
+    'posts_per_page' => -1,
 ]);
-// ++ sanitize values before printing to input
-//billing-company - get_the_title()
-$autofill = [
-    'billing-address' => 'entity-address',
-    'billing-region' => 'entity-region',
-    'billing-city' => 'entity-geo-city',
-    'billing-postcode' => 'entity-geo-postcode',
-    'billing-email' => 'entity-email',
-];
 
+$entities = [];
 if ( $wp_query->have_posts() ) {
+
     while ( $wp_query->have_posts() ) {
         $wp_query->the_post();
-
-        $json->fields = FCP_Forms::json_change_field( $json->fields,
-            'billing-company',
-            'value',
-            get_the_title()
-        );
-
-        foreach( $autofill as $k => $v ) {
-            $json->fields = FCP_Forms::json_change_field( $json->fields,
-                $k,
-                'value',
-                fct1_meta_print( $v, true )
-            );
-        }
-
-        break;
+        
+        $entities[ get_the_ID() ] = get_the_title();
     }
+    wp_reset_query();
+    
+    // add the options
+    array_push( $json->fields[0]->fields, (object) [
+        'type' => 'select',
+        'title' => 'Rechnung einem Arzt oder Klinik zuweisen', // Assign this billing to a Clinic or Doctor
+        'placeholder' => 'None',
+        'name' => 'entity-id',
+        'options' => (object) $entities,
+    ]);
+
 }
-wp_reset_query();
