@@ -127,3 +127,10 @@ msgstr ""
 
 msgid "%s found"
 msgstr ""
+
+#. schedule
+msgid "Open"
+msgstr ""
+
+msgid "Closed"
+msgstr ""

@@ -49,13 +49,11 @@ class FCP_Forms__Draw {
     private function field_text($a) {
 
         $value = $a->savedValue ? $a->savedValue : $a->value; //++ can unite the following to a function
-        if ( !is_array( $value ) ) {
-            $value = [ $value ];
-        }
+        $value = is_array( $value ) ? $value : [ $value ];
 
         foreach ( $value as $k => $v ) {
 
-            if ( empty( $v ) && !$a->keep_empty && count( $value ) > 1 ) { // && !is_numeric( $k )
+            if ( empty( $v ) && !$a->keep_empty && count( array_values( $value ) ) > 1 ) {
                 continue;
             }
 
@@ -449,10 +447,7 @@ class FCP_Forms__Draw {
         $content = ob_get_contents();
         ob_end_clean();
 
-        $content = trim( $content );
-        $content = preg_replace( '/\s+/', ' ', $content );
-        $content = preg_replace( '/ </', "\n<", $content );
-        return $content;
+        return $this->align_html_codes( $content );
     }
     
     private function printField($f) {
@@ -574,10 +569,26 @@ class FCP_Forms__Draw {
         $content = ob_get_contents();
         ob_end_clean();
 
-        $content = trim( $content );
-        $content = preg_replace( '/\s+/', ' ', $content );
-        $content = preg_replace( '/ </', "\n<", $content );
-        echo $content;
+        echo $this->align_html_codes( $content );
+
+    }
+    
+    private function align_html_codes($c) {
+
+        // don't touch the textareas' content
+        $c = preg_replace_callback( '/(<textarea[^>]*>)((?:.|\n)*?)(<\/textarea>)/', function( $m ) { // ++add <pre>
+            return $m[1] . base64_encode( $m[2] ) . $m[3];
+        }, $c );
+        
+        $c = trim( $c );
+        $c = preg_replace( '/\s+/', ' ', $c );
+        $c = preg_replace( '/ </', "\n<", $c ); //++can list the block tags for this case //--inlines misses spaces :(
+        
+        $c = preg_replace_callback( '/(<textarea[^>]*>)(.*?)(<\/textarea>)/', function( $m ) {
+            return $m[1] . base64_decode( $m[2] ) . $m[3];
+        }, $c );
+
+        return $c;
     }
     
 }

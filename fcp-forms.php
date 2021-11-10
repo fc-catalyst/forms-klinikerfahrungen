@@ -203,7 +203,7 @@ class FCP_Forms {
         });
         
         // remove h1 & h2 from tinymce
-        add_filter( 'tiny_mce_before_init', function($args) {
+        add_filter( 'tiny_mce_before_init', function($args) { // ++specify
             $args['block_formats'] = 'Paragraph=p;Heading 3=h3;Heading 4=h4;Heading 5=h5;Heading 6=h6;Pre=pre';
             return $args;
         });

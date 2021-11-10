@@ -13,3 +13,5 @@ if ( !$uploads->upload([
 }
 
 $_POST = $_POST + $uploads->format_for_storing();
+
+// ++wp-admin uploading like with text fields - keeps untouched if something is wrong, but it gotta not interfere the deleting or uploading the correct files

@@ -140,12 +140,14 @@
 .fcp-form--main button::before {
     content:'>';
     display:inline-block;
+    margin-left:7px;
     line-height:1;
     float:right;
     transform:scale(1, 1.8);
     font-size:inherit;
 }
-.fcp-form--main .fct-gmap-pick button::before { /* override the gmap buttons from a popup */
+.fcp-form--main .fct-gmap-pick button::before, /* override the gmap & tinymce buttons from a popup */
+.fcp-form--main .wp-editor-wrap button::before {
     content:none;
 }
 
@@ -298,4 +300,29 @@
 .fcp-form--main input[type=submit]:focus,
 .fcp-form--main input[type=submit]:hover {
     background-color:var(--bg);
+}
+
+/* tinymce */
+.fcp-form--main .wp-editor-wrap button {
+    color:var(--color-a);
+    border-radius:5px 5px 0 0;
+}
+.fcp-form--main .wp-editor-wrap .wp-editor-container,
+.fcp-form--main .wp-editor-wrap .mce-toolbar .mce-btn-group .mce-btn.mce-listbox {
+    border:none;
+}
+.fcp-form--main .wp-editor-wrap .wp-editor-container {
+    border-radius:5px 0 5px 5px;
+    overflow:hidden;
+}
+.fcp-form--main .wp-editor-wrap .quicktags-toolbar:empty {
+    display:none;
+}
+.fcp-form--main .wp-editor-wrap .mce-toolbar .mce-btn-group {
+    margin-right:5px;
+    padding-left:6px;
+}
+.fcp-form--main .wp-editor-wrap textarea.wp-editor-area {
+    background-color:#fff;
+    border-radius:5px 0 5px 5px;
 }

@@ -113,6 +113,24 @@ fcLoadScriptVariable(
             
             //++process the invalid address somehow
         }
+        
+        
+        // lunch break add
+        let $lunch = $( '<button type="button" style="float:right;margin:4px 0 0 12px">We have lunch breaks</button>' );
+        $lunch.click( function() {
+            let $copy = $( '#entity-working-hours input[type=text] + input[type=text]' )
+            if ( $copy.length ) {
+                $copy.each( function() {
+                    $( this ).remove();
+                });
+                return;
+            }
+            $( '#entity-working-hours input[type=text]' ).each( function(e) {
+                let $self = $( this );
+                $self.clone().insertAfter( $self );
+            });
+        });
+        $( '#entity-working-hours h3' ).append( $lunch );
 
     },
     ['jQuery', 'google', 'fcAddGmapPick']

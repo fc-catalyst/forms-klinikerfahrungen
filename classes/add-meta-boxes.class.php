@@ -69,7 +69,7 @@ class FCP_Add_Meta_Boxes {
                     <p>
         <?php _e( 'Some fields were not filled correctly. Please, correct the values and submit again.', 'fcpfo' ) ?>
                     </p>
-                    <style>#message{display:none;}</style>
+                    <style>#message{display:none}</style>
                 </div>
                 <?php
                 // ++ disable sending the email
@@ -120,8 +120,6 @@ class FCP_Add_Meta_Boxes {
                 $uploads = new FCP_Forms__Files( $this->s, $_FILES, $warns->files_failed );
             }
             
-            //update_post_meta( $postID, 'test', include( plugin_dir_path( __FILE__ ) . '../forms/' . $this->s->options->form_name . '/process-admin.php' ) ); exit;
-
             // modify data before save && process files
             @include_once( plugin_dir_path( __FILE__ ) . '../forms/' . $this->s->options->form_name . '/process-admin.php' ); // ++move to fcp-forms.php hook??
 
@@ -138,11 +136,9 @@ class FCP_Add_Meta_Boxes {
                     !isset( $f->roles_edit ) ||
                     isset( $f->roles_edit ) && !FCP_Forms::role_allow( $f->roles_edit )
                 )
-            ) {
-                continue;
-            }
+            ) { continue; }
 
-            if ( $warns->result[ $f->name ] ) {
+            if ( $warns->result[ $f->name ] ) { // ++ && is_admin() ?
                 setcookie(
                     $this->p->warn_name.'['.$f->name.']',
                     json_encode( $warns->result[ $f->name ] ),

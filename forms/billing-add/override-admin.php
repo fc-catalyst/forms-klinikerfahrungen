@@ -52,11 +52,10 @@ $entity_posts = get_posts([
     ],
 ]);
 $entities = [];
-foreach( $entity_posts as $epost ){
-	setup_postdata( $epost );
-    $entities[] = get_the_title() .
-        ' <a href="'.get_the_permalink().'">' . __( 'View' ) . '</a>' .
-        ' <a href="'.get_edit_post_link().'">' . __( 'Edit' ) . '</a>'
+foreach( $entity_posts as $v ){
+    $entities[] = $v->post_title .
+        ' <a href="'.get_the_permalink( $v->ID ).'">' . __( 'View' ) . '</a>' .
+        ' <a href="'.get_edit_post_link( $v->ID ).'">' . __( 'Edit' ) . '</a>'
     ;
 }
 wp_reset_postdata();
@@ -65,7 +64,7 @@ if ( !$entities[0] ) { return; }
 
 array_push( $this->s->fields, (object) [
         'type' => 'notice',
-        'text' => '<p>Clinics and Doctors assigned:</p><p>' . implode( '<br>', $entities ) . '</p>',
+        'text' => '<p>Kliniken und Ärzte zugewiesen:</p><p>' . implode( '<br>', $entities ) . '</p>',
         'meta_box' => true,
 ]);
 

@@ -25,7 +25,7 @@ class FCP_Forms__Validate {
         return __( 'Must contain only letters, numbers or the following symbols: "-", "_"', 'fcpfo' );
     }
 
-    private function test_notEmpty($rule, $a) {
+    private function test_notEmpty($rule, $a) { //++ add notEmptyHTML??
         if ( !$rule ) {
             return false;
         }
@@ -38,7 +38,7 @@ class FCP_Forms__Validate {
     }
     
     private function test_regExp($rule, $a) {
-        if ( !$a || $a && preg_match( '/'.$rule[0].'/', $a ) ) {
+        if ( !$a || $a && $rule[0] && preg_match( '/'.$rule[0].'/', $a ) ) {
             return false;
         }
         return sprintf( __( 'Doesn\'t fit the pattern %s', 'fcpfo' ), $rule[1] );
@@ -63,6 +63,44 @@ class FCP_Forms__Validate {
             return false;
         }
         return __( 'The value has to match the previous field', 'fcpfo' ); // ++ can add the title / placeholder here
+    }
+    
+    private function test_maxSymbols($rule, $a) {
+        if ( strlen( $a ) <= $rule ) { return false; }
+        return sprintf(
+            __( 'The maximum content length is %s symbols, your current content is %s', 'fcpfo' ),
+            $rule,
+            strlen( $a )
+        );
+    }
+    
+    private function test_minSymbols($rule, $a) {
+        if ( strlen( $a ) >= $rule ) { return false; }
+        return sprintf(
+            __( 'The minimum content length is %s symbols, your current content is %s', 'fcpfo' ),
+            $rule,
+            strlen( $a )
+        );
+    }
+    
+    private function test_maxLetters($rule, $a) {
+        $len = strlen( $this->htmlToText( $a ) );
+        if ( $len <= $rule ) { return false; }
+        return sprintf(
+            __( 'The maximum text length is %s symbols, your current content is %s', 'fcpfo' ),
+            $rule,
+            $len
+        );
+    }
+    
+    private function test_minLetters($rule, $a) {
+        $len = strlen( $this->htmlToText( $a ) );
+        if ( $len >= $rule ) { return false; }
+        return sprintf(
+            __( 'The minimum text length is %s symbols, your current content is %s', 'fcpfo' ),
+            $rule,
+            $len
+        );
     }
     
 // -----____--____FILES VALIDATION____----____---____
@@ -122,39 +160,37 @@ class FCP_Forms__Validate {
 
                 if ( !method_exists( $this, $method ) ) { continue; }
 
-                // multiple files
-                if ( $f->type == 'file' && $f->multiple ) {
+                if ( $f->type == 'file' ) { // ++the following can be better
 
-                    $mflip = FCP_Forms__Files::flip_files( $this->v[ $f->name ] );
+                    if ( $f->multiple ) {
 
-                    foreach ( $mflip as $v ) {
-                        // max amount of uploading files filter
-                        // ++mention already uploaded files
-                        // ++move to separate function
-/*
-                        if (
-                            is_numeric( $f->limit ) &&
-                            is_array( $this->files_failed[ $f->name ] ) &&
-                            count( $this->files_failed[ $f->name ] ) > $f->limit
-                        ) {
-                            $this->result[ $f->name ][] = 'Maximum amount of uploading files is riched. File <em>'.$f->name.'</em> not uploaded';
-                            continue;
+                        $mflip = FCP_Forms__Files::flip_files( $this->v[ $f->name ] );
+                        foreach ( $mflip as $v ) {
+                            if ( $this->addResult( $method, $f->name, $rule, $v ) ) {
+                                $this->files_failed[ $f->name ][] = $v['name'];
+                            }
                         }
-//*/
-                        // other filters
-                        if ( $this->addResult( $method, $f->name, $rule, $v ) ) {
-                            $this->files_failed[ $f->name ][] = $v['name'];
+
+                    } else {
+
+                        if ( $this->addResult( $method, $f->name, $rule, $this->v[ $f->name ] ) ) {
+                            $this->files_failed[ $f->name ][] = $this->v[ $f->name ]['name'];
                         }
                     }
-
+                    
                     continue;
                 }
+                
+                // not file
+                if ( $f->multiple ) {
 
-                // text data && single file
-                if ( $this->addResult( $method, $f->name, $rule, $this->v[ $f->name ] ) ){
-                    if ( $f->type == 'file' ) {
-                        $this->files_failed[ $f->name ][] = $this->v[ $f->name ]['name'];
+                    foreach ( $this->v[ $f->name ] as $v ) {
+                        $this->addResult( $method, $f->name, $rule, $v );
                     }
+                    
+                } else {
+
+                    $this->addResult( $method, $f->name, $rule, $this->v[ $f->name ] );
                 }
             }
         }
@@ -169,6 +205,15 @@ class FCP_Forms__Validate {
     
     public function add_result($field, $value) { // --Y is it used??
         $this->result[$field][] = $value;
+    }
+    
+    private function htmlToText($a) {
+        $a = preg_replace( '/</', ' <', $a ); // possible gaps to spaces
+        $a = preg_replace( '/<(head|script|style|template)[^>]*>(?:.*?)<\/\1>/si', ' ', $a ); // remove the hidden tags
+        $a = strip_tags( $a );
+        $a = preg_replace( ['/\&nbsp;/', '/\s+/'], ' ', $a );
+        $a = trim( $a );
+        return $a;
     }
 
 }

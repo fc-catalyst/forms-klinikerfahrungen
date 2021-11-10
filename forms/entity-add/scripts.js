@@ -5,9 +5,28 @@ fcLoadScriptVariable(
         
         const $ = jQuery,
                 workhours_popup = new FCP_Forms_Popup( '#entity-working-hours' );
+
         $( '#entity-working-hours_entity-add' ).on( 'click', function() {
             workhours_popup.show( this );
         });
+        
+        // lunch break add
+        let $lunch = $( '<button type="button" style="float:right;margin:4px 0 0 12px">We have lunch breaks</button>' );
+        $lunch.click( function() {
+            let $copy = $( '#entity-working-hours input[type=text] + input[type=text]' )
+            if ( $copy.length ) {
+                $copy.each( function() {
+                    $( this ).remove();
+                });
+                return;
+            }
+            $( '#entity-working-hours input[type=text]' ).each( function(e) {
+                let $self = $( this );
+                $self.clone().insertAfter( $self );
+            });
+        });
+        $( '#entity-working-hours h3' ).append( $lunch );
+
 
         const gmap_popup = new FCP_Forms_Popup( '#entity-specify-map' );
         $( '#entity-map_entity-add' ).on( 'click', function() {

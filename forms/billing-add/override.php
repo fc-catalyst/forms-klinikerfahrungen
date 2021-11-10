@@ -55,6 +55,23 @@ if ( isset( $_GET['step3'] ) ) {
                 'name' => 'entity-id',
                 'value' => get_the_ID(),
             ]);
+
+            // just a notice
+            array_push( $json->fields[0]->fields, (object) [
+                'type' => 'notice',
+                'text' => '<p>Nach Bestätigung der Registrierung, erhalten Sie in Kürze eine Rechnung.</p>',
+            ]);
+
+            // just a notice
+            array_unshift( $json->fields[0]->fields, (object) [
+                'type' => 'notice',
+                'text' => sprintf(
+                    '<p style="margin-bottom:18px"><strong>Hinweis:</strong> Der %s %s wurde erfolgreich gespeichert. Möchten Sie Änderungen vornehmen, folgen Sie dem %s.</p>',
+                    get_post_type_object( get_post_type() )->labels->singular_name,
+                    get_the_title(),
+                    '<a href="' . get_edit_post_link() . '" target="_blank">Link</a>'
+                ),
+            ]);
             
             break;
         }

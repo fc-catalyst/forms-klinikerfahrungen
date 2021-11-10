@@ -144,5 +144,5 @@ msgstr "Läuft heute aus"
 msgid "Not set or ended recently"
 msgstr "Kein Enddatum hinterlegt oder kürzlich geendet"
 
-msgid "Not limited"
-msgstr "Unbegrenzt"
+msgid "Not limited (free)"
+msgstr "Unbegrenzt (kostenlos)"

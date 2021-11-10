@@ -83,38 +83,44 @@ if ( isset( $_GET['step3'] ) ) {
                 'name' => 'entity-id',
                 'value' => get_the_ID(),
             ]);
+            
+            // just a notice
+            array_push( $json->fields, (object) [ // ++can go higher - before submit button
+                'type' => 'notice',
+                'text' => '<p>Nach Bestätigung der Registrierung, erhalten Sie in Kürze eine Rechnung.</p>',
+            ]);
 
             break;
         }
         wp_reset_query();
     }
-
-} else {
-
-    // pick all user's entities
-    $wp_query = new WP_Query([
-        'author' => wp_get_current_user()->ID,
-        'post_type' => ['clinic', 'doctor'],
-        'orderby' => 'post_title',
-        'order'   => 'ASC',
-        'post_status' => 'any',
-        'posts_per_page' => -1,
-    ]);
-
-    if ( $wp_query->have_posts() ) {
     
-        $entities = [];
-        while ( $wp_query->have_posts() ) {
-            $wp_query->the_post();
-            $entities[ get_the_ID() ] = get_the_title();
-        }
-        wp_reset_query();
-        
-        $json->fields = FCP_Forms::json_change_field( $json->fields,
-            'entity-id',
-            'options',
-            (object) $entities
-        );
-        
+    return;
+}
+
+// pick all user's entities
+$wp_query = new WP_Query([
+    'author' => wp_get_current_user()->ID,
+    'post_type' => ['clinic', 'doctor'],
+    'orderby' => 'post_title',
+    'order'   => 'ASC',
+    'post_status' => 'any',
+    'posts_per_page' => -1,
+]);
+
+if ( $wp_query->have_posts() ) {
+
+    $entities = [];
+    while ( $wp_query->have_posts() ) {
+        $wp_query->the_post();
+        $entities[ get_the_ID() ] = get_the_title();
     }
+    wp_reset_query();
+    
+    $json->fields = FCP_Forms::json_change_field( $json->fields,
+        'entity-id',
+        'options',
+        (object) $entities
+    );
+    
 }

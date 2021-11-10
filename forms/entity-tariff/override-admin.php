@@ -27,4 +27,4 @@ if ( $values['entity-tariff-till'] ) {
     return;
 }
 
-$values['entity-tariff-till'] = __( 'Not limited', 'fcpfo' ); // 0
+$values['entity-tariff-till'] = __( 'Not limited (free)', 'fcpfo' ); // 0

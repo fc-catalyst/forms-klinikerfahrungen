@@ -58,10 +58,10 @@
                         {
                             "type" : "checkbox",
                             "name" : "entity-featured",
-                            "title" : "Pin the Entry",
+                            "title" : "&nbsp;",
                             "meta_box" : "only",
                             "options" : {
-                                "1" : "Featured"
+                                "1" : "Empfohlen"
                             },
                             "roles_edit" : [
                                 "administrator"
@@ -207,14 +207,15 @@
                 },
                 {
                     "type" : "textarea",
-                    "title" : "Beschreiben Sie Ihr Unternehmen",
+                    "title" : "Beschreiben Sie Ihr Unternehmen <small>(mindestens 300 Wörter)</small>",
                     "name" : "entity-content",
                     "rows" : 8,
                     "validate" : {
-                        "notEmpty" : true
+                        "notEmpty" : true,
+                        "minLetters" : 300
                     },
                     "meta_box" : true,
-                    "tinymce" : "admin"
+                    "tinymce" : true
                 }
             ]
         },
@@ -241,8 +242,13 @@
                             "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
+                            "autocomplete" : "off",
+                            "validate" : {
+                                "regExp" : [
+                                    "^\\d{1,2}:\\d{2}$",
+                                    "hh:mm oder h:mm"
+                                ]
+                            }
                         },
                         {
                             "type" : "text",
@@ -251,8 +257,13 @@
                             "placeholder" : "Geschlossen",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
+                            "autocomplete" : "off",
+                            "validate" : {
+                                "regExp" : [
+                                    "^\\d{1,2}:\\d{2}$",
+                                    "hh:mm oder h:mm"
+                                ]
+                            }
                         }
                     ]
                 },
@@ -267,8 +278,13 @@
                             "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
+                            "autocomplete" : "off",
+                            "validate" : {
+                                "regExp" : [
+                                    "^\\d{1,2}:\\d{2}$",
+                                    "hh:mm oder h:mm"
+                                ]
+                            }
                         },
                         {
                             "type" : "text",
@@ -277,8 +293,13 @@
                             "placeholder" : "Geschlossen",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
+                            "autocomplete" : "off",
+                            "validate" : {
+                                "regExp" : [
+                                    "^\\d{1,2}:\\d{2}$",
+                                    "hh:mm oder h:mm"
+                                ]
+                            }
                         }
                     ]
                 },
@@ -293,8 +314,13 @@
                             "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
+                            "autocomplete" : "off",
+                            "validate" : {
+                                "regExp" : [
+                                    "^\\d{1,2}:\\d{2}$",
+                                    "hh:mm oder h:mm"
+                                ]
+                            }
                         },
                         {
                             "type" : "text",
@@ -303,8 +329,13 @@
                             "placeholder" : "Geschlossen",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
+                            "autocomplete" : "off",
+                            "validate" : {
+                                "regExp" : [
+                                    "^\\d{1,2}:\\d{2}$",
+                                    "hh:mm oder h:mm"
+                                ]
+                            }
                         }
                     ]
                 },
@@ -319,8 +350,13 @@
                             "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
+                            "autocomplete" : "off",
+                            "validate" : {
+                                "regExp" : [
+                                    "^\\d{1,2}:\\d{2}$",
+                                    "hh:mm oder h:mm"
+                                ]
+                            }
                         },
                         {
                             "type" : "text",
@@ -329,8 +365,13 @@
                             "placeholder" : "Geschlossen",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
+                            "autocomplete" : "off",
+                            "validate" : {
+                                "regExp" : [
+                                    "^\\d{1,2}:\\d{2}$",
+                                    "hh:mm oder h:mm"
+                                ]
+                            }
                         }
                     ]
                 },
@@ -345,8 +386,13 @@
                             "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
+                            "autocomplete" : "off",
+                            "validate" : {
+                                "regExp" : [
+                                    "^\\d{1,2}:\\d{2}$",
+                                    "hh:mm oder h:mm"
+                                ]
+                            }
                         },
                         {
                             "type" : "text",
@@ -355,8 +401,13 @@
                             "placeholder" : "Geschlossen",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
+                            "autocomplete" : "off",
+                            "validate" : {
+                                "regExp" : [
+                                    "^\\d{1,2}:\\d{2}$",
+                                    "hh:mm oder h:mm"
+                                ]
+                            }
                         }
                     ]
                 },
@@ -371,8 +422,13 @@
                             "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
+                            "autocomplete" : "off",
+                            "validate" : {
+                                "regExp" : [
+                                    "^\\d{1,2}:\\d{2}$",
+                                    "hh:mm oder h:mm"
+                                ]
+                            }
                         },
                         {
                             "type" : "text",
@@ -381,8 +437,13 @@
                             "placeholder" : "Geschlossen",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
+                            "autocomplete" : "off",
+                            "validate" : {
+                                "regExp" : [
+                                    "^\\d{1,2}:\\d{2}$",
+                                    "hh:mm oder h:mm"
+                                ]
+                            }
                         }
                     ]
                 },
@@ -397,8 +458,13 @@
                             "placeholder" : "Geöffnet",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
+                            "autocomplete" : "off",
+                            "validate" : {
+                                "regExp" : [
+                                    "^\\d{1,2}:\\d{2}$",
+                                    "hh:mm oder h:mm"
+                                ]
+                            }
                         },
                         {
                             "type" : "text",
@@ -407,8 +473,13 @@
                             "placeholder" : "Geschlossen",
                             "meta_box" : true,
                             "multiple" : true,
-                            "keep_empty" : true,
-                            "autocomplete" : "off"
+                            "autocomplete" : "off",
+                            "validate" : {
+                                "regExp" : [
+                                    "^\\d{1,2}:\\d{2}$",
+                                    "hh:mm oder h:mm"
+                                ]
+                            }
                         }
                     ]
                 }
@@ -416,10 +487,10 @@
         },
         {
             "gtype" : "hidden",
-            "title" : "Specify on map",
+            "title" : "Standort auf Karte festlegen",
             "title_tag" : "h3",
             "id" : "entity-specify-map",
-            "description" : "<p>You can specify the location, for example, place the pin to the facility entrance.<br/><br/>To chante the location drag the marker, or click on the map, where you want the marker to jump.<em>Notice, that your picked zoom lavel will also be saved</em></p>",
+            "description" : "<p>Alternativ kannst du den Eingang des Unternehmensstandorts, durch einen Marker (Pin) auf einer Google Maps Karte festlegen.<br/><br/>Um den Marker zu verändern, ziehe diesen zu einer beliebigen Position auf der Google Maps Karte. Hinweis: Der Wert des Zooms wird ebenfalls gespeichert.</p>",
             "fields" : [
                 {
                     "type" : "notice",

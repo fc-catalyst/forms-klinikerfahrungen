@@ -19,11 +19,9 @@ $billing_posts = get_posts([
 ]);
 
 $billings = [];
-foreach( $billing_posts as $post ){
-	setup_postdata( $post );
-    $billings[ get_the_ID() ] = get_the_title();
+foreach( $billing_posts as $v ){
+    $billings[ $v->ID ] = $v->post_title;
 }
-wp_reset_postdata();
 
 if ( empty( $billings) ) {
     FCP_Forms::json_change_field( $this->s->fields, 'entity-billing', 'type', 'notice' );

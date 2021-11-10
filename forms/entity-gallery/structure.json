@@ -10,7 +10,7 @@
     "fields" : [
         {
             "type" : "file",
-            "title" : "Gallery images",
+            "title" : "&nbsp;",
             "name" : "gallery-images",
             "multiple" : true,
             "limit" : 10,

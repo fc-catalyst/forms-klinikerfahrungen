@@ -137,3 +137,10 @@ msgstr "% Ergebnisse"
 
 msgid "%s found"
 msgstr "%s Ergebnisse gefunden"
+
+#. schedule
+msgid "Open"
+msgstr "Geöffnet"
+
+msgid "Closed"
+msgstr "Geschlossen"

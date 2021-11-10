@@ -57,13 +57,7 @@ function fct_print_gmap() {
         <?php echo $long ? '<meta itemprop="longitude" content="'.$long.'">' : '' ?>
     </div>
     <?php
-}
-
-function fct_print_contact_buttons() {
-    fct_print_contact_button( 'entity-phone', fct1_meta( 'entity-phone' ), 'telephone' );
-    fct_print_contact_button( 'entity-email', __( 'E-mail', 'fcpfo-ea' ) );
-    fct_print_contact_button( 'entity-website', __( 'Website', 'fcpfo-ea' ), 'url' );
-
+    
     // schema part
     ?>
     <div itemprop="contactPoint" itemscope itemtype="https://schema.org/ContactPoint">
@@ -71,6 +65,12 @@ function fct_print_contact_buttons() {
         <meta itemprop="telephone" content="<?php fct1_meta_print( 'entity-phone' ) ?>">
     </div>
     <?php
+}
+
+function fct_print_contact_buttons() {
+    fct_print_contact_button( 'entity-phone', fct1_meta( 'entity-phone' ), 'telephone' );
+    fct_print_contact_button( 'entity-email', __( 'E-mail', 'fcpfo-ea' ) );
+    fct_print_contact_button( 'entity-website', __( 'Website', 'fcpfo-ea' ), 'url' );
 }
 
 function fct_print_contact_button($meta, $name, $itemprop = '') {
@@ -125,7 +125,7 @@ function fct_entity_print_schedule($toggle_in = false) {
 
     }
     
-    if ( empty( $values ) ) { return; }
+    if ( empty( $schema ) ) { return; }
     
     ?>
     <div class="wp-block-button is-style-outline fct-button-select fct-open-next<?php echo $toggle_in ? ' fct-active' : '' ?>">
@@ -144,6 +144,7 @@ function fct_entity_print_schedule($toggle_in = false) {
         <dd>
             <?php echo implode( '<br/>', $v ) ?>
         </dd>
+
         <?php if ( !$schema[ $k ] ) { continue; } ?>
         <meta itemprop="openingHours" content="<?php
             echo substr( $fields[ $k ], 0, 2 ) . ' ' .
@@ -180,7 +181,7 @@ function fct_entity_print_gallery() {
 
 function fct_entity_content_filter($content, $tariff = '') {
     if ( !$content ) { return; }
-    return fct1_a_clear( $content, !fct_free_account( $tariff ) );
+    return apply_filters( 'the_content', fct1_a_clear( $content, !fct_free_account( $tariff ) ) );
 }
 
 function fct_entity_print_tags() {
