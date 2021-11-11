@@ -7,7 +7,7 @@
     bottom:0;
     background-color:#fff;
     overflow:auto;
-    padding:40px 30px 80px;
+    padding:40px max( calc( ( 100% - 800px ) / 2 ), 15px ) 80px;
 }
 
 .fcp-form-group-hidden {
@@ -19,11 +19,6 @@
     opacity:1;
     z-index:100;
     pointer-events:auto;
-}
-.fcp-form-group-hidden > * {
-    max-width:800px;
-    margin-left:auto;
-    margin-right:auto;
 }
 /* hidden wp-admin overrides */
 .wp-admin .fcp-form-group-hidden {
