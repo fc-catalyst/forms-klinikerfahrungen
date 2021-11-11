@@ -92,6 +92,18 @@ msgstr "Die Datei %s ist zu groß. Die maximale Dateigröße ist %s"
 msgid "The file %s extension doesn't fit the allowed list: %s"
 msgstr "Dieses Dateiformat ist auf unserer Webseite nicht erlaubt: %s"
 
+msgid "The maximum content length is %s symbols, your current content is %s"
+msgstr "Die erlaubte Zeichenlänge beträgt %s. Dein Inhalt ist %s Zeichen lang."
+
+msgid "The minimum content length is %s symbols, your current content is %s"
+msgstr "Es werden mindestens %s Zeichen benötigt. Dein Inhalt ist %s Zeichen lang."
+
+msgid "The maximum text length is %s symbols, your current content is %s"
+msgstr "Die erlaubte Textlänge beträgt %s Zeichen. Dein Inhalt ist %s Zeichen lang."
+
+msgid "The minimum text length is %s symbols, your current content is %s"
+msgstr "Die Minimum Textlängebeträgt %s Zeichen. Dein Inhalt ist %s Zeichen lang."
+
 #. the forms common
 msgid "Activate"
 msgstr "Aktivieren"
