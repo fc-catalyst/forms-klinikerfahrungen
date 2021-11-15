@@ -45,6 +45,9 @@ class FCP_Forms__Draw {
     private function field_notice($a) {
         echo $a->text;
     }
+    private function field_notice_view($a) {
+        echo $a->view->before . $a->text . $a->view->after;
+    }
 
     private function field_text($a) {
 
@@ -88,7 +91,7 @@ class FCP_Forms__Draw {
                 continue;
             }
 
-            echo '<p>' . esc_attr( $v ? $v : __( 'No value set', 'fcpfo' ) ) . '</p>';
+            echo $a->view->before . $v . $a->view->after;// ? $v : __( 'No value set', 'fcpfo' );
         
         }
     }
@@ -266,6 +269,18 @@ class FCP_Forms__Draw {
         </select>
         <?php
     }
+
+    private function field_select_view($a) {
+
+        $result = [];
+        foreach ( $a->options as $k => $b ) {
+            if ( $a->multiple && in_array( $k, $a->savedValue ) || $k == $a->savedValue ) {
+                $result[] = $b;
+            }
+        }
+        echo $a->view->before . implode( $a->view->sep, $result ) . $a->view->after;
+    }
+
 
     private function field_datalist($a) {
         ?>

@@ -63,9 +63,9 @@ wp_reset_postdata();
 if ( !$entities[0] ) { return; }
 
 array_push( $this->s->fields, (object) [
-        'type' => 'notice',
-        'text' => '<p>Kliniken und Ärzte zugewiesen:</p><p>' . implode( '<br>', $entities ) . '</p>',
-        'meta_box' => true,
+    'type' => 'notice',
+    'text' => '<p>Kliniken und Ärzte zugewiesen:</p><p>' . implode( '<br>', $entities ) . '</p>',
+    'meta_box' => true,
 ]);
 
 // FCP_Forms::json_change_field( $this->s->fields, 'billing-name', 'placeholder', 'Ahaha' ); // this just works XDD

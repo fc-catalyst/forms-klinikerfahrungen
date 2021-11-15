@@ -18,9 +18,9 @@ if (
 }
 
 
-$d = DateTime::createFromFormat( 'd.m.y', $_POST['entity-tariff-till'] );
+$d = DateTime::createFromFormat( 'd.m.y H:i:s', $_POST['entity-tariff-till'] . ' 23:59:59' );
 if ( $d === false ) {
-    $d = DateTime::createFromFormat( 'd.m.Y', $_POST['entity-tariff-till'] );
+    $d = DateTime::createFromFormat( 'd.m.Y H:i:s', $_POST['entity-tariff-till'] . ' 23:59:59' );
 }
 if ( $d === false ) { return; }
 

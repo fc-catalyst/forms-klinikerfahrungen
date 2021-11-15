@@ -41,6 +41,9 @@ if ( $id === 0 ) {
     return;
 }
 
+// save the exceptional meta boxes
+update_post_meta( $id, 'entity-tariff', $_POST['entity-tariff'] );
+
 // upload files
 $dir = wp_get_upload_dir()['basedir'] . '/entity/' . $id;
 

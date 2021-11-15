@@ -700,6 +700,10 @@ class FCP_Forms {
     }
     
     public static function check_role($role, $user = []) {
+        if ( is_numeric( $user ) ) {
+            $user = get_user_by( 'ID', $user );
+        }
+    
         if( empty( $user ) ) {
             $user = wp_get_current_user();
         }
@@ -708,7 +712,7 @@ class FCP_Forms {
             return false;
         }
 
-        return true;
+        return [$role, $user];
     }
     
     public static function role_allow($a = []) {

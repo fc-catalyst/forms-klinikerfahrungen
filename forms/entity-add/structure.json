@@ -200,8 +200,7 @@
                             },
                             "validate" : {
                                 "notEmpty" : true
-                            },
-                            "meta_box" : true
+                            }
                         }
                     ]
                 },

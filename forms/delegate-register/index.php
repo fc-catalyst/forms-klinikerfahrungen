@@ -155,3 +155,30 @@ add_action( 'admin_footer', function() {
 </style>
     <?php
 });
+
+
+// custom user meta Trusted
+add_action( 'show_user_profile', 'trust_delegate_print' );
+add_action( 'edit_user_profile', 'trust_delegate_print' );
+
+add_action('personal_options_update', 'trust_delegate_save');
+add_action('edit_user_profile_update', 'trust_delegate_save');
+
+function trust_delegate_print($user) {
+    if ( !FCP_Forms::check_role( 'administrator' ) ) { return; }
+    if ( !FCP_Forms::check_role( 'entity_delegate', $user ) ) { return; }
+    $checked = $user->{'user-trusted'} ? ' checked="checked"' : '';
+?>
+<h3>Trust</h3>
+    <label>
+        <input name="user-trusted" type="checkbox" value="1"<?php echo $checked; ?>>
+        Trust this delegate
+    </label>
+<?php 
+}
+
+function trust_delegate_save($user_id) {
+    if ( !FCP_Forms::check_role( 'administrator' ) ) { return; }
+    if ( !FCP_Forms::check_role( 'entity_delegate', $user_id ) ) { return; }
+    update_user_meta( $user_id, 'user-trusted', $_POST['user-trusted'] );
+}

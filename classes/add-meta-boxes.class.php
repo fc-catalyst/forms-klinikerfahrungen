@@ -117,7 +117,7 @@ class FCP_Add_Meta_Boxes {
             //print_r( [$warns->result, $warns->files_failed] ); exit;
             
             if ( isset( $_FILES ) ) {
-                $uploads = new FCP_Forms__Files( $this->s, $_FILES, $warns->files_failed );
+                $uploads = new FCP_Forms__Files( $this->s, $_FILES, $warns->files_failed ); // ++roles filter is below :(
             }
             
             // modify data before save && process files
@@ -127,13 +127,13 @@ class FCP_Add_Meta_Boxes {
 
         $fields = FCP_Forms::flatten( $this->s->fields );
         foreach ( $fields as $f ) {
-            if ( !$f->meta_box ) { continue; }
+            if ( !$f->meta_box || $f->type === 'none' ) { continue; }
             
             if ( isset( $f->roles_edit ) && !FCP_Forms::role_allow( $f->roles_edit ) ) { continue; }
             if ( 
                 isset( $f->roles_view ) && FCP_Forms::role_allow( $f->roles_view ) &&
                 (
-                    !isset( $f->roles_edit ) ||
+                    !isset( $f->roles_edit ) || // ++this is something strange - check where is used and fix
                     isset( $f->roles_edit ) && !FCP_Forms::role_allow( $f->roles_edit )
                 )
             ) { continue; }
