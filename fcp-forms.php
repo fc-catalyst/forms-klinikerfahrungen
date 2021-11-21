@@ -550,30 +550,7 @@ class FCP_Forms {
         }
         return $return;
     }
-    
-    public static function json_change_field(&$fields, $field, $key, $value) {
 
-        foreach ( $fields as &$f ) {
-
-            if ( $f->type ) {
-                if ( $f->name === $field ) {
-                    $f->{ $key } = $value;
-                }
-                // ++ unset attr
-                // ++ unset field
-                continue;
-            }
-
-            if ( $f->gtype ) {
-                self::json_change_field( $f->fields, $field, $key, $value );
-            }
-
-        }
-        
-        return $fields;
-
-    }
-    
     public static function unique($match = '', $length = 9) {
         $rnds = [ md5( rand() ), uniqid() ];
 
@@ -668,7 +645,7 @@ class FCP_Forms {
 
     // the following are used in different types of forms or fields
 
-    public static function email_to_user($email) {
+    public static function email_to_user($email) { // split an email to first and last name
         $person = ['me', 'person', 'name'];
         $zone = substr( $email, strrpos( $email, '.' ) + 1 );
         
@@ -724,6 +701,107 @@ class FCP_Forms {
             $roles = get_userdata( get_current_user_id() )->roles;
         }
         return $roles;
+    }
+    
+    // json manipulation
+    
+    public static function json_attr_by_name(&$fields, $name, $key, $value = '', $unset = false) {
+
+        if ( !is_array( $fields ) || !$name || !$key ) { return; }
+
+        foreach ( $fields as $k => &$f ) {
+
+            if ( $f->gtype ) {
+                if ( $result = self::json_attr_by_name( $f->fields, $name, $key, $value, $unset ) ) {
+                    return $result;
+                }
+                continue;
+            }
+
+            if ( !$f->type || $f->name !== $name ) { continue; }
+
+            // get / return
+            if ( !$value && !$unset ) {
+                return $f->{ $key };
+            }
+            
+            // add || edit
+            if ( !$unset ) {
+                $f->{ $key } = $value;
+                return;
+            }
+
+            // delete
+            if ( $unset && ( $value === $f->{ $key } || !$value ) ) {
+                unset( $f->{ $key } );
+            }
+
+        }
+
+    }
+
+    public static function json_field_by_sibling(&$fields, $name, $structure = [], $command = '') {
+
+        if ( !is_array( $fields ) || !$name ) { return; }
+
+        foreach ( $fields as $k => &$f ) {
+            
+            if ( $f->gtype ) {
+                if ( $result = self::json_field_by_sibling( $f->fields, $name, $structure, $command ) ) {
+                    return $result;
+                }
+                continue;
+            }
+
+            if ( !$f->type || $f->name !== $name ) { continue; }
+
+            if ( !$structure && $command !== 'unset' ) {
+                return $f;
+            }
+            
+            switch ( $command ) {
+                case 'unset' :
+                    unset( $fields[ $k ] );
+                    $fields = array_values( $fields );
+                    return;
+                case 'merge' :
+                    $f = (object) array_merge( (array) $f, $structure );
+                    return;
+                case 'override' :
+                    $f = (object) $structure;
+                    return;
+                case 'before' :
+                    array_splice( $fields, $k, 0, [ (object) $structure ] );
+                    return;
+                default : // after
+                    array_splice( $fields, $k + 1, 0, [ (object) $structure ] );
+                    return;
+            }
+
+        }
+    }
+    
+    public static function json_change_field(&$fields, $field, $key, $value) { //++ DELETE ME
+
+        foreach ( $fields as &$f ) {
+
+            if ( $f->type ) {
+                if ( $f->name === $field ) {
+                    $f->{ $key } = $value;
+                }
+                // ++ unset attr
+                // ++ unset field
+                continue;
+            }
+
+            if ( $f->gtype ) {
+                self::json_change_field( $f->fields, $field, $key, $value );
+            }
+
+        }
+        
+        return $fields;
+
     }
 
 }

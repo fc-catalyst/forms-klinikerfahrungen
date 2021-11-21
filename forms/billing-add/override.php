@@ -35,14 +35,14 @@ if ( isset( $_GET['step3'] ) ) {
         while ( $wp_query->have_posts() ) {
             $wp_query->the_post();
 
-            $json->fields = FCP_Forms::json_change_field( $json->fields,
+            FCP_Forms::json_attr_by_name( $json->fields,
                 'billing-company',
                 'value',
                 get_the_title()
             );
 
             foreach( $autofill as $k => $v ) {
-                $json->fields = FCP_Forms::json_change_field( $json->fields,
+                FCP_Forms::json_attr_by_name( $json->fields,
                     $k,
                     'value',
                     fct1_meta( $v )

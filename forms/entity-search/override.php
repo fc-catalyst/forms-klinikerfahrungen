@@ -6,14 +6,14 @@ Print something else instead of the form
 // fill in the search values to inputs
 if ( !$_GET['specialty'] && !$_GET['place'] ) { return; }
 
-$json->fields = FCP_Forms::json_change_field(
+FCP_Forms::json_attr_by_name(
     $json->fields,
     'specialty',
     'value',
     $_GET['specialty'] ? htmlspecialchars( urldecode( $_GET['specialty'] ) ) : ''
 );
 
-$json->fields = FCP_Forms::json_change_field(
+FCP_Forms::json_attr_by_name(
     $json->fields,
     'place',
     'value',

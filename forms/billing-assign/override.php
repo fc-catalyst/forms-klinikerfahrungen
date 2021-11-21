@@ -35,10 +35,10 @@ while ( $wp_query->have_posts() ) {
 }
 wp_reset_query();
 
-$json->fields = FCP_Forms::json_change_field( $json->fields,
+FCP_Forms::json_attr_by_name( $json->fields,
     'billing-id',
     'options',
-    (object) $billings
+    $billings
 );
 
 
@@ -59,36 +59,34 @@ if ( isset( $_GET['step3'] ) ) {
         while ( $wp_query->have_posts() ) {
             $wp_query->the_post();
 
-            // print the notice
-            $json->fields = FCP_Forms::json_change_field( $json->fields,
+            // replace select with a hidden and a notice
+            FCP_Forms::json_field_by_sibling( $json->fields,
                 'entity-id',
-                'type',
-                'notice'
+                [
+                    'type' => 'hidden',
+                    'name' => 'entity-id',
+                    'value' => get_the_ID()
+                ],
+                'override'
             );
-            $json->fields = FCP_Forms::json_change_field( $json->fields,
+            FCP_Forms::json_field_by_sibling( $json->fields,
                 'entity-id',
-                'text',
-                get_the_title()
+                [
+                    'type' => 'notice',
+                    'text' => get_the_title()
+                ],
+                'after'
             );
-/*
-            $json->fields = FCP_Forms::json_change_field( $json->fields,
-                'entity-id',
-                'name',
-                'entity-notice'
-            );
-//*/
-            // add the hidden field value
-            array_push( $json->fields, (object) [ // ++unify $json->fields methods in main class
-                'type' => 'hidden',
-                'name' => 'entity-id',
-                'value' => get_the_ID(),
-            ]);
-            
+
             // just a notice
-            array_push( $json->fields, (object) [ // ++can go higher - before submit button
-                'type' => 'notice',
-                'text' => '<p>Nach Bestätigung der Registrierung, erhalten Sie in Kürze eine Rechnung.</p>',
-            ]);
+            FCP_Forms::json_field_by_sibling( $json->fields,
+                'billing-submit',
+                [
+                    'type' => 'notice',
+                    'text' => '<p>Nach Bestätigung der Registrierung, erhalten Sie in Kürze eine Rechnung.</p>',
+                ],
+                'before'
+            );
 
             break;
         }
@@ -117,10 +115,10 @@ if ( $wp_query->have_posts() ) {
     }
     wp_reset_query();
     
-    $json->fields = FCP_Forms::json_change_field( $json->fields,
+    FCP_Forms::json_attr_by_name( $json->fields,
         'entity-id',
         'options',
-        (object) $entities
+        $entities
     );
     
 }

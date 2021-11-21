@@ -24,11 +24,17 @@ foreach( $billing_posts as $v ){
 }
 
 if ( empty( $billings) ) {
-    FCP_Forms::json_change_field( $this->s->fields, 'entity-billing', 'type', 'notice' );
-    FCP_Forms::json_change_field( $this->s->fields, 'entity-billing', 'text',
-        '<a href="/wp-admin/post-new.php?post_type=billing" target="_blank">' . __( 'Add New Billing', 'fcpfo' ) . '</a>'
+    FCP_Forms::json_field_by_sibling(
+        $this->s->fields,
+        'entity-billing',
+        [
+            'type' => 'notice',
+            'text' => '<p><a href="/wp-admin/post-new.php?post_type=billing" target="_blank">' . __( 'Add New Billing', 'fcpfo' ) . '</a></p>',
+            'meta_box' => true,
+        ],
+        'override'
     );
     return;
 }
 
-FCP_Forms::json_change_field( $this->s->fields, 'entity-billing', 'options', $billings );
+FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-billing', 'options', $billings );
