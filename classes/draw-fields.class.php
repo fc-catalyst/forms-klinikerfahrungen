@@ -81,9 +81,7 @@ class FCP_Forms__Draw {
     private function field_text_view($a) {
 
         $value = $a->savedValue ? $a->savedValue : $a->value;
-        if ( !is_array( $value ) ) {
-            $value = [ $value ];
-        }
+        $value = is_array( $value ) ? $value : [ $value ];
 
         foreach ( $value as $v ) {
 
@@ -238,6 +236,10 @@ class FCP_Forms__Draw {
     }
     
     private function field_select($a) {
+
+        $value = $a->savedValue ? $a->savedValue : $a->value;
+        $value = is_array( $value ) ? $value : [ $value ];
+
         ?>
         <select
             name="<?php $this->e_field_name( $a->name ) ?><?php echo $a->multiple ? '[]' : '' ?>"
@@ -259,7 +261,7 @@ class FCP_Forms__Draw {
                     ?>
                     <option
                         value="<?php echo esc_attr( $k ) ?>"
-                        <?php echo $a->multiple && in_array( $k, $a->savedValue ) || $k == $a->savedValue ? 'selected' : '' ?>
+                        <?php echo in_array( $k, $value ) ? 'selected' : '' ?>
                     >
                             <?php echo $b ?>
                     </option>
@@ -272,9 +274,12 @@ class FCP_Forms__Draw {
 
     private function field_select_view($a) {
 
+        $value = $a->savedValue ? $a->savedValue : $a->value;
+        $value = is_array( $value ) ? $value : [ $value ];
+
         $result = [];
         foreach ( $a->options as $k => $b ) {
-            if ( $a->multiple && in_array( $k, $a->savedValue ) || $k == $a->savedValue ) {
+            if ( in_array( $k, $value ) ) {
                 $result[] = $b;
             }
         }

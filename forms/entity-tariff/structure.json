@@ -58,13 +58,13 @@
         {
             "type" : "select",
             "title" : "The payment status:",
-            "placeholder" : "None",
             "name" : "entity-payment-status",
             "options" : {
                 "pending" : "Pending",
                 "billed" : "Billed",
                 "payed" : "Payed"
             },
+            "value" : "pending",
             "meta_box" : true,
             "roles_edit" : [
                 "administrator"
@@ -86,6 +86,7 @@
                 "premiumeintrag" : "Premiumeintrag",
                 "kostenloser_eintrag" : "Kostenloser Eintrag"
             },
+            "value" : "kostenloser_eintrag",
             "meta_box" : true,
             "view" : {
                 "before" : "<em>",
@@ -95,13 +96,13 @@
         {
             "type" : "none",
             "title" : "The payment status:",
-            "placeholder" : "None",
             "name" : "entity-payment-status-next",
             "options" : {
                 "pending" : "Pending",
                 "billed" : "Billed",
                 "payed" : "Payed"
             },
+            "value" : "pending",
             "meta_box" : true,
             "roles_edit" : [
                 "administrator"
