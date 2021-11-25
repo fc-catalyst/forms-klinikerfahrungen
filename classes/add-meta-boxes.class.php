@@ -12,11 +12,6 @@ class FCP_Add_Meta_Boxes {
     
         if ( !$s || !class_exists( 'FCP_Forms__Draw' ) ) { return; }
 
-        $datalist = FCP_Forms::save_options();
-        foreach ( $datalist as $k => $v ) {
-            FCP_Forms::add_options( $s, $k, $v );
-        }
-        
         $this->s = $s;
         $this->p = $p;
         $this->p->warn_name = 'fcp-form--'.$s->options->form_name.'--warnings';
@@ -128,6 +123,11 @@ class FCP_Add_Meta_Boxes {
         $fields = FCP_Forms::flatten( $this->s->fields );
         foreach ( $fields as $f ) {
             if ( !$f->meta_box || $f->type === 'none' ) { continue; }
+            
+            // the options for select are required even if itself is not
+            if ( $f->type === 'select' && $_POST[ $f->name ] && !isset( $f->options->{ $_POST[ $f->name ] } ) ) {
+                continue;
+            }
             
             if ( isset( $f->roles_edit ) && !FCP_Forms::role_allow( $f->roles_edit ) ) { continue; }
             if ( 
