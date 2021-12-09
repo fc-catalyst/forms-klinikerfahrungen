@@ -5,125 +5,47 @@ Process meta boxes data, custom $_POST filters
 
 FCP_Forms::tz_set();
 
-// initial values
-
-$time = time();
-$time_local = $time + ( $values['entity-timezone-bias'] ? $values['entity-timezone-bias'] : 0 ); // the saved one
-$day = 60*60*24;
-$prolong_gap = $day*30;
-
-$values = get_post_meta( $postID ); // ++or use the fct1_meta
+$values = get_post_meta( $postID );
 foreach ( $values as &$v ) { $v = $v[0]; }
+include 'variables.php';
 
-// variables //++ unify the part with variables for override and process files
+// no tariff manipulations with no billing method picked
+if ( !$values['entity-billing'] && !$admin_am ) {
+    $this->s->fields = [];
+    return;
+}
 
-
-$tariffs = (array) FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff', 'options' );
-$tariff_default = FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff', 'value' );
-
-$tariff_paid = $values['entity-tariff'] !== $tariff_default;
-
-$till_limit = $values['entity-tariff-till'] - $time_local;
-
-$admin_am = current_user_can( 'administrator' );
-
-$prolong_available = $tariff_paid && $till_limit > 0 && ( $till_limit < $prolong_gap || $admin_am );
-
-$values['entity-tariff'] = $values['entity-tariff'] && $tariffs[ $values['entity-tariff'] ]
-                         ? $values['entity-tariff']
-                         : $tariff_default;
-
-
+$tariff_change = $_POST['entity-tariff'] !== $values['entity-tariff'];
 
 // processing the values
 
 
-
-// block the tariff if no billing method picked
-if ( !$values['entity-billing'] && !$admin_am ) {
-    // ++add warning?
-    $this->s->fields = [];
-}
-
-
 // main tariff picker
 if ( !$admin_am && $tariff_paid ) { // only the free tariff can be changed by a user
-    FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [], 'unset' );
+    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff', 'roles_view', ['entity_delegate'] );
+    //FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [], 'unset' );
 }
 
 
-// payed tariff is requested by a user // ++add reset conditions to the scheduler
-if ( !$admin_am && !$tariff_paid && $_POST['entity-tariff'] !== $values['entity-tariff'] ) {
+// tariff requested date // ++add reset conditions here and to the scheduler
+if ( !$admin_am && !$tariff_paid && $tariff_change ) { // tariff is about to change to paid by a user
 
-    // requested date
-    $_POST['entity-tariff-requested'] = $time;
-    FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-requested', [
-        'type' => 'text',
-        'name' => 'entity-tariff-requested',
-        'meta_box' => true,
-    ], 'override' );
-    
     // payment status init
     $_POST['entity-payment-status'] = 'pending';
     FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status', 'roles_edit', ['entity_delegate'] );
-    
+
+    // requested date save
+    $_POST['entity-tariff-requested'] = $time;
+    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-requested', 'roles_view', '', 'unset' );
+
     // +++ send mail to admin here, that paid tariff is requested by an user
 }
 
 
-// prolong statements
-
-if ( $prolong_available ) {
-
-    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-next', 'type', 'select' );
-    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-next', 'options', (object) $tariffs );
-
-    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status-next', 'type', 'select' );
-    $pay_statuses = FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status', 'options' );
-    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status-next', 'options', $pay_statuses );
-
-
-    $values['entity-tariff-next'] = $values['entity-tariff-next'] && $tariffs[ $values['entity-tariff-next'] ]
-                                ? $values['entity-tariff-next']
-                                : $tariff_default;
-    $tariff_paid_next = $values['entity-tariff-next'] !== $tariff_default;
-    if ( !$admin_am && $tariff_paid_next ) { // don't allow changing a paid tariff
-        FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-next', [], 'unset' );
-    }
-
-    // set status for the newly picked tariff
-    if ( !$admin_am && !$tariff_paid_next && $_POST['entity-tariff-next'] !== $values['entity-tariff-next'] ) {
-        $_POST['entity-payment-status-next'] = 'pending';
-        FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status-next', 'roles_edit', ['entity_delegate'] );
-    }
-}
-
-
-// date to timestamp of the end of the day
+// tariff due date
 if ( $admin_am ) {
-
-    $_POST['entity-tariff-till'] = trim( $_POST['entity-tariff-till'] );
-
-    if (
-        !$_POST['entity-tariff-till'] ||
-        !preg_match( '/^\d{1,2}\.\d{1,2}\.\d{2,4}$/', $_POST['entity-tariff-till'] )
-    ) {
-        $_POST['entity-tariff-till'] = 0;
-    }
-
-
-    if ( $_POST['entity-tariff-till'] ) {
-
-        $d = DateTime::createFromFormat( 'd.m.y H:i:s', $_POST['entity-tariff-till'] . ' 23:59:59', new DateTimeZone( 'UTC' ) );
-        if ( $d === false ) {
-            $d = DateTime::createFromFormat( 'd.m.Y H:i:s', $_POST['entity-tariff-till'].' 23:59:59', new DateTimeZone( 'UTC' ) );
-        }
-        if ( $d !== false ) {
-            $_POST['entity-tariff-till'] = $d->getTimestamp();
-        }
-
-    }
-
+    $_POST['entity-tariff-till'] = $dmy_to_dayend_timestamp( $_POST['entity-tariff-till'] );
+    // the filter is lower, as the value depends on other conditions too
 }
 
 
@@ -146,11 +68,34 @@ if ( $admin_am && $_POST['entity-payment-status'] === 'payed' && $_POST['entity-
 }
 
 
+// prolong statements
+
+if ( $prolong_allowed ) {
+
+    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-next', 'type', 'select' );
+    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-next', 'options', (object) $tariffs );
+
+    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status-next', 'type', 'select' );
+    $pay_statuses = FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status', 'options' );
+    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status-next', 'options', $pay_statuses );
+
+    if ( !$admin_am && $tariff_paid_next ) { // don't allow changing a paid tariff
+        FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-next', [], 'unset' );
+    }
+
+    // set status for the newly picked tariff
+    if ( !$admin_am && !$tariff_paid_next && $_POST['entity-tariff-next'] !== $values['entity-tariff-next'] ) {
+        $_POST['entity-payment-status-next'] = 'pending';
+        FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status-next', 'roles_edit', ['entity_delegate'] );
+    }
+}
+
 // flush the values conditions
 if ( $admin_am ) {
     if ( $_POST['entity-tariff-till'] && $_POST['entity-tariff-till'] < $time_local ||
          $_POST['entity-tariff'] === $tariff_default
     ) {
+    //++ also flush if status is not payed??
     
         $_POST['entity-tariff-till'] = 0;
         $_POST['entity-tariff'] = $tariff_default;

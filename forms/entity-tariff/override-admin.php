@@ -12,73 +12,16 @@ FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
     'before' => '<pre>',
     'after' => '</pre>',
     'text' => "\n".
-        print_r( $outdated, true )
+        empty( $_POST )
     ."\n",
 ], 'before' );
 //*/
 
-$time = time(); // not used ha
-$time_local = $time + ( $values['entity-timezone-bias'] ? $values['entity-timezone-bias'] : 0 ); // the saved one
-$day = 60*60*24;
-$prolong_gap = $day*30;
 
-$tariffs = (array) FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff', 'options' );
-$tariff_default = FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff', 'value' );
+include 'variables.php';
 
-$values['entity-tariff'] = $values['entity-tariff'] && $tariffs[ $values['entity-tariff'] ]
-                         ? $values['entity-tariff']
-                         : $tariff_default;
-
-$tariff_paid = $values['entity-tariff'] !== $tariff_default;
-
-$admin_am = current_user_can( 'administrator' );
-
-$values['entity-tariff-till'] = $values['entity-tariff-till'] ? $values['entity-tariff-till'] : 0;
-$till_limit = $values['entity-tariff-till'] - $time_local;
-$tariff_till_view = date( get_option( 'date_format' ), $values['entity-tariff-till'] );
-
-if ( $till_limit < 0 ) { // outdated
-    $time_label = sprintf( __( 'Ended on %s', 'fcpfo' ), $tariff_till_view );
-} elseif ( $till_limit < $day ) { // today
-    $time_label = __( 'Ends today', 'fcpfo' );
-} elseif ( $till_limit < $day*2 ) { // tomorrow
-    $time_label = __( 'Tomorrow is the last day', 'fcpfo' );
-} else {
-    $time_label = $tariff_till_view;
-}
-
-if ( $values['entity-tariff-till'] === 0 ) {
-    $time_label = __( 'Not set', 'fcpfo' );
-}
-
-
-// prolong variables
-
-// the prolong is available to users 2 weeks before the current paid tariff ends
-$prolong_available = $tariff_paid && $till_limit > 0 && ( $till_limit < $prolong_gap || $admin_am );
-
-
-if ( $prolong_available ) {
-
-    $time_label = $till_limit < $prolong_gap ? '<font color="#b32d2e">' . $time_label . '</font>' : '';
-    
-    $values['entity-tariff-next'] = $values['entity-tariff-next'] && $tariffs[ $values['entity-tariff-next'] ]
-                                ? $values['entity-tariff-next']
-                                : $tariff_default;
-
-    $tariff_paid_next = $values['entity-tariff-next'] !== $tariff_default;
-    $tariff_next_start_label = date( get_option( 'date_format' ), $values['entity-tariff-till'] + $day );
-}
-
-
-$billing_details_id = get_post_meta( $_GET['post'], 'entity-billing', true );
-$billing_email = get_post_meta( $billing_details_id, 'billing-email', true );
-
-
-// print field-by-field conditionally
-
-// block the tariff if no billing method picked
-if ( !$billing_details_id && !$admin_am ) {
+// no tariff manipulations with no billing method picked
+if ( !get_post_meta( $_GET['post'], 'entity-billing', true ) && !$admin_am ) {
     $this->s->fields = [];
     array_push( $this->s->fields, (object) [
         'type' => 'notice',
@@ -88,23 +31,26 @@ if ( !$billing_details_id && !$admin_am ) {
     return;
 }
 
+// meeting the reset / update conditions
+/*
+if ( $values['entity-tariff-till'] <= $time_local ) {
+    // +++reset the tariff to free or apply the next one ++ move to top ()
+}
++++ collect other demanded further flushes here
+//*/
+
+// print field-by-field conditionally
+
 
 // main tariff picker
 if ( !$admin_am && $tariff_paid ) { // only the free tariff can be changed by a user
     FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff', 'roles_view', ['entity_delegate'] );
 }
-if ( $admin_am && !$tariff_paid ) { // just a notice
-    FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
-        'type' => 'notice',
-        'text' => '<strong>The following fields will not be effecting a free tariff.</strong>',
-        'meta_box' => true,
-    ], 'after' );
-}
 
 
-// tariff requested date - used to change unpayed paid tariffs back to free, like in 2 weeks
+// tariff requested date - is used to change unpayed paid tariffs back to free, like in a $prolong_gap period
 if ( $values['entity-tariff-requested'] ) {
-    $values['entity-tariff-requested'] = date( get_option( 'date_format' ), $values['entity-tariff-requested'] );
+    $values['entity-tariff-requested'] = date( $date_format, $values['entity-tariff-requested'] + $time_bias );
 }
 if ( !$values['entity-tariff-requested'] ) { // ++add reset conditions
     FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-requested', [], 'unset' );
@@ -112,31 +58,20 @@ if ( !$values['entity-tariff-requested'] ) { // ++add reset conditions
 
 
 // tariff due date
-if ( $admin_am ) { // ++add reset conditions
-
-    $values['entity-tariff-till'] = $values['entity-tariff-till'] && $values['entity-tariff-till'] > $time_local
+if ( $admin_am ) { // format for the input
+    $values['entity-tariff-till'] = $values['entity-tariff-till'] > $time_local
         ? date( 'd.m.Y', $values['entity-tariff-till'] )
         : '';
 
-    // date picker helping functions
-    $one_year_from_now_plus_one_day = date( 'd.m.Y', strtotime( '+1 year', $time_local + $day ) );
-    FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-till', [
-        'type' => 'notice',
-        'text' => '<a href="#" id="one-year-ahead" style="margin-top:-12px">Set 1 year from now</a><script>
-            jQuery( \'#one-year-ahead\' ).click( function( e ) {
-                e.preventDefault();
-                jQuery( \'#entity-tariff-till_entity-tariff\' ).val( \'' . $one_year_from_now_plus_one_day . '\' );
-            });
-        </script>',
-        'meta_box' => true,
-    ], 'after' );
+} else {
 
-}
-if ( !$admin_am && $tariff_paid && $values['entity-payment-status'] === 'payed' ) { // just styling
-    $values['entity-tariff-till'] = $time_label;
-}
-if ( !$admin_am && $values['entity-payment-status'] !== 'payed' ) { // hide payed till date
-    FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-till', [], 'unset' );
+    if ( $tariff_paid && $values['entity-payment-status'] === 'payed' ) {
+        // human readable format & styling; can just comment if too complex
+        $values['entity-tariff-till'] = $time_label( $values['entity-tariff-till'], $tariff_ends_in < $prolong_gap );
+    } else {
+        // hide
+        FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-till', [], 'unset' );
+    }
 }
 
 
@@ -145,7 +80,6 @@ if ( $admin_am ) {
     $tzs = DateTimeZone::listIdentifiers( DateTimeZone::ALL );
     $tzs = array_combine( $tzs, $tzs );
     FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-timezone', 'options', (object) $tzs );
-    FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-timezone-bias', [], 'unset' ); //++invent invisible fields
 }
 
 
@@ -181,7 +115,7 @@ if ( !$admin_am && $tariff_paid ) { // ++add reset conditions
 
 // prolong
 
-if ( $prolong_available ) {
+if ( $prolong_allowed ) {
 
     // prolong tariff picker
     FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-next', 'type', 'select' ); // ++add reset conditions
@@ -248,14 +182,16 @@ if ( $prolong_available ) {
 
 
 // helping labels
-if ( $tariff_next_start_label ) {
+/*
+if ( $prolong_allowed ) {
+    $tariff_next_start_label = $values['entity-tariff-till'];//date( get_option( 'date_format' ), $values['entity-tariff-till'] + $day );
     array_push( $this->s->fields, (object) [
         'type' => 'notice',
         'text' => '<p>The next tariff period will be activated <font color="#b32d2e" style="white-space:nowrap">on '.$tariff_next_start_label.'</font></p>',
         'meta_box' => true,
     ]);
 }
-
+//*/
 array_push( $this->s->fields, (object) [
     'type' => 'notice',
     'text' => '<p>For more information check out our tariff prices and conditions <a href=\"/\" target=\"_blank\">here</a></p>',
@@ -263,5 +199,31 @@ array_push( $this->s->fields, (object) [
     'roles_view' => ['entity_delegate'],
 ]);
 
+if ( $admin_am && !$tariff_paid ) { // just a notice
+    FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
+        'type' => 'notice',
+        'text' => '<strong>The following fields will not be effecting a free tariff.</strong>',
+        'meta_box' => true,
+    ], 'after' );
+}
+
+
+// tariff due date
+if ( $admin_am ) { // ++add reset conditions
+
+    // date picker helping functions
+    $one_year_from_now_plus_one_day = date( 'd.m.Y', strtotime( '+1 year', $time_local + $day ) );
+    FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-till', [
+        'type' => 'notice',
+        'text' => '<a href="#" id="one-year-ahead" style="margin-top:-12px">Set 1 year from now</a><script>
+            jQuery( \'#one-year-ahead\' ).click( function( e ) {
+                e.preventDefault();
+                jQuery( \'#entity-tariff-till_entity-tariff\' ).val( \'' . $one_year_from_now_plus_one_day . '\' );
+            });
+        </script>',
+        'meta_box' => true,
+    ], 'after' );
+
+}
 
 FCP_Forms::tz_reset();

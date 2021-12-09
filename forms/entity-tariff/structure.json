@@ -89,7 +89,7 @@
             "value" : "0",
             "meta_box" : true,
             "roles_view" : [
-                "administrator"
+                ""
             ],
             "view" : {
                 "before" : "<em>",
