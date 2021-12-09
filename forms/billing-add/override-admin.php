@@ -58,7 +58,7 @@ foreach( $entity_posts as $v ){
         ' <a href="'.get_edit_post_link( $v->ID ).'">' . __( 'Edit' ) . '</a>'
     ;
 }
-wp_reset_postdata();
+wp_reset_postdata(); // not needed?
 if ( !$entities[0] ) { return; }
 
 

@@ -130,6 +130,7 @@ if ( !class_exists( 'FCP_Forms__Draw' ) ) {
 $json = FCP_Forms::structure( $dir );
 if ( $json === false ) { return; }
 
+/* moved to override.php && override-admin.php
 global $wpdb;
 $options = $wpdb->get_col( '
     SELECT `meta_value`
@@ -138,7 +139,7 @@ $options = $wpdb->get_col( '
     GROUP BY `meta_value` ASC
 ');
 FCP_Forms::save_options( 'entity-specialty', $options );
-
+//*/
 
 new FCP_Add_Meta_Boxes( $json, (object) [
     'title' => 'Unternehmensinformationen',

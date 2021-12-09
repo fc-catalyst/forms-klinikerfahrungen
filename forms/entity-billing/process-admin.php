@@ -12,6 +12,9 @@ $wp_query = new WP_Query([
     'post_status'      => ['publish', 'private'],
 ]);
 
-if ( !$wp_query->have_posts() ) {
-    $_POST['entity-billing'] = '';
+if ( $wp_query->have_posts() ) {
+    // add the option to pass the saving filters
+    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-billing', 'options', (object) [
+        $_POST['entity-billing'] => ''
+    ]);
 }

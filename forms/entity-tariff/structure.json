@@ -17,6 +17,7 @@
                 "premiumeintrag" : "Premiumeintrag",
                 "kostenloser_eintrag" : "Kostenloser Eintrag"
             },
+            "value" : "kostenloser_eintrag",
             "meta_box" : true,
             "view" : {
                 "before" : "<p><em>",
@@ -24,12 +25,27 @@
             }
         },
         {
+            "type" : "select",
+            "title" : "The payment status:",
+            "name" : "entity-payment-status",
+            "placeholder" : "None",
+            "options" : {
+                "pending" : "Pending",
+                "billed" : "Billed",
+                "payed" : "Payed"
+            },
+            "value" : "",
+            "meta_box" : true,
+            "roles_edit" : [
+                "administrator"
+            ]
+        },
+        {
             "type" : "text",
-            "title" : "The Tariff change is requested on:",
+            "title" : "The Tariff is requested on:",
             "name" : "entity-tariff-requested",
             "meta_box" : true,
             "roles_view" : [
-                "entity_delegate",
                 "administrator"
             ],
             "view" : {
@@ -57,20 +73,23 @@
         },
         {
             "type" : "select",
-            "title" : "The payment status:",
-            "name" : "entity-payment-status",
-            "options" : {
-                "pending" : "Pending",
-                "billed" : "Billed",
-                "payed" : "Payed"
-            },
-            "value" : "pending",
+            "title" : "Zeitzone:",
+            "name" : "entity-timezone",
+            "options" : {},
+            "value" : "Europe/Berlin",
             "meta_box" : true,
             "roles_edit" : [
                 "administrator"
-            ],
+            ]
+        },
+        {
+            "type" : "text",
+            "title" : "Zeitzone Offset:",
+            "name" : "entity-timezone-bias",
+            "value" : "0",
+            "meta_box" : true,
             "roles_view" : [
-                "entity_delegate"
+                "administrator"
             ],
             "view" : {
                 "before" : "<em>",
@@ -79,14 +98,10 @@
         },
         {
             "type" : "none",
-            "title" : "<strong>Pick the next tariff</strong>",
+            "title" : "<strong>The next tariff</strong>",
             "name" : "entity-tariff-next",
-            "options" : {
-                "standardeintrag" : "Standardeintrag",
-                "premiumeintrag" : "Premiumeintrag",
-                "kostenloser_eintrag" : "Kostenloser Eintrag"
-            },
-            "value" : "kostenloser_eintrag",
+            "options" : {},
+            "value" : "",
             "meta_box" : true,
             "view" : {
                 "before" : "<em>",
@@ -97,23 +112,12 @@
             "type" : "none",
             "title" : "The payment status:",
             "name" : "entity-payment-status-next",
-            "options" : {
-                "pending" : "Pending",
-                "billed" : "Billed",
-                "payed" : "Payed"
-            },
-            "value" : "pending",
+            "placeholder" : "None",
+            "options" : {},
             "meta_box" : true,
             "roles_edit" : [
                 "administrator"
-            ],
-            "roles_view" : [
-                "entity_delegate"
-            ],
-            "view" : {
-                "before" : "<em>",
-                "after" : "</em>"
-            }
+            ]
         }
     ]
 }

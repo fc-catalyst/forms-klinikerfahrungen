@@ -3,24 +3,103 @@
 Modify the values before printing to inputs
 */
 
-FCP_Forms::tz_set(); // set utc timezone for all the time operations, in case the server has a different settings
+// variables
+//error_log( date( 'Y-m-d H:i:s ', mktime( 0, 0, 0, date( 'n' ), date( 'j' ), date( 'Y' ) ) ) . date_default_timezone_get() );
+/*
+    $zone = new DateTimeZone( 'Europe/Berlin' );
+    $zone1 = new DateTimeZone("Asia/Taipei");
+    //$zone2 = new DateTimeZone("Europe/Moskow");
+    //$zone3 = new DateTimeZone("Europe/Helsinki");
+    $offset = $zone->getOffset( new DateTime( 'now' ) ); // UTC
+    echo ' ' . $zone->getOffset( new DateTime( 'now', $zone1 ) );
+    //echo ' ' . $zone->getOffset( new DateTime( 'now', $zone2 ) );
+    //echo ' ' . $zone->getOffset( new DateTime( 'now', $zone3 ) );
+    
+    echo '<br>' . $offset;
+    // print utc, berlin, helsinki, moskow 
+    //https://www.php.net/manual/ru/class.datetimezone.php
+    //https://www.php.net/manual/ru/datetimezone.getoffset.php
+    
+    exit;
+//*/
+
+//https://wordpress.stackexchange.com/questions/237957/get-post-with-multiple-meta-keys-and-value
+
+global $wpdb; // AND entity-timezone =  AND ( `entity-tariff` != "kostenloser_eintrag" and is tariff )  AND `meta_value` < "'. time() + timezone*60*60 . '" CAST(Value AS UNSIGNED) Daylight Savings
+/*
+$to_update = $wpdb->get_results( '
+    SELECT `post_id`
+    FROM `'.$wpdb->postmeta.'` AS `meta1`
+    WHERE `meta_key` = "entity-tariff-till" AND `meta_value` < ' . time() . ' AND `meta_value` > 0
+    ORDER BY `post_id` ASC
+');
+//*/
+//*
+$to_update = $wpdb->get_results( '
+    SELECT `m1`.`post_id`, `m1`.`meta_value` AS `tariff`, `m2`.`meta_value` AS `till`
+    FROM `'.$wpdb->postmeta.'` AS `m1`
+    JOIN `'.$wpdb->postmeta.'` AS `m2`
+        ON ( `m1`.`post_id` = `m2`.`post_id` )
+    WHERE `m1`.`meta_key` = "entity-tariff" AND `m1`.`meta_value` != "kostenloser_eintrag" AND `m1`.`meta_value` != ""
+        AND `m2`.`meta_key` = "entity-tariff-till" AND `m2`.`meta_value` < ' . time() . ' AND `m2`.`meta_value` > 0
+    ORDER BY `post_id` ASC
+');
+//*/
+/*
+$args = array(
+    'post_type'  => ['clinic', 'doctor'],
+    'meta_query' => array(
+        array(
+            'key'     => 'entity-tariff',
+            'value'   => 'premiumeintrag',
+        ),
+        array(
+            'key'     => 'entity-tariff-till',
+            'compare' => 'NOT EXISTS',
+        ),
+    ),
+);
+$to_update = new WP_Query( $args );
+//*/
 
 /*
+SELECT SQL_CALC_FOUND_ROWS wpfcp_posts.ID FROM wpfcp_posts  INNER JOIN wpfcp_postmeta ON ( wpfcp_posts.ID = wpfcp_postmeta.post_id )  INNER JOIN wpfcp_postmeta AS mt1 ON ( wpfcp_posts.ID = mt1.post_id ) WHERE 1=1  AND ( 
+  ( wpfcp_postmeta.meta_key = 'entity-tariff' AND wpfcp_postmeta.meta_value = 'premiumeintrag' ) 
+  AND 
+  mt1.meta_key = 'entity-tariff-till'
+) AND wpfcp_posts.post_type IN ('clinic', 'doctor') AND (wpfcp_posts.post_status = 'publish' OR wpfcp_posts.post_status = 'dp-rewrite-republish' OR wpfcp_posts.post_status = 'future' OR wpfcp_posts.post_status = 'draft' OR wpfcp_posts.post_status = 'pending' OR wpfcp_posts.post_author = 2 AND wpfcp_posts.post_status = 'private') GROUP BY wpfcp_posts.ID ORDER BY wpfcp_posts.post_date DESC LIMIT 0, 12
+//*/
+
+$zone = new DateTimeZone( 'Europe/Berlin' );
+$time = time();//1632347713;//time();// + 60 * 60 * 24 * 30 * 6;
+$offset = $zone->getTransitions( $time, $time )[0]['offset']; // with Daylight Savings offset
+//$offset = $zone->getOffset( new DateTime( 'now' ) ); // with NO Daylight Savings offset
+//'entity-tariff-till-offset' = $offset / 360
+
 FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
     'type' => 'notice',
     'meta_box' => true,
     'before' => '<pre>',
     'after' => '</pre>',
-    'text' => "\n".
-        print_r( $outdated, true )
-    ."\n",
+    'text' => "\n"
+        . "\n"
+        . date( 'Y-m-d H:i:s ', $time )
+        . "\n"
+        . date( 'Y-m-d H:i:s ', $time + $offset )
+        . "\n"
+        . date( 'Y-m-d H:i:s', mktime( 0, 0, 0, date( 'n' ), date( 'j' ), date( 'Y' ) ) )
+        . "\n"
+        . date( 'Y-m-d H:i:s', mktime( 0, 0, 0, date( 'n' ), date( 'j' ), date( 'Y' ) ) + $offset )
+        . "\n"
+        . ( 1632347713 < time() + $offset )
+        . "\n\n"
+        .  print_r( $to_update, true ),
 ], 'before' );
-//*/
 
-$time = time(); // not used ha
-$time_local = $time + ( $values['entity-timezone-bias'] ? $values['entity-timezone-bias'] : 0 ); // the saved one
-$day = 60*60*24;
-$prolong_gap = $day*30;
+
+// ++flush the date on submit if tariff is free
+
+$prolong_gap = 60*60*24*14;
 
 $tariffs = (array) FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff', 'options' );
 $tariff_default = FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff', 'value' );
@@ -34,14 +113,14 @@ $tariff_paid = $values['entity-tariff'] !== $tariff_default;
 $admin_am = current_user_can( 'administrator' );
 
 $values['entity-tariff-till'] = $values['entity-tariff-till'] ? $values['entity-tariff-till'] : 0;
-$till_limit = $values['entity-tariff-till'] - $time_local;
+$time_gap = $values['entity-tariff-till'] - time();
 $tariff_till_view = date( get_option( 'date_format' ), $values['entity-tariff-till'] );
 
-if ( $till_limit < 0 ) { // outdated
+if ( $time_gap < 0 ) { // outdated
     $time_label = sprintf( __( 'Ended on %s', 'fcpfo' ), $tariff_till_view );
-} elseif ( $till_limit < $day ) { // today
+} elseif ( $time_gap < 60*60*24 ) { // today
     $time_label = __( 'Ends today', 'fcpfo' );
-} elseif ( $till_limit < $day*2 ) { // tomorrow
+} elseif ( $time_gap < 60*60*24*2 ) { // tomorrow
     $time_label = __( 'Tomorrow is the last day', 'fcpfo' );
 } else {
     $time_label = $tariff_till_view;
@@ -51,23 +130,22 @@ if ( $values['entity-tariff-till'] === 0 ) {
     $time_label = __( 'Not set', 'fcpfo' );
 }
 
-
 // prolong variables
 
 // the prolong is available to users 2 weeks before the current paid tariff ends
-$prolong_available = $tariff_paid && $till_limit > 0 && ( $till_limit < $prolong_gap || $admin_am );
+$prolong_available = $tariff_paid && $time_gap > 0 && ( $time_gap < $prolong_gap || $admin_am );
 
 
 if ( $prolong_available ) {
 
-    $time_label = $till_limit < $prolong_gap ? '<font color="#b32d2e">' . $time_label . '</font>' : '';
+    $time_label = $time_gap < $prolong_gap ? '<font color="#b32d2e">' . $time_label . '</font>' : '';
     
     $values['entity-tariff-next'] = $values['entity-tariff-next'] && $tariffs[ $values['entity-tariff-next'] ]
                                 ? $values['entity-tariff-next']
                                 : $tariff_default;
 
     $tariff_paid_next = $values['entity-tariff-next'] !== $tariff_default;
-    $tariff_next_start_label = date( get_option( 'date_format' ), $values['entity-tariff-till'] + $day );
+    $tariff_next_start_label = date( get_option( 'date_format' ), $values['entity-tariff-till'] + 60*60*24 );
 }
 
 
@@ -114,12 +192,12 @@ if ( !$values['entity-tariff-requested'] ) { // ++add reset conditions
 // tariff due date
 if ( $admin_am ) { // ++add reset conditions
 
-    $values['entity-tariff-till'] = $values['entity-tariff-till'] && $values['entity-tariff-till'] > $time_local
+    $values['entity-tariff-till'] = $values['entity-tariff-till'] && $values['entity-tariff-till'] > time()
         ? date( 'd.m.Y', $values['entity-tariff-till'] )
         : '';
 
     // date picker helping functions
-    $one_year_from_now_plus_one_day = date( 'd.m.Y', strtotime( '+1 year', $time_local + $day ) );
+    $one_year_from_now_plus_one_day = date( 'd.m.Y', strtotime( '+1 year', time() + 60*60*24 ) );
     FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-till', [
         'type' => 'notice',
         'text' => '<a href="#" id="one-year-ahead" style="margin-top:-12px">Set 1 year from now</a><script>
@@ -137,15 +215,6 @@ if ( !$admin_am && $tariff_paid && $values['entity-payment-status'] === 'payed' 
 }
 if ( !$admin_am && $values['entity-payment-status'] !== 'payed' ) { // hide payed till date
     FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-till', [], 'unset' );
-}
-
-
-// timezones
-if ( $admin_am ) {
-    $tzs = DateTimeZone::listIdentifiers( DateTimeZone::ALL );
-    $tzs = array_combine( $tzs, $tzs );
-    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-timezone', 'options', (object) $tzs );
-    FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-timezone-bias', [], 'unset' ); //++invent invisible fields
 }
 
 
@@ -196,7 +265,7 @@ if ( $prolong_available ) {
     if ( $admin_am ) {
         FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-next', [
             'type' => 'notice',
-            'text' => '<strong>The following fields are available to users '.( $prolong_gap / ($day) ).' days before a paid tariff ends.</strong>',
+            'text' => '<strong>The following fields are available to users '.( $prolong_gap / (60*60*24) ).' days before a paid tariff ends.</strong>',
             'meta_box' => true,
         ], 'before' );
     }
@@ -262,6 +331,3 @@ array_push( $this->s->fields, (object) [
     'meta_box' => true,
     'roles_view' => ['entity_delegate'],
 ]);
-
-
-FCP_Forms::tz_reset();

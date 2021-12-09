@@ -21,7 +21,8 @@ class FCP_Forms {
 	public static $dev = true,
                   $tmp_dir = 'fcp-forms-tmps',
                   $text_domain = 'fcpfo', // ++ delete or use
-                  $prefix = 'fcpf';
+                  $prefix = 'fcpf',
+                  $tz = ''; // timezone
                   
     private $forms = [],
             $form_tab = [];
@@ -523,10 +524,7 @@ class FCP_Forms {
         }
 
         include_once $this->self_path . 'classes/draw-fields.class.php';
-        $datalist = self::save_options();
-        foreach ( $datalist as $k => $v ) {
-            self::add_options( $json, $k, $v );
-        }
+
         $draw = new FCP_Forms__Draw( $json, $_POST, $_FILES );
         return $draw->result;
 
@@ -604,44 +602,7 @@ class FCP_Forms {
 
         return $json;
     }
-    
-    public static function add_options(&$json, $name, $options = [], $key = '', $value = '' ) {
 
-        if ( !$json->fields || !$name ) { return; }
-        
-        if ( $key !== '' && $value !== '' ) {
-            foreach ( $options as $k => $v ) {
-                $options[ $v['ID'] ] = $v['post_title'];
-                unset( $options[ $k ] );
-            }
-        }
-
-        foreach ( $json->fields as $v ) {
-            if ( $v->gtype ) {
-                self::add_options( $v, $name, $options, $key, $value );
-                continue;
-            }
-
-            if ( !$v->type || $v->name != $name ) { continue; }
-
-            foreach ( $options as $l => $w ) {
-                $v->options->{ $l } = $w;
-            }
-        }
-    }
-    
-    public static function save_options($key = '', $options = []) {
-        static $saved_options = [];
-        
-        if ( !$key ) {
-            return $saved_options;
-        }
-        if ( $key && empty( $options ) ) {
-            return $saved_options[ $key ];
-        }
-        
-        $saved_options[ $key ] = $options;
-    }
 
     // the following are used in different types of forms or fields
 
@@ -693,7 +654,7 @@ class FCP_Forms {
     }
     
     public static function role_allow($a = []) {
-        return !empty( array_intersect( self::roles_get(), $a ) );
+        return !empty( array_intersect( self::roles_get(), $a ? $a : [] ) );
     }
     private static function roles_get() {
         static $roles = [];
@@ -802,6 +763,21 @@ class FCP_Forms {
         
         return $fields;
 
+    }
+    
+    // timezones
+    public static function tz_set($tz = '') {
+        $tz = $tz ? $tz : 'UTC';
+        self::$tz = date_default_timezone_get(); // store for reset
+        if ( $tz !== self::$tz ) {
+            date_default_timezone_set( $tz );
+        }
+    }
+    public static function tz_reset() {
+        $tz = date_default_timezone_get();
+        if ( $tz !== self::$tz ) {
+            date_default_timezone_set( self::$tz );
+        }
     }
 
 }

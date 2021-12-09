@@ -24,7 +24,6 @@ $options = $wpdb->get_results( '
     ORDER BY `post_title` ASC
 ', ARRAY_A );
 
-FCP_Forms::add_options( $json, 'entity-billing', $options, 'ID', 'post_title' );
 //*/
 
 new FCP_Add_Meta_Boxes( $json, (object) [

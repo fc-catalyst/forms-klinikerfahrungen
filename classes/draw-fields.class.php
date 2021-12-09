@@ -595,18 +595,22 @@ class FCP_Forms__Draw {
     
     private function align_html_codes($c) {
 
-        // don't touch the textareas' content
-        $c = preg_replace_callback( '/(<textarea[^>]*>)((?:.|\n)*?)(<\/textarea>)/', function( $m ) { // ++add <pre>
-            return $m[1] . base64_encode( $m[2] ) . $m[3];
+        $init = $c; // store if a heavy preg throws an error ( can catch it with preg_last_error() )
+
+        // don't touch the textareas' & pres' content
+        $c = preg_replace_callback( '/(<(textarea|pre)[^>]*>)((?:.|\n)*?)(<\/\\2>)/', function( $m ) {
+            return $m[1] . base64_encode( $m[3] ) . $m[4];
         }, $c );
+        if ( $c === null ) { return $init; }
         
         $c = trim( $c );
         $c = preg_replace( '/\s+/', ' ', $c );
         $c = preg_replace( '/ </', "\n<", $c ); //++can list the block tags for this case //--inlines misses spaces :(
         
-        $c = preg_replace_callback( '/(<textarea[^>]*>)(.*?)(<\/textarea>)/', function( $m ) {
-            return $m[1] . base64_decode( $m[2] ) . $m[3];
+        $c = preg_replace_callback( '/(<(textarea|pre)[^>]*>)(.*?)(<\/\\2>)/', function( $m ) {
+            return $m[1] . base64_decode( $m[3] ) . $m[4];
         }, $c );
+        if ( $c === null ) { return $init; }
 
         return $c;
     }
