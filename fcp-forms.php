@@ -691,6 +691,7 @@ class FCP_Forms {
                 $f->{ $key } = $value;
                 return;
             }
+            // ++if is_array( $key ) - merge
 
             // delete
             if ( $unset && ( $value === $f->{ $key } || !$value ) ) {

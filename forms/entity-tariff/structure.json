@@ -91,10 +91,7 @@
             "roles_view" : [
                 ""
             ],
-            "view" : {
-                "before" : "<em>",
-                "after" : "</em>"
-            }
+            "Y_description" : "gotta invent the invisible fields to exist in structure, but not flush on save and manipulated only by back-end"
         },
         {
             "type" : "none",
