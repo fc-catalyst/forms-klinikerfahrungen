@@ -13,7 +13,8 @@ $time = time();
 $time_bias = $values['entity-timezone-bias'] ? $values['entity-timezone-bias'] : 0;
 $time_local = $time + $time_bias;
 $day = 60 * 60 * 24;
-$prolong_gap = $day * 30;
+$prolong_gap = $day * 14;
+$billed_flush_gap = $day * 30;
 $date_format = get_option( 'date_format' );
 
 // tariffs
@@ -25,11 +26,13 @@ $values['entity-tariff'] = $values['entity-tariff'] && $tariffs[ $values['entity
                          : $tariff_default;
 $values['entity-tariff-till'] = $values['entity-tariff-till'] ? $values['entity-tariff-till'] : 0;
                          
-$tariff_paid = $values['entity-tariff'] !== $tariff_default;
+$tariff_paid = $values['entity-tariff'] !== $tariff_default; // on page && payed status is added
 $tariff_ends_in = $values['entity-tariff-till'] - $time_local;
 
+$tariff_paid_active = $tariff_paid && $tariff_ends_in > 0 && $values['entity-payment-status'] === 'payed';
+
 // prolong
-$prolong_allowed = $tariff_paid && $tariff_ends_in > 0 && $tariff_ends_in < $prolong_gap || $admin_am;
+$prolong_allowed = $tariff_paid && $tariff_paid_active && $tariff_ends_in < $prolong_gap || $admin_am;
 if ( $prolong_allowed ) {
 
     $values['entity-tariff-next'] = $values['entity-tariff-next'] && $tariffs[ $values['entity-tariff-next'] ]

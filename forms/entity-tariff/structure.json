@@ -25,10 +25,22 @@
             }
         },
         {
+            "type" : "text",
+            "name" : "entity-tariff-requested",
+            "meta_box" : true,
+            "roles_view" : [
+                "administrator"
+            ],
+            "view" : {
+                "before" : "<span>Requested on: <em>",
+                "after" : "</em></span>"
+            }
+        },
+        {
             "type" : "select",
-            "title" : "The payment status:",
+            "placeholder" : "The payment status:",
             "name" : "entity-payment-status",
-            "placeholder" : "None",
+            "x_placeholder" : "None",
             "options" : {
                 "pending" : "Pending",
                 "billed" : "Billed",
@@ -42,15 +54,14 @@
         },
         {
             "type" : "text",
-            "title" : "The Tariff is requested on:",
-            "name" : "entity-tariff-requested",
+            "name" : "entity-tariff-billed",
             "meta_box" : true,
             "roles_view" : [
                 "administrator"
             ],
             "view" : {
-                "before" : "<em>",
-                "after" : "</em>"
+                "before" : "<span>Billed on: <em>",
+                "after" : "</em></span>"
             }
         },
         {
@@ -107,9 +118,9 @@
         },
         {
             "type" : "none",
-            "title" : "The payment status:",
+            "placeholder" : "The payment status:",
             "name" : "entity-payment-status-next",
-            "placeholder" : "None",
+            "x_placeholder" : "None",
             "options" : {},
             "meta_box" : true,
             "roles_edit" : [

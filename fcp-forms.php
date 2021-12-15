@@ -667,7 +667,7 @@ class FCP_Forms {
     // json manipulation
     
     public static function json_attr_by_name(&$fields, $name, $key, $value = '', $unset = false) {
-
+        // ++ add an option to add $value to existing one
         if ( !is_array( $fields ) || !$name || !$key ) { return; }
 
         foreach ( $fields as $k => &$f ) {
