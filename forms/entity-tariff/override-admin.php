@@ -5,7 +5,7 @@ Modify the values before printing to inputs
 
 FCP_Forms::tz_set(); // set utc timezone for all the time operations, in case the server has a different settings
 
-/*
+//*
 
 function fcp_flush_tariff_by_id($p) { // ++add the timezone here and dont exclude the free ones if are
     if ( !$p ) { return; }
@@ -18,22 +18,30 @@ function fcp_flush_tariff_by_id($p) { // ++add the timezone here and dont exclud
     }
     $p->ID = (int) $p->ID; // intval()
     
-    $a2q = function($arr = null) { // ++send to a separate class for the form?
+    $a2q_where = function($arr = null) { // ++send to a separate class for the form?
         static $arr_saved = [];
         if ( !$arr ) { return $arr_saved; }
         $arr_saved = $arr;
-        if ( !$arr[0] ) return '1=1'; // pick all fields if no elements
+        if ( !$arr[0] ) { return '1=1'; } // pick all fields if no elements
         return '`meta_key` = %s' . str_repeat( ' OR `meta_key` = %s', count( $arr ) - 1 );
     };
+    $a2q_insert = function($arr = null) use ($p) {
+        static $arr_saved = [];
+        if ( !$arr ) { return $arr_saved; }
+        $arr_saved = [];
+        if ( empty( $arr ) ) { return; }
+        foreach ( $arr as $k => $v ) { array_push( $arr_saved, $p->ID, $k, $v ); }
+        return '( %s, %s, %s )' . str_repeat( ', ( %s, %s, %s )', count( $arr ) - 1 );
+    }
     
     // get more values if are not provided, else - trust and do what has to be done
     if ( !isset( $p->till ) || !isset( $p->tariff_next ) || !isset( $p->status_next ) ) {
         global $wpdb;
         
-        $q = $a2q( ['entity-tariff', 'entity-tariff-till', 'entity-timezone-bias', 'entity-tariff-next', 'entity-payment-status-next'] ); //++remove unused
+        $q = $a2q_where( ['entity-tariff', 'entity-tariff-till', 'entity-timezone', 'entity-timezone-bias', 'entity-tariff-next', 'entity-payment-status-next'] ); //++remove unused
         
         $query = 'SELECT `meta_key`, `meta_value` FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( '.$q.' )';
-        $query = $wpdb->prepare( $query, array_merge( [ $p->ID ], $a2q() ) );
+        $query = $wpdb->prepare( $query, array_merge( [ $p->ID ], $a2q_where() ) );
         if ( $query === null ) { return; }
         
         $results = $wpdb->get_results( $query );
@@ -47,182 +55,54 @@ function fcp_flush_tariff_by_id($p) { // ++add the timezone here and dont exclud
         $p->till = $p->{ 'entity-tariff-till' };
         $p->tariff_next = $p->{ 'entity-tariff-next' };
         $p->status_next = $p->{ 'entity-payment-status-next' };
+        $p->timezone_name = $p->{ 'entity-timezone' };
         //++unset not used
         
     }
-    return;
 
     // remove outdated meta
-    $q = $a2q( ['entity-tariff', 'entity-payment-status', 'entity-tariff-till', 'entity-tariff-next', 'entity-payment-status-next'] );
+    $q = $a2q_where( ['entity-tariff', 'entity-payment-status', 'entity-tariff-till', 'entity-timezone-bias', 'entity-tariff-next', 'entity-payment-status-next'] );
     $query = 'DELETE FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( '.$q.' )';
-    if ( $query = $wpdb->prepare( $query, array_merge( [ $p->ID ], $a2q() ) ) ) { $wpdb->query( $query ); }
+    //if ( $query = $wpdb->prepare( $query, array_merge( [ $p->ID ], $a2q_where() ) ) ) { $wpdb->query( $query ); }
     
-    // insert new data - do the insert data
-    // entity-tariff if is next
-    // status if is next
-    // entity-tariff-till = till++
-    // ??can update timezone bias, but Y, but would be correct, if previous period was not 1 year - maybe pick it form the query!!
-    // ++ find and avoid situation, where no tarif is set - where can it be?
-    $wpdb->query( '
-        INSERT INTO `'.$wpdb->postmeta.'` ( `post_id`, `meta_key`, `meta_value` ) VALUES ( "'.$v->ID.'", "entity-tariff-requested", "'.( $v->till + 1 ).'" )
-    ');
-/*    
-    if ( $v->tariff_next ) {
-        $wpdb->query( '
-            DELETE FROM `'.$wpdb->postmeta.'` WHERE `meta_key` = "entity-tariff" AND `post_id` = "'.$v->ID.'"
-        ');
-        $wpdb->query( '
-            UPDATE `'.$wpdb->postmeta.'` SET `meta_key` = "entity-tariff" WHERE `meta_key` = "entity-tariff-next" AND `post_id` = "'.$v->ID.'"
-        ');
+    // prepare the updated data to insert
+    $insert = [];
+    if ( $p->tariff_next ) {
+        $insert['entity-tariff'] = $p->tariff_next;
     }
-    if ( $v->status_next ) {
-        $wpdb->query( '
-            DELETE FROM `'.$wpdb->postmeta.'` WHERE `meta_key` = "entity-payment-status" AND `post_id` = "'.$v->ID.'"
-        ');
-        $wpdb->query( '
-            UPDATE `'.$wpdb->postmeta.'` SET `meta_key` = "entity-payment-status" WHERE `meta_key` = "entity-payment-status-next" AND `post_id` = "'.$v->ID.'"
-        ');
+    if ( $p->status_next ) {
+        $insert['entity-payment-status'] = $p->status_next;
+    }
+    if ( $p->tariff_next ) {
+        $insert['entity-tariff-till'] = strtotime( '+1 year', $p->till );
+        $zone = new DateTimeZone( $p->timezone_name );
+        $insert['entity-timezone-bias'] = $zone->getTransitions( $p->till, $p->till )[0]['offset'];
+        unset( $zone );
     }
     
-    // replace the tariff-requested date
-    $wpdb->query( '
-        DELETE FROM `'.$wpdb->postmeta.'` WHERE `meta_key` = "entity-tariff-requested" AND `post_id` = "'.$v->ID.'"
-    ');
-    $wpdb->query( '
-        INSERT INTO `'.$wpdb->postmeta.'` ( `post_id`, `meta_key`, `meta_value` ) VALUES ( "'.$v->ID.'", "entity-tariff-requested", "'.( $v->till + 1 ).'" )
-    ');
-
-    // replace the tariff-till date
-    $wpdb->query( '
-        DELETE FROM `'.$wpdb->postmeta.'` WHERE `meta_key` = "entity-tariff-till" AND `post_id` = "'.$v->ID.'"
-    ');
-    $wpdb->query( '
-        INSERT INTO `'.$wpdb->postmeta.'` ( `post_id`, `meta_key`, `meta_value` ) VALUES ( "'.$v->ID.'", "entity-tariff-till", "'.strtotime( '+1 year', $v->till ).'" )
-    ');
-
-
-    return print_r( $p, true );
-    // ++ return new $values, that were changed by the function
+    // insert the updated meta
+    if ( !empty( $insert ) ) {
+        $query = 'INSERT INTO `'.$wpdb->postmeta.'` ( `post_id`, `meta_key`, `meta_value` ) VALUES '.$a2q_insert( $insert );
+        //if ( $query = $wpdb->prepare( $query, $a2q_insert() ) ) { $wpdb->query( $query ); }
+    }
+    
+    // ++ return new $values, that were changed by the function, like before the override
+/*
+    return [
+        'entity-tariff',
+        'entity-payment-status',
+        'entity-tariff-till',
+        'entity-timezone-bias',
+        'entity-tariff-next',
+        'entity-payment-status-next',
+    ];
+//*/
 }
+
 // ++function to flush the billed status, like every day?
+
 // ++function to flush the requested date
 
-SELECT posts.ID,
-    mt0.meta_value AS till, #entity-tariff-till
-    IF ( mt4.meta_key = "entity-tariff-next", mt4.meta_value, NULL ) AS tariff_next,
-    IF ( mt6.meta_key = "entity-payment-status-next", mt6.meta_value, NULL ) AS status_next,
-    IF ( mt8.meta_key = "entity-timezone", mt8.meta_value, NULL ) AS timezone
-  FROM `wpfcp_posts` AS posts
-  LEFT JOIN `wpfcp_postmeta` AS mt0 ON ( posts.ID = mt0.post_id )
-  LEFT JOIN `wpfcp_postmeta` AS mt1 ON ( posts.ID = mt1.post_id )
-  LEFT JOIN `wpfcp_postmeta` AS mt2 ON ( posts.ID = mt2.post_id )
-  LEFT JOIN `wpfcp_postmeta` AS mt3 ON ( posts.ID = mt3.post_id AND mt3.meta_key = "entity-timezone-bias" )
-  LEFT JOIN `wpfcp_postmeta` AS mt4 ON ( posts.ID = mt4.post_id )
-  LEFT JOIN `wpfcp_postmeta` AS mt5 ON ( posts.ID = mt5.post_id AND mt5.meta_key = "entity-tariff-next" )
-  LEFT JOIN `wpfcp_postmeta` AS mt6 ON ( posts.ID = mt6.post_id )
-  LEFT JOIN `wpfcp_postmeta` AS mt7 ON ( posts.ID = mt7.post_id AND mt7.meta_key = "entity-payment-status-next" )
-  LEFT JOIN `wpfcp_postmeta` AS mt8 ON ( posts.ID = mt8.post_id )
-  LEFT JOIN `wpfcp_postmeta` AS mt9 ON ( posts.ID = mt9.post_id AND mt9.meta_key = "entity-timezone" )
-WHERE 1 = 1 AND (
-  ( mt0.meta_key = "entity-tariff-till" AND mt1.meta_value != "0" )
-  AND
-  ( mt1.meta_key = "entity-tariff-till" AND CAST( IF ( mt2.meta_key = "entity-timezone-bias", mt0.meta_value - mt2.meta_value, mt0.meta_value ) AS SIGNED ) < 1639572503 )
-  AND
-  ( mt2.meta_key = "entity-timezone-bias" OR mt3.post_id IS NULL )
-  AND
-  ( mt4.meta_key = "entity-tariff-next" OR mt5.post_id IS NULL )
-  AND
-  ( mt6.meta_key = "entity-payment-status-next" OR mt7.post_id IS NULL )
-  AND
-  ( mt8.meta_key = "entity-timezone" OR mt9.post_id IS NULL )
-) AND posts.post_type IN ("clinic", "doctor") GROUP BY posts.ID
-
-//*/
-/*
-    global $wpdb;
-    // ID, till_local, tariff_next, status_next
-    $outdated = '
-SELECT posts.ID,
-    mt0.meta_value AS till,
-    IF ( mt4.meta_key = "entity-tariff-next", mt4.meta_value, NULL ) AS tariff_next,
-    IF ( mt6.meta_key = "entity-payment-status-next", mt6.meta_value, NULL ) AS status_next
-  FROM `'.$wpdb->posts.'` AS posts
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt0 ON ( posts.ID = mt0.post_id )
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt1 ON ( posts.ID = mt1.post_id )
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt2 ON ( posts.ID = mt2.post_id )
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt3 ON ( posts.ID = mt3.post_id AND mt3.meta_key = "entity-timezone-bias" )
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt4 ON ( posts.ID = mt4.post_id )
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt5 ON ( posts.ID = mt5.post_id AND mt5.meta_key = "entity-tariff-next" )
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt6 ON ( posts.ID = mt6.post_id )
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt7 ON ( posts.ID = mt7.post_id AND mt7.meta_key = "entity-payment-status-next" )
-WHERE 1 = 1 AND (
-  ( mt0.meta_key = "entity-tariff-till" AND mt1.meta_value != "0" ) #can be removed? as the whole row is removed on 0
-  AND
-  ( mt1.meta_key = "entity-tariff-till" AND CAST( IF ( mt2.meta_key = "entity-timezone-bias", mt0.meta_value - mt2.meta_value, mt0.meta_value ) AS SIGNED ) < '.time().' )
-  AND
-  ( mt2.meta_key = "entity-timezone-bias" OR mt3.post_id IS NULL )
-  AND
-  ( mt4.meta_key = "entity-tariff-next" OR mt5.post_id IS NULL )
-  AND
-  ( mt6.meta_key = "entity-payment-status-next" OR mt7.post_id IS NULL )
-) AND posts.post_type IN ("clinic", "doctor") GROUP BY posts.ID
-    ';
-//*/
-
-    $fields = [
-        'tariff_next' => 'entity-tariff-next',
-        'status_next' => 'entity-payment-status-next',
-        'timezone_name' => 'entity-timezone',
-    ];
-    
-    $get_meta = function( $field, $alias ) {
-        global $wpdb;
-        static $ind = -1;
-        $ind++;
-        return '
-'.( $ind ? 'JOIN (' : 'FROM (' ).'
-    SELECT
-        posts.ID,
-        '.( $ind ? '' : 'mt0.meta_value AS till, #entity-tariff-till' ).'
-        IF ( mt4.meta_key = "'.$field.'", mt4.meta_value, NULL ) AS `'.$alias.'`
-    FROM `'.$wpdb->posts.'` AS posts
-        LEFT JOIN `'.$wpdb->postmeta.'` AS mt0 ON ( posts.ID = mt0.post_id )
-        LEFT JOIN `'.$wpdb->postmeta.'` AS mt1 ON ( posts.ID = mt1.post_id )
-        LEFT JOIN `'.$wpdb->postmeta.'` AS mt2 ON ( posts.ID = mt2.post_id AND mt2.meta_key = "entity-timezone-bias" )
-        LEFT JOIN `'.$wpdb->postmeta.'` AS mt3 ON ( posts.ID = mt3.post_id )
-        LEFT JOIN `'.$wpdb->postmeta.'` AS mt4 ON ( posts.ID = mt4.post_id AND mt4.meta_key = "'.$field.'" )
-    WHERE
-        1 = 1
-        AND (
-            ( mt0.meta_key = "entity-tariff-till" AND CAST( IF ( mt2.meta_key = "entity-timezone-bias", mt0.meta_value - mt2.meta_value, mt0.meta_value ) AS SIGNED ) < @till_time )
-            AND
-            ( mt1.meta_key = "entity-timezone-bias" OR mt2.post_id IS NULL )
-            AND
-            ( mt3.meta_key = "'.$field.'" OR mt4.post_id IS NULL )
-        )
-        AND posts.post_type IN ("clinic", "doctor")
-    GROUP BY posts.ID
-) AS sq'.$ind.'
-        ';
-    };
-
-    $get_metas = function( $fields, $get_meta ) {
-        $result = '';
-        foreach( $fields as $alias => $field ) {
-            $result .= $get_meta( $field, $alias );
-        }
-        return $result;
-    };
-
-    $outdated = '
-SET @till_time = ' . time() . ';
-
-SELECT sq0.ID, till, ' . implode( ', ', array_keys( $fields ) ) . '
-
-' . $get_metas( $fields, $get_meta ) . '
-
-ON sq0.ID = sq' . implode( '.ID AND sq0.ID = sq', array_slice( array_keys( array_values( $fields ) ), 1 ) ) . '.ID
-    ';
 
 FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
     'type' => 'notice',
