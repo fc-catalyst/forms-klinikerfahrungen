@@ -7,7 +7,7 @@ FCP_Forms::tz_set(); // set utc timezone for all the time operations, in case th
 
 /*
 
-function fcp_flush_tariff_by_id($p) {
+function fcp_flush_tariff_by_id($p) { // ++add the timezone here and dont exclude the free ones if are
     if ( !$p ) { return; }
     if ( is_array( $p ) ) { $p = (object) $p; }
     if ( is_object( $p ) && !$p->ID ) { return; }
@@ -107,13 +107,130 @@ function fcp_flush_tariff_by_id($p) {
 // ++function to flush the billed status, like every day?
 // ++function to flush the requested date
 
+SELECT posts.ID,
+    mt0.meta_value AS till, #entity-tariff-till
+    IF ( mt4.meta_key = "entity-tariff-next", mt4.meta_value, NULL ) AS tariff_next,
+    IF ( mt6.meta_key = "entity-payment-status-next", mt6.meta_value, NULL ) AS status_next,
+    IF ( mt8.meta_key = "entity-timezone", mt8.meta_value, NULL ) AS timezone
+  FROM `wpfcp_posts` AS posts
+  LEFT JOIN `wpfcp_postmeta` AS mt0 ON ( posts.ID = mt0.post_id )
+  LEFT JOIN `wpfcp_postmeta` AS mt1 ON ( posts.ID = mt1.post_id )
+  LEFT JOIN `wpfcp_postmeta` AS mt2 ON ( posts.ID = mt2.post_id )
+  LEFT JOIN `wpfcp_postmeta` AS mt3 ON ( posts.ID = mt3.post_id AND mt3.meta_key = "entity-timezone-bias" )
+  LEFT JOIN `wpfcp_postmeta` AS mt4 ON ( posts.ID = mt4.post_id )
+  LEFT JOIN `wpfcp_postmeta` AS mt5 ON ( posts.ID = mt5.post_id AND mt5.meta_key = "entity-tariff-next" )
+  LEFT JOIN `wpfcp_postmeta` AS mt6 ON ( posts.ID = mt6.post_id )
+  LEFT JOIN `wpfcp_postmeta` AS mt7 ON ( posts.ID = mt7.post_id AND mt7.meta_key = "entity-payment-status-next" )
+  LEFT JOIN `wpfcp_postmeta` AS mt8 ON ( posts.ID = mt8.post_id )
+  LEFT JOIN `wpfcp_postmeta` AS mt9 ON ( posts.ID = mt9.post_id AND mt9.meta_key = "entity-timezone" )
+WHERE 1 = 1 AND (
+  ( mt0.meta_key = "entity-tariff-till" AND mt1.meta_value != "0" )
+  AND
+  ( mt1.meta_key = "entity-tariff-till" AND CAST( IF ( mt2.meta_key = "entity-timezone-bias", mt0.meta_value - mt2.meta_value, mt0.meta_value ) AS SIGNED ) < 1639572503 )
+  AND
+  ( mt2.meta_key = "entity-timezone-bias" OR mt3.post_id IS NULL )
+  AND
+  ( mt4.meta_key = "entity-tariff-next" OR mt5.post_id IS NULL )
+  AND
+  ( mt6.meta_key = "entity-payment-status-next" OR mt7.post_id IS NULL )
+  AND
+  ( mt8.meta_key = "entity-timezone" OR mt9.post_id IS NULL )
+) AND posts.post_type IN ("clinic", "doctor") GROUP BY posts.ID
+
+//*/
+/*
+    global $wpdb;
+    // ID, till_local, tariff_next, status_next
+    $outdated = '
+SELECT posts.ID,
+    mt0.meta_value AS till,
+    IF ( mt4.meta_key = "entity-tariff-next", mt4.meta_value, NULL ) AS tariff_next,
+    IF ( mt6.meta_key = "entity-payment-status-next", mt6.meta_value, NULL ) AS status_next
+  FROM `'.$wpdb->posts.'` AS posts
+  LEFT JOIN `'.$wpdb->postmeta.'` AS mt0 ON ( posts.ID = mt0.post_id )
+  LEFT JOIN `'.$wpdb->postmeta.'` AS mt1 ON ( posts.ID = mt1.post_id )
+  LEFT JOIN `'.$wpdb->postmeta.'` AS mt2 ON ( posts.ID = mt2.post_id )
+  LEFT JOIN `'.$wpdb->postmeta.'` AS mt3 ON ( posts.ID = mt3.post_id AND mt3.meta_key = "entity-timezone-bias" )
+  LEFT JOIN `'.$wpdb->postmeta.'` AS mt4 ON ( posts.ID = mt4.post_id )
+  LEFT JOIN `'.$wpdb->postmeta.'` AS mt5 ON ( posts.ID = mt5.post_id AND mt5.meta_key = "entity-tariff-next" )
+  LEFT JOIN `'.$wpdb->postmeta.'` AS mt6 ON ( posts.ID = mt6.post_id )
+  LEFT JOIN `'.$wpdb->postmeta.'` AS mt7 ON ( posts.ID = mt7.post_id AND mt7.meta_key = "entity-payment-status-next" )
+WHERE 1 = 1 AND (
+  ( mt0.meta_key = "entity-tariff-till" AND mt1.meta_value != "0" ) #can be removed? as the whole row is removed on 0
+  AND
+  ( mt1.meta_key = "entity-tariff-till" AND CAST( IF ( mt2.meta_key = "entity-timezone-bias", mt0.meta_value - mt2.meta_value, mt0.meta_value ) AS SIGNED ) < '.time().' )
+  AND
+  ( mt2.meta_key = "entity-timezone-bias" OR mt3.post_id IS NULL )
+  AND
+  ( mt4.meta_key = "entity-tariff-next" OR mt5.post_id IS NULL )
+  AND
+  ( mt6.meta_key = "entity-payment-status-next" OR mt7.post_id IS NULL )
+) AND posts.post_type IN ("clinic", "doctor") GROUP BY posts.ID
+    ';
+//*/
+
+    $fields = [
+        'tariff_next' => 'entity-tariff-next',
+        'status_next' => 'entity-payment-status-next',
+        'timezone_name' => 'entity-timezone',
+    ];
+    
+    $get_meta = function( $field, $alias ) {
+        global $wpdb;
+        static $ind = -1;
+        $ind++;
+        return '
+'.( $ind ? 'JOIN (' : 'FROM (' ).'
+    SELECT
+        posts.ID,
+        '.( $ind ? '' : 'mt0.meta_value AS till, #entity-tariff-till' ).'
+        IF ( mt4.meta_key = "'.$field.'", mt4.meta_value, NULL ) AS `'.$alias.'`
+    FROM `'.$wpdb->posts.'` AS posts
+        LEFT JOIN `'.$wpdb->postmeta.'` AS mt0 ON ( posts.ID = mt0.post_id )
+        LEFT JOIN `'.$wpdb->postmeta.'` AS mt1 ON ( posts.ID = mt1.post_id )
+        LEFT JOIN `'.$wpdb->postmeta.'` AS mt2 ON ( posts.ID = mt2.post_id AND mt2.meta_key = "entity-timezone-bias" )
+        LEFT JOIN `'.$wpdb->postmeta.'` AS mt3 ON ( posts.ID = mt3.post_id )
+        LEFT JOIN `'.$wpdb->postmeta.'` AS mt4 ON ( posts.ID = mt4.post_id AND mt4.meta_key = "'.$field.'" )
+    WHERE
+        1 = 1
+        AND (
+            ( mt0.meta_key = "entity-tariff-till" AND CAST( IF ( mt2.meta_key = "entity-timezone-bias", mt0.meta_value - mt2.meta_value, mt0.meta_value ) AS SIGNED ) < @till_time )
+            AND
+            ( mt1.meta_key = "entity-timezone-bias" OR mt2.post_id IS NULL )
+            AND
+            ( mt3.meta_key = "'.$field.'" OR mt4.post_id IS NULL )
+        )
+        AND posts.post_type IN ("clinic", "doctor")
+    GROUP BY posts.ID
+) AS sq'.$ind.'
+        ';
+    };
+
+    $get_metas = function( $fields, $get_meta ) {
+        $result = '';
+        foreach( $fields as $alias => $field ) {
+            $result .= $get_meta( $field, $alias );
+        }
+        return $result;
+    };
+
+    $outdated = '
+SET @till_time = ' . time() . ';
+
+SELECT sq0.ID, till, ' . implode( ', ', array_keys( $fields ) ) . '
+
+' . $get_metas( $fields, $get_meta ) . '
+
+ON sq0.ID = sq' . implode( '.ID AND sq0.ID = sq', array_slice( array_keys( array_values( $fields ) ), 1 ) ) . '.ID
+    ';
+
 FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
     'type' => 'notice',
     'meta_box' => true,
     'before' => '<pre>',
     'after' => '</pre>',
     'text' => "\n".
-        fcp_flush_tariff_by_id( $_GET['post'] )
+        $outdated//print_r( $outdated->request, true )//fcp_flush_tariff_by_id( $_GET['post'] )
     ."\n",
 ], 'before' );
 //*/
@@ -248,7 +365,7 @@ if ( $admin_am ) {
         ], 'before' );
     }
     
-    // a little simplifying the interface
+    // a minor simplifying the interface
     FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status', 'title', '', true );
     FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status-next', 'title', '', true );
 }

@@ -68,36 +68,61 @@ register_deactivation_hook( $this->self_path_file, function() {
 function fcp_forms_entity_tariff_scheduled() {
     FCP_Forms::tz_set();
 
-    // select the outdated entities to flush or prolong
-    global $wpdb;
-    // ID, till_local, tariff_next, status_next
-    $outdated = $wpdb->get_results( '
-SELECT posts.ID,
-    mt0.meta_value AS till,
-    IF ( mt4.meta_key = "entity-tariff-next", mt4.meta_value, NULL ) AS tariff_next,
-    IF ( mt6.meta_key = "entity-payment-status-next", mt6.meta_value, NULL ) AS status_next
-  FROM `'.$wpdb->posts.'` AS posts
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt0 ON ( posts.ID = mt0.post_id )
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt1 ON ( posts.ID = mt1.post_id )
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt2 ON ( posts.ID = mt2.post_id )
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt3 ON ( posts.ID = mt3.post_id AND mt3.meta_key = "entity-tariff-till-bias" )
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt4 ON ( posts.ID = mt4.post_id )
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt5 ON ( posts.ID = mt5.post_id AND mt5.meta_key = "entity-tariff-next" )
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt6 ON ( posts.ID = mt6.post_id )
-  LEFT JOIN `'.$wpdb->postmeta.'` AS mt7 ON ( posts.ID = mt7.post_id AND mt7.meta_key = "entity-payment-status-next" )
-WHERE 1 = 1 AND (
-  ( mt0.meta_key = "entity-tariff-till" AND mt1.meta_value != "0" ) #can be removed? as the whole row is removed on 0
-  AND
-  ( mt1.meta_key = "entity-tariff-till" AND CAST( IF ( mt2.meta_key = "entity-tariff-till-bias", mt0.meta_value - mt2.meta_value, mt0.meta_value ) AS SIGNED ) < '.time().' )
-  AND
-  ( mt2.meta_key = "entity-tariff-till-bias" OR mt3.post_id IS NULL )
-  AND
-  ( mt4.meta_key = "entity-tariff-next" OR mt5.post_id IS NULL )
-  AND
-  ( mt6.meta_key = "entity-payment-status-next" OR mt7.post_id IS NULL )
-) AND posts.post_type IN ("clinic", "doctor") GROUP BY posts.ID
-    ');
+    $fields = [
+        'tariff_next' => 'entity-tariff-next',
+        'status_next' => 'entity-payment-status-next',
+        'timezone_name' => 'entity-timezone',
+    ];
     
+    $get_meta = function( $field, $alias ) {
+        global $wpdb;
+        static $ind = -1;
+        $ind++;
+        return '
+'.( $ind ? 'JOIN (' : 'FROM (' ).'
+    SELECT
+        posts.ID,
+        '.( $ind ? '' : 'mt0.meta_value AS till, #entity-tariff-till' ).'
+        IF ( mt4.meta_key = "'.$field.'", mt4.meta_value, NULL ) AS `'.$alias.'`
+    FROM `'.$wpdb->posts.'` AS posts
+        LEFT JOIN `'.$wpdb->postmeta.'` AS mt0 ON ( posts.ID = mt0.post_id )
+        LEFT JOIN `'.$wpdb->postmeta.'` AS mt1 ON ( posts.ID = mt1.post_id )
+        LEFT JOIN `'.$wpdb->postmeta.'` AS mt2 ON ( posts.ID = mt2.post_id AND mt2.meta_key = "entity-timezone-bias" )
+        LEFT JOIN `'.$wpdb->postmeta.'` AS mt3 ON ( posts.ID = mt3.post_id )
+        LEFT JOIN `'.$wpdb->postmeta.'` AS mt4 ON ( posts.ID = mt4.post_id AND mt4.meta_key = "'.$field.'" )
+    WHERE
+        1 = 1
+        AND (
+            ( mt0.meta_key = "entity-tariff-till" AND CAST( IF ( mt2.meta_key = "entity-timezone-bias", mt0.meta_value - mt2.meta_value, mt0.meta_value ) AS SIGNED ) < @till_time )
+            AND
+            ( mt1.meta_key = "entity-timezone-bias" OR mt2.post_id IS NULL )
+            AND
+            ( mt3.meta_key = "'.$field.'" OR mt4.post_id IS NULL )
+        )
+        AND posts.post_type IN ("clinic", "doctor")
+    GROUP BY posts.ID
+) AS sq'.$ind.'
+        ';
+    };
+
+    $get_metas = function( $fields, $get_meta ) {
+        $result = '';
+        foreach( $fields as $alias => $field ) {
+            $result .= $get_meta( $field, $alias );
+        }
+        return $result;
+    };
+
+
+    global $wpdb;
+    $outdated = $wpdb->get_results( '
+SET @till_time = ' . time() . ';
+SELECT sq0.ID, till, ' . implode( ', ', array_keys( $fields ) ) . '
+' . $get_metas( $fields, $get_meta ) . '
+ON sq0.ID = sq' . implode( '.ID AND sq0.ID = sq', array_slice( array_keys( array_values( $fields ) ), 1 ) ) . '.ID
+    ');
+
+/*
     foreach ( $outdated as $v ) { //JUST RENAME THE FIELDS NAMES - META_KEY!!! and check the replace syntax
 
         // ++ can replace with 1 delete and 1 insert queries!!!
@@ -150,7 +175,7 @@ WHERE 1 = 1 AND (
     foreach ( $notpayed as $v ) {
         
     }
-    
+//*/
     FCP_Forms::tz_reset();
 }
 
