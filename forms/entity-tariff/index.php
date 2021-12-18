@@ -175,7 +175,7 @@ function fcp_flush_dates_by_id($id, $check = false, &$values = []) {
     }
     
     $query = 'DELETE FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( `meta_key` = %s OR `meta_key` = %s )';
-    if ( $query = $wpdb->prepare( $query, $id, 'entity-tariff-requested', 'entity-tariff-billed' ) {
+    if ( $query = $wpdb->prepare( $query, $id, 'entity-tariff-requested', 'entity-tariff-billed' ) ) {
         $wpdb->query( $query );
         $values['entity-tariff-requested'] = 0;
         $values['entity-tariff-billed'] = 0;
