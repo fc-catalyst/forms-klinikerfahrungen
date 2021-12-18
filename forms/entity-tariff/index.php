@@ -55,17 +55,19 @@ add_action( 'admin_footer', function() {
 
 // schedule for clearing and prolonging tariffs
 register_activation_hook( $this->self_path_file, function() {
-    wp_clear_scheduled_hook( 'fcp_forms_entity_tariff_scheduled' );
+    wp_clear_scheduled_hook( 'fcp_forms_entity_tariff_prolong' );
     $day_start = mktime( 0, 0, 0 );
-    // hourly because of timezones, not counting not standard 45 and 30 min gaps, though, for later, maybe
-    wp_schedule_event( $day_start, 'hourly', 'fcp_forms_entity_tariff_scheduled' );
+    // hourly because of timezones; not counting not standard 45 and 30 min gaps, though, for later, maybe
+    wp_schedule_event( $day_start, 'hourly', 'fcp_forms_entity_tariff_prolong' );
+    wp_schedule_event( $day_start, 'daily', 'fcp_forms_entity_tariff_clean' );
 });
 
 register_deactivation_hook( $this->self_path_file, function() {
-    wp_clear_scheduled_hook( 'fcp_forms_entity_tariff_scheduled' );
+    wp_clear_scheduled_hook( 'fcp_forms_entity_tariff_prolong' );
+    wp_clear_scheduled_hook( 'fcp_forms_entity_tariff_clean' );
 });
 
-function fcp_forms_entity_tariff_scheduled() {
+function fcp_forms_entity_tariff_prolong() {
     FCP_Forms::tz_set();
 
     $fields = [
@@ -122,61 +124,153 @@ SELECT sq0.ID, till, ' . implode( ', ', array_keys( $fields ) ) . '
 ON sq0.ID = sq' . implode( '.ID AND sq0.ID = sq', array_slice( array_keys( array_values( $fields ) ), 1 ) ) . '.ID
     ');
 
-/*
-    foreach ( $outdated as $v ) { //JUST RENAME THE FIELDS NAMES - META_KEY!!! and check the replace syntax
-
-        // ++ can replace with 1 delete and 1 insert queries!!!
-
-        // replace the tariff with next tariff values
-        if ( $v->tariff_next ) {
-            $wpdb->query( '
-                DELETE FROM `'.$wpdb->postmeta.'` WHERE `meta_key` = "entity-tariff" AND `post_id` = "'.$v->ID.'"
-            ');
-            $wpdb->query( '
-                UPDATE `'.$wpdb->postmeta.'` SET `meta_key` = "entity-tariff" WHERE `meta_key` = "entity-tariff-next" AND `post_id` = "'.$v->ID.'"
-            ');
-        }
-        if ( $v->status_next ) {
-            $wpdb->query( '
-                DELETE FROM `'.$wpdb->postmeta.'` WHERE `meta_key` = "entity-payment-status" AND `post_id` = "'.$v->ID.'"
-            ');
-            $wpdb->query( '
-                UPDATE `'.$wpdb->postmeta.'` SET `meta_key` = "entity-payment-status" WHERE `meta_key` = "entity-payment-status-next" AND `post_id` = "'.$v->ID.'"
-            ');
-        }
-        
-        // replace the tariff-requested date
-        $wpdb->query( '
-            DELETE FROM `'.$wpdb->postmeta.'` WHERE `meta_key` = "entity-tariff-requested" AND `post_id` = "'.$v->ID.'"
-        ');
-        $wpdb->query( '
-            INSERT INTO `'.$wpdb->postmeta.'` ( `post_id`, `meta_key`, `meta_value` ) VALUES ( "'.$v->ID.'", "entity-tariff-requested", "'.( $v->till + 1 ).'" )
-        ');
-
-        // replace the tariff-till date
-        $wpdb->query( '
-            DELETE FROM `'.$wpdb->postmeta.'` WHERE `meta_key` = "entity-tariff-till" AND `post_id` = "'.$v->ID.'"
-        ');
-        $wpdb->query( '
-            INSERT INTO `'.$wpdb->postmeta.'` ( `post_id`, `meta_key`, `meta_value` ) VALUES ( "'.$v->ID.'", "entity-tariff-till", "'.strtotime( '+1 year', $v->till ).'" )
-        ');
-
-        // ++if no prolonging - return to the free account
-        // ++flush the cache for the ID
-        
+    foreach( $outdated as $p ) {
+        fcp_flush_tariff_by_id( $p );
     }
-    
-    // select not payed in a period entities to flush
-    $notpayed = $wpdb->get_results( '
-        SELECT * FROM `'.$wpdb->postmeta.'` WHERE `meta_key` = "entity-tariff-requested" AND CAST( `meta_value` ) AS SIGNED ) < '.time().'
-    ');
-    // ++select the status? go through the logic first again
-    
-    foreach ( $notpayed as $v ) {
-        
-    }
-//*/
+
     FCP_Forms::tz_reset();
+}
+
+function fcp_forms_entity_tariff_clean() {
+
+    global $wpdb;
+    
+    require 'inits.php';
+   
+    $outdated = $wpdb->get_results( '
+SELECT wpfcp_posts.ID FROM wpfcp_posts
+INNER JOIN wpfcp_postmeta ON ( wpfcp_posts.ID = wpfcp_postmeta.post_id )
+WHERE
+    1=1  AND ( 
+        ( wpfcp_postmeta.meta_key = "entity-tariff-requested" AND wpfcp_postmeta.meta_value < '.( time() - $requested_flush_gap).' ) 
+        OR 
+        ( wpfcp_postmeta.meta_key = "entity-tariff-billed" AND wpfcp_postmeta.meta_value < '.( time() - $billed_flush_gap ).' )
+    )
+    AND
+    wpfcp_posts.post_type IN ("clinic", "doctor")
+GROUP BY wpfcp_posts.ID
+    ');
+
+    foreach( $outdated as $id ) {
+        fcp_flush_dates_by_id( $id );
+    }
+}
+
+function fcp_flush_dates_by_id($id, $check = false, &$values = []) {
+    
+    if ( !is_numeric( $id ) ) { return; }
+    
+    // check the values, else - trust and do what has to be done
+    global $wpdb;
+    
+    if ( $check ) {
+    
+        $query = 'SELECT `meta_key`, `meta_value` FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( `meta_key` = %s OR `meta_key` = %s )';
+        $query = $wpdb->prepare( $query, $id, 'entity-tariff-requested', 'entity-tariff-billed' );
+        if ( $query === null ) { return; }
+        
+        $results = $wpdb->get_results( $query );
+        // ++ if nothing is outdated - return
+
+    }
+    
+    $query = 'DELETE FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( `meta_key` = %s OR `meta_key` = %s )';
+    if ( $query = $wpdb->prepare( $query, $id, 'entity-tariff-requested', 'entity-tariff-billed' ) {
+        $wpdb->query( $query );
+        $values['entity-tariff-requested'] = 0;
+        $values['entity-tariff-billed'] = 0;
+    }
+}
+
+function fcp_flush_tariff_by_id($p, &$values = []) {
+    if ( !$p ) { return; }
+    if ( is_array( $p ) ) { $p = (object) $p; }
+    if ( is_object( $p ) && !$p->ID ) { return; }
+    if ( is_numeric( $p ) ) {
+        $p = (object) [
+            'ID' => $p
+        ];
+    }
+    $p->ID = (int) $p->ID; // intval()
+    
+    $meta_a2q_where = function($arr = null) { // ++send to a separate class for the form?
+        static $arr_saved = [];
+        if ( !$arr ) { return $arr_saved; }
+        $arr_saved = $arr;
+        if ( !$arr[0] ) { return '1=1'; } // pick all fields if no elements
+        return '`meta_key` = %s' . str_repeat( ' OR `meta_key` = %s', count( $arr ) - 1 );
+    };
+    $meta_a2q_insert = function($arr = null) use ($p) {
+        static $arr_saved = [];
+        if ( !$arr ) { return $arr_saved; }
+        $arr_saved = [];
+        if ( empty( $arr ) ) { return; }
+        foreach ( $arr as $k => $v ) { array_push( $arr_saved, $p->ID, $k, $v ); }
+        return '( %s, %s, %s )' . str_repeat( ', ( %s, %s, %s )', count( $arr ) - 1 );
+    };
+    
+    // get values if are not provided and check, else - trust and do what has to be done
+    if ( $p->ID && count( (array) $p ) === 1 ) {
+        global $wpdb;
+        
+        $q = $meta_a2q_where( ['entity-tariff-till', 'entity-timezone', 'entity-timezone-bias', 'entity-tariff-next', 'entity-payment-status-next'] ); // bias here to compare later*
+        
+        $query = 'SELECT `meta_key`, `meta_value` FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( '.$q.' )';
+        $query = $wpdb->prepare( $query, array_merge( [ $p->ID ], $meta_a2q_where() ) );
+        if ( $query === null ) { return; }
+        
+        $results = $wpdb->get_results( $query );
+        foreach ( $results as $v ) { $p->{ $v->meta_key } = $v->meta_value; }
+        unset( $results, $q, $query, $v );
+
+        // check if outdated*
+        $p->{ 'entity-timezone-bias' } = $p->{ 'entity-timezone-bias' } ? (int) $p->{ 'entity-timezone-bias' } : 0;
+        if ( (int) $p->{ 'entity-tariff-till' } - $p->{ 'entity-timezone-bias' } < time() ) { return; }
+        
+        $p->till = $p->{ 'entity-tariff-till' };
+        $p->tariff_next = $p->{ 'entity-tariff-next' };
+        $p->status_next = $p->{ 'entity-payment-status-next' };
+        $p->timezone_name = $p->{ 'entity-timezone' };
+        
+    }
+
+    // remove outdated meta
+    $q = $meta_a2q_where( ['entity-tariff', 'entity-payment-status', 'entity-tariff-till', 'entity-timezone-bias', 'entity-tariff-next', 'entity-payment-status-next'] );
+    $query = 'DELETE FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( '.$q.' )';
+    if ( $query = $wpdb->prepare( $query, array_merge( [ $p->ID ], $meta_a2q_where() ) ) ) { $wpdb->query( $query ); }
+
+    // prepare the updated data to insert
+    $insert = [];
+    if ( $p->tariff_next ) {
+        $insert['entity-tariff'] = $p->tariff_next;
+    }
+    if ( $p->status_next ) {
+        $insert['entity-payment-status'] = $p->status_next;
+    }
+    if ( $p->tariff_next ) {
+        $insert['entity-tariff-till'] = strtotime( '+1 year', $p->till );
+
+        $zone = new DateTimeZone( $p->timezone_name );
+        $insert['entity-timezone-bias'] = $zone->getTransitions( $p->till, $p->till )[0]['offset'];
+        unset( $zone );
+    }
+    
+    // insert the updated meta
+    if ( !empty( $insert ) ) {
+        $query = 'INSERT INTO `'.$wpdb->postmeta.'` ( `post_id`, `meta_key`, `meta_value` ) VALUES '.$meta_a2q_insert( $insert );
+        if ( $query = $wpdb->prepare( $query, $meta_a2q_insert() ) ) { $wpdb->query( $query ); }
+    }
+    
+    // modify the $values from the scope
+    if ( empty( $values ) ) { return; }
+    
+    $values['entity-tariff'] = $insert['entity-tariff'] ? $insert['entity-tariff'] : '';
+    $values['entity-payment-status'] = $insert['entity-payment-status'] ? $insert['entity-payment-status'] : '';
+    $values['entity-tariff-till'] = $insert['entity-tariff-till'] ? $insert['entity-tariff-till'] : 0;
+    $values['entity-timezone-bias'] = $insert['entity-timezone-bias'] ? $insert['entity-timezone-bias'] : 0;
+    $values['entity-tariff-next'] = '';
+    $values['entity-payment-status-next'] = '';
+
 }
 
 FCP_Forms::tz_reset();

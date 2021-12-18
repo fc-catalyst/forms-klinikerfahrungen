@@ -5,103 +5,26 @@ Modify the values before printing to inputs
 
 FCP_Forms::tz_set(); // set utc timezone for all the time operations, in case the server has a different settings
 
-//*
-
-function fcp_flush_tariff_by_id($p) { // ++add the timezone here and dont exclude the free ones if are
-    if ( !$p ) { return; }
-    if ( is_array( $p ) ) { $p = (object) $p; }
-    if ( is_object( $p ) && !$p->ID ) { return; }
-    if ( is_numeric( $p ) ) {
-        $p = (object) [
-            'ID' => $p
-        ];
-    }
-    $p->ID = (int) $p->ID; // intval()
-    
-    $a2q_where = function($arr = null) { // ++send to a separate class for the form?
-        static $arr_saved = [];
-        if ( !$arr ) { return $arr_saved; }
-        $arr_saved = $arr;
-        if ( !$arr[0] ) { return '1=1'; } // pick all fields if no elements
-        return '`meta_key` = %s' . str_repeat( ' OR `meta_key` = %s', count( $arr ) - 1 );
-    };
-    $a2q_insert = function($arr = null) use ($p) {
-        static $arr_saved = [];
-        if ( !$arr ) { return $arr_saved; }
-        $arr_saved = [];
-        if ( empty( $arr ) ) { return; }
-        foreach ( $arr as $k => $v ) { array_push( $arr_saved, $p->ID, $k, $v ); }
-        return '( %s, %s, %s )' . str_repeat( ', ( %s, %s, %s )', count( $arr ) - 1 );
-    }
-    
-    // get more values if are not provided, else - trust and do what has to be done
-    if ( !isset( $p->till ) || !isset( $p->tariff_next ) || !isset( $p->status_next ) ) {
-        global $wpdb;
-        
-        $q = $a2q_where( ['entity-tariff', 'entity-tariff-till', 'entity-timezone', 'entity-timezone-bias', 'entity-tariff-next', 'entity-payment-status-next'] ); //++remove unused
-        
-        $query = 'SELECT `meta_key`, `meta_value` FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( '.$q.' )';
-        $query = $wpdb->prepare( $query, array_merge( [ $p->ID ], $a2q_where() ) );
-        if ( $query === null ) { return; }
-        
-        $results = $wpdb->get_results( $query );
-        foreach ( $results as $v ) { $p->{ $v->meta_key } = $v->meta_value; }
-        unset( $results, $q, $query, $v );
-
-        // check if really outdated
-        $p->{ 'entity-timezone-bias' } = $p->{ 'entity-timezone-bias' } ? (int) $p->{ 'entity-timezone-bias' } : 0;
-        if ( (int) $p->{ 'entity-tariff-till' } - $p->{ 'entity-timezone-bias' } < time() ) { return; }
-        
-        $p->till = $p->{ 'entity-tariff-till' };
-        $p->tariff_next = $p->{ 'entity-tariff-next' };
-        $p->status_next = $p->{ 'entity-payment-status-next' };
-        $p->timezone_name = $p->{ 'entity-timezone' };
-        //++unset not used
-        
-    }
-
-    // remove outdated meta
-    $q = $a2q_where( ['entity-tariff', 'entity-payment-status', 'entity-tariff-till', 'entity-timezone-bias', 'entity-tariff-next', 'entity-payment-status-next'] );
-    $query = 'DELETE FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( '.$q.' )';
-    //if ( $query = $wpdb->prepare( $query, array_merge( [ $p->ID ], $a2q_where() ) ) ) { $wpdb->query( $query ); }
-    
-    // prepare the updated data to insert
-    $insert = [];
-    if ( $p->tariff_next ) {
-        $insert['entity-tariff'] = $p->tariff_next;
-    }
-    if ( $p->status_next ) {
-        $insert['entity-payment-status'] = $p->status_next;
-    }
-    if ( $p->tariff_next ) {
-        $insert['entity-tariff-till'] = strtotime( '+1 year', $p->till );
-        $zone = new DateTimeZone( $p->timezone_name );
-        $insert['entity-timezone-bias'] = $zone->getTransitions( $p->till, $p->till )[0]['offset'];
-        unset( $zone );
-    }
-    
-    // insert the updated meta
-    if ( !empty( $insert ) ) {
-        $query = 'INSERT INTO `'.$wpdb->postmeta.'` ( `post_id`, `meta_key`, `meta_value` ) VALUES '.$a2q_insert( $insert );
-        //if ( $query = $wpdb->prepare( $query, $a2q_insert() ) ) { $wpdb->query( $query ); }
-    }
-    
-    // ++ return new $values, that were changed by the function, like before the override
+require 'variables.php';
 /*
-    return [
-        'entity-tariff',
-        'entity-payment-status',
-        'entity-tariff-till',
-        'entity-timezone-bias',
-        'entity-tariff-next',
-        'entity-payment-status-next',
-    ];
-//*/
-}
+$args = [
+    'post_type' => ['clinic', 'doctor'],
+    'meta_query' => [
+        'relation' => 'OR',
+        [
+            'key' => 'entity-tariff-requested',
+            'value' => time() - $requested_flush_gap,
+            'compare' => '<'
+        ],
+        [
+            'key' => 'entity-tariff-billed',
+            'value' => time() - $billed_flush_gap,
+            'compare' => '<'
+        ]
+    ],
+];
+$outdated = new WP_Query( $args );
 
-// ++function to flush the billed status, like every day?
-
-// ++function to flush the requested date
 
 
 FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
@@ -110,13 +33,11 @@ FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
     'before' => '<pre>',
     'after' => '</pre>',
     'text' => "\n".
-        $outdated//print_r( $outdated->request, true )//fcp_flush_tariff_by_id( $_GET['post'] )
+        fcp_forms_entity_tariff_clean()//print_r( $outdated->request, true )//fcp_flush_tariff_by_id( $_GET['post'] )
     ."\n",
 ], 'before' );
 //*/
 
-
-include 'variables.php';
 
 $init_values = $values;
 

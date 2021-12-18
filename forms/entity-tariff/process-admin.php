@@ -7,7 +7,7 @@ FCP_Forms::tz_set();
 
 $values = get_post_meta( $postID );
 foreach ( $values as &$v ) { $v = $v[0]; }
-include 'variables.php';
+require 'variables.php';
 
 // no tariff manipulations with no billing method picked
 if ( !$values['entity-billing'] && !$admin_am ) {

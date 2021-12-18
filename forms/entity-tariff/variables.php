@@ -5,6 +5,9 @@
 
 if ( !isset( $values ) ) { return; }
 
+// init timing variables
+require 'inits.php';
+
 // roles
 $admin_am = current_user_can( 'administrator' );
 
@@ -12,9 +15,6 @@ $admin_am = current_user_can( 'administrator' );
 $time = time();
 $time_bias = $values['entity-timezone-bias'] ? $values['entity-timezone-bias'] : 0;
 $time_local = $time + $time_bias;
-$day = 60 * 60 * 24;
-$prolong_gap = $day * 14;
-$billed_flush_gap = $day * 30;
 $date_format = get_option( 'date_format' );
 
 // tariffs
