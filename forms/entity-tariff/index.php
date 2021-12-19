@@ -45,7 +45,8 @@ add_action( 'admin_footer', function() {
     <script type="text/javascript">
         jQuery( document ).ready( function($){
             $( '#entity-tariff-till_entity-tariff' ).datepicker( {
-                dateFormat : 'dd.mm.yy'
+                dateFormat : 'dd.mm.yy',
+                minDate : new Date()
             });
         });
     </script>
@@ -95,7 +96,7 @@ function fcp_forms_entity_tariff_prolong() {
     WHERE
         1 = 1
         AND (
-            ( mt0.meta_key = "entity-tariff-till" AND CAST( IF ( mt2.meta_key = "entity-timezone-bias", mt0.meta_value - mt2.meta_value, mt0.meta_value ) AS SIGNED ) < @till_time )
+            ( mt0.meta_key = "entity-tariff-till" AND CAST( IF ( mt2.meta_key = "entity-timezone-bias", mt0.meta_value - mt2.meta_value, mt0.meta_value ) AS SIGNED ) < ' . time() . ' ) #@till_time
             AND
             ( mt1.meta_key = "entity-timezone-bias" OR mt2.post_id IS NULL )
             AND
@@ -118,7 +119,7 @@ function fcp_forms_entity_tariff_prolong() {
 
     global $wpdb;
     $outdated = $wpdb->get_results( '
-SET @till_time = ' . time() . ';
+#SET @till_time = ' . time() . '; #it is not liked by $wpdb, or is it about ";" - dunno
 SELECT sq0.ID, till, ' . implode( ', ', array_keys( $fields ) ) . '
 ' . $get_metas( $fields, $get_meta ) . '
 ON sq0.ID = sq' . implode( '.ID AND sq0.ID = sq', array_slice( array_keys( array_values( $fields ) ), 1 ) ) . '.ID
@@ -156,32 +157,6 @@ GROUP BY wpfcp_posts.ID
     }
 }
 
-function fcp_flush_dates_by_id($id, $check = false, &$values = []) {
-    
-    if ( !is_numeric( $id ) ) { return; }
-    
-    // check the values, else - trust and do what has to be done
-    global $wpdb;
-    
-    if ( $check ) {
-    
-        $query = 'SELECT `meta_key`, `meta_value` FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( `meta_key` = %s OR `meta_key` = %s )';
-        $query = $wpdb->prepare( $query, $id, 'entity-tariff-requested', 'entity-tariff-billed' );
-        if ( $query === null ) { return; }
-        
-        $results = $wpdb->get_results( $query );
-        // ++ if nothing is outdated - return
-
-    }
-    
-    $query = 'DELETE FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( `meta_key` = %s OR `meta_key` = %s )';
-    if ( $query = $wpdb->prepare( $query, $id, 'entity-tariff-requested', 'entity-tariff-billed' ) ) {
-        $wpdb->query( $query );
-        $values['entity-tariff-requested'] = 0;
-        $values['entity-tariff-billed'] = 0;
-    }
-}
-
 function fcp_flush_tariff_by_id($p, &$values = []) {
     if ( !$p ) { return; }
     if ( is_array( $p ) ) { $p = (object) $p; }
@@ -208,11 +183,12 @@ function fcp_flush_tariff_by_id($p, &$values = []) {
         foreach ( $arr as $k => $v ) { array_push( $arr_saved, $p->ID, $k, $v ); }
         return '( %s, %s, %s )' . str_repeat( ', ( %s, %s, %s )', count( $arr ) - 1 );
     };
+
+    global $wpdb;
     
     // get values if are not provided and check, else - trust and do what has to be done
     if ( $p->ID && count( (array) $p ) === 1 ) {
-        global $wpdb;
-        
+
         $q = $meta_a2q_where( ['entity-tariff-till', 'entity-timezone', 'entity-timezone-bias', 'entity-tariff-next', 'entity-payment-status-next'] ); // bias here to compare later*
         
         $query = 'SELECT `meta_key`, `meta_value` FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( '.$q.' )';
@@ -225,7 +201,7 @@ function fcp_flush_tariff_by_id($p, &$values = []) {
 
         // check if outdated*
         $p->{ 'entity-timezone-bias' } = $p->{ 'entity-timezone-bias' } ? (int) $p->{ 'entity-timezone-bias' } : 0;
-        if ( (int) $p->{ 'entity-tariff-till' } - $p->{ 'entity-timezone-bias' } < time() ) { return; }
+        if ( (int) $p->{ 'entity-tariff-till' } - $p->{ 'entity-timezone-bias' } >= time() ) { return; }
         
         $p->till = $p->{ 'entity-tariff-till' };
         $p->tariff_next = $p->{ 'entity-tariff-next' };
@@ -271,6 +247,40 @@ function fcp_flush_tariff_by_id($p, &$values = []) {
     $values['entity-tariff-next'] = '';
     $values['entity-payment-status-next'] = '';
 
+}
+
+function fcp_flush_dates_by_id($id, &$values = [], $check = false) {
+    
+    if ( !is_numeric( $id ) ) { return; }
+    
+    // check the values, else - trust and do what has to be done
+    global $wpdb;
+    
+    require 'inits.php';
+    
+    if ( $check ) { // ++can just compare with the $values if are
+    
+        $query = 'SELECT `meta_key`, `meta_value` FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( `meta_key` = %s OR `meta_key` = %s )';
+        $query = $wpdb->prepare( $query, $id, 'entity-tariff-requested', 'entity-tariff-billed' );
+        if ( $query === null ) { return; }
+        
+        $results = $wpdb->get_results( $query );
+        $time = time();
+        foreach ( $results as $v ) {
+            if ( // if nothing is outdated - return
+                $v->meta_key === 'entity-tariff-requested' && $v->meta_value >= $time - $requested_flush_gap
+                ||
+                $v->meta_key === 'entity-tariff-billed' && $v->meta_value >= $time - $billed_flush_gap
+            ) { return; }
+        }
+    }
+    
+    $query = 'DELETE FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( `meta_key` = %s OR `meta_key` = %s )';
+    if ( $query = $wpdb->prepare( $query, $id, 'entity-tariff-requested', 'entity-tariff-billed' ) ) {
+        $wpdb->query( $query );
+        $values['entity-tariff-requested'] = 0;
+        $values['entity-tariff-billed'] = 0;
+    }
 }
 
 FCP_Forms::tz_reset();

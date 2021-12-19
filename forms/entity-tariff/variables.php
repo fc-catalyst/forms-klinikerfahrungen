@@ -55,6 +55,9 @@ $dmy_to_dayend_timestamp = function( $date ) { // dmy to timestamp of the end of
     return 0;
 };
 
+$timezones = DateTimeZone::listIdentifiers( DateTimeZone::ALL );
+$timezones = (object) array_combine( $timezones, $timezones );
+
 // for printing only
 if ( !empty( $_POST ) ) { return; }
 

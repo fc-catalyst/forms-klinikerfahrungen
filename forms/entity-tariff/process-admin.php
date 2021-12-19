@@ -9,6 +9,9 @@ $values = get_post_meta( $postID );
 foreach ( $values as &$v ) { $v = $v[0]; }
 require 'variables.php';
 
+// ++--flush the tariff it it became outdated while someone was in admin and did nothing
+// fcp_flush_tariff_by_id( $_GET['post'], $values );
+
 // no tariff manipulations with no billing method picked
 if ( !$values['entity-billing'] && !$admin_am ) {
     $this->s->fields = [];
@@ -38,7 +41,7 @@ if ( !$admin_am && $tariff_change && !$tariff_paid ) { // tariff is about to cha
     FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status', 'roles_edit', ['entity_delegate'] );
 
     // requested date save
-    $_POST['entity-tariff-requested'] = $time; // ++flushing is scheduled
+    $_POST['entity-tariff-requested'] = $time;
     FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-requested', 'roles_view', '', 'unset' );
 
     // +++ send mail to admin here, that paid tariff is requested by an user
@@ -47,8 +50,15 @@ if ( !$admin_am && $tariff_change && !$tariff_paid ) { // tariff is about to cha
 
 // tariff billed date
 if ( $admin_am && $pay_status_change && $_POST['entity-payment-status'] === 'billed' ) {
-    $_POST['entity-tariff-billed'] = $time; // ++flushing is scheduled
+    $_POST['entity-tariff-billed'] = $time;
     FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-billed', 'roles_view', '', 'unset' );
+}
+
+
+// flush the billed and requested dates
+if ( $admin_am && $pay_status_change && $_POST['entity-payment-status'] === 'payed' ) {
+    $_POST['entity-tariff-requested'] = 0;
+    $_POST['entity-tariff-billed'] = 0;
 }
 
 
@@ -62,12 +72,10 @@ if ( $admin_am ) { // just to not process by a user submit
 // timezones
 if ( $admin_am ) {
 
-    $tzs = DateTimeZone::listIdentifiers( DateTimeZone::ALL );
-    $tzs = array_combine( $tzs, $tzs );
-    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-timezone', 'options', (object) $tzs );
+    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-timezone', 'options', $timezones );
     
     // save the timezone with daylight saving offset
-    if ( $tzs[ $_POST['entity-timezone'] ] ) {
+    if ( $timezones->{ $_POST['entity-timezone'] } ) {
         $zone = new DateTimeZone( $_POST['entity-timezone'] );
         $use_time = $_POST['entity-tariff-till'] ? $_POST['entity-tariff-till'] : $time;
         $_POST['entity-timezone-bias'] = $zone->getTransitions( $use_time, $use_time )[0]['offset'];
@@ -96,11 +104,11 @@ if ( $prolong_allowed ) {
     
     if ( !$admin_am && $tariff_next_change && !$tariff_paid_next ) {  // tariff is about to change to a paid by a user
 
-        $_POST['entity-payment-status-next'] = 'pending'; // ++flushing is scheduled
+        $_POST['entity-payment-status-next'] = 'pending';
         FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status-next', 'roles_edit', ['entity_delegate'] );
         
         // requested date save
-        $_POST['entity-tariff-requested'] = $time;  // ++flushing is scheduled
+        $_POST['entity-tariff-requested'] = $time;
         FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-requested', 'roles_view', '', 'unset' );
 
         // +++ send mail to admin here, that paid tariff is requested by an user
@@ -119,8 +127,6 @@ if ( $_POST['entity-tariff-next'] === $tariff_default ) {
 if ( $_POST['entity-tariff-till'] < $time ) {
     $_POST['entity-tariff-till'] = 0;
 }
-
-//++add the flushing functions where needed
 
 
 FCP_Forms::tz_reset();

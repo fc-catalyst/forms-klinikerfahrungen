@@ -6,26 +6,10 @@ Modify the values before printing to inputs
 FCP_Forms::tz_set(); // set utc timezone for all the time operations, in case the server has a different settings
 
 require 'variables.php';
+
 /*
-$args = [
-    'post_type' => ['clinic', 'doctor'],
-    'meta_query' => [
-        'relation' => 'OR',
-        [
-            'key' => 'entity-tariff-requested',
-            'value' => time() - $requested_flush_gap,
-            'compare' => '<'
-        ],
-        [
-            'key' => 'entity-tariff-billed',
-            'value' => time() - $billed_flush_gap,
-            'compare' => '<'
-        ]
-    ],
-];
-$outdated = new WP_Query( $args );
-
-
+//$cron_jobs = get_option( 'cron' );
+//var_dump($cron_jobs);
 
 FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
     'type' => 'notice',
@@ -33,11 +17,15 @@ FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
     'before' => '<pre>',
     'after' => '</pre>',
     'text' => "\n".
-        fcp_forms_entity_tariff_clean()//print_r( $outdated->request, true )//fcp_flush_tariff_by_id( $_GET['post'] )
+        fcp_flush_tariff_by_id_test( $_GET['post'], $values )//print_r( $outdated->request, true )//fcp_flush_tariff_by_id( $_GET['post'] )
     ."\n",
 ], 'before' );
 //*/
 
+
+// ++--flush the tariff conditionally
+//fcp_flush_tariff_by_id( $_GET['post'], $values );
+//fcp_flush_dates_by_id( $_GET['post'], $values, true );
 
 $init_values = $values;
 
@@ -105,9 +93,7 @@ if ( $admin_am ) { // format for the input
 // timezones
 if ( $admin_am ) { // ++allow users to change zones before payed in future, when not one country coverage
     // make the list of timezones
-    $tzs = DateTimeZone::listIdentifiers( DateTimeZone::ALL );
-    $tzs = array_combine( $tzs, $tzs );
-    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-timezone', 'options', (object) $tzs );
+    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-timezone', 'options', $timezones );
 }
 
 
@@ -181,7 +167,7 @@ if ( !$admin_am ) {
             $status_message = '<em>Payment status - Pending: </em>You will be billed in a few days via your mentioned billing email <em>' . $billing_email . '</em> For any questions or problems with receiving the bill, please contact our accountant <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a>';
 
         } elseif ( $values['entity-payment-status'] === 'billed' ) {
-            $status_message = '<em><font color="#35b32d">Payment status - Billed</font>: </em>Please check your billing email ' . $billing_email . ' and pay the bill to activate the tariff. For any questions please contact our accountant by <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a><br>The initial free tariff will be restored automatically in '.floor( $prolong_gap / $day / 7 ).' weeks, if not payed.';
+            $status_message = '<em><font color="#35b32d">Payment status - Billed</font>: </em>Please check your billing email ' . $billing_email . ' and pay the bill to activate the tariff. For any questions please contact our accountant by <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a><br>The initial free tariff will be restored automatically in '.floor( $billed_flush_gap / $day ).' days, if not payed.';
 
         }
         
@@ -202,7 +188,7 @@ if ( !$admin_am ) {
             $status_message = '<em>Payment status - Pending: </em>You will be billed in a few days via your mentioned billing email <em>' . $billing_email . '</em> For any questions or problems with receiving the bill, please contact our accountant <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a>';
 
         } elseif ( $values['entity-payment-status-next'] === 'billed' ) {
-            $status_message = '<em><font color="#35b32d">Payment status - Billed</font>: </em>Please check your billing email ' . $billing_email . ' and pay the bill to activate the tariff. For any questions please contact our accountant by <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a><br>The initial free tariff will be restored automatically in '.floor( $prolong_gap / $day / 7 ).' weeks, if not payed.';
+            $status_message = '<em><font color="#35b32d">Payment status - Billed</font>: </em>Please check your billing email ' . $billing_email . ' and pay the bill to activate the tariff. For any questions please contact our accountant by <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a><br>The initial free tariff will be restored automatically in '.floor( $billed_flush_gap / $day ).' days, if not payed.';
 
         } elseif ( $values['entity-payment-status-next'] === 'payed' ) {
             $status_message = '<em>Payment status - Payed</em>';
@@ -225,9 +211,18 @@ if ( !$admin_am ) {
 //if ( $prolong_allowed && $tariff_paid && $tariff_paid_active ) {
 if ( $init_values['entity-tariff-till'] ) {
     $tariff_next_start_label = date( $date_format, $init_values['entity-tariff-till'] + $day );
+    $till_next = $init_values['entity-tariff-till'] - $time - $values['entity-timezone-bias'];
+    if ( $till_next > $day ) {
+        $till_next = round( $till_next / 60 / 60 / 24 ) . ' day(s)';
+    } elseif ( $till_next <= $day && $till_next > 3600 ) {
+        $till_next = round( $till_next / 60 / 60 ) . ' hour(s)';
+    } elseif ( $till_next <= 3600 ) {
+        $till_next = round( $till_next / 60 ) . ' minute(s)';
+    }
+
     array_push( $this->s->fields, (object) [
         'type' => 'notice',
-        'text' => '<p>The next tariff will be activated on <font color="#35b32d" style="white-space:nowrap">'.$tariff_next_start_label.'</font></p>',
+        'text' => '<p>The next tariff will be activated on <font color="#35b32d" style="white-space:nowrap">'.$tariff_next_start_label.'</font>, 00:00 local time, <br>in '.$till_next.'</p>',
         'meta_box' => true,
     ]);
 }
