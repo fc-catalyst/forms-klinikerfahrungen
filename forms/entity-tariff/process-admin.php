@@ -33,7 +33,7 @@ if ( !$admin_am && $tariff_paid ) { // only the free tariff can be changed by a 
 }
 
 
-// tariff requested date // ++add reset conditions here and to the scheduler
+// tariff requested date
 if ( !$admin_am && $tariff_change && !$tariff_paid ) { // tariff is about to change to paid by a user
 
     // payment status init
@@ -46,19 +46,20 @@ if ( !$admin_am && $tariff_change && !$tariff_paid ) { // tariff is about to cha
 
     // +++ send mail to admin here, that paid tariff is requested by an user
 }
-
-
-// tariff billed date
-if ( $admin_am && $pay_status_change && $_POST['entity-payment-status'] === 'billed' ) {
-    $_POST['entity-tariff-billed'] = $time;
-    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-billed', 'roles_view', '', 'unset' );
+if ( $admin_am && $pay_status_change && $_POST['entity-payment-status'] === 'payed' ) {
+    $_POST['entity-tariff-requested'] = 0;
+    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-requested', 'roles_view', '', 'unset' );
 }
 
 
-// flush the billed and requested dates
-if ( $admin_am && $pay_status_change && $_POST['entity-payment-status'] === 'payed' ) {
-    $_POST['entity-tariff-requested'] = 0;
-    $_POST['entity-tariff-billed'] = 0;
+// tariff billed date
+if ( $admin_am && $pay_status_change ) {
+    if ( $_POST['entity-payment-status'] === 'billed' ) {
+        $_POST['entity-tariff-billed'] = $time;
+    } else {
+        $_POST['entity-tariff-billed'] = 0;
+    }
+    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-billed', 'roles_view', '', 'unset' );
 }
 
 

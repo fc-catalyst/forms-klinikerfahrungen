@@ -17,7 +17,7 @@ FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
     'before' => '<pre>',
     'after' => '</pre>',
     'text' => "\n".
-        fcp_flush_tariff_by_id_test( $_GET['post'], $values )//print_r( $outdated->request, true )//fcp_flush_tariff_by_id( $_GET['post'] )
+        date( 'd.m.Y H:i:s', 1639872000 )//print_r( _get_cron_array(), true )//print_r( $outdated->request, true )//fcp_flush_tariff_by_id( $_GET['post'] )
     ."\n",
 ], 'before' );
 //*/
@@ -26,6 +26,7 @@ FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
 // ++--flush the tariff conditionally
 //fcp_flush_tariff_by_id( $_GET['post'], $values );
 //fcp_flush_dates_by_id( $_GET['post'], $values, true );
+//fcp_forms_entity_tariff_prolong();
 
 $init_values = $values;
 
@@ -65,7 +66,7 @@ if ( $values['entity-tariff-requested'] && $tariff_paid ) { // ++reposition, if 
 }
 
 // tariff billed date - is used to change unpayed paid tariffs back to free, like in a $prolong_gap period
-if ( $values['entity-tariff-billed'] && $values['entity-payment-status'] === 'billed' ) {
+if ( $values['entity-tariff-billed'] && $values['entity-payment-status'] === 'billed' ) { // ++reposition after next if
     $values['entity-tariff-billed'] = date( $date_format, $values['entity-tariff-billed'] );
 } else {
     FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-billed', [], 'unset' );

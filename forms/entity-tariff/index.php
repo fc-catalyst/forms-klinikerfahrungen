@@ -132,31 +132,6 @@ ON sq0.ID = sq' . implode( '.ID AND sq0.ID = sq', array_slice( array_keys( array
     FCP_Forms::tz_reset();
 }
 
-function fcp_forms_entity_tariff_clean() {
-
-    global $wpdb;
-    
-    require 'inits.php';
-   
-    $outdated = $wpdb->get_results( '
-SELECT wpfcp_posts.ID FROM wpfcp_posts
-INNER JOIN wpfcp_postmeta ON ( wpfcp_posts.ID = wpfcp_postmeta.post_id )
-WHERE
-    1=1  AND ( 
-        ( wpfcp_postmeta.meta_key = "entity-tariff-requested" AND wpfcp_postmeta.meta_value < '.( time() - $requested_flush_gap).' ) 
-        OR 
-        ( wpfcp_postmeta.meta_key = "entity-tariff-billed" AND wpfcp_postmeta.meta_value < '.( time() - $billed_flush_gap ).' )
-    )
-    AND
-    wpfcp_posts.post_type IN ("clinic", "doctor")
-GROUP BY wpfcp_posts.ID
-    ');
-
-    foreach( $outdated as $id ) {
-        fcp_flush_dates_by_id( $id );
-    }
-}
-
 function fcp_flush_tariff_by_id($p, &$values = []) {
     if ( !$p ) { return; }
     if ( is_array( $p ) ) { $p = (object) $p; }
@@ -249,7 +224,33 @@ function fcp_flush_tariff_by_id($p, &$values = []) {
 
 }
 
-function fcp_flush_dates_by_id($id, &$values = [], $check = false) {
+
+function fcp_forms_entity_tariff_clean() { // ++not tested
+    return;
+    global $wpdb;
+    
+    require 'inits.php';
+   
+    $outdated = $wpdb->get_results( '
+SELECT wpfcp_posts.ID FROM wpfcp_posts
+INNER JOIN wpfcp_postmeta ON ( wpfcp_posts.ID = wpfcp_postmeta.post_id )
+WHERE
+    1=1  AND ( 
+        ( wpfcp_postmeta.meta_key = "entity-tariff-requested" AND wpfcp_postmeta.meta_value < '.( time() - $requested_flush_gap).' ) 
+        OR 
+        ( wpfcp_postmeta.meta_key = "entity-tariff-billed" AND wpfcp_postmeta.meta_value < '.( time() - $billed_flush_gap ).' )
+    )
+    AND
+    wpfcp_posts.post_type IN ("clinic", "doctor")
+GROUP BY wpfcp_posts.ID
+    ');
+
+    foreach( $outdated as $id ) {
+        orms_entity_tariff_clean_by_id( $id );
+    }
+}
+
+function orms_entity_tariff_clean_by_id($id, &$values = [], $check = false) { // ++not tested
     
     if ( !is_numeric( $id ) ) { return; }
     
