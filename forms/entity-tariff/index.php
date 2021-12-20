@@ -60,7 +60,7 @@ register_activation_hook( $this->self_path_file, function() {
     $day_start = mktime( 0, 0, 0 );
     // hourly because of timezones; not counting not standard 45 and 30 min gaps, though, for later, maybe
     wp_schedule_event( $day_start, 'hourly', 'fcp_forms_entity_tariff_prolong' );
-    wp_schedule_event( $day_start, 'daily', 'fcp_forms_entity_tariff_clean' );
+    //wp_schedule_event( $day_start, 'daily', 'fcp_forms_entity_tariff_clean' );
 });
 
 register_deactivation_hook( $this->self_path_file, function() {
@@ -68,7 +68,8 @@ register_deactivation_hook( $this->self_path_file, function() {
     wp_clear_scheduled_hook( 'fcp_forms_entity_tariff_clean' );
 });
 
-function fcp_forms_entity_tariff_prolong() {
+add_action( 'fcp_forms_entity_tariff_prolong', function() {
+
     FCP_Forms::tz_set();
 
     $fields = [
@@ -130,7 +131,7 @@ ON sq0.ID = sq' . implode( '.ID AND sq0.ID = sq', array_slice( array_keys( array
     }
 
     FCP_Forms::tz_reset();
-}
+});
 
 function fcp_flush_tariff_by_id($p, &$values = []) {
     if ( !$p ) { return; }
@@ -225,8 +226,8 @@ function fcp_flush_tariff_by_id($p, &$values = []) {
 }
 
 
-function fcp_forms_entity_tariff_clean() { // ++not tested
-    return;
+function fcp_forms_entity_tariff_clean() { // ++not tested, currently is off
+
     global $wpdb;
     
     require 'inits.php';

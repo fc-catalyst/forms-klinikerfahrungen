@@ -17,7 +17,7 @@ FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
     'before' => '<pre>',
     'after' => '</pre>',
     'text' => "\n".
-        date( 'd.m.Y H:i:s', 1639872000 )//print_r( _get_cron_array(), true )//print_r( $outdated->request, true )//fcp_flush_tariff_by_id( $_GET['post'] )
+        print_r( _get_cron_array(), true )//date( 'd.m.Y H:i:s', 1639872000 )//print_r( _get_cron_array(), true )//print_r( $outdated->request, true )//fcp_flush_tariff_by_id( $_GET['post'] )
     ."\n",
 ], 'before' );
 //*/
@@ -221,9 +221,13 @@ if ( $init_values['entity-tariff-till'] ) {
         $till_next = round( $till_next / 60 ) . ' minute(s)';
     }
 
+    $scheduled_to = date( 'd.m.Y H:i:s', wp_next_scheduled( 'fcp_forms_entity_tariff_prolong' ) );
+    $and_now_is = date( 'd.m.Y H:i:s', time() );
+    $the_event = wp_get_scheduled_event( 'fcp_forms_entity_tariff_prolong' );
+    
     array_push( $this->s->fields, (object) [
         'type' => 'notice',
-        'text' => '<p>The next tariff will be activated on <font color="#35b32d" style="white-space:nowrap">'.$tariff_next_start_label.'</font>, 00:00 local time, <br>in '.$till_next.'</p>',
+        'text' => '<p>The next tariff will be activated on <font color="#35b32d" style="white-space:nowrap">'.$tariff_next_start_label.'</font>, 00:00 local time, <br>in '.$till_next.' <br>'.$scheduled_to.' <br>'.$and_now_is.' <br><pre>'.print_r( $the_event, true ).'</pre></p>',
         'meta_box' => true,
     ]);
 }
