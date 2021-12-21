@@ -331,6 +331,12 @@
 .rscaptcha img {
     border-radius:6px;
 }
+.rscaptcha span::before {
+    content:'<';
+    padding:0 20px 0 5px;
+    line-height:2.2;
+    font-weight:600;
+}
 .rscaptcha .fcp-form-field-warn {
     width:100%;
 }

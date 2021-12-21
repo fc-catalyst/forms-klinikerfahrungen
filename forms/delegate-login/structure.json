@@ -37,10 +37,10 @@
                     "before" : "<div class=\"rscaptcha\">",
                     "after" : "</div>",
                     "prefs" : {
-                        "chars" : "abcdefghijkmnopqrstuvwxyz23456789",
+                        "chars" : "abcdefghijkmnopqrstuvwxyz2345789",
                         "char_length" : 4,
                         "img_size" : [170, 40],
-                        "bg" : [11, 69, 98],
+                        "bg" : [62, 145, 161],
                         "fg" : [255, 255, 255],
                         "fonts" : [
                             "BrandonGrotesque-Black.ttf",
