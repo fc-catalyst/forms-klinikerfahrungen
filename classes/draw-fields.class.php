@@ -375,6 +375,64 @@ class FCP_Forms__Draw {
         <?php
     }
     
+    private function field_rscaptcha($a) {
+        if ( !class_exists( 'ReallySimpleCaptcha' ) ) { return; }
+        $b = new ReallySimpleCaptcha();
+        $b->cleanup( $a->prefs->cleanup_minutes ? $a->prefs->cleanup_minutes : 60 ); // 60 is the plugin's default
+        $prefs = [ 'chars', 'char_length', 'fonts', 'tmp_dir', 'img_size', 'bg', 'fg', 'base', 'font_size', 'font_char_width', 'img_type' ];
+        
+        foreach ( $prefs as $v ) {
+
+            // select random variant
+            $w = $v . '_vars';
+            if ( isset( $a->prefs->{ $w } ) ) {
+                $a->prefs->{ $v } = $a->prefs->{ $w }[ array_rand( $a->prefs->{ $w } ) ];
+            }
+            if ( !isset( $a->prefs->{ $v } ) ) { continue; }
+
+            if ( $v === 'fonts' ) {
+                foreach ( $a->prefs->{ $v } as $m => &$u ) {
+                    $path = dirname( __FILE__ ) . '/../assets/captcha-fonts/' . $u;
+                    if ( !is_file( $path ) ) {
+                        unset( $a->prefs->{ $v }[ $m ] );
+                        continue;
+                    }
+                    $u = $path;
+                }
+                if ( empty( $a->prefs->{ $v } ) ) {
+                    unset( $a->prefs->{ $v } );
+                }
+            }
+
+            $b->{ $v } = $a->prefs->{ $v } ? $a->prefs->{ $v } : $b->{ $v };
+        }
+
+        $word = $b->generate_random_word();
+        $prefix = mt_rand();
+        $src = $b->generate_image( $prefix, $word );
+        ?>
+        <input
+            type="input"
+            name="<?php $this->e_field_name( $a->name ) ?>"
+            id="<?php $this->e_field_id( $a->name ) ?>"
+            style="width:<?php echo $v->img_size[0] ?>px"
+            placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty && !$a->title ? '*' : '' ?>"
+            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
+        />
+        <span></span>
+        <img
+            src="<?php echo plugins_url( 'really-simple-captcha/tmp/' . $src ) ?>"
+            style="width:<?php echo $v->img_size[0] ?>px;height:<?php echo $v->img_size[1] ?>px"
+        />
+        <input
+            type="hidden"
+            name="<?php $this->e_field_name( $a->name ) ?>_prefix"
+            id="<?php $this->e_field_id( $a->name ) ?>_prefix"
+            value="<?php echo esc_attr( $prefix ) ?>"
+        />
+        <?php
+    }
+    
     private function field__wrap($a, $method) {
         
         $o = $this->s->options;

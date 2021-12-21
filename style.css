@@ -326,3 +326,11 @@
     background-color:#fff;
     border-radius:5px 0 5px 5px;
 }
+
+/* really simple captcha */
+.rscaptcha img {
+    border-radius:6px;
+}
+.rscaptcha .fcp-form-field-warn {
+    width:100%;
+}

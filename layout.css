@@ -219,3 +219,9 @@ input[id^=fcp-forms--tab-] {
 .fcp-forms--tabbed input[id^=fcp-forms--tab-]:nth-child(6):checked ~ .fcp-forms--forms > *:nth-child(6) {
     display:block;
 }
+
+/* really simple captcha */
+.rscaptcha {
+    display:flex;
+    flex-wrap:wrap;
+}

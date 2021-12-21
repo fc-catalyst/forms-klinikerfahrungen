@@ -103,6 +103,17 @@ class FCP_Forms__Validate {
         );
     }
     
+    private function test_rscaptcha($rule, $a) {
+        if ( !$rule || !class_exists( 'ReallySimpleCaptcha' ) ) { return false; }
+        if ( !$a ) return __( 'Please fill in the symbols from the picture', 'fcpfo' );
+        $b = new ReallySimpleCaptcha();
+        $prefix = $_POST[ $rule . '_prefix' ];
+        $result = $b->check( $prefix, $a );
+        $b->remove( $prefix );
+        if ( $result ) { return false; }
+        return __( 'The entered symbols are not correct', 'fcpfo' );
+    }
+    
 // -----____--____FILES VALIDATION____----____---____
 
     private function test_file_notEmpty($rule, $a) {
