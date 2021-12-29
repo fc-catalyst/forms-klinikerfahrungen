@@ -29,7 +29,7 @@ class FCP_Forms {
 	
 	private function plugin_setup() {
 
-		$this->self_url  = plugins_url( '/', __FILE__ );
+		$this->self_url  = plugins_url( '/', __FILE__ ); // ++to constants or even to a separate include
 		$this->self_path = plugin_dir_path( __FILE__ );
 		$this->self_path_file = __FILE__;
 

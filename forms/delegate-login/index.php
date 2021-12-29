@@ -62,4 +62,46 @@ add_action( 'login_enqueue_scripts', function() {
     <?php
 });
 
-//remove_filter( 'authenticate', 'wp_authenticate_username_password', 20, 3 );
+
+// really simple captcha to login page
+add_action( 'login_form', function() {
+    if ( !class_exists( 'FCP_Forms__Draw' ) ) { return; }
+    
+    $json = FCP_Forms::structure( 'delegate-login' );
+    if ( $json === false ) { return; }
+    $json = FCP_Forms::flatten( $json->fields );
+    foreach ( $json as $v ) {
+        if ( $v->type !== 'rscaptcha' ) { continue; }
+        FCP_Forms__Draw::rscaptcha_print( $v );
+        return;
+    }
+
+}, 9999999999 );
+
+/*
+add_filter( 'authenticate', function($user) { //++ fix this
+
+    if ( !class_exists( 'ReallySimpleCaptcha' ) ) { return $user; }
+
+    $json = FCP_Forms::structure( 'delegate-login' );
+    if ( $json === false ) { return; }
+    $json = FCP_Forms::flatten( $json->fields );
+    $field = '';
+    foreach ( $json as $v ) {
+        if ( $v->type !== 'rscaptcha' ) { continue; }
+        $field = $v->name;
+        break;
+    }
+    
+    $value = $_POST[ $field ];
+    if ( !$value ) return new WP_Error( 'denied', __( 'The Captcha field not filled' ) );
+
+    $b = new ReallySimpleCaptcha();
+    $prefix = $_POST[ $field . '_prefix' ];
+    $result = $b->check( $prefix, $value );
+    $b->remove( $prefix );
+    if ( $result ) { return $user; }
+    return new WP_Error( 'denied', __( 'The Captcha is incorrect' ) );
+
+}, 10, 3 );
+//*/
