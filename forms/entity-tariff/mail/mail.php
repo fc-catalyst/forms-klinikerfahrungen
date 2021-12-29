@@ -1,8 +1,13 @@
 <?php
 
-function fcp_forms_entity_tariff_mail_by_id($recipient, $msg, $id) use ($mailing) {
+require_once __DIR__ . '/PHPMailer/src/Exception.php';
+require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 
-    $messages[
+$fcp_forms_entity_tariff_mail_by_id = function($recipient, $msg, $id) use ($mailing) {
+
+    $messages = [
         'accountant' => [
             // entity title, id, links to entity, billing-company, billing-address, billing-name, billing-email, billing-vat
             'request' => [
@@ -56,15 +61,17 @@ function fcp_forms_entity_tariff_mail_by_id($recipient, $msg, $id) use ($mailing
     // select the entity title && verify id
     $notice_datalist['title'] = $wpdb->get_var( 'SELECT `post_title` FROM `'.$wpdb->posts.'` WHERE `ID` = "'.$id.'"');
     if ( !$notice_datalist['title'] ) { return; }
-    $notice_datalist['view'] = '<a href="'.$mailing['url'].'?p='.$id.'" target="_blank" rel="noopener noreferrer">'.__( 'View' ).'</a>';
-    $notice_datalist['edit'] = '<a href="'.$mailing['url'].'wp-admin/post.php?post='.$id.'&action=edit" target="_blank" rel="noopener noreferrer">'.__( 'Edit' ).'</a>';
+    $notice_datalist['title'] = '<strong>'.$notice_datalist['title'].'</strong>
+        <a href="'.$mailing['url'].'?p='.$id.'" target="_blank" rel="noopener noreferrer">'.__( 'View' ).'</a>
+        |
+        <a href="'.$mailing['url'].'wp-admin/post.php?post='.$id.'&action=edit" target="_blank" rel="noopener noreferrer">'.__( 'Edit' ).'</a><br>';
 
     // select the billing information
     if ( $to_accountant ) {
         $json = FCP_Forms::structure( 'billing-add' );
         if ( $json === false ) { return; }
-        $json = FCP_Forms::flatten( $s->fields );
-        
+        $json = FCP_Forms::flatten( $json->fields );
+
         $metas = $wpdb->get_results( '
             SELECT `meta_key`, `meta_value` FROM `'.$wpdb->postmeta.'`
             WHERE
@@ -75,13 +82,14 @@ function fcp_forms_entity_tariff_mail_by_id($recipient, $msg, $id) use ($mailing
                     LIMIT 1
                 )
         ');
-        foreach ( $metas as $k => &$v ) {
-            $metas[ $v['meta_key'] ] = $v['meta_value'];
+        foreach ( $metas as $k => $v ) {
+            $metas[ $v->meta_key ] = $v->meta_value;
             unset( $metas[ $k ] );
         }
         
         foreach ( $json as $v ) {
-            if ( !$metas[ $v->name ] ) { continue; }
+            $v->title = $v->title ? $v->title : $v->placeholder;
+            if ( !$v->meta_box || !$v->title || !$metas[ $v->name ] ) { continue; }
             $notice_datalist[ $v->name ] = $v->title . ': ' . $metas[ $v->name ];
         }
     }
@@ -101,22 +109,19 @@ function fcp_forms_entity_tariff_mail_by_id($recipient, $msg, $id) use ($mailing
         $notice_datalist['reply_to'] = $mailing['accountant'];
     }
 
+//*
     // sending (++schedule for sending later, when heavier load)
+    // ++send only once feature
     fcp_forms_entity_tariff_email_send(
         $messages[ $recipient ][ $msg ][0],
         $messages[ $recipient ][ $msg ][1],
-        '<a href="'.$mailing['url'].'" target="blank" rel="noopener noreferrer">'.$mailing['url'].'</a>',
+        '<a href="'.$mailing['url'].'" target="blank" rel="noopener noreferrer">'.$mailing['domain'].'</a>',
         $notice_datalist
     );
+//*/
+};
 
-}
-
-function fcp_forms_entity_tariff_email_send(
-    $subject,
-    $content,
-    $footer,
-    $m
-) {
+function fcp_forms_entity_tariff_email_send( $subject, $content, $footer, $m ) {
 
     if ( !$subject || !$content ) { return; }
     if ( !$m['from'] || !$m['to'] ) { return; }
@@ -129,8 +134,10 @@ function fcp_forms_entity_tariff_email_send(
         $a = vsprintf( $a, $arr );
         $a = str_replace( '|~~|', '%', $a );
         return $a;
-    }
+    };
 
+    $preheader = substr( strip_tags( $content ), 0, 80 ) . '…';
+   
     $exceptions = ['from', 'from_name', 'to', 'to_name', 'reply_to', 'reply_to_name'];
     $content .= '<br>';
     foreach ( $m as $k => $v ) {
@@ -140,17 +147,12 @@ function fcp_forms_entity_tariff_email_send(
 
     $email_content = [
         $subject, // title
+        $preheader,
         $subject, // h1
         $content,
         $footer
     ];
     $email_body = $vsprintf( $email_template, $email_content );
-
-
-    require( __DIR__ . '/PHPMailer/src/Exception.php' );
-    require( __DIR__ . '/PHPMailer/src/PHPMailer.php' );
-    use PHPMailer\PHPMailer\Exception;
-    use PHPMailer\PHPMailer\PHPMailer;
 
     $mail = new PHPMailer();
     $mail->CharSet = 'UTF-8';

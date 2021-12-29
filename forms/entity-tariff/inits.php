@@ -1,10 +1,12 @@
 <?php
 
+$mailing['domain'] = $_SERVER['SERVER_NAME']; // ++send these to global vars, or find similar in wp
 $mailing = [
-    'url' => 'https://klinikerfahrungen.de/', //++just lazy, use a global var later or a function
-    'sending' => 'robot@klinikerfahrungen.de',
+    'url' => 'http'.( !empty( $_SERVER['HTTPS'] && $_SERVER['HTTPS'] !== 'off' ) ? 's' : '' ).'://'.$mailing['domain'].'/',
+    'sending' => 'robot@'.$mailing['domain'],
     'sending_name' => 'Klinikerfahrungen.de',
-    'accountant' => 'buchhaltung@firmcatalyst.com',
+    'accountant' => 'finnish.ru@gmail.com',//'buchhaltung@firmcatalyst.com',
+    'domain' => $mailing['domain'],
 ];
 
 $day = 60 * 60 * 24;

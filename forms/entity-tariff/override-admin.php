@@ -148,7 +148,7 @@ if ( $admin_am ) {
     if ( $prolong_allowed ) {
         FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-next', [
             'type' => 'notice',
-            'text' => '<strong>The next tariff option is available to users '.( $prolong_gap / $day ).' days before the current <em>paid</em> tariff ends.</strong><span>If current tariff is free, you can schedule the paid one.</span>',
+            'text' => '<strong>The next tariff option is available to users '.( $prolong_gap / $day ).' days before the current <em>paid</em> tariff ends.</strong><span>If current tariff is free, you can schedule the paid one by picking a future date in the "Active till" field.</span>',
             'meta_box' => true,
         ], 'before' );
     }
