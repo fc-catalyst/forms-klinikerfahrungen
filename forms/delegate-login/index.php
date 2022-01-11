@@ -58,6 +58,17 @@ add_action( 'login_enqueue_scripts', function() {
         .login #backtoblog a:hover, .login #nav a:hover, .login h1 a:hover {
             color:var(--main-color)!important;
         }
+        
+        /* captcha */
+        .captcha_wrap {
+            display:flex;
+            margin-bottom:15px!important;
+        }
+        #captcha, #captcha ~ img {
+            width:50%!important;
+            height:auto!important;
+        }
+        
     </style>
     <?php
 });
@@ -67,24 +78,31 @@ add_action( 'login_enqueue_scripts', function() {
 add_action( 'login_form', function() {
     if ( !class_exists( 'FCP_Forms__Draw' ) ) { return; }
     
+    // get the rscaptcha field
     $json = FCP_Forms::structure( 'delegate-login' );
     if ( $json === false ) { return; }
     $json = FCP_Forms::flatten( $json->fields );
     foreach ( $json as $v ) {
         if ( $v->type !== 'rscaptcha' ) { continue; }
+
+        echo '<div class="captcha_wrap">';
         FCP_Forms__Draw::rscaptcha_print( $v );
+        echo '</div>';
+
         return;
     }
 
 }, 9999999999 );
 
-/*
-add_filter( 'authenticate', function($user) { //++ fix this
-
+add_filter( 'authenticate', function($user, $username, $password) {
+    
+    // go on with existing filters
+    if ( empty( $username ) || empty( $password ) ) { return $user; }
     if ( !class_exists( 'ReallySimpleCaptcha' ) ) { return $user; }
 
+    // get the rscaptcha field
     $json = FCP_Forms::structure( 'delegate-login' );
-    if ( $json === false ) { return; }
+    if ( $json === false ) { return $user; } // go on as no captcha field defined
     $json = FCP_Forms::flatten( $json->fields );
     $field = '';
     foreach ( $json as $v ) {
@@ -93,15 +111,21 @@ add_filter( 'authenticate', function($user) { //++ fix this
         break;
     }
     
+    $deny = function($w) {
+        remove_action( 'authenticate', 'wp_authenticate_username_password', 20 );
+        remove_action( 'authenticate', 'wp_authenticate_email_password', 20 );
+        return new WP_Error( 'denied', __( $w ) );
+    };
+    
     $value = $_POST[ $field ];
-    if ( !$value ) return new WP_Error( 'denied', __( 'The Captcha field not filled' ) );
+    if ( !$value ) { return $deny( 'Please fill in the Captcha field' ); }
 
     $b = new ReallySimpleCaptcha();
     $prefix = $_POST[ $field . '_prefix' ];
     $result = $b->check( $prefix, $value );
     $b->remove( $prefix );
-    if ( $result ) { return $user; }
-    return new WP_Error( 'denied', __( 'The Captcha is incorrect' ) );
+    if ( $result ) { return $user; } // go on as success
+
+    return $deny( 'The Symbols from the Captcha field do not match' );
 
 }, 10, 3 );
-//*/

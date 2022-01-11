@@ -333,7 +333,7 @@
 }
 .rscaptcha span::before {
     content:'<';
-    padding:0 20px 0 5px;
+    padding:0 10px;
     line-height:2.2;
     font-weight:600;
 }

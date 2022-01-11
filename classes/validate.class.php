@@ -109,7 +109,8 @@ class FCP_Forms__Validate {
         $b = new ReallySimpleCaptcha();
         $prefix = $_POST[ $rule . '_prefix' ];
         $result = $b->check( $prefix, $a );
-        $b->remove( $prefix );
+        //$b->remove( $prefix ); // there might be a second check on authenticate filter, so just clear by cleanup()
+        $b->cleanup( 10 );
         if ( $result ) { return false; }
         return __( 'The entered symbols are not correct', 'fcpfo' );
     }

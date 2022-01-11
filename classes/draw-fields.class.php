@@ -418,14 +418,14 @@ class FCP_Forms__Draw {
             type="input"
             name="<?php self::e_field_name( $a->name ) ?>"
             id="<?php self::e_field_id( $a->name ) ?>"
-            style="width:<?php echo $v->img_size[0] ?>px"
+            style="width:<?php echo $b->img_size[0] ?>px;height:<?php echo $b->img_size[1] ?>px"
             placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty && !$a->title ? '*' : '' ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
         />
         <span></span>
         <img
             src="<?php echo plugins_url( 'really-simple-captcha/tmp/' . $src ) ?>"
-            style="width:<?php echo $v->img_size[0] ?>px;height:<?php echo $v->img_size[1] ?>px"
+            style="width:<?php echo $b->img_size[0] ?>px;height:<?php echo $b->img_size[1] ?>px"
         />
         <input
             type="hidden"
