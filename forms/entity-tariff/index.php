@@ -213,6 +213,14 @@ function fcp_flush_tariff_by_id($p, &$values = []) {
         if ( $query = $wpdb->prepare( $query, $meta_a2q_insert() ) ) { $wpdb->query( $query ); }
     }
     
+    // flush the post cache
+    clean_post_cache( $p->ID );
+    if ( function_exists( 'rocket_clean_post' ) ) {
+        rocket_clean_post( $p->ID );
+    }
+    
+    // ++mail here?
+    
     // modify the $values from the scope
     if ( empty( $values ) ) { return; }
     

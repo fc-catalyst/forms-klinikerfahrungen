@@ -6,6 +6,15 @@ if ( !class_exists( 'FCPAddPostType' ) ) {
     include_once $this->self_path . 'classes/add-post-type.class.php';
 }
 
+register_activation_hook( $this->self_path_file, function() {
+    add_action( 'wp_loaded', function() {
+        flush_rewrite_rules();
+    });
+});
+register_deactivation_hook( $this->self_path_file, function() {
+    flush_rewrite_rules();
+});
+
 new FCPAddPostType( [
     'name' => 'Clinic', // the translation goes inside the class
     'type' => 'clinic',

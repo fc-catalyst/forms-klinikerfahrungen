@@ -228,8 +228,7 @@ class FCP_Forms {
             self::plugin_unid_path(),
             '<?php return "' . md5( time() ) . '";'
         );
-        
-        flush_rewrite_rules();
+
     }
     
     public function uninstall() {
@@ -241,8 +240,7 @@ class FCP_Forms {
         
         // remove unique plugin id
         unlink( self::plugin_unid_path() );
-        
-        flush_rewrite_rules();
+
     }
     
     public function process() { // when $_POST is passed by the client side
