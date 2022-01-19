@@ -1,7 +1,4 @@
-fcLoadScriptVariable(
-    '/wp-content/themes/fct1/assets/smarts/gmap-pick.js?' + + new Date(),
-    'fcAddGmapPick'
-);
+// basically, it is a copy of scripts.js, but without popups and with scripts loaded initially
 
 fcLoadScriptVariable(
     'https://maps.googleapis.com/maps/api/js?key='+fcGmapKey+'&libraries=places&&language=de-DE',
@@ -9,129 +6,184 @@ fcLoadScriptVariable(
 );
 
 fcLoadScriptVariable(
+    '/wp-content/themes/fct1/assets/smarts/gmap-view.js?' + + new Date(),
+    'fcAddGmapView'
+);
+
+fcLoadScriptVariable(
+    '/wp-content/themes/fct1/assets/smarts/gmap-pick.js?' + + new Date(),
+    'fcAddGmapPick'
+);
+
+fcLoadScriptVariable(
     '',
     'google',
     function() {
 
-        let autocompleteFilled = false; // make sure, the visitor used the autocomplete popup
-        const $ = jQuery,
-            $autocompleteInput = $( '#entity-address_entity-add' );
-        if ( !$autocompleteInput.length ) { return }
+        const $ = jQuery;
+
+
+        // gmap-------------------------------
+        const $gmap_holder = $( '.fct-gmap-pick' );
+        $gmap_holder.css( 'min-height', '312px' );
+
+        function getLatLngZoom() {
+            const default_props = { // ++add default country pick by language or IP
+                lat: 51.1243545,
+                lng: 10.18524,
+                zoom: 6
+            },
+            props = {
+                lat: Number( $( '#entity-geo-lat_entity-add' ).val() ),
+                lng: Number( $( '#entity-geo-long_entity-add' ).val() ),
+                zoom: Number( $( '#entity-geo-zoom_entity-add' ).val() ) || default_props.zoom
+            };
+            
+            return props.lat && props.lng ? props : default_props;
+        }
+
+        // gmap print
+        if ( !$gmap_holder.length ) { return }
+
+        const gmap = fcAddGmapView( $gmap_holder, false, getLatLngZoom() ),
+              marker = fcAddGmapPick( gmap, $gmap_holder[0] );
+
+        // apply new values after moving the marker
+        $gmap_holder[0].addEventListener( 'map_changed', function(e) {
+            $( '#entity-geo-lat_entity-add' ).val( e.detail.marker.getPosition().lat() );
+            $( '#entity-geo-long_entity-add' ).val( e.detail.marker.getPosition().lng() );
+            $( '#entity-geo-zoom_entity-add' ).val( e.detail.gmap.getZoom() );
+        });
+
         
-        const autocomplete = new google.maps.places.Autocomplete(
-            $autocompleteInput[0],
+        // autocomplete-------------------------------
+        const $input = $( '#entity-address_entity-add' );
+        if ( !$input.length ) { return }
+
+
+        let is_correct = false; // make sure, the visitor used the autocomplete, so the hidden fields are filled correctly
+
+        // autocomplete with an advisor
+        const ac = new google.maps.places.Autocomplete(
+            $input[0],
             {
                 componentRestrictions: { country: ['de'] },
-                fields: ['address_components', 'formatted_address', 'geometry'], // ++'place_id'
+                fields: ['address_components', 'formatted_address', 'geometry'], // ++'place_id' to load rating someday
                 types: ['address']
             }
         );
 
-        // set up the initial map
-        $( '.fct-gmap-pick' ).css( 'min-height', '312px' );
-        fcAddGmapPick( '.fct-gmap-pick' );
-            
-        autocomplete.addListener( 'place_changed', function() { // ++replace with local autocomplete?
-            fillInValues( autocomplete.getPlace() );
+        ac.addListener( 'place_changed', function() { // the correct way of filling the address field
+            fillInValues( ac.getPlace() );
         });
 
-        $autocompleteInput.on( 'input', function() { // any manual input must be corrected
-            autocompleteFilled = false;
+        $input.on( 'input', function() { // any manual change must be verified / modified by the api
+            is_correct = false;
         });
 
-        $autocompleteInput.on( 'blur', function() {
+
+        let freeze = false; // freezes the value from changes by geocoder, if the field is in focus
+        $input.on( 'blur', function() { // verify / modify / format the value by the api
+            freeze = false;
+            setTimeout( function() { // just a measure of economy, as `blur` fires before `place_changed`
             
-            setTimeout( function() { // should wait for autocompete if is - a measure of economy
-            
-                if ( autocompleteFilled ) { return }
+                if ( is_correct ) { return }
                 
                 let geocoder = new google.maps.Geocoder();
 
                 geocoder.geocode(
                     {
                         componentRestrictions: { country: 'de' },
-                        address: $autocompleteInput.val()
-                        //location: latlng{}
+                        address: $input.val()
                         //placeId: placeId
                     },
-                    function(results, status) {
-                        if ( status !== 'OK' ) { return }
-                        if ( autocompleteFilled ) { return }
-                        fillInValues( results[0] );
+                    function(places, status) {
+                        if ( status !== 'OK' ) { fillInValues(); return }
+                        if ( is_correct || freeze ) { return }
+                        fillInValues( places[0] );
                     }
                 );
-            }, 1000 );
+            }, 200 );
 
         });
-
-        $autocompleteInput.keydown( function (e) { // fix the enter clicn to not submit the form, but select
-            if ( e.key === 'Enter' && $( '.pac-container:visible' ).length ) {
-                e.preventDefault();
-            }
+        if ( $input.is( ':focus' ) ) {
+            freeze = true;
+        }
+        $input.on( 'focus', function() {
+            freeze = true;
         });
 
-        function fillInValues(result) {
 
-            autocompleteFilled = true;
+        function fillInValues(place) {
+
+            const values = {
+                'region': '',
+                'geo-city': '',
+                'geo-postcode': '',
+                'geo-lat': '',
+                'geo-long': ''
+            },
+                prefix = 'entity-',
+                postfix = '_entity-add';
+
+            if ( !place || !place.geometry ) { apply_values(); return; } // autocomplete couldn't suggest anything proper
+            
+            is_correct = true;
 
             let postcode = '';
-
-            for ( const component of result.address_components ) {
+            for ( const component of place.address_components ) {
                 const componentType = component.types[0];
                 switch (componentType) {
-                    case 'postal_code': {
+                    case 'postal_code': { // postcode
                         postcode = `${component.long_name}${postcode}`;
                         break;
                     }
-                    case "postal_code_suffix": {
+                    case "postal_code_suffix": { // postcode
                         postcode = `${postcode}-${component.long_name}`;
                         break;
                     }
                     case "locality": { // city
-                        $( '#entity-geo-city_entity-add' ).val( component.long_name );
+                        values['geo-city'] = component.long_name;
                         break;
                     }
                     case "administrative_area_level_1": { // region
-                        $( '#entity-region_entity-add' ).val( component.short_name );
+                        values['region'] = component.short_name;
                         break;
                     }
                 }
             }
 
-            //$( '#entity-region_entity-add' ).val();
-            //$( '#entity-geo-city_entity-add' ).val();
-            $( '#entity-geo-postcode_entity-add' ).val( postcode );
+            values['geo-postcode'] = postcode;
+            values['geo-lat'] = place.geometry.location.lat();
+            values['geo-long'] = place.geometry.location.lng();
 
-            $( '#entity-geo-lat_entity-add' ).val( result.geometry.location.lat() );
-            $( '#entity-geo-long_entity-add' ).val( result.geometry.location.lng() );
+            apply_values();
             
+            gmap_move();
+
             // format the main address field
-            $autocompleteInput.val( result.formatted_address );
+            $input.val( place.formatted_address );
             
-            // change the map marker & position
-            fcAddGmapPick( '.fct-gmap-pick' );
-            
-            //++process the invalid address somehow
-        }
-        
-        
-        // lunch break add
-        let $lunch = $( '<button type="button" style="float:right;margin:4px 0 0 12px">We have lunch breaks</button>' );
-        $lunch.click( function() {
-            let $copy = $( '#entity-working-hours input[type=text] + input[type=text]' )
-            if ( $copy.length ) {
-                $copy.each( function() {
-                    $( this ).remove();
-                });
-                return;
+            function apply_values() {
+                for ( let i in values ) {
+                    $( '#'+prefix+i+postfix ).val( values[i] );
+                }                
             }
-            $( '#entity-working-hours input[type=text]' ).each( function(e) {
-                let $self = $( this );
-                $self.clone().insertAfter( $self );
-            });
+        }
+
+
+        $input.keydown( function (e) { // don't submit the form if autocomplete is open
+            if ( e.key === 'Enter' && $( '.pac-container:visible' ).length ) {
+                e.preventDefault();
+            }
         });
-        $( '#entity-working-hours h3' ).append( $lunch );
+        
+        function gmap_move() {
+            const props = getLatLngZoom();
+            gmap.panTo( props );
+            marker.setPosition( props );
+        }
 
     },
-    ['jQuery', 'google', 'fcAddGmapPick']
+    ['jQuery', 'google', 'fcAddGmapView', 'fcAddGmapPick']
 );
