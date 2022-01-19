@@ -49,7 +49,7 @@ function fct_print_gmap() {
     <div class="fct-gmap-view" itemprop="geo" itemscope itemtype="https://schema.org/GeoCoordinates"
         <?php echo $addr ? 'data-addr="'.$addr.'"' : '' ?>
         <?php echo $lat ? 'data-lat="'.$lat.'"' : '' ?>
-        <?php echo $long ? 'data-long="'.$long.'"' : '' ?>
+        <?php echo $long ? 'data-lng="'.$long.'"' : '' ?>
         <?php echo $zoom ? 'data-zoom="'.$zoom.'"' : '' ?>
         <?php echo 'data-title="'.get_the_title().'"' ?>
     >
