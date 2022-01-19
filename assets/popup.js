@@ -13,9 +13,9 @@ function FCP_Forms_Popup(section) {
         this.show = this.hide = function(){};
         return;
     }
-    
+
     var self = this;
-    
+
     this.show = function(target) {
         this.section.classList.add( 'fcp-active' );
         document.querySelector( 'body' ).style.overflow = 'hidden';
@@ -27,8 +27,9 @@ function FCP_Forms_Popup(section) {
         } else {
             delete self.target;
         }
+        this.section.dispatchEvent( new CustomEvent( 'popup_opened' ) );
     };
-    
+
     this.hide = function() {
         this.section.classList.remove( 'fcp-active' );
         document.querySelector( 'body' ).style.overflow = null;
@@ -36,6 +37,7 @@ function FCP_Forms_Popup(section) {
         if ( typeof self.target !== 'undefined' ) {
             self.target.focus();
         }
+        this.section.dispatchEvent( new CustomEvent( 'popup_closed' ) );
     };
 
     // close buttons
@@ -47,7 +49,7 @@ function FCP_Forms_Popup(section) {
        self.hide();
     });
     this.section.appendChild( apply );
-    
+
     var discard = document.createElement( 'button' );
     discard.title = 'Discard';
     discard.type = 'button';
@@ -57,7 +59,7 @@ function FCP_Forms_Popup(section) {
        restore_values();
     });
     this.section.appendChild( discard );
-    
+
     function key_press(e) {
         if ( e.code === 'Enter' ) {
             if ( !~['input','button','select','textarea'].indexOf( e.target.nodeName.toLowerCase() ) ) { return true; }
@@ -72,7 +74,7 @@ function FCP_Forms_Popup(section) {
             return false;
         }
     }
-    
+
     function presave_values() {
         self.section.querySelectorAll( 'input, button, select, textarea' ).forEach( function(a) {
             a.setAttribute( 'data-presaved-value', a.value );
@@ -84,5 +86,5 @@ function FCP_Forms_Popup(section) {
             a.removeAttribute( 'data-presaved-value' );
         });
     }
-    
+
 }
