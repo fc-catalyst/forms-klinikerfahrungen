@@ -181,6 +181,7 @@ fcLoadScriptVariable(
         function gmap_move() {
             const props = getLatLngZoom();
             gmap.panTo( props );
+            gmap.setZoom( 17 );
             marker.setPosition( props );
         }
 
