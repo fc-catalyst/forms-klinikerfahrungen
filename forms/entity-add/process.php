@@ -61,7 +61,7 @@ foreach ( $update_list as $k => $v ) {
 }
 
 // REDIRECT
-if ( $_POST['entity-tariff'] === 'kostenloser_eintrag' ) { // use fct_free_account()
+if ( $_POST['entity-tariff'] === 'kostenloser_eintrag' ) {
     $redirect = get_permalink( $id ); // preview the post
     return;
 }

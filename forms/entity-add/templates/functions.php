@@ -77,7 +77,7 @@ function fct_print_contact_button($meta, $name, $itemprop = '') {
     $button = fct1_meta( $meta );
     if ( !$button ) { return; }
     
-    $commercial = !fct_free_account( fct1_meta( 'entity-tariff' ) );
+    $commercial = !fct_free_account();
 
     if ( strpos( $meta, 'phone' ) !== false ) { $prefix = 'tel:'; }
     if ( strpos( $meta, 'mail' ) !== false ) { $prefix = 'mailto:'; }
@@ -179,9 +179,9 @@ function fct_entity_print_gallery() {
 <?
 }
 
-function fct_entity_content_filter($content, $tariff = '') {
+function fct_entity_content_filter($content, $tariff = '') { // $tariff is a rudiment here
     if ( !$content ) { return; }
-    return apply_filters( 'the_content', fct1_a_clear( $content, !fct_free_account( $tariff ) ) );
+    return apply_filters( 'the_content', fct1_a_clear( $content, !fct_free_account() ) );
 }
 
 function fct_entity_print_tags() {
@@ -189,9 +189,9 @@ function fct_entity_print_tags() {
     // Unser Behandlungsspektrum
 }
 
-function fct_free_account($tariff) {
-    if ( !$tariff || $tariff === 'kostenloser_eintrag' ) {
-        return true;
-    }
-    return false;
+function fct_free_account() {
+    $tariff = fct1_meta( 'entity-tariff' );
+    $status = fct1_meta( 'entity-payment-status' );
+    if ( $tariff && $tariff !== 'kostenloser_eintrag' && $status === 'payed' ) { return false; }
+    return true;
 }
