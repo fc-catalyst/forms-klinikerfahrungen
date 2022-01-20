@@ -111,6 +111,7 @@ add_action( 'admin_init', function() {
 // show only my posts in admin lists
 add_filter( 'pre_get_posts', function ($query) {
     if ( !is_admin() ) { return $query; }
+    if ( !function_exists( 'get_current_screen' ) ) { return $query; }
     if ( get_current_screen()->base != 'edit' ) { return $query; }
     if ( !self::check_role( 'entity_delegate' ) ) { return $query; }
     
