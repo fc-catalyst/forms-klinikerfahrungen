@@ -3,10 +3,7 @@
 
         <h2><?php _e( 'About', 'fcpfo-ea' ) ?></h2>
 
-        <?php echo fct_entity_content_filter( 
-            fct1_meta( 'entity-content' ),
-            fct1_meta( 'entity-tariff' )
-        ) ?>
+        <?php echo fct_entity_content_filter( fct1_meta( 'entity-content' ) ) ?>
 
         <?php fct_entity_print_tags() ?>
 

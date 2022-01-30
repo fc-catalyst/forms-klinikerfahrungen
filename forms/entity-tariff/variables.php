@@ -1,12 +1,16 @@
 <?php
 /*
- * variables for further use
+ * variables for further use and $value modifications
 */
 
 if ( !isset( $values ) ) { return; }
 
-// init timing variables
-require 'inits.php';
+
+// timing variables
+$day = DAY_IN_SECONDS;
+$prolong_gap = $day * 14; // a time period, when prolongation option becomes available
+$billed_flush_gap = $day * 30; // a time period to pay the bill - flushes the tariff to a free one when ends
+
 
 // roles
 $admin_am = current_user_can( 'administrator' );

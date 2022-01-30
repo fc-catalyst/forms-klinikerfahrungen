@@ -7,26 +7,6 @@ FCP_Forms::tz_set(); // set utc timezone for all the time operations, in case th
 
 require 'variables.php';
 
-/*
-//$cron_jobs = get_option( 'cron' );
-//var_dump($cron_jobs);
-
-FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
-    'type' => 'notice',
-    'meta_box' => true,
-    'before' => '<pre>',
-    'after' => '</pre>',
-    'text' => "\n".
-        print_r( _get_cron_array(), true )//date( 'd.m.Y H:i:s', 1639872000 )//print_r( _get_cron_array(), true )//print_r( $outdated->request, true )//fcp_flush_tariff_by_id( $_GET['post'] )
-    ."\n",
-], 'before' );
-//*/
-
-
-// ++--flush the tariff conditionally
-//fcp_flush_tariff_by_id( $_GET['post'], $values );
-//fcp_flush_dates_by_id( $_GET['post'], $values, true );
-//fcp_forms_entity_tariff_prolong();
 
 $init_values = $values;
 
@@ -41,13 +21,6 @@ if ( !get_post_meta( $_GET['post'], 'entity-billing', true ) && !$admin_am ) {
     return;
 }
 
-// meeting the reset / update conditions
-/*
-if ( $values['entity-tariff-till'] <= $time_local ) {
-    // +++reset the tariff to free or apply the next one ++ move to top ()
-}
-+++ collect other demanded further flushes here
-//*/
 
 // print field-by-field conditionally
 
@@ -55,21 +28,6 @@ if ( $values['entity-tariff-till'] <= $time_local ) {
 // main tariff picker
 if ( !$admin_am && $tariff_paid ) { // only the free tariff can be changed by a user
     FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff', 'roles_view', ['entity_delegate'] );
-}
-
-
-// tariff requested date - is used to remind the accountant to bill in a few days after
-if ( $values['entity-tariff-requested'] && $tariff_paid ) { // ++reposition, if refers to the next tariff
-    $values['entity-tariff-requested'] = date( $date_format, $values['entity-tariff-requested'] + $time_bias );
-} else {
-    FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-requested', [], 'unset' );
-}
-
-// tariff billed date - is used to change unpayed paid tariffs back to free, like in a $prolong_gap period
-if ( $values['entity-tariff-billed'] && $values['entity-payment-status'] === 'billed' ) { // ++reposition after next if
-    $values['entity-tariff-billed'] = date( $date_format, $values['entity-tariff-billed'] );
-} else {
-    FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-billed', [], 'unset' );
 }
 
 
@@ -125,7 +83,7 @@ if ( $prolong_allowed ) {
 if ( $admin_am ) {
 
     if ( !$tariff_paid ) {
-        FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-requested', [
+        FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
             'type' => 'notice',
             'text' => '<strong>The following fields effect only paid tariffs.</strong>',
             'meta_box' => true,
@@ -168,7 +126,7 @@ if ( !$admin_am ) {
             $status_message = '<em>Payment status - Pending: </em>You will be billed in a few days via your mentioned billing email <em>' . $billing_email . '</em> For any questions or problems with receiving the bill, please contact our accountant <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a>';
 
         } elseif ( $values['entity-payment-status'] === 'billed' ) {
-            $status_message = '<em><font color="#35b32d">Payment status - Billed</font>: </em>Please check your billing email ' . $billing_email . ' and pay the bill to activate the tariff. For any questions please contact our accountant by <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a><br>The initial free tariff will be restored automatically in '.floor( $billed_flush_gap / $day ).' days, if not payed.';
+            $status_message = '<em><font color="#35b32d">Payment status - Billed</font>: </em>Please check your billing email ' . $billing_email . ' and pay the bill to activate the tariff. For any questions please contact our accountant by <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a><br>The initial free tariff will be restored automatically in '.floor( $billed_flush_gap / $day ).' days since the request, if not payed.';
 
         }
         
@@ -189,7 +147,7 @@ if ( !$admin_am ) {
             $status_message = '<em>Payment status - Pending: </em>You will be billed in a few days via your mentioned billing email <em>' . $billing_email . '</em> For any questions or problems with receiving the bill, please contact our accountant <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a>';
 
         } elseif ( $values['entity-payment-status-next'] === 'billed' ) {
-            $status_message = '<em><font color="#35b32d">Payment status - Billed</font>: </em>Please check your billing email ' . $billing_email . ' and pay the bill to activate the tariff. For any questions please contact our accountant by <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a><br>The initial free tariff will be restored automatically in '.floor( $billed_flush_gap / $day ).' days, if not payed.';
+            $status_message = '<em><font color="#35b32d">Payment status - Billed</font>: </em>Please check your billing email ' . $billing_email . ' and pay the bill to activate the tariff. For any questions please contact our accountant by <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a><br>The initial free tariff will be restored automatically in '.floor( $billed_flush_gap / $day ).' days since the request, if not payed.';
 
         } elseif ( $values['entity-payment-status-next'] === 'payed' ) {
             $status_message = '<em>Payment status - Payed</em>';

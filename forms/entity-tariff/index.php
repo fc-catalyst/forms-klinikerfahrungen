@@ -60,12 +60,10 @@ register_activation_hook( $this->self_path_file, function() {
     $day_start = mktime( 0, 0, 0 );
     // hourly because of timezones; not counting not standard 45 and 30 min gaps, though, for later, maybe
     wp_schedule_event( $day_start, 'hourly', 'fcp_forms_entity_tariff_prolong' );
-    //wp_schedule_event( $day_start, 'daily', 'fcp_forms_entity_tariff_clean' );
 });
 
 register_deactivation_hook( $this->self_path_file, function() {
     wp_clear_scheduled_hook( 'fcp_forms_entity_tariff_prolong' );
-    wp_clear_scheduled_hook( 'fcp_forms_entity_tariff_clean' );
 });
 
 add_action( 'fcp_forms_entity_tariff_prolong', function() {
@@ -231,66 +229,6 @@ function fcp_flush_tariff_by_id($p, &$values = []) {
     $values['entity-tariff-next'] = '';
     $values['entity-payment-status-next'] = '';
 
-}
-
-
-function fcp_forms_entity_tariff_clean() { // ++not tested, currently is off
-
-    global $wpdb;
-    
-    require 'inits.php';
-   
-    $outdated = $wpdb->get_results( '
-SELECT wpfcp_posts.ID FROM wpfcp_posts
-INNER JOIN wpfcp_postmeta ON ( wpfcp_posts.ID = wpfcp_postmeta.post_id )
-WHERE
-    1=1  AND ( 
-        ( wpfcp_postmeta.meta_key = "entity-tariff-requested" AND wpfcp_postmeta.meta_value < '.( time() - $requested_flush_gap).' ) 
-        OR 
-        ( wpfcp_postmeta.meta_key = "entity-tariff-billed" AND wpfcp_postmeta.meta_value < '.( time() - $billed_flush_gap ).' )
-    )
-    AND
-    wpfcp_posts.post_type IN ("clinic", "doctor")
-GROUP BY wpfcp_posts.ID
-    ');
-
-    foreach( $outdated as $id ) {
-        orms_entity_tariff_clean_by_id( $id );
-    }
-}
-
-function orms_entity_tariff_clean_by_id($id, &$values = [], $check = false) { // ++not tested
-    
-    if ( !is_numeric( $id ) ) { return; }
-    
-    // check the values, else - trust and do what has to be done
-    global $wpdb;
-    
-    require 'inits.php';
-    
-    if ( $check ) { // ++can just compare with the $values if are
-    
-        $query = 'SELECT `meta_key`, `meta_value` FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( `meta_key` = %s OR `meta_key` = %s )';
-        $query = $wpdb->prepare( $query, $id, 'entity-tariff-requested', 'entity-tariff-billed' );
-        if ( $query === null ) { return; }
-        
-        $results = $wpdb->get_results( $query );
-        $time = time();
-        foreach ( $results as $v ) {
-            if ( // if nothing is outdated - return
-                $v->meta_key === 'entity-tariff-requested' && $v->meta_value >= $time - $requested_flush_gap
-                ||
-                $v->meta_key === 'entity-tariff-billed' && $v->meta_value >= $time - $billed_flush_gap
-            ) { return; }
-        }
-    }
-    
-    $query = 'DELETE FROM `'.$wpdb->postmeta.'` WHERE `post_id` = %d AND ( `meta_key` = %s OR `meta_key` = %s )';
-    if ( $query = $wpdb->prepare( $query, $id, 'entity-tariff-requested', 'entity-tariff-billed' ) ) {
-        $wpdb->query( $query );
-        $values['entity-tariff-requested'] = 0;
-        $values['entity-tariff-billed'] = 0;
-    }
 }
 
 FCP_Forms::tz_reset();

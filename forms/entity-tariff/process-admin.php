@@ -10,11 +10,6 @@ foreach ( $values as &$v ) { $v = $v[0]; }
 require_once 'variables.php';
 require_once 'mail/mail.php';
 
-//testing
-//$fcp_forms_entity_tariff_mail_by_id( 'accountant', 'request', $postID );
-
-// ++--flush the tariff it it became outdated while someone was in admin and did nothing
-// fcp_flush_tariff_by_id( $_GET['post'], $values );
 
 // no tariff manipulations with no billing method picked
 if ( !$values['entity-billing'] && !$admin_am ) {
@@ -24,7 +19,7 @@ if ( !$values['entity-billing'] && !$admin_am ) {
 
 $tariff_change = $_POST['entity-tariff'] !== $values['entity-tariff'];
 $pay_status_change = $_POST['entity-payment-status'] !== $values['entity-payment-status'];
-// $tariff_next_change = $_POST['entity-tariff-next'] !== $values['entity-tariff-next']; // lower
+// $tariff_next_change = $_POST['entity-tariff-next'] !== $values['entity-tariff-next']; // moved lower
 
 
 // processing the values
@@ -37,34 +32,15 @@ if ( !$admin_am && $tariff_paid ) { // only the free tariff can be changed by a 
 }
 
 
-// tariff requested date
-if ( !$admin_am && $tariff_change && !$tariff_paid ) { // tariff is about to change to paid by a user
+// tariff status change
+if ( !$admin_am && $tariff_change && !$tariff_paid ) { // tariff is about to change to paid one by a user
 
     // payment status init
     $_POST['entity-payment-status'] = 'pending';
     FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status', 'roles_edit', ['entity_delegate'] );
 
-    // requested date save
-    $_POST['entity-tariff-requested'] = $time;
-    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-requested', 'roles_view', '', 'unset' );
-
     // notify the accountant
-    $fcp_forms_entity_tariff_mail_by_id( 'accountant', 'request', $postID );
-}
-if ( $admin_am && $pay_status_change && $_POST['entity-payment-status'] === 'payed' ) {
-    $_POST['entity-tariff-requested'] = 0;
-    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-requested', 'roles_view', '', 'unset' );
-}
-
-
-// tariff billed date
-if ( $admin_am && $pay_status_change ) {
-    if ( $_POST['entity-payment-status'] === 'billed' ) {
-        $_POST['entity-tariff-billed'] = $time;
-    } else {
-        $_POST['entity-tariff-billed'] = 0;
-    }
-    FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-billed', 'roles_view', '', 'unset' );
+    //$fcp_forms_entity_tariff_mail_by_id( 'accountant', 'request', $postID );
 }
 
 
@@ -112,10 +88,6 @@ if ( $prolong_allowed ) {
 
         $_POST['entity-payment-status-next'] = 'pending';
         FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status-next', 'roles_edit', ['entity_delegate'] );
-        
-        // requested date save
-        $_POST['entity-tariff-requested'] = $time;
-        FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-tariff-requested', 'roles_view', '', 'unset' );
 
     }
     
@@ -123,7 +95,7 @@ if ( $prolong_allowed ) {
         $tariff_next_new_and_paid = $_POST['entity-tariff-next'] !== $values['entity-tariff']
                              && $_POST['entity-tariff-next'] !== $tariff_default;
 
-        $fcp_forms_entity_tariff_mail_by_id( 'accountant', $tariff_next_new_and_paid ? 'change' : 'prolong', $postID );
+        //$fcp_forms_entity_tariff_mail_by_id( 'accountant', $tariff_next_new_and_paid ? 'change' : 'prolong', $postID );
     }
 }
 

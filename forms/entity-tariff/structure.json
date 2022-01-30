@@ -25,18 +25,6 @@
             }
         },
         {
-            "type" : "text",
-            "name" : "entity-tariff-requested",
-            "meta_box" : true,
-            "roles_view" : [
-                "administrator"
-            ],
-            "view" : {
-                "before" : "<span>Requested on: <em>",
-                "after" : "</em></span>"
-            }
-        },
-        {
             "type" : "select",
             "placeholder" : "The payment status:",
             "name" : "entity-payment-status",
@@ -51,18 +39,6 @@
             "roles_edit" : [
                 "administrator"
             ]
-        },
-        {
-            "type" : "text",
-            "name" : "entity-tariff-billed",
-            "meta_box" : true,
-            "roles_view" : [
-                "administrator"
-            ],
-            "view" : {
-                "before" : "<span>Billed on: <em>",
-                "after" : "</em></span>"
-            }
         },
         {
             "type" : "text",

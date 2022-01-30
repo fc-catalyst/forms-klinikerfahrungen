@@ -1,9 +1,183 @@
 <?php
 
+/*
 require_once __DIR__ . '/PHPMailer/src/Exception.php';
 require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
+//*/
+
+class FCP_FormsTariffMail {
+
+    public static $details = [],
+                  $messages = [
+        'accountant' => [
+            // entity title, id, links to entity, billing-company, billing-address, billing-name, billing-email, billing-vat
+            'request' => [
+                'Paid tariff request',
+                'A paid tariff is requested. Please, bill the client and mark the status as Billed. When the bill is payed, please remember to mark the status as Payed to activate the Tariff.',
+            ],
+            'prolong' => [
+                'Prolongation request',
+                'A Tariff prolongation is requested. Please bill the client and mark the entity prolongation status as Billed. When the bill is payed, please remember to mark the status as Payed to schedule or activate the Tariff.',
+            ],
+            'change' => [
+                'Tariff Change request',
+                'A Tariff change is requested in terms of prolongation. Please bill the client and mark the entity prolongation status as Billed. When the bill is payed, please remember to mark the status as Payed to schedule or activate the Tariff.',
+            ],
+            'cancel' => 'The client has not payed the Bill. You can now cancel the Bill, or contact the client directly.',
+        ],
+        'client' => [
+            // entity title, id, link to entity
+            'activated' => [ // payed
+                'New tariff is activated',
+                'Your new tariff is activated.',
+            ],
+            'prolonged' => [ // payed
+                'Your tariff was prolonged',
+                'Your tariff was prolonged successfully.',
+            ],
+            'ending' => [
+                'Your tariff is about to end',
+                'Your tariff is about to end. The prolongation option is available in your Klinikerfahrungen account. Ignore this message to continue with a Free Tariff',
+            ],
+            'ended' => [
+                'Your tariff has just ended',
+                'Your tariff has just ended. Free Tariff is activated.',
+            ],
+            'billed' => [
+                'A bill reminder',
+                'You\'ve been billed recently. Please, pay the bill or ignore the emails to continue with a Free Tariff',
+            ],
+        ]
+    ];
+
+    public static function details($a = []) {
+
+        if ( empty( self::$details ) ) {
+            $url = get_bloginfo( 'wpurl' );
+            self::$details = [
+                'domain' => $_SERVER['SERVER_NAME'],
+                'url' => $url,
+                'sending' => 'robot@'.$_SERVER['SERVER_NAME'],
+                'sending_name' => get_bloginfo( 'name' ),
+                'accountant' => 'finnish.ru@gmail.com', // 'buchhaltung@firmcatalyst.com',
+            ];
+            // 'http'.( !empty( $_SERVER['HTTPS'] && $_SERVER['HTTPS'] !== 'off' ) ? 's' : '' ).'://'
+        }
+
+        if ( empty( $a ) ) {
+            return self::$details;
+        }
+
+        self::$details = array_merge( self::$details, $a );
+
+    }
+    
+    public static function by_id() {
+    
+    }
+
+    // collect title && meta data && billing data by a post id or array of ids
+    public static function get_data($ids = [], $nocached = false) { 
+        static $combined = [];
+
+        if ( empty( $ids ) ) { return $combined; }
+
+        if ( is_numeric( $ids ) ) {
+            $ids = [ $ids ];
+        }
+
+        $filter_result = function( $combined ) use ( $ids ) {
+            $return = [];
+            foreach ( $ids as $v ) {
+                $return[ $v ] = $combined[ $v ];
+            }
+            return $return;
+        };
+
+        if ( !$nocached && !empty( $combined )) { // use cached values from $combined
+            $ids_filtered = array_diff( $ids, array_keys( $combined ) );
+            if ( empty( $ids_filtered ) ) {
+                return $filter_result( $combined );
+            }
+            $ids = $ids_filtered;
+        }
+
+        global $wpdb;
+        $data = [];
+        
+        // select titles
+        $r = $wpdb->get_results( '
+            SELECT `ID`, `post_title`
+            FROM `'.$wpdb->posts.'`
+            WHERE `ID` IN ('.implode(',',$ids).')
+        ');
+        $titles = [];
+        foreach ( $r as $k => $v ) { $titles[ $v->ID ] = $v->post_title; }
+
+        // select meta
+        $r = $wpdb->get_results( '
+            SELECT `post_id`, `meta_key`, `meta_value`
+            FROM `'.$wpdb->postmeta.'`
+            WHERE `post_id` IN (' . implode( ',', $ids ) . ') AND `meta_key` IN ( "entity-tariff", "entity-billing" )
+        ');
+        $metas = [];
+        $bill_ids = [];
+        foreach ( $r as $k => $v ) {
+            $metas[ $v->post_id ][ $v->meta_key ] = $v->meta_value;
+            if ( $v->meta_key !== 'entity-billing' ) { continue; }
+            $bill_ids[] = $v->meta_value;
+        }
+
+        // select billing meta details
+        $r = $wpdb->get_results( '
+            SELECT `post_id`, `meta_key`, `meta_value`
+            FROM `'.$wpdb->postmeta.'`
+            WHERE `post_id` IN (' . implode( ',', $bill_ids ) . ')
+        ');
+        $billings = [];
+        foreach ( $r as $k => $v ) {
+            $billings[ $v->post_id ][ $v->meta_key ] = $v->meta_value;
+        }
+
+        // combine && save the results
+        foreach ( $titles as $k => $v ) {
+            $combined[ $k ] = [
+                'title' => $v,
+                'meta' => $metas[ $k ],
+                'billing' => $billings[ $metas[ $k ]['entity-billing'] ]
+            ];
+        }
+
+        return $filter_result( $filter_result( $combined ) );
+
+    }
+
+}
+
+/*
+[820] => Array
+    (
+        [title] => Someclinic
+        [meta] => Array
+            (
+                [entity-billing] => 821
+                [entity-tariff] => premiumeintrag
+            )
+
+        [billing] => Array
+            (
+                [billing-address] => Adddress for billing1
+                [billing-email] => aa@a.aa
+                [_edit_lock] => 1643575074:1
+                [_edit_last] => 20
+            )
+
+    )
+*/
+
+
 
 $fcp_forms_entity_tariff_mail_by_id = function($recipient, $msg, $id) use ($mailing) {
 
@@ -22,7 +196,7 @@ $fcp_forms_entity_tariff_mail_by_id = function($recipient, $msg, $id) use ($mail
                 'Tariff Change request',
                 'A Tariff change is requested in terms of prolongation. Please bill the client and mark the entity prolongation status as Billed. When the bill is payed, please remember to mark the status as Payed to schedule or activate the Tariff.',
             ],
-            'cancel' => 'The client has not payed the Bill. You can cancel the Bill, or contact the client directly.',
+            'cancel' => 'The client has not payed the Bill. You can now cancel the Bill, or contact the client directly.',
         ],
         'client' => [
             // entity title, id, link to entity
@@ -32,7 +206,7 @@ $fcp_forms_entity_tariff_mail_by_id = function($recipient, $msg, $id) use ($mail
             ],
             'prolonged' => [ // payed
                 'Your tariff was prolonged',
-                'Your tariff was successfully prolonged.',
+                'Your tariff was prolonged successfully.',
             ],
             'ending' => [
                 'Your tariff is about to end',
@@ -40,11 +214,11 @@ $fcp_forms_entity_tariff_mail_by_id = function($recipient, $msg, $id) use ($mail
             ],
             'ended' => [
                 'Your tariff has just ended',
-                'Your tariff has just ended. Free Tariff was activated.',
+                'Your tariff has just ended. Free Tariff is activated.',
             ],
             'billed' => [
                 'A bill reminder',
-                'You\'ve been billed recently. Please, pay the bill or ignore the emails to continue with the Free Tariff',
+                'You\'ve been billed recently. Please, pay the bill or ignore the emails to continue with a Free Tariff',
             ],
         ]
     ];
