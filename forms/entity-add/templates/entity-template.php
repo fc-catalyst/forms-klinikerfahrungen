@@ -23,9 +23,9 @@ if ( have_posts() ) :
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:66.66%">
         <div class="fct-entity-badges">
-            <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'verified.png' ?>" alt="" title="<?php _e( 'Verified', 'fcpfo-ea' ) ?>" />
+            <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'verified.png' ?>" alt="<?php _e( 'Verified', 'fcpfo-ea' ) ?>" title="<?php _e( 'Verified', 'fcpfo-ea' ) ?>" />
             <?php if ( fct1_meta( 'entity-featured' ) ) { ?>
-                <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="" title="<?php _e( 'Featured', 'fcpfo-ea' ) ?>" />
+                <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="<?php _e( 'Featured', 'fcpfo-ea' ) ?>" title="<?php _e( 'Featured', 'fcpfo-ea' ) ?>" />
             <?php } ?>
         </div>
         <h1 itemprop="name"><?php the_title() ?></h1>

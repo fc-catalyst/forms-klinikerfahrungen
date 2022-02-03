@@ -55,6 +55,7 @@
                 {
                     "type" : "rscaptcha",
                     "name" : "captcha",
+                    "placeholder" : "Sicherheitsfrage",
                     "before" : "<div class=\"rscaptcha\">",
                     "after" : "</div>",
                     "prefs" : {

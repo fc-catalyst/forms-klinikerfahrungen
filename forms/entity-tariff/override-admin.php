@@ -193,7 +193,7 @@ if ( $init_values['entity-tariff-till'] ) {
 
 array_push( $this->s->fields, (object) [
     'type' => 'notice',
-    'text' => '<p>For more information check out our tariff prices and conditions <a href=\"/\" target=\"_blank\">here</a></p>',
+    'text' => '<p>For more information check out our tariff prices and conditions <a href=\"/preise-eintragung/\" target=\"_blank\">here</a></p>',
     'meta_box' => true,
     'roles_view' => ['entity_delegate'],
 ]);

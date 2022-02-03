@@ -50,9 +50,11 @@ fcLoadScriptVariable(
 
         // apply new values after moving the marker
         $gmap_holder[0].addEventListener( 'map_changed', function(e) {
-            $( '#entity-geo-lat_entity-add' ).val( e.detail.marker.getPosition().lat() );
-            $( '#entity-geo-long_entity-add' ).val( e.detail.marker.getPosition().lng() );
-            $( '#entity-geo-zoom_entity-add' ).val( e.detail.gmap.getZoom() );
+            setTimeout( function() { // wait till new values are applied to the map
+                $( '#entity-geo-lat_entity-add' ).val( e.detail.marker.getPosition().lat() );
+                $( '#entity-geo-long_entity-add' ).val( e.detail.marker.getPosition().lng() );
+                $( '#entity-geo-zoom_entity-add' ).val( e.detail.gmap.getZoom() );
+            });
         });
 
         
@@ -106,6 +108,37 @@ fcLoadScriptVariable(
             }, 200 );
 
         });
+
+        const $form = $input.parents( 'form' );
+        $form.on( 'submit', function(e) { // don't submit the form before the address is modified
+
+            if ( is_correct ) { return } // && $input.not( ':focus' ) OR && !freeze
+
+            e.preventDefault();
+            
+            const geocoder = new google.maps.Geocoder();
+            if ( !geocoder.geocode ) { submit(); return }
+
+            geocoder.geocode(
+                {
+                    componentRestrictions: { country: 'de' },
+                    address: $input.val()
+                    //placeId: placeId
+                },
+                function(places, status) {
+                    if ( status !== 'OK' ) { submit(); return }
+                    fillInValues( places[0] );
+                    submit();
+                }
+            );
+            
+            function submit() {
+                is_correct = true;
+                $form.submit();
+            }
+
+        });
+
         if ( $input.is( ':focus' ) ) {
             freeze = true;
         }
@@ -158,16 +191,16 @@ fcLoadScriptVariable(
             values['geo-long'] = place.geometry.location.lng();
 
             apply_values();
-            
+
             gmap_move();
 
             // format the main address field
             $input.val( place.formatted_address );
-            
+
             function apply_values() {
                 for ( let i in values ) {
                     $( '#'+prefix+i+postfix ).val( values[i] );
-                }                
+                }
             }
         }
 
@@ -187,4 +220,28 @@ fcLoadScriptVariable(
 
     },
     ['jQuery', 'google', 'fcAddGmapView', 'fcAddGmapPick']
+);
+
+// lunch breaks
+fcLoadScriptVariable(
+    '',
+    'jQuery',
+    function() {
+        const $ = jQuery;
+        const $lunch = $( '<button type="button" style="float:right;margin:4px 0 0 12px">Wir haben Mittagspausen</button>' );
+        $lunch.click( function() {
+            let $copy = $( '#entity-working-hours input[type=text] + input[type=text]' )
+            if ( $copy.length ) {
+                $copy.each( function() {
+                    $( this ).remove();
+                });
+                return;
+            }
+            $( '#entity-working-hours input[type=text]' ).each( function(e) {
+                let $self = $( this );
+                $self.clone().insertAfter( $self );
+            });
+        });
+        $( '#entity-working-hours h3' ).append( $lunch );
+    }
 );

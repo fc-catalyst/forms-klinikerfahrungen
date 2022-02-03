@@ -15,7 +15,7 @@ fcLoadScriptVariable(
         });
         
         // lunch break add
-        const $lunch = $( '<button type="button" style="float:right;margin:4px 0 0 12px">We have lunch breaks</button>' );
+        const $lunch = $( '<button type="button" style="float:right;margin:4px 0 0 12px">Wir haben Mittagspausen</button>' );
         $lunch.click( function() {
             let $copy = $( '#entity-working-hours input[type=text] + input[type=text]' )
             if ( $copy.length ) {
@@ -80,9 +80,11 @@ fcLoadScriptVariable(
 
                             // apply new values after moving the marker
                             $gmap_holder[0].addEventListener( 'map_changed', function(e) {
-                                $( '#entity-geo-lat_entity-add' ).val( e.detail.marker.getPosition().lat() );
-                                $( '#entity-geo-long_entity-add' ).val( e.detail.marker.getPosition().lng() );
-                                $( '#entity-geo-zoom_entity-add' ).val( e.detail.gmap.getZoom() );
+                                setTimeout( function() { // wait till new values are applied to the map
+                                    $( '#entity-geo-lat_entity-add' ).val( e.detail.marker.getPosition().lat() );
+                                    $( '#entity-geo-long_entity-add' ).val( e.detail.marker.getPosition().lng() );
+                                    $( '#entity-geo-zoom_entity-add' ).val( e.detail.gmap.getZoom() );
+                                });
                             });
 
                         }
@@ -154,13 +156,14 @@ fcLoadScriptVariable(
 
 
         let freeze = false; // freezes the value from changes by geocoder, if the field is in focus
-        $input.on( 'blur', function() { // verify / modify / format the value by the api
+        // verify / modify / format the value by the api
+        $input.on( 'blur', function() {
             freeze = false;
             setTimeout( function() { // just a measure of economy, as `blur` fires before `place_changed`
             
                 if ( is_correct ) { return }
                 
-                let geocoder = new google.maps.Geocoder();
+                const geocoder = new google.maps.Geocoder();
 
                 geocoder.geocode(
                     {
@@ -177,6 +180,37 @@ fcLoadScriptVariable(
             }, 200 );
 
         });
+
+        const $form = $input.parents( 'form' );
+        $form.on( 'submit', function(e) { // don't submit the form before the address is modified
+
+            if ( is_correct ) { return } // && $input.not( ':focus' ) OR && !freeze
+
+            e.preventDefault();
+            
+            const geocoder = new google.maps.Geocoder();
+            if ( !geocoder.geocode ) { submit(); return }
+
+            geocoder.geocode(
+                {
+                    componentRestrictions: { country: 'de' },
+                    address: $input.val()
+                    //placeId: placeId
+                },
+                function(places, status) {
+                    if ( status !== 'OK' ) { submit(); return }
+                    fillInValues( places[0] );
+                    submit();
+                }
+            );
+            
+            function submit() {
+                is_correct = true;
+                $form.submit();
+            }
+
+        });
+
         if ( $input.is( ':focus' ) ) {
             freeze = true;
         }

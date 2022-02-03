@@ -33,7 +33,7 @@
         {
             "type" : "submit",
             "name" : "billing-submit",
-            "value" : "Erledigt"
+            "value" : "Zur Überprüfung einreichen"
         }
     ]
 }

@@ -51,7 +51,11 @@
                             "title" : "Telefonnummer",
                             "name" : "entity-phone",
                             "validate" : {
-                                "notEmpty" : true
+                                "regExp" : [
+                                    "^[0\\+][\\d \\(\\)\\-]+\\d$"
+                                ],
+                                "maxLetters" : 20,
+                                "minLetters" : 4
                             },
                             "meta_box" : true
                         },

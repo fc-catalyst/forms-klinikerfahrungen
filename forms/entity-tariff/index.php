@@ -16,7 +16,7 @@ if ( $json === false ) { return; }
 
 
 new FCP_Add_Meta_Boxes( $json, (object) [
-    'title' => 'Tariff',
+    'title' => 'Tarif',
     'text_domain' => 'fcpfo',
     'post_types' => ['clinic', 'doctor'],
     'context' => 'side',
