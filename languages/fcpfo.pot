@@ -91,6 +91,10 @@ msgstr ""
 msgid "The minimum text length is %s symbols, your current content is %s"
 msgstr ""
 
+#. refers to a button, which opens a number of fields, like work hours
+msgid "Some fields are not filled correctly"
+msgstr ""
+
 #. the forms common
 msgid "Activate"
 msgstr ""

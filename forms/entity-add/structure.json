@@ -133,7 +133,25 @@
                             "type" : "button",
                             "title" : "&nbsp;",
                             "value" : "Öffnungszeiten hinterlegen",
-                            "name" : "entity-working-hours"
+                            "name" : "entity-working-hours",
+                            "validate" : {
+                                "unitedWarn" : [
+                                    "entity-mo-open",
+                                    "entity-mo-close",
+                                    "entity-tu-open",
+                                    "entity-tu-close",
+                                    "entity-we-open",
+                                    "entity-we-close",
+                                    "entity-th-open",
+                                    "entity-th-close",
+                                    "entity-fr-open",
+                                    "entity-fr-close",
+                                    "entity-sa-open",
+                                    "entity-sa-close",
+                                    "entity-su-open",
+                                    "entity-su-close"
+                                ]
+                            }
                         }
                     ]
                 },
@@ -214,7 +232,6 @@
                     "name" : "entity-content",
                     "rows" : 8,
                     "validate" : {
-                        "notEmpty" : true,
                         "minLetters" : 300
                     },
                     "meta_box" : true,

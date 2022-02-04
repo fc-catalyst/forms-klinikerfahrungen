@@ -207,6 +207,13 @@ class FCP_Forms__Validate {
                 }
             }
         }
+        
+        // a warning, dependent on other fields warnings
+        foreach ( $this->s->fields as $f ) {
+            if ( empty( $f->validate->unitedWarn ) ) { continue; }
+            if ( empty( array_intersect( array_keys( $this->result ), $f->validate->unitedWarn ) ) ) { continue; }
+            $this->add_result( 'entity-working-hours', __( 'Some fields are not filled correctly', 'fcpfo' ) );
+        }
     }
     
     private function addResult($method, $name, $rule, $a) {
@@ -216,7 +223,7 @@ class FCP_Forms__Validate {
         }
     }
     
-    public function add_result($field, $value) { // --Y is it used??
+    public function add_result($field, $value) { // add custom warning by field name for inside and outside usage
         $this->result[$field][] = $value;
     }
     
