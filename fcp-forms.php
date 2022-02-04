@@ -277,7 +277,7 @@ class FCP_Forms {
         
         // get the array of wrong filled fields' warnings
         if ( !empty( $warns->result ) ) {
-            $warning = __( 'Some fields are not filled correctly:', 'fcpfo' );
+            $warning = __( 'Some fields are not filled correctly', 'fcpfo' );
         }
 
         // prepare the list of files to process
@@ -518,7 +518,7 @@ class FCP_Forms {
         }
 
         if ( $json->options->print_method == 'client' ) { // ++ not ready yet
-            return '<form class="fcp-form" data-structure="'.$dir.'">' . __( 'Loading..', 'fcpfo' ) . '</form>';
+            return '<form class="fcp-form" data-structure="'.$dir.'">' . __( 'Loading…', 'fcpfo' ) . '</form>';
         }
 
         include_once $this->self_path . 'classes/draw-fields.class.php';

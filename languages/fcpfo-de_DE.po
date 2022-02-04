@@ -12,10 +12,10 @@ msgstr ""
 "X-Generator: Poedit 3.0\n"
 
 #. fcp-forms.php
-msgid "Some fields are not filled correctly:"
-msgstr "Manche Eingabefelder sind nicht korrekt ausgefüllt."
+msgid "Some fields are not filled correctly"
+msgstr "Manche Eingabefelder sind nicht korrekt ausgefüllt"
 
-msgid "Loading.."
+msgid "Loading…"
 msgstr "Lädt…"
 
 #. classes/add-meta-boxes
