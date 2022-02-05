@@ -263,6 +263,7 @@
                             "meta_box" : true,
                             "multiple" : true,
                             "autocomplete" : "off",
+                            "keep_empty" : true,
                             "validate" : {
                                 "regExp" : [
                                     "^\\d{1,2}:\\d{2}$",
@@ -278,6 +279,7 @@
                             "meta_box" : true,
                             "multiple" : true,
                             "autocomplete" : "off",
+                            "keep_empty" : true,
                             "validate" : {
                                 "regExp" : [
                                     "^\\d{1,2}:\\d{2}$",
@@ -299,6 +301,7 @@
                             "meta_box" : true,
                             "multiple" : true,
                             "autocomplete" : "off",
+                            "keep_empty" : true,
                             "validate" : {
                                 "regExp" : [
                                     "^\\d{1,2}:\\d{2}$",
@@ -314,6 +317,7 @@
                             "meta_box" : true,
                             "multiple" : true,
                             "autocomplete" : "off",
+                            "keep_empty" : true,
                             "validate" : {
                                 "regExp" : [
                                     "^\\d{1,2}:\\d{2}$",
@@ -335,6 +339,7 @@
                             "meta_box" : true,
                             "multiple" : true,
                             "autocomplete" : "off",
+                            "keep_empty" : true,
                             "validate" : {
                                 "regExp" : [
                                     "^\\d{1,2}:\\d{2}$",
@@ -350,6 +355,7 @@
                             "meta_box" : true,
                             "multiple" : true,
                             "autocomplete" : "off",
+                            "keep_empty" : true,
                             "validate" : {
                                 "regExp" : [
                                     "^\\d{1,2}:\\d{2}$",
@@ -371,6 +377,7 @@
                             "meta_box" : true,
                             "multiple" : true,
                             "autocomplete" : "off",
+                            "keep_empty" : true,
                             "validate" : {
                                 "regExp" : [
                                     "^\\d{1,2}:\\d{2}$",
@@ -386,6 +393,7 @@
                             "meta_box" : true,
                             "multiple" : true,
                             "autocomplete" : "off",
+                            "keep_empty" : true,
                             "validate" : {
                                 "regExp" : [
                                     "^\\d{1,2}:\\d{2}$",
@@ -407,6 +415,7 @@
                             "meta_box" : true,
                             "multiple" : true,
                             "autocomplete" : "off",
+                            "keep_empty" : true,
                             "validate" : {
                                 "regExp" : [
                                     "^\\d{1,2}:\\d{2}$",
@@ -422,6 +431,7 @@
                             "meta_box" : true,
                             "multiple" : true,
                             "autocomplete" : "off",
+                            "keep_empty" : true,
                             "validate" : {
                                 "regExp" : [
                                     "^\\d{1,2}:\\d{2}$",
@@ -443,6 +453,7 @@
                             "meta_box" : true,
                             "multiple" : true,
                             "autocomplete" : "off",
+                            "keep_empty" : true,
                             "validate" : {
                                 "regExp" : [
                                     "^\\d{1,2}:\\d{2}$",
@@ -458,6 +469,7 @@
                             "meta_box" : true,
                             "multiple" : true,
                             "autocomplete" : "off",
+                            "keep_empty" : true,
                             "validate" : {
                                 "regExp" : [
                                     "^\\d{1,2}:\\d{2}$",
@@ -479,6 +491,7 @@
                             "meta_box" : true,
                             "multiple" : true,
                             "autocomplete" : "off",
+                            "keep_empty" : true,
                             "validate" : {
                                 "regExp" : [
                                     "^\\d{1,2}:\\d{2}$",
@@ -494,6 +507,7 @@
                             "meta_box" : true,
                             "multiple" : true,
                             "autocomplete" : "off",
+                            "keep_empty" : true,
                             "validate" : {
                                 "regExp" : [
                                     "^\\d{1,2}:\\d{2}$",

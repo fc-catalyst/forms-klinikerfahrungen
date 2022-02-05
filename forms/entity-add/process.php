@@ -18,6 +18,31 @@ if ( !get_userdata( wp_get_current_user()->ID )->allcaps['edit_entities'] ) {
 if ( !$uploads->upload_tmp() ) {
     return;
 }
+/*
+echo '<pre>';
+print_r( $_POST );
+echo '</pre>';
+exit;
+//*/
+// custom schedule times validation
+$schedule_fields = [
+    'entity-mo',
+    'entity-tu',
+    'entity-we',
+    'entity-th',
+    'entity-fr',
+    'entity-sa',
+    'entity-su',
+];
+foreach ( $schedule_fields as $v ) {
+    if ( $_POST[ $v.'-open' ][0] && !$_POST[ $v.'-close' ][0] || $_POST[ $v.'-open' ][1] && !$_POST[ $v.'-close' ][1] ) {
+        $warns->add_result( $v.'-close', __( 'Please add the closing time', 'fcpfo-ea' ) );
+    }
+    if ( !$_POST[ $v.'-open' ][0] && $_POST[ $v.'-close' ][0] || !$_POST[ $v.'-open' ][1] && $_POST[ $v.'-close' ][1] ) {
+        $warns->add_result( $v.'-open', __( 'Please add the opening time', 'fcpfo-ea' ) );
+    }
+}
+
 
 if ( $warning || !empty( $warns->result ) ) {
     return;

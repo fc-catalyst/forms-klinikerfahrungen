@@ -7,13 +7,15 @@
 register_activation_hook( $this->self_path_file, function() {
 
     add_role( 'entity_delegate', __( 'Clinic / Doctor', 'fcpfo' ), [
-        'level_0' => true,
-        'read' => true,
+        'level_0' => true, // be a subscriber ++not really needed, seems like, check on comments
+        'read' => true, // fix the access to /wp-admin/
 
         'edit_entities' => true,
         'edit_published_entities' => true,
         'edit_private_entities' => true,
         'delete_entities' => true,
+        //'publish_entities' => true, // only submit for review
+        //'delete_published_entities' => true, // set to false, so that a client doesn't remove it accidentally
 
         'edit_billings' => true,
         'edit_published_billings' => true,

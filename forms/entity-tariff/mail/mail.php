@@ -62,6 +62,7 @@ class FCP_FormsTariffMail {
                 'sending' => 'robot@'.$_SERVER['SERVER_NAME'],
                 'sending_name' => get_bloginfo( 'name' ),
                 'accountant' => 'finnish.ru@gmail.com', // 'buchhaltung@firmcatalyst.com',
+                'admin' => 'vadim@firmcatalyst.com',
             ];
             // 'http'.( !empty( $_SERVER['HTTPS'] && $_SERVER['HTTPS'] !== 'off' ) ? 's' : '' ).'://'
         }
@@ -96,7 +97,12 @@ class FCP_FormsTariffMail {
             return $return;
         };
 
-        if ( !$nocached && !empty( $combined )) { // use cached values from $combined
+        if ( empty( $combined ) ) { // cache the values from the structures
+            self::get_structures( 'entity-add' );
+            self::get_structures( 'billing-add' );
+        }
+        
+        if ( !$nocached && !empty( $combined ) ) { // use cached values from $combined
             $ids_filtered = array_diff( $ids, array_keys( $combined ) );
             if ( empty( $ids_filtered ) ) {
                 return $filter_result( $combined );
@@ -145,15 +151,118 @@ class FCP_FormsTariffMail {
         foreach ( $titles as $k => $v ) {
             $combined[ $k ] = [
                 'title' => $v,
-                'meta' => $metas[ $k ],
-                'billing' => $billings[ $metas[ $k ]['entity-billing'] ]
+                'meta' => array_merge( $metas[ $k ], $billings[ $metas[ $k ]['entity-billing'] ] )//$metas[ $k ],
+                //'billing' => $billings[ $metas[ $k ]['entity-billing'] ], // metas have unique names, so who cares
             ];
         }
 
         return $filter_result( $filter_result( $combined ) );
-
     }
+    
+    public static function get_structures($form = '') {
+        static $titles = [];
+    
+        if ( !$form ) { return $titles; }
+        
+        $json = FCP_Forms::structure( $form );
+        if ( $json === false ) { return; }
+        $json = FCP_Forms::flatten( $json->fields );
 
+        foreach ( $json as $v ) {
+            $title = $v->title ? $v->title : $v->placeholder;
+            if ( $v->name && $title ) {
+                $titles['titles'][ $v->name ] = $title;
+            }
+            if ( $v->options ) {
+                $titles['options'][ $v->name ] = $v->options;
+            }
+        }
+        
+        return $titles;
+    }
+/*
+    public static function get_structures($form = '') { // this is version with dividing by forms
+        static $titles = [];
+    
+        if ( !$form ) { return $titles; }
+        if ( $titles[ $form ] ) { return $titles[ $form ]; }
+        
+        $json = FCP_Forms::structure( $form );
+        if ( $json === false ) { return; }
+        $json = FCP_Forms::flatten( $json->fields );
+
+        foreach ( $json as $v ) {
+            $title = $v->title ? $v->title : $v->placeholder;
+            if ( $v->name && $title ) {
+                $titles[ $form ]['titles'][ $v->name ] = $title;
+            }
+            if ( $v->options ) {
+                $titles[ $form ]['options'][ $v->name ] = $v->options;
+            }
+        }
+        
+        return $titles[ $form ];
+    }
+//*/
+    public static function message_list($ids, $structure) {
+        $data = self::get_data( $ids );
+        $structures = self::get_structures();
+        $return = '';
+        $i = $ids[0];
+        foreach ( $structure as $v ) {
+            $return .= '
+                <li>
+                '. ( $structures['titles'][ $v ] ? $structures['titles'][ $v ] : $v ) .':
+                <strong>
+                '.
+                ( $data[ $i ]['meta'][ $v ] ?
+                    ( $structures['options'][ $v ] ?
+                        $structures['options'][ $v ]->{ $data[ $i ]['meta'][ $v ] }
+                        : $data[ $i ]['meta'][ $v ]
+                    )
+                    : '-'
+                )
+                .'
+                </strong>
+                </li>
+            ';
+        }
+        return [ $return ];
+        //return [ $data, $structures ];
+    }
+/*
+    public static function to_accountant( $topic, $ids ) {
+
+        $title = self::$messages['accountant'][$topic][0];
+        $message = self::$messages['accountant'][$topic][1];
+        
+        $data = self::get_data( $ids );
+        $structures = self::get_structures();
+        
+        $message  = '
+            <p>'.$message.'</p><br><br>
+            <h2>'.$data['title'].'</h2>
+        ';
+        
+        $message .= '
+        <a href="'.$mailing['url'].'?p='.$id.'" target="_blank" rel="noopener noreferrer">'.__( 'View' ).'</a>
+        |
+        <a href="'.$mailing['url'].'wp-admin/post.php?post='.$id.'&action=edit" target="_blank" rel="noopener noreferrer">'.__( 'Edit' ).'</a><br>';
+        $list = [
+            'title',
+            
+        ]
+
+//        $notice_datalist['from'] = $mailing['sending'];
+//        $notice_datalist['from_name'] = $mailing['sending_name'];
+//        $notice_datalist['to'] = $mailing['accountant'];
+//        $notice_datalist['reply_to'] = $notice_datalist['billing-email'];
+//        $notice_datalist['reply_to_name'] = $notice_datalist['billing-name'];
+
+        //entity title, id, links to entity, billing-company, billing-address, billing-name, billing-email, billing-vat
+        
+    }
+//*/
 }
 
 /*
@@ -164,10 +273,6 @@ class FCP_FormsTariffMail {
             (
                 [entity-billing] => 821
                 [entity-tariff] => premiumeintrag
-            )
-
-        [billing] => Array
-            (
                 [billing-address] => Adddress for billing1
                 [billing-email] => aa@a.aa
                 [_edit_lock] => 1643575074:1
@@ -175,6 +280,26 @@ class FCP_FormsTariffMail {
             )
 
     )
+[entity-add] => Array
+    (
+        [options] => Array
+            (
+                [entity-entity] => stdClass Object
+                    (
+                        [clinic] => Eintrag für Klinik
+                        [doctor] => Eintrag für Arzt
+                    )
+
+                [entity-featured] => stdClass Object
+                    (
+                        [1] => Empfohlen
+                    )
+            )
+
+        [titles] => Array
+            (
+                [entity-name] => Name der Klinik / Praxis
+                [entity-phone] => Telefonnummer
 */
 
 

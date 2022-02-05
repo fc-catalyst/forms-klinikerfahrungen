@@ -227,19 +227,30 @@ fcLoadScriptVariable(
     '',
     'jQuery',
     function() {
-        const $ = jQuery;
-        const $lunch = $( '<button type="button" style="float:right;margin:4px 0 0 12px">Wir haben Mittagspausen</button>' );
+        const $ = jQuery,
+        $lunch = $( '<button type="button" style="float:right;margin:4px 0 0 12px">Wir haben Mittagspausen</button>' );
         $lunch.click( function() {
-            let $copy = $( '#entity-working-hours input[type=text] + input[type=text]' )
+            const $copy = $( '#entity-working-hours input[type=text] ~ input[type=text]' ) // used to be +
             if ( $copy.length ) {
                 $copy.each( function() {
-                    $( this ).remove();
+                    const $self = $( this );
+                    if ( !!~$self.attr( 'id' ).indexOf( 'open' ) ) {
+                        $self.remove();
+                    } else {
+                        $self.prevAll( 'input[type=text]:first' ).remove();
+                    }
+                    // $( this ).remove(); // this is normally enough
                 });
                 return;
             }
             $( '#entity-working-hours input[type=text]' ).each( function(e) {
-                let $self = $( this );
-                $self.clone().insertAfter( $self );
+                const $self = $( this );
+                if ( !!~$self.attr( 'id' ).indexOf( 'open' ) ) {
+                    $self.clone().insertAfter( $self ).val( '' );
+                } else {
+                    $self.clone().insertAfter( $self ); // this is normally enough
+                    $self.val( '' );
+                }
             });
         });
         $( '#entity-working-hours h3' ).append( $lunch );

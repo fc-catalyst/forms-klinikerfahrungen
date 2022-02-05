@@ -11,6 +11,11 @@ require_once 'variables.php';
 require_once 'mail/mail.php';
 
 
+//$datass = FCP_FormsTariffMail::get_data( [820, 841, 824, 767] );
+//$structuress = FCP_FormsTariffMail::get_structures();
+print_r( FCP_FormsTariffMail::message_list( [820, 841, 824, 767], ['entity-name', 'entity-tariff', 'billing-address', 'billing-email'] ) ); exit;
+
+
 // no tariff manipulations with no billing method picked
 if ( !$values['entity-billing'] && !$admin_am ) {
     $this->s->fields = [];
