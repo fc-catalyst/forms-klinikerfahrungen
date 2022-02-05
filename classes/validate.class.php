@@ -209,11 +209,7 @@ class FCP_Forms__Validate {
         }
         
         // a warning, dependent on other fields warnings
-        foreach ( $this->s->fields as $f ) {
-            if ( empty( $f->validate->unitedWarn ) ) { continue; }
-            if ( empty( array_intersect( array_keys( $this->result ), $f->validate->unitedWarn ) ) ) { continue; }
-            $this->add_result( 'entity-working-hours', __( 'Some fields are not filled correctly', 'fcpfo' ) );
-        }
+        $this->unitedWarns();
     }
     
     private function addResult($method, $name, $rule, $a) {
@@ -223,8 +219,18 @@ class FCP_Forms__Validate {
         }
     }
     
-    public function add_result($field, $value) { // add custom warning by field name for inside and outside usage
+    public function add_result($field, $value) { // add custom warning by field name for external usage
         $this->result[$field][] = $value;
+        $this->unitedWarns();
+    }
+    
+    private function unitedWarns() {
+        foreach ( $this->s->fields as $f ) {
+            if ( empty( $f->validate->unitedWarn ) ) { continue; }
+            if ( !empty( $this->result[ $f->name ] ) ) { continue; } // a button can have only 1 warn, which is united
+            if ( empty( array_intersect( array_keys( $this->result ), $f->validate->unitedWarn ) ) ) { continue; }
+            $this->result[ $f->name ][] = __( 'Some fields are not filled correctly', 'fcpfo' );
+        }
     }
     
     private function htmlToText($a) {
