@@ -1,6 +1,6 @@
 <?php
 
-/*
+//*
 require_once __DIR__ . '/PHPMailer/src/Exception.php';
 require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
 use PHPMailer\PHPMailer\Exception;
@@ -9,37 +9,46 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 class FCP_FormsTariffMail {
 
-    public static $details = [],
-                  $messages = [
+    private static $details = [],
+                  $messages = [ // ++'user, 'admin'
         'accountant' => [
-            // entity title, id, links to entity, billing-company, billing-address, billing-name, billing-email, billing-vat
             'request' => [
                 'Paid tariff request',
                 'A paid tariff is requested. Please, bill the client and mark the status as Billed. When the bill is payed, please remember to mark the status as Payed to activate the Tariff.',
+                ['entity-tariff', 'billinb-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
             'prolong' => [
                 'Prolongation request',
                 'A Tariff prolongation is requested. Please bill the client and mark the entity prolongation status as Billed. When the bill is payed, please remember to mark the status as Payed to schedule or activate the Tariff.',
+                ['entity-tariff-next', 'billinb-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
             'change' => [
                 'Tariff Change request',
                 'A Tariff change is requested in terms of prolongation. Please bill the client and mark the entity prolongation status as Billed. When the bill is payed, please remember to mark the status as Payed to schedule or activate the Tariff.',
+                ['entity-tariff-next', 'billinb-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
-            'cancel' => 'The client has not payed the Bill. You can now cancel the Bill, or contact the client directly.',
+            'cancel' => [
+                'Bill not payed',
+                'The client has not payed the Bill. You can now cancel the Bill, or contact the client directly.',
+                ['billinb-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
+            ],
         ],
+
         'client' => [
-            // entity title, id, link to entity
             'activated' => [ // payed
                 'New tariff is activated',
                 'Your new tariff is activated.',
+                ['entity-tariff'],
             ],
             'prolonged' => [ // payed
-                'Your tariff was prolonged',
-                'Your tariff was prolonged successfully.',
+                'Your tariff is prolonged',
+                'Your tariff is prolonged successfully.',
+                ['entity-tariff'],
             ],
             'ending' => [
                 'Your tariff is about to end',
                 'Your tariff is about to end. The prolongation option is available in your Klinikerfahrungen account. Ignore this message to continue with a Free Tariff',
+                ['entity-tariff'],
             ],
             'ended' => [
                 'Your tariff has just ended',
@@ -52,7 +61,7 @@ class FCP_FormsTariffMail {
         ]
     ];
 
-    public static function details($a = []) {
+    private static function details($a = []) {
 
         if ( empty( self::$details ) ) {
             $url = get_bloginfo( 'wpurl' );
@@ -63,6 +72,7 @@ class FCP_FormsTariffMail {
                 'sending_name' => get_bloginfo( 'name' ),
                 'accountant' => 'finnish.ru@gmail.com', // 'buchhaltung@firmcatalyst.com',
                 'admin' => 'vadim@firmcatalyst.com',
+                'footer' => '<a href="'.$url.'" target="blank" rel="noopener noreferrer">'.$_SERVER['SERVER_NAME'].'</a>'
             ];
             // 'http'.( !empty( $_SERVER['HTTPS'] && $_SERVER['HTTPS'] !== 'off' ) ? 's' : '' ).'://'
         }
@@ -74,12 +84,8 @@ class FCP_FormsTariffMail {
         self::$details = array_merge( self::$details, $a );
 
     }
-    
-    public static function by_id() {
-    
-    }
 
-    // collect title && meta data && billing data by a post id or array of ids
+    // collect title && meta data && billing data by a post id or array of ids; also loads the jsons with titles
     public static function get_data($ids = [], $nocached = false) { 
         static $combined = [];
 
@@ -159,7 +165,7 @@ class FCP_FormsTariffMail {
         return $filter_result( $filter_result( $combined ) );
     }
     
-    public static function get_structures($form = '') {
+    private static function get_structures($form = '') { // no division by forms, as metas are unique anyways
         static $titles = [];
     
         if ( !$form ) { return $titles; }
@@ -180,288 +186,146 @@ class FCP_FormsTariffMail {
         
         return $titles;
     }
-/*
-    public static function get_structures($form = '') { // this is version with dividing by forms
-        static $titles = [];
-    
-        if ( !$form ) { return $titles; }
-        if ( $titles[ $form ] ) { return $titles[ $form ]; }
-        
-        $json = FCP_Forms::structure( $form );
-        if ( $json === false ) { return; }
-        $json = FCP_Forms::flatten( $json->fields );
 
-        foreach ( $json as $v ) {
-            $title = $v->title ? $v->title : $v->placeholder;
-            if ( $v->name && $title ) {
-                $titles[ $form ]['titles'][ $v->name ] = $title;
-            }
-            if ( $v->options ) {
-                $titles[ $form ]['options'][ $v->name ] = $v->options;
-            }
-        }
-        
-        return $titles[ $form ];
-    }
-//*/
-    public static function message_list($ids, $structure) {
-        $data = self::get_data( $ids );
+    private static function message_datalist($id, $structure = []) {
+        if ( empty( $structure ) ) { return; }
+
+        $data = self::get_data( $id );
         $structures = self::get_structures();
+
         $return = '';
-        $i = $ids[0];
+
         foreach ( $structure as $v ) {
-            $return .= '
-                <li>
-                '. ( $structures['titles'][ $v ] ? $structures['titles'][ $v ] : $v ) .':
-                <strong>
-                '.
-                ( $data[ $i ]['meta'][ $v ] ?
-                    ( $structures['options'][ $v ] ?
-                        $structures['options'][ $v ]->{ $data[ $i ]['meta'][ $v ] }
-                        : $data[ $i ]['meta'][ $v ]
-                    )
-                    : '-'
-                )
-                .'
-                </strong>
-                </li>
+            $title = $structures['titles'][ $v ] ? $structures['titles'][ $v ] : $v;
+
+            $value = $data[ $id ]['meta'][ $v ] ? $data[ $id ]['meta'][ $v ] : '–';
+            $value = $data[ $id ]['meta'][ $v ] &&
+                     $structures['options'][ $v ] &&
+                     $structures['options'][ $v ]->{ $data[ $id ]['meta'][ $v ] } ?
+                $structures['options'][ $v ]->{ $data[ $id ]['meta'][ $v ] } :
+                $value;
+
+            $return .= '<li>'.$title.': <strong>'.$value.'</strong></li>';
+        }
+
+        return '<ul>' . $return . '</ul>';
+    }
+
+    private static function message_content($recipient, $topic, $id = '') {
+
+        $details = self::details();
+
+        if ( !self::$messages[ $recipient ] || !self::$messages[ $recipient ][ $topic ] ) { return; }
+        
+        $subject = self::$messages[ $recipient ][ $topic ][0];
+        $message = '<p>' . self::$messages[ $recipient ][ $topic ][1] . '</p>';
+        $footer = '<a href="'.$details['url'].'" target="blank" rel="noopener noreferrer">'.$details['domain'].'</a>';
+
+        if ( $id ) {
+        
+            $datalist = self::message_datalist( $id, self::$messages[ $recipient ][ $topic ][2] );
+
+            $message  = '
+                '.$message.'
+                <br><br>
+
+                <h2>'.self::get_data( $id )[$id]['title'].'</h2>
+                <a href="'.$details['url'].'/?p='.$id.'" target="_blank" rel="noopener noreferrer">'.__( 'View' ).'</a>
+                |
+                <a href="'.$details['url'].'/wp-admin/post.php?post='.$id.'&action=edit" target="_blank" rel="noopener noreferrer">'.__( 'Edit' ).'</a>
+                <br>
+                '.$datalist.'
             ';
         }
-        return [ $return ];
-        //return [ $data, $structures ];
+        
+        return [
+            'subject' => $subject,
+            'message' => $message,
+            'footer' => $footer,
+        ];
     }
-/*
-    public static function to_accountant( $topic, $ids ) {
-
-        $title = self::$messages['accountant'][$topic][0];
-        $message = self::$messages['accountant'][$topic][1];
-        
-        $data = self::get_data( $ids );
-        $structures = self::get_structures();
-        
-        $message  = '
-            <p>'.$message.'</p><br><br>
-            <h2>'.$data['title'].'</h2>
-        ';
-        
-        $message .= '
-        <a href="'.$mailing['url'].'?p='.$id.'" target="_blank" rel="noopener noreferrer">'.__( 'View' ).'</a>
-        |
-        <a href="'.$mailing['url'].'wp-admin/post.php?post='.$id.'&action=edit" target="_blank" rel="noopener noreferrer">'.__( 'Edit' ).'</a><br>';
-        $list = [
-            'title',
-            
-        ]
-
-//        $notice_datalist['from'] = $mailing['sending'];
-//        $notice_datalist['from_name'] = $mailing['sending_name'];
-//        $notice_datalist['to'] = $mailing['accountant'];
-//        $notice_datalist['reply_to'] = $notice_datalist['billing-email'];
-//        $notice_datalist['reply_to_name'] = $notice_datalist['billing-name'];
-
-        //entity title, id, links to entity, billing-company, billing-address, billing-name, billing-email, billing-vat
-        
-    }
-//*/
-}
-
-/*
-[820] => Array
-    (
-        [title] => Someclinic
-        [meta] => Array
-            (
-                [entity-billing] => 821
-                [entity-tariff] => premiumeintrag
-                [billing-address] => Adddress for billing1
-                [billing-email] => aa@a.aa
-                [_edit_lock] => 1643575074:1
-                [_edit_last] => 20
-            )
-
-    )
-[entity-add] => Array
-    (
-        [options] => Array
-            (
-                [entity-entity] => stdClass Object
-                    (
-                        [clinic] => Eintrag für Klinik
-                        [doctor] => Eintrag für Arzt
-                    )
-
-                [entity-featured] => stdClass Object
-                    (
-                        [1] => Empfohlen
-                    )
-            )
-
-        [titles] => Array
-            (
-                [entity-name] => Name der Klinik / Praxis
-                [entity-phone] => Telefonnummer
-*/
-
-
-
-$fcp_forms_entity_tariff_mail_by_id = function($recipient, $msg, $id) use ($mailing) {
-
-    $messages = [
-        'accountant' => [
-            // entity title, id, links to entity, billing-company, billing-address, billing-name, billing-email, billing-vat
-            'request' => [
-                'Paid tariff request',
-                'A paid tariff is requested. Please, bill the client and mark the status as Billed. When the bill is payed, please remember to mark the status as Payed to activate the Tariff.',
-            ],
-            'prolong' => [
-                'Prolongation request',
-                'A Tariff prolongation is requested. Please bill the client and mark the entity prolongation status as Billed. When the bill is payed, please remember to mark the status as Payed to schedule or activate the Tariff.',
-            ],
-            'change' => [
-                'Tariff Change request',
-                'A Tariff change is requested in terms of prolongation. Please bill the client and mark the entity prolongation status as Billed. When the bill is payed, please remember to mark the status as Payed to schedule or activate the Tariff.',
-            ],
-            'cancel' => 'The client has not payed the Bill. You can now cancel the Bill, or contact the client directly.',
-        ],
-        'client' => [
-            // entity title, id, link to entity
-            'activated' => [ // payed
-                'New tariff is activated',
-                'Your new tariff is activated.',
-            ],
-            'prolonged' => [ // payed
-                'Your tariff was prolonged',
-                'Your tariff was prolonged successfully.',
-            ],
-            'ending' => [
-                'Your tariff is about to end',
-                'Your tariff is about to end. The prolongation option is available in your Klinikerfahrungen account. Ignore this message to continue with a Free Tariff',
-            ],
-            'ended' => [
-                'Your tariff has just ended',
-                'Your tariff has just ended. Free Tariff is activated.',
-            ],
-            'billed' => [
-                'A bill reminder',
-                'You\'ve been billed recently. Please, pay the bill or ignore the emails to continue with a Free Tariff',
-            ],
-        ]
-    ];
     
-    if ( !$messages[ $recipient ][ $msg ] ) { return; }
-    if ( !is_numeric( $id ) ) { return; }
+    public static function to_accountant($topic, $id = '') { // it is best to run get_data first, if multiple ids
 
-    $to_accountant = $recipient === 'accountant';
-    
-    // datalist to send along with the message
-    global $wpdb;
-    $notice_datalist = [];
+        $message = self::message_content( 'accountant', $topic, $id );
+        if ( !$message ) { return; }
 
-    // select the entity title && verify id
-    $notice_datalist['title'] = $wpdb->get_var( 'SELECT `post_title` FROM `'.$wpdb->posts.'` WHERE `ID` = "'.$id.'"');
-    if ( !$notice_datalist['title'] ) { return; }
-    $notice_datalist['title'] = '<strong>'.$notice_datalist['title'].'</strong>
-        <a href="'.$mailing['url'].'?p='.$id.'" target="_blank" rel="noopener noreferrer">'.__( 'View' ).'</a>
-        |
-        <a href="'.$mailing['url'].'wp-admin/post.php?post='.$id.'&action=edit" target="_blank" rel="noopener noreferrer">'.__( 'Edit' ).'</a><br>';
+        $details = self::details();
 
-    // select the billing information
-    if ( $to_accountant ) {
-        $json = FCP_Forms::structure( 'billing-add' );
-        if ( $json === false ) { return; }
-        $json = FCP_Forms::flatten( $json->fields );
+        $message['from'] = $details['sending'];
+        $message['from_name'] = $details['sending_name'];
+        $message['to'] = $details['accountant'];
+        
+        if ( $id ) {
+            $meta = self::get_data( $id )[$id]['meta'];
 
-        $metas = $wpdb->get_results( '
-            SELECT `meta_key`, `meta_value` FROM `'.$wpdb->postmeta.'`
-            WHERE
-                `post_id` = (
-                    SELECT `meta_value`
-                    FROM `'.$wpdb->postmeta.'`
-                    WHERE `meta_key` = "entity-billing" AND `post_id` = "'.$id.'"
-                    LIMIT 1
-                )
-        ');
-        foreach ( $metas as $k => $v ) {
-            $metas[ $v->meta_key ] = $v->meta_value;
-            unset( $metas[ $k ] );
+            if ( $meta['billing-email'] ) { $message['reply_to'] = $meta['billing-email']; }
+            if ( $meta['billing-name'] ) { $message['reply_to_name'] = $meta['billing-name']; }
+
         }
         
-        foreach ( $json as $v ) {
-            $v->title = $v->title ? $v->title : $v->placeholder;
-            if ( !$v->meta_box || !$v->title || !$metas[ $v->name ] ) { continue; }
-            $notice_datalist[ $v->name ] = $v->title . ': ' . $metas[ $v->name ];
-        }
+        return self::send( $message );
     }
     
-    // spreading the emails
-    if ( $to_accountant ) {
-        $notice_datalist['from'] = $mailing['sending'];
-        $notice_datalist['from_name'] = $mailing['sending_name'];
-        $notice_datalist['to'] = $mailing['accountant'];
-        $notice_datalist['reply_to'] = $notice_datalist['billing-email'];
-        $notice_datalist['reply_to_name'] = $notice_datalist['billing-name'];
-    } else {
-        $notice_datalist['from'] = $mailing['sending'];
-        $notice_datalist['from_name'] = $mailing['sending_name'];
-        $notice_datalist['to'] = $notice_datalist['billing-email'];
-        $notice_datalist['to_name'] = $notice_datalist['billing-name'];
-        $notice_datalist['reply_to'] = $mailing['accountant'];
+    public static function to_client($topic, $id) { // it is best to run get_data first, if multiple ids
+
+        $message = self::message_content( 'client', $topic, $id );
+        if ( !$message ) { return; }
+
+        $details = self::details();
+
+        $message['from'] = $details['sending'];
+        $message['from_name'] = $details['sending_name'];
+
+        $meta = self::get_data( $id )[$id]['meta'];
+        if ( !$meta['billing-email'] ) { return; }
+
+        $message['to'] = $meta['billing-email'];
+        if ( $meta['billing-name'] ) { $message['to_name'] = $meta['billing-name']; }
+
+        $message['reply_to'] = $details['accountant'];
+
+        return self::send( $message );
+    }
+    
+    public static function send($m) {
+
+        if ( !empty( array_diff( ['subject', 'message', 'from', 'to'], array_keys( $m ) ) ) ) { return; }
+        
+        static $template = '';
+        
+        if ( !$template ) {
+            $template = file_get_contents( __DIR__ . '/mail-template1.html' );
+            $template = $template === false ? '<p hidden>%s %s</p><h1>%s</h1> %s <p>%s</p>' : $template;
+        }
+
+        $vsprintf = function($a, $arr) {
+            $a = str_replace( ['%', '|~~|s'], ['|~~|', '%s'], $a );
+            $a = vsprintf( $a, $arr );
+            $a = str_replace( '|~~|', '%', $a );
+            return $a;
+        };
+
+        $email_body = $vsprintf( $template, [
+            $m['subject'], // title
+            substr( strip_tags( $m['message'] ), 0, 80 ) . '…', // preview header
+            $m['subject'], // h1
+            $m['message'], // the content
+            $m['footer'] ? $m['footer'] : self::details()['footer'] // footer
+        ]);
+        
+        $mail = new PHPMailer();
+        $mail->CharSet = 'UTF-8';
+        $mail->setFrom( $m['from'], $m['from_name'] );
+        $mail->addAddress( $m['to'], $m['to_name'] );
+        if ( $m['reply_to'] ) { $mail->addReplyTo( $m['reply_to'], $m['reply_to_name'] ); }
+        $mail->Subject = $m['subject'];
+        $mail->msgHTML( $email_body );
+        $mail->AddEmbeddedImage( __DIR__ . '/attachments/klinikerfahrungen-logo.png', 'klinikerfahrungen-logo');
+        // $mail->addAttachment( __DIR__ . '/attachments/Fünf Tipps dein Wert deiner Amazon Marke zu erhöhen.pdf' );
+
+        if ( $mail->send() ) { return true; }
+
     }
 
-//*
-    // sending (++schedule for sending later, when heavier load)
-    // ++send only once feature
-    fcp_forms_entity_tariff_email_send(
-        $messages[ $recipient ][ $msg ][0],
-        $messages[ $recipient ][ $msg ][1],
-        '<a href="'.$mailing['url'].'" target="blank" rel="noopener noreferrer">'.$mailing['domain'].'</a>',
-        $notice_datalist
-    );
-//*/
-};
-
-function fcp_forms_entity_tariff_email_send( $subject, $content, $footer, $m ) {
-
-    if ( !$subject || !$content ) { return; }
-    if ( !$m['from'] || !$m['to'] ) { return; }
-    if ( !$footer ) { $footer = ''; }
-
-    $email_template = @file_get_contents( __DIR__ . '/mail-template.html' );
-
-    $vsprintf = function($a, $arr) {
-        $a = str_replace( ['%', '|~~|s'], ['|~~|', '%s'], $a );
-        $a = vsprintf( $a, $arr );
-        $a = str_replace( '|~~|', '%', $a );
-        return $a;
-    };
-
-    $preheader = substr( strip_tags( $content ), 0, 80 ) . '…';
-   
-    $exceptions = ['from', 'from_name', 'to', 'to_name', 'reply_to', 'reply_to_name'];
-    $content .= '<br>';
-    foreach ( $m as $k => $v ) {
-        if ( in_array( $k, $exceptions ) ) { continue; }
-        $content .= '<br>' . $v;
-    }
-
-    $email_content = [
-        $subject, // title
-        $preheader,
-        $subject, // h1
-        $content,
-        $footer
-    ];
-    $email_body = $vsprintf( $email_template, $email_content );
-
-    $mail = new PHPMailer();
-    $mail->CharSet = 'UTF-8';
-    $mail->setFrom( $m['from'], $m['from_name'] );
-    $mail->addAddress( $m['to'], $m['to_name'] );
-    if ( $m['reply_to'] ) { $mail->addReplyTo( $m['reply_to'], $m['reply_to_name'] ); }
-    $mail->Subject = $subject;
-    $mail->msgHTML( $email_body );
-    $mail->AddEmbeddedImage( __DIR__ . '/attachments/klinikerfahrungen-logo.png', 'klinikerfahrungen-logo');
-    // $mail->addAttachment( __DIR__ . '/attachments/Fünf Tipps dein Wert deiner Amazon Marke zu erhöhen.pdf' );
-
-    if ( $mail->send() ) { return true; }
 }

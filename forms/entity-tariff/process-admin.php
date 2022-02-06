@@ -11,11 +11,6 @@ require_once 'variables.php';
 require_once 'mail/mail.php';
 
 
-//$datass = FCP_FormsTariffMail::get_data( [820, 841, 824, 767] );
-//$structuress = FCP_FormsTariffMail::get_structures();
-print_r( FCP_FormsTariffMail::message_list( [820, 841, 824, 767], ['entity-name', 'entity-tariff', 'billing-address', 'billing-email'] ) ); exit;
-
-
 // no tariff manipulations with no billing method picked
 if ( !$values['entity-billing'] && !$admin_am ) {
     $this->s->fields = [];
@@ -46,6 +41,7 @@ if ( !$admin_am && $tariff_change && !$tariff_paid ) { // tariff is about to cha
 
     // notify the accountant
     //$fcp_forms_entity_tariff_mail_by_id( 'accountant', 'request', $postID );
+    FCP_FormsTariffMail::to_accountant( 'request', $postID );
 }
 
 
@@ -101,6 +97,7 @@ if ( $prolong_allowed ) {
                              && $_POST['entity-tariff-next'] !== $tariff_default;
 
         //$fcp_forms_entity_tariff_mail_by_id( 'accountant', $tariff_next_new_and_paid ? 'change' : 'prolong', $postID );
+        FCP_FormsTariffMail::to_accountant( $tariff_next_new_and_paid ? 'change' : 'prolong', $postID );
     }
 }
 
