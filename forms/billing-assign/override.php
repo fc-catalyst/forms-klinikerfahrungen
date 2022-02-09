@@ -73,7 +73,7 @@ if ( isset( $_GET['step3'] ) ) {
                 'entity-id',
                 [
                     'type' => 'notice',
-                    'text' => get_the_title()
+                    'text' => 'Will be assigned to: ' . get_the_title()
                 ],
                 'after'
             );

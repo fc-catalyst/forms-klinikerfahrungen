@@ -226,7 +226,7 @@ class FCP_Forms__Validate {
     
     private function unitedWarns() {
         foreach ( $this->s->fields as $f ) {
-            if ( empty( $f->validate->unitedWarn ) ) { continue; }
+            if ( empty( $f->validate->unitedWarn ) || $this->result === null ) { continue; }
             if ( !empty( $this->result[ $f->name ] ) ) { continue; } // a button can have only 1 warn, which is united
             if ( empty( array_intersect( array_keys( $this->result ), $f->validate->unitedWarn ) ) ) { continue; }
             $this->result[ $f->name ][] = __( 'Some fields are not filled correctly', 'fcpfo' );

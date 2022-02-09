@@ -126,7 +126,7 @@ if ( !$admin_am ) {
             $status_message = '<em>Payment status - Pending: </em>You will be billed in a few days via your mentioned billing email <em>' . $billing_email . '</em> For any questions or problems with receiving the bill, please contact our accountant <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a>';
 
         } elseif ( $values['entity-payment-status'] === 'billed' ) {
-            $status_message = '<em><font color="#35b32d">Payment status - Billed</font>: </em>Please check your billing email ' . $billing_email . ' and pay the bill to activate the tariff. For any questions please contact our accountant by <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a><br>The initial free tariff will be restored automatically in '.floor( $billed_flush_gap / $day ).' days since the request, if not payed.';
+            $status_message = '<em><font color="#35b32d">Payment status - Billed</font>: </em>Please check your billing email ' . $billing_email . ' and pay the bill to activate the tariff. <br>For any questions please contact our accountant by <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a><br>The initial free tariff will be restored automatically in '.floor( $billed_flush_gap / $day ).' days since the request, if not payed.';
 
         }
         
@@ -193,11 +193,12 @@ if ( $init_values['entity-tariff-till'] ) {
 
 array_push( $this->s->fields, (object) [
     'type' => 'notice',
-    'text' => '<p>For more information check out our tariff prices and conditions <a href=\"/preise-eintragung/\" target=\"_blank\">here</a></p>',
+    'text' => '<p>For more information check out our tariff prices and conditions <a href="/preise-eintragung/" target="_blank">here</a></p>',
     'meta_box' => true,
     'roles_view' => ['entity_delegate'],
 ]);
 
-
+// just small clearing in case the billing form with step3 was opened, but was not filled on the front-end
+delete_post_meta( $_GET['post'], 'entity-tariff-tmp' );
 
 FCP_Forms::tz_reset();

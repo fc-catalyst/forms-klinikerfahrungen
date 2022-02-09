@@ -15,22 +15,22 @@ class FCP_FormsTariffMail {
             'request' => [
                 'Paid tariff request',
                 'A paid tariff is requested. Please, bill the client and mark the status as Billed. When the bill is payed, please remember to mark the status as Payed to activate the Tariff.',
-                ['entity-tariff', 'billinb-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
+                ['entity-tariff', 'billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
             'prolong' => [
                 'Prolongation request',
                 'A Tariff prolongation is requested. Please bill the client and mark the entity prolongation status as Billed. When the bill is payed, please remember to mark the status as Payed to schedule or activate the Tariff.',
-                ['entity-tariff-next', 'billinb-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
+                ['entity-tariff-next', 'billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
             'change' => [
                 'Tariff Change request',
                 'A Tariff change is requested in terms of prolongation. Please bill the client and mark the entity prolongation status as Billed. When the bill is payed, please remember to mark the status as Payed to schedule or activate the Tariff.',
-                ['entity-tariff-next', 'billinb-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
+                ['entity-tariff-next', 'billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
             'cancel' => [
                 'Bill not payed',
                 'The client has not payed the Bill. You can now cancel the Bill, or contact the client directly.',
-                ['billinb-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
+                ['billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
         ],
 
@@ -106,6 +106,7 @@ class FCP_FormsTariffMail {
         if ( empty( $combined ) ) { // cache the values from the structures
             self::get_structures( 'entity-add' );
             self::get_structures( 'billing-add' );
+            self::get_structures( 'entity-tariff' );
         }
         
         if ( !$nocached && !empty( $combined ) ) { // use cached values from $combined
@@ -132,7 +133,7 @@ class FCP_FormsTariffMail {
         $r = $wpdb->get_results( '
             SELECT `post_id`, `meta_key`, `meta_value`
             FROM `'.$wpdb->postmeta.'`
-            WHERE `post_id` IN (' . implode( ',', $ids ) . ') AND `meta_key` IN ( "entity-tariff", "entity-billing" )
+            WHERE `post_id` IN (' . implode( ',', $ids ) . ') AND `meta_key` IN ( "entity-tariff", "entity-tariff-next", "entity-billing" )
         ');
         $metas = [];
         $bill_ids = [];
@@ -183,7 +184,10 @@ class FCP_FormsTariffMail {
                 $titles['options'][ $v->name ] = $v->options;
             }
         }
-        
+
+        // the next-tariff has no options, it copies the tariff, so here is the crutch
+        $titles['options'][ 'entity-tariff-next' ] = $titles['options'][ 'entity-tariff' ];
+
         return $titles;
     }
 
@@ -257,10 +261,15 @@ class FCP_FormsTariffMail {
         $message['to'] = $details['accountant'];
         
         if ( $id ) {
-            $meta = self::get_data( $id )[$id]['meta'];
+            $data = self::get_data( $id )[$id];
+            $meta = $data['meta'];
 
             if ( $meta['billing-email'] ) { $message['reply_to'] = $meta['billing-email']; }
             if ( $meta['billing-name'] ) { $message['reply_to_name'] = $meta['billing-name']; }
+            
+            $message['preheader'] = 'For ' . $data['title'] . '; ' .
+                'From ' . $meta['billing-company'] . ', ' .
+                $meta['billing-name'] . '. ';
 
         }
         
@@ -295,8 +304,8 @@ class FCP_FormsTariffMail {
         static $template = '';
         
         if ( !$template ) {
-            $template = file_get_contents( __DIR__ . '/mail-template1.html' );
-            $template = $template === false ? '<p hidden>%s %s</p><h1>%s</h1> %s <p>%s</p>' : $template;
+            $template = file_get_contents( __DIR__ . '/mail-template.html' );
+            $template = $template === false ? '<template hidden>%s %s</template><h1>%s</h1> %s <p>%s</p>' : $template;
         }
 
         $vsprintf = function($a, $arr) {
@@ -308,7 +317,7 @@ class FCP_FormsTariffMail {
 
         $email_body = $vsprintf( $template, [
             $m['subject'], // title
-            substr( strip_tags( $m['message'] ), 0, 80 ) . '…', // preview header
+            $m['preheader'] ? $m['preheader'] : substr( strip_tags( $m['message'] ), 0, 80 ) . '…', // preview header
             $m['subject'], // h1
             $m['message'], // the content
             $m['footer'] ? $m['footer'] : self::details()['footer'] // footer

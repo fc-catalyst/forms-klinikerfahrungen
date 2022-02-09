@@ -39,9 +39,10 @@ if ( $id === 0 ) {
     return;
 }
 
-// assign the billing to an entity
+
 if ( $_POST['entity-id'] ) {
 
+    // assign the billing to an entity
     $entity = new WP_Query([ // the entity author is current user
         'author'         => wp_get_current_user()->ID,
         'post_type'      => ['clinic', 'doctor'],
@@ -53,11 +54,22 @@ if ( $_POST['entity-id'] ) {
     if ( $entity->have_posts() ) {
         update_post_meta( $entity->posts[0]->ID, 'entity-billing', $id );
     }
+    
+    // mark the tariff as paid and pending
+    $tariff = get_post_meta( $entity->posts[0]->ID, 'entity-tariff-tmp', true );
+    delete_post_meta( $entity->posts[0]->ID, 'entity-tariff-tmp', $tariff );
+    update_post_meta( $entity->posts[0]->ID, 'entity-tariff', $tariff );
+    update_post_meta( $entity->posts[0]->ID, 'entity-payment-status', 'pending' );
+
+    // request the bill
+    require_once __DIR__ . '/../entity-tariff/mail/mail.php';
+    FCP_FormsTariffMail::to_accountant( 'request', $entity->posts[0]->ID );
 }
+
 
 // REDIRECT
 
-if ( isset( $_GET['step3'] ) ) {
+if ( $_POST['entity-id'] ) { // if ( isset( $_GET['step3'] ) ) {
 
     // pick the latest entity
     $entity = new WP_Query([

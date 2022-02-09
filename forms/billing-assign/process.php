@@ -40,12 +40,23 @@ $billing = new WP_Query([ // the billing author is current user
 
 if ( !$billing->have_posts() ) { return; }
 
+// assign
 update_post_meta( $entity->posts[0]->ID, 'entity-billing', $billing->posts[0]->ID );
+
+// mark the tariff as paid and pending
+$tariff = get_post_meta( $entity->posts[0]->ID, 'entity-tariff-tmp', true );
+delete_post_meta( $entity->posts[0]->ID, 'entity-tariff-tmp', $tariff );
+update_post_meta( $entity->posts[0]->ID, 'entity-tariff', $tariff );
+update_post_meta( $entity->posts[0]->ID, 'entity-payment-status', 'pending' );
+
+// request the bill
+require_once __DIR__ . '/../entity-tariff/mail/mail.php';
+FCP_FormsTariffMail::to_accountant( 'request', $entity->posts[0]->ID );
 
 
 // REDIRECT
 
-if ( isset( $_GET['step3'] ) ) {
+if ( $_POST['entity-id'] ) { // if ( isset( $_GET['step3'] ) ) {
 
     // pick the latest entity
     $entity = new WP_Query([

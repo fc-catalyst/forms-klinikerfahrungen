@@ -24,7 +24,7 @@ print_r( $_POST );
 echo '</pre>';
 exit;
 //*/
-// custom schedule times validation
+// custom workhours validation - can only have pairs open-close
 $schedule_fields = [
     'entity-mo',
     'entity-tu',
@@ -66,9 +66,6 @@ if ( $id === 0 ) {
     return;
 }
 
-// save the exceptional meta boxes
-update_post_meta( $id, 'entity-tariff', $_POST['entity-tariff'] );
-
 // upload files
 $dir = wp_get_upload_dir()['basedir'] . '/entity/' . $id;
 
@@ -90,4 +87,7 @@ if ( $_POST['entity-tariff'] === 'kostenloser_eintrag' ) {
     $redirect = get_permalink( $id ); // preview the post
     return;
 }
+
+update_post_meta( $id, 'entity-tariff-tmp', $_POST['entity-tariff'] ); // just passing paid tariff to  billing-/process.php
+
 $redirect = get_option( 'siteurl' ) . '/rechnungsdaten-hinterlegen/?step3'; // add the billing method
