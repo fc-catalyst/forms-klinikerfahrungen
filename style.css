@@ -33,6 +33,10 @@
     text-transform:uppercase;
 }
 
+.fcp-form-field-w > span > small {
+    margin-left:1ch;
+}
+
 @media( min-width:992px ) {
     .fcp-form--half .fcp-form-small {
         font-size:65%!important;

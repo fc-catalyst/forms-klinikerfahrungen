@@ -11,6 +11,7 @@ class FCP_Forms__Draw {
         $f = $f ? $f : [];
 
         $s->options->warning = $v['fcp-form--'.$s->options->form_name.'--warning'];
+        $s->options->required_mark = $s->options->required_mark ? $s->options->required_mark : '*';
        
         $this->s = $s;
         $this->s->fields = $this->add_values( $s->fields, array_merge( $v, $f ) );
@@ -68,7 +69,7 @@ class FCP_Forms__Draw {
             name="<?php self::e_field_name( $a->name ) ?><?php echo $a->multiple ? '['.$k.']' : '' ?>"
             id="<?php self::e_field_id( $a->name ) ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
-            placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty && !$a->title ? '*' : '' ?>"
+            placeholder="<?php echo $a->placeholder ?>"
             value="<?php echo esc_attr( $v ) ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
             <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
@@ -101,7 +102,7 @@ class FCP_Forms__Draw {
             name="<?php self::e_field_name( $a->name ) ?>"
             id="<?php self::e_field_id( $a->name ) ?>"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
-            placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty && !$a->title ? '*' : '' ?>"
+            placeholder="<?php echo $a->placeholder ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
         />
         <?php
@@ -159,7 +160,7 @@ class FCP_Forms__Draw {
             name="<?php self::e_field_name( $a->name ) ?>"
             id="<?php self::e_field_id( $a->name ) ?>"
             rows="<?php echo $a->rows ? $a->rows : '10' ?>" cols="<?php echo $a->cols ? $a->cols : '50' ?>"
-            placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty && !$a->title ? '*' : '' ?>"
+            placeholder="<?php echo $a->placeholder ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
             <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
         ><?php echo esc_textarea( $a->savedValue ? $a->savedValue : $a->value ) ?></textarea>
@@ -250,9 +251,7 @@ class FCP_Forms__Draw {
             <?php
                 if ( $a->placeholder ) {
                     ?>
-                    <option value="">
-                        <?php echo $a->placeholder ?><?php echo $a->validate->notEmpty && !$a->title ? '*' : '' ?>
-                    </option>
+                    <option value=""><?php echo $a->placeholder ?></option>
                     <?php
                 }
 
@@ -295,7 +294,7 @@ class FCP_Forms__Draw {
             id="<?php self::e_field_id( $a->name ) ?>"
             list="<?php self::e_field_id( $a->name ) ?>-list"
             <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
-            placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty && !$a->title ? '*' : '' ?>"
+            placeholder="<?php echo $a->placeholder ?>"
             value="<?php echo esc_attr( $a->savedValue ? $a->savedValue : $a->value ) ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
             <?php echo isset( $a->autocomplete ) ? 'autocomplete="'.$a->autocomplete.'"' : '' ?>
@@ -419,7 +418,7 @@ class FCP_Forms__Draw {
             name="<?php self::e_field_name( $a->name ) ?>"
             id="<?php self::e_field_id( $a->name ) ?>"
             style="width:<?php echo $b->img_size[0] ?>px;height:<?php echo $b->img_size[1] ?>px"
-            placeholder="<?php echo $a->placeholder ?><?php echo $a->placeholder && $a->validate->notEmpty && !$a->title ? '*' : '' ?>"
+            placeholder="<?php echo $a->placeholder ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
         />
         <span></span>
@@ -445,6 +444,9 @@ class FCP_Forms__Draw {
             return;
         }
         
+        $a->__required = $a->validate->notEmpty || $a->validate->minLetters && $a->validate->minLetters > 0 ? $o->required_mark : '';
+        $a->placeholder = $a->__required && $a->placeholder && !$a->title ? $a->placeholder . $a->__required : $a->placeholder;
+        
         ?>
         <div class="fcp-form-field-w">
         <?php echo $a->before ?>
@@ -453,9 +455,8 @@ class FCP_Forms__Draw {
         if ( $a->title ) {
             ?>
             <span class="fcp-form-field-h<?php echo $this->smaller_font( $a->title, $o->reduce_font_after ) ?>">
-                <?php echo $a->title ?><?php
-                    echo $a->validate->notEmpty ? ( $o->required_mark ? $o->required_mark : '*' ) : ''
-                ?>
+                <?php echo $a->title ?><?php echo $a->__required ?>
+                <?php echo $a->subtitle ? ' <small>'.$a->subtitle.'</small>' : '' ?>
             </span>
             <?php
         }
@@ -569,7 +570,10 @@ class FCP_Forms__Draw {
                 if ( $f->title ) {
                     $h2 = $f->title_tag ? $f->title_tag : 'h2';
                     ?>
-                    <<?php echo $h2 ?>><?php echo $f->title ?></<?php echo $h2 ?>>
+                    <<?php echo $h2 ?>>
+                        <?php echo $f->title ?>
+                        <?php echo $f->subtitle ? ' <small>'.$f->subtitle.'</small>' : '' ?>
+                    </<?php echo $h2 ?>>
                     <?php
                 }
 

@@ -24,6 +24,8 @@ $title = $_POST['billing-company'] .
     substr( $_POST['billing-email'], 0, strpos( $_POST['billing-email'], '@' ) + 3 ) .
     '…';
 
+$_POST['billing-vat'] = strtoupper( $_POST['billing-vat'] );
+
 $id = wp_insert_post( [
     'post_title' => sanitize_text_field( $title ),
     'post_content' => '',

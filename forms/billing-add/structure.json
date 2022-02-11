@@ -82,7 +82,14 @@
                     "type" : "text",
                     "title" : "Umsatzsteuernummer VAT ID (optional)",
                     "name" : "billing-vat",
-                    "meta_box" : true
+                    "meta_box" : true,
+                    "after" : "<style>#billing-vat_billing-add { text-transform:uppercase }</style>",
+                    "validate" : {
+                        "regExp" : [
+                            "^[\\d\\w ]+$",
+                            "Letters, numbers and spaces are allowed"
+                        ]
+                    }
                 }
             ]
         },

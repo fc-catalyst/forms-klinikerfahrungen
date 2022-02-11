@@ -104,7 +104,7 @@
                     "fields" : [
                         {
                             "type" : "text",
-                            "title" : "Unternhmensadresse",
+                            "title" : "Unternehmensadresse",
                             "name" : "entity-address",
                             "autocomplete" : "nope1",
                             "validate" : {
@@ -213,7 +213,8 @@
                         {
                             "type" : "radio",
                             "cols" : 3,
-                            "title" : "Ich wähle einen",
+                            "title" : "Wählen Sie Ihren Tarif",
+                            "subtitle" : "(<a href=\"/preise-eintragung/\" target=\"_blank\">Kosten für einen Eintrag</a>)",
                             "name" : "entity-tariff",
                             "options" : {
                                 "standardeintrag" : "Standardeintrag",
@@ -228,7 +229,8 @@
                 },
                 {
                     "type" : "textarea",
-                    "title" : "Beschreiben Sie Ihr Unternehmen <small>(mindestens 300 Wörter)</small>",
+                    "title" : "Beschreiben Sie Ihr Unternehmen",
+                    "subtitle" : "(mindestens 300 Wörter)",
                     "name" : "entity-content",
                     "rows" : 8,
                     "validate" : {
