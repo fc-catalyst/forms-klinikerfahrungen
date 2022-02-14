@@ -82,6 +82,7 @@
                             "title" : "Emailadresse für Kontaktanfrage",
                             "name" : "entity-email",
                             "validate" : {
+                                "notEmpty" : true,
                                 "email" : true
                             },
                             "meta_box" : true

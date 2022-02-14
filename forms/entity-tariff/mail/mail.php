@@ -35,6 +35,11 @@ class FCP_FormsTariffMail {
         ],
 
         'client' => [
+            'published' => [
+                'Your entry is published',
+                'Your entry has just been published.',
+                ['entity-tariff'],
+            ],
             'activated' => [ // payed
                 'New tariff is activated',
                 'Your new tariff is activated.',
@@ -54,9 +59,16 @@ class FCP_FormsTariffMail {
                 'Your tariff has just ended',
                 'Your tariff has just ended. Free Tariff is activated.',
             ],
-            'billed' => [
-                'A bill reminder',
-                'You\'ve been billed recently. Please, pay the bill or ignore the emails to continue with a Free Tariff',
+        ],
+        'moderator' => [
+            'entity_added' => [ // submitted for review
+                'Clinic / doctor added',
+                'A new clinic or doctor has just been added. Please check it and publish, if it is valid.',
+                []
+            ],
+            'entity_updated' => [
+                'Clinic / doctor changed',
+                'A client has changed some information in an entry. Please check if it is still valid.',
             ],
         ]
     ];
@@ -71,6 +83,8 @@ class FCP_FormsTariffMail {
                 'sending' => 'robot@'.$_SERVER['SERVER_NAME'],
                 'sending_name' => get_bloginfo( 'name' ),
                 'accountant' => 'finnish.ru@gmail.com', // 'buchhaltung@firmcatalyst.com',
+                'moderator' => 'finnish.ru@gmail.com', // add the function to pick the admin's email?
+                'client_fake' => 'finnish.ru@gmail.com', // for testing purposes
                 'admin' => 'vadim@firmcatalyst.com',
                 'footer' => '<a href="'.$url.'" target="blank" rel="noopener noreferrer">'.$_SERVER['SERVER_NAME'].'</a>'
             ];
@@ -86,7 +100,7 @@ class FCP_FormsTariffMail {
     }
 
     // collect title && meta data && billing data by a post id or array of ids; also loads the jsons with titles
-    public static function get_data($ids = [], $nocached = false) { 
+    public static function get_data($ids = [], $nocached = false, $cache = false) { 
         static $combined = [];
 
         if ( empty( $ids ) ) { return $combined; }
@@ -133,8 +147,9 @@ class FCP_FormsTariffMail {
         $r = $wpdb->get_results( '
             SELECT `post_id`, `meta_key`, `meta_value`
             FROM `'.$wpdb->postmeta.'`
-            WHERE `post_id` IN (' . implode( ',', $ids ) . ') AND `meta_key` IN ( "entity-tariff", "entity-tariff-next", "entity-billing" )
+            WHERE `post_id` IN (' . implode( ',', $ids ) . ')
         ');
+        // AND `meta_key` IN ( "entity-tariff", "entity-tariff-next", "entity-billing" )
         $metas = [];
         $bill_ids = [];
         foreach ( $r as $k => $v ) {
@@ -156,11 +171,12 @@ class FCP_FormsTariffMail {
 
         // combine && save the results
         foreach ( $titles as $k => $v ) {
-            $combined[ $k ] = [
-                'title' => $v,
-                'meta' => array_merge( $metas[ $k ], $billings[ $metas[ $k ]['entity-billing'] ] )//$metas[ $k ],
-                //'billing' => $billings[ $metas[ $k ]['entity-billing'] ], // metas have unique names, so who cares
-            ];
+            if ( $cache && $combined[ $k ] ) { // for comparison puprose
+                $combined[ $k ]['cached'] = $combined[ $k ];
+            }
+            $combined[ $k ]['title'] = $v;
+            $combined[ $k ]['meta'] = array_merge( $metas[ $k ], $billings[ $metas[ $k ]['entity-billing'] ] );
+            // metas have unique names, so who cares
         }
 
         return $filter_result( $filter_result( $combined ) );
@@ -185,7 +201,7 @@ class FCP_FormsTariffMail {
             }
         }
 
-        // the next-tariff has no options, it copies the tariff, so here is the crutch
+        // the next-tariff has no options, it copies the tariff, so here is a crutch
         $titles['options'][ 'entity-tariff-next' ] = $titles['options'][ 'entity-tariff' ];
 
         return $titles;
@@ -215,6 +231,42 @@ class FCP_FormsTariffMail {
         return '<ul>' . $return . '</ul>';
     }
 
+    // compare the __POST with older get_data and list the changed lines
+    private static function message_datalist_moderator_changes($id) {
+
+        $data = self::get_data( $id, true, true );
+        
+        if ( empty( $data[ $id ]['cached'] ) ) { return; }
+        
+        $structures = self::get_structures();
+        
+        $difference = [];
+
+/*
+        // this doesn't work, as the title is saved much earlier, so comparing with itself, really
+        // ++can probably add a lower priority to FCP_Add_Meta_Boxes->saveMetaBoxes()
+        if ( $data[ $id ]['title'] !== $data[ $id ]['cached']['title'] ) {
+            $difference['entity-name'] = [
+                'title' => $structures['titles']['entity-name'],
+                'before' => $data[ $id ]['cached']['title'],
+                'after' => $data[ $id ]['title'],
+            ];
+        }
+//*/
+
+        foreach ( $structures['titles'] as $k => $v ) {
+            if ( $data[ $id ]['meta'][ $k ] === $data[ $id ]['cached']['meta'][ $k ] ) { continue; }
+            $difference[ $k ] = [
+                'title' => $v,
+                'before' => $data[ $id ]['cached']['meta'][ $k ],
+                'after' => $data[ $id ]['meta'][ $k ],
+            ];
+        }
+
+        return $difference;
+
+    }
+
     private static function message_content($recipient, $topic, $id = '') {
 
         $details = self::details();
@@ -226,20 +278,18 @@ class FCP_FormsTariffMail {
         $footer = '<a href="'.$details['url'].'" target="blank" rel="noopener noreferrer">'.$details['domain'].'</a>';
 
         if ( $id ) {
-        
-            $datalist = self::message_datalist( $id, self::$messages[ $recipient ][ $topic ][2] );
 
             $message  = '
                 '.$message.'
-                <br><br>
-
+                <br>
                 <h2>'.self::get_data( $id )[$id]['title'].'</h2>
                 <a href="'.$details['url'].'/?p='.$id.'" target="_blank" rel="noopener noreferrer">'.__( 'View' ).'</a>
                 |
                 <a href="'.$details['url'].'/wp-admin/post.php?post='.$id.'&action=edit" target="_blank" rel="noopener noreferrer">'.__( 'Edit' ).'</a>
-                <br>
-                '.$datalist.'
             ';
+            
+            $datalist = self::message_datalist( $id, self::$messages[ $recipient ][ $topic ][2] );
+            $message .= $datalist ? '<br>'.$datalist : '';
         }
         
         return [
@@ -289,7 +339,7 @@ class FCP_FormsTariffMail {
         $meta = self::get_data( $id )[$id]['meta'];
         if ( !$meta['billing-email'] ) { return; }
 
-        $message['to'] = $meta['billing-email'];
+        $message['to'] = $details['client_fake'];// $meta['billing-email'];
         if ( $meta['billing-name'] ) { $message['to_name'] = $meta['billing-name']; }
 
         $message['reply_to'] = $details['accountant'];
@@ -297,10 +347,55 @@ class FCP_FormsTariffMail {
         return self::send( $message );
     }
     
+    public static function to_moderator($topic, $id = '') {
+
+        if ( current_user_can( 'administrator' ) ) { return; }
+    
+        $difference = []; // exception to print the data changes - don't send if no changes
+        if ( $topic === 'entity_updated' ) {
+            $difference = self::message_datalist_moderator_changes( $id );
+            if ( empty( $difference ) ) { return; }
+        }
+
+        $message = self::message_content( 'moderator', $topic, $id );
+        if ( !$message ) { return; }
+
+        $details = self::details();
+
+        $message['from'] = $details['sending'];
+        $message['from_name'] = $details['sending_name'];
+        $message['to'] = $details['moderator'];
+        $message['to_name'] = $details['moderator_name'];
+
+        if ( !empty( $difference ) ) { // ++move to a separate function?
+            $message['message'] .= '<h3>'.__( 'Difference' ).':</h3>';
+            $message['message'] .= '<ul>';
+            foreach ( $difference as $v ) {
+                $message['message'] .= '<li>
+                    <strong>'.$v['title'].':</strong><br>
+                    '.$v['before'].' &ndash; <em>'.__( 'Before' ).'</em><br>
+                    '.$v['after'].' &ndash; <em>'.__( 'After' ).'</em>
+                </li>';
+            }
+            $message['message'] .= '</ul>';
+        }
+
+/*
+        // ++add the user data to contact back just in case. will be needed later for trusted users
+        //if ( $meta['billing-email'] ) { $message['reply_to'] = $meta['billing-email']; } // ++user email
+        //if ( $meta['billing-name'] ) { $message['reply_to_name'] = $meta['billing-name']; } // ++user name
+
+//*/
+
+        return self::send( $message );
+    }
+    
     public static function send($m) {
 
         if ( !empty( array_diff( ['subject', 'message', 'from', 'to'], array_keys( $m ) ) ) ) { return; }
-        
+
+        // if ( self::send_to_print( $m ) ) { return; } // comment in common state - only for testing purposes
+
         static $template = '';
         
         if ( !$template ) {
@@ -335,6 +430,37 @@ class FCP_FormsTariffMail {
 
         if ( $mail->send() ) { return true; }
 
+    }
+    
+    private static function send_to_print($m) { // a sort of debugging function
+        if ( !current_user_can( 'administrator' ) ) { return false; }
+
+        if ( !empty( $_POST ) ) {
+            echo '<pre>';
+            print_r( $m );
+            echo '</pre>';
+            exit;
+        }
+
+        add_action( 'wp_footer', function() use ( $m ) {
+            FCP_FormsTariffMail::console_log( $m );
+        });
+        add_action( 'admin_footer', function() use ( $m ) {
+            FCP_FormsTariffMail::console_log( $m );
+        });
+        
+        return true;
+    }
+    
+    public static function console_log($m) {
+    ?>
+        <pre id="print_to_console" style="display:none">
+        <?php print_r( $m ) ?>
+        </pre>
+        <script>
+            console.log( jQuery( '#print_to_console' ).html() );
+        </script>
+    <?php
     }
 
 }

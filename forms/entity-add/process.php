@@ -82,6 +82,12 @@ foreach ( $update_list as $k => $v ) {
     update_post_meta( $id, $k, $v );
 }
 
+
+// notify the moderator
+require_once __DIR__ . '/../entity-tariff/mail/mail.php';
+FCP_FormsTariffMail::to_moderator( 'entity_added', $id );
+
+
 // REDIRECT
 if ( $_POST['entity-tariff'] === 'kostenloser_eintrag' ) {
     $redirect = get_permalink( $id ); // preview the post

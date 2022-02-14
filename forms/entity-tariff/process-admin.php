@@ -42,7 +42,7 @@ if ( !$admin_am && $tariff_change && !$tariff_paid ) { // tariff is about to cha
     // notify the accountant
     add_action( 'save_post', function() use ( $postID ) {
         FCP_FormsTariffMail::to_accountant( 'request', $postID );
-    }, 20);
+    }, 20 );
 }
 
 

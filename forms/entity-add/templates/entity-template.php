@@ -60,6 +60,13 @@ if ( have_posts() ) :
 
 
 <div style="height:35px" aria-hidden="true" class="wp-block-spacer"></div>
+<?php
+if ( get_the_author_meta( 'ID' ) === get_current_user_id() ) {
+?>
+<div class="notice"><?php _e( 'Thank you for adding the entry. It will become visible to other visitors as soon as passes the moderation.' ) ?></div>
+<?php
+}
+?>
 
 <?php
     $template = [];
@@ -103,6 +110,8 @@ if ( have_posts() ) :
         }
 ?>
 </article>
+
+<?php echo current_user_can( 'edit_post' ) ? edit_post_link() : '' ?>
 
 <div style="height:100px" aria-hidden="true" class="wp-block-spacer"></div>
 
