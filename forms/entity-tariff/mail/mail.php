@@ -1,12 +1,20 @@
 <?php
+/*
+if ( ! class_exists( '\PHPMailer\PHPMailer\PHPMailer', false ) ) {
+    require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
+    //use PHPMailer\PHPMailer\PHPMailer;
+}
 
-//*
-require_once __DIR__ . '/PHPMailer/src/Exception.php';
-require_once __DIR__ . '/PHPMailer/src/PHPMailer.php';
-use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\PHPMailer;
+if ( ! class_exists( '\PHPMailer\PHPMailer\Exception', false ) ) {
+    require_once ABSPATH . WPINC . '/PHPMailer/Exception.php';
+    //use PHPMailer\PHPMailer\Exception;
+}
+
+if ( ! class_exists( '\PHPMailer\PHPMailer\SMTP', false ) ) {
+    require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
+}
 //*/
-
+//wp_mail_smtp
 class FCP_FormsTariffMail {
 
     private static $details = [],
@@ -29,7 +37,7 @@ class FCP_FormsTariffMail {
             ],
             'cancel' => [
                 'Bill not payed',
-                'The client has not payed the Bill. You can now cancel the Bill, or contact the client directly.',
+                'The client has not payed the Bill in a set up period of time. You can now cancel the Bill, or contact the client directly.',
                 ['billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
         ],
@@ -418,7 +426,8 @@ class FCP_FormsTariffMail {
             $m['footer'] ? $m['footer'] : self::details()['footer'] // footer
         ]);
         
-        $mail = new PHPMailer();
+        // ++if classes don't exist - include first right here with no use OR wait till init?
+        $mail = new \PHPMailer\PHPMailer\PHPMailer();
         $mail->CharSet = 'UTF-8';
         $mail->setFrom( $m['from'], $m['from_name'] );
         $mail->addAddress( $m['to'], $m['to_name'] );
@@ -427,7 +436,32 @@ class FCP_FormsTariffMail {
         $mail->msgHTML( $email_body );
         $mail->AddEmbeddedImage( __DIR__ . '/attachments/klinikerfahrungen-logo.png', 'klinikerfahrungen-logo');
         // $mail->addAttachment( __DIR__ . '/attachments/Fünf Tipps dein Wert deiner Amazon Marke zu erhöhen.pdf' );
+//*
+        // WP Mail SMTP
+        $smtp = get_option( 'wp_mail_smtp' );
+        if ( $smtp === false || isset( $smtp['mail'] ) && $smtp['mail']['mailer'] !== 'smtp' ) {
+            if ( $mail->send() ) { return true; }
+        }
 
+        // from options
+        if ( $smtp['mail']['from_email_force'] ) {
+            if ( $smtp['mail']['from_name_force'] ) {
+                $mail->setFrom( $smtp['mail']['from_email_force'], $smtp['mail']['from_name_force'] );
+            } else {
+                $mail->setFrom( $smtp['mail']['from_email_force'], $m['from_name'] );
+            }
+        }
+        
+        // smtp options
+        $mail->Host = $smtp['smtp']['host'];
+        $mail->Port = $smtp['smtp']['port'];
+
+        if ( $smtp['smtp']['auth'] ) {
+            $mail->SMTPAuth = true;
+            $mail->Username = $smtp['smtp']['user'];
+            $mail->Password = $smtp['smtp']['pass'];
+        }
+//*/
         if ( $mail->send() ) { return true; }
 
     }
