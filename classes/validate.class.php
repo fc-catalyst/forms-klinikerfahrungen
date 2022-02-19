@@ -144,7 +144,7 @@ class FCP_Forms__Validate {
     }
     
     private function test_file_default($a) { // this one goes silently with current server settings
-        if ( $a['error'] ) {
+        if ( !empty( $a['error'] ) ) {
             return [ // taken from the php reference for uploading errors
                 0 => 'There is no error, the file uploaded with success', // doesn't count anyways
                 1 => 'The uploaded file '.$a['name'].' exceeds the upload_max_filesize directive in php.ini',
@@ -165,7 +165,7 @@ class FCP_Forms__Validate {
 
         foreach ( $this->s->fields as $f ) {
 
-            if ( !$f->validate ) { continue; }
+            if ( !isset( $f->validate ) || !isset( $f->name ) || !$f->name ) { continue; }
 
             foreach ( $f->validate as $mname => $rule ) {
                 $method = 'test_' . ( $f->type == 'file' ? 'file_' : '' ) . $mname;
@@ -173,9 +173,9 @@ class FCP_Forms__Validate {
 
                 if ( !method_exists( $this, $method ) ) { continue; }
 
-                if ( $f->type == 'file' ) { // ++the following can be better
+                if ( $f->type === 'file' ) { // ++the following can be better
 
-                    if ( $f->multiple ) {
+                    if ( isset( $f->multiple ) && $f->multiple ) {
 
                         $mflip = FCP_Forms__Files::flip_files( $this->v[ $f->name ] );
                         foreach ( $mflip as $v ) {
@@ -195,7 +195,7 @@ class FCP_Forms__Validate {
                 }
                 
                 // not file
-                if ( $f->multiple ) {
+                if ( isset( $f->multiple ) && $f->multiple ) {
 
                     foreach ( $this->v[ $f->name ] as $v ) {
                         $this->addResult( $method, $f->name, $rule, $v );
@@ -203,7 +203,7 @@ class FCP_Forms__Validate {
                     
                 } else {
 
-                    $this->addResult( $method, $f->name, $rule, $this->v[ $f->name ] );
+                    $this->addResult( $method, $f->name, $rule, ( empty( $this->v[ $f->name ] ) ? '' : $this->v[ $f->name ] ) );
                 }
             }
         }

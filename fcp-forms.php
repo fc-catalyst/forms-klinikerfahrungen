@@ -362,7 +362,7 @@ class FCP_Forms {
             if ( !$form ) { continue; }
             
             $labels[] = $tabs[ $k ] ? $tabs[ $k ] : 
-                $this->form_tab[ $dir ] ? $this->form_tab[ $dir ] : $dir;
+                ( $this->form_tab[ $dir ] ? $this->form_tab[ $dir ] : $dir );
             $forms .= $form;
             if ( $_POST['fcp-form-name'] && $dir == $_POST['fcp-form-name'] ) {
                 $at = array_key_last( $labels );
@@ -534,7 +534,8 @@ class FCP_Forms {
     public static function flatten($f, &$return = []) {
         foreach ( $f as $add ) {
 
-            if ( $add->type ) {
+            if ( isset( $add->type ) &&
+                $add->type ) {
                 $return[] = $add;
                 continue;
             }

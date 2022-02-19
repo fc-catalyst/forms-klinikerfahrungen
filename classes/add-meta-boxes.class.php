@@ -72,7 +72,7 @@ class FCP_Add_Meta_Boxes {
         }
         
         // ++add the post_type filter here or even higher!!!
-        @include_once( plugin_dir_path( __FILE__ ) . '../forms/' . $this->s->options->form_name . '/override-admin.php' );
+        @include_once( __DIR__ . '/../forms/' . $this->s->options->form_name . '/override-admin.php' );
 
         // print meta fields
         $draw = new FCP_Forms__Draw( $this->s, $values );
@@ -95,17 +95,18 @@ class FCP_Add_Meta_Boxes {
             !wp_verify_nonce( $_POST[ 'fcp-form--' . $this->s->options->form_name ], FCP_Forms::plugin_unid() )
         ) { return; }
 		if ( !current_user_can( 'edit_post', $postID ) ) { return; }
-        
+
         $post = get_post( $postID );
         if ( $post->post_type == 'revision' ) { return; } // ++ maybe move only to the uploading process, as I don't know how revisions work for now
 
         // don't save wrongly formatted fields
         if ( is_admin() ) {
             if ( isset( $_FILES ) && !class_exists( 'FCP_Forms__Files' ) ) {
-                include_once plugin_dir_path( __FILE__ ) . 'files.class.php';
+                include_once __DIR__ . '/files.class.php';
             }
+
             if ( !class_exists( 'FCP_Forms__Validate' ) ) {
-                include_once plugin_dir_path( __FILE__ ) . 'validate.class.php';
+                include_once __DIR__ . '/validate.class.php';
             }
             $warns = new FCP_Forms__Validate( $this->s, $_POST, $_FILES ); // ++ if !current_user_can('administrator')
             
@@ -116,13 +117,13 @@ class FCP_Add_Meta_Boxes {
             }
             
             // modify data before save && process files
-            @include_once( plugin_dir_path( __FILE__ ) . '../forms/' . $this->s->options->form_name . '/process-admin.php' ); // ++move to fcp-forms.php hook??
+            @include_once( __DIR__ . '/../forms/' . $this->s->options->form_name . '/process-admin.php' ); // ++move to fcp-forms.php hook??
 
         }
 
         $fields = FCP_Forms::flatten( $this->s->fields );
         foreach ( $fields as $f ) {
-            if ( !$f->meta_box || $f->type === 'none' ) { continue; }
+            if ( !isset( $f->meta_box ) || !isset( $f->name ) || !$f->name || !isset( $f->type ) || $f->type === 'none' ) { continue; }
             
             // the options for select are required even if itself is not
             if ( $f->type === 'select' && $_POST[ $f->name ] && !isset( $f->options->{ $_POST[ $f->name ] } ) ) {
@@ -138,7 +139,7 @@ class FCP_Add_Meta_Boxes {
                 )
             ) { continue; }
 
-            if ( $warns->result[ $f->name ] ) { // ++ && is_admin() ?
+            if ( isset( $warns->result[ $f->name ] ) ) { // ++ && is_admin() ?
                 setcookie(
                     $this->p->warn_name.'['.$f->name.']',
                     json_encode( $warns->result[ $f->name ] ),

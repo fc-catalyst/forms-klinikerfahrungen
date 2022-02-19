@@ -449,10 +449,10 @@ class FCP_Forms__Draw {
         
         ?>
         <div class="fcp-form-field-w">
-        <?php echo $a->before ?>
+        <?php echo isset( $a->before ) ? $a->before : '' ?>
         <?php
         
-        if ( $a->title ) {
+        if ( isset( $a->title ) ) {
             ?>
             <span class="fcp-form-field-h<?php echo $this->smaller_font( $a->title, $o->reduce_font_after ) ?>">
                 <?php echo $a->title ?><?php echo $a->__required ?>
@@ -463,20 +463,20 @@ class FCP_Forms__Draw {
 
         $this->{ $method }( $a );
         
-        if ( $a->description ) {
+        if ( isset( $a->description ) ) {
             ?>
             <div class="fcp-form-field-d"><?php echo $a->description ?></div>
             <?php
         }
 
-        if ( $a->warning ) {
+        if ( isset( $a->warning ) && $a->warning ) {
             ?>
             <ul class="fcp-form-field-warn"><li><?php echo implode( "</li>\n<li>", $a->warning ) ?></ul>
             <?php
         }
 
         ?>
-        <?php echo $a->after ?>
+        <?php echo isset( $a->after ) ? $a->after : '' ?>
         </div>
         <?php
     }

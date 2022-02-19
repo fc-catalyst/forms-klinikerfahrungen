@@ -27,7 +27,7 @@ class FCP_Forms__Files {
             if ( $v->type !=='file' ) {
                 continue;
             }
-            $multi[ $v->name ] = $v->multiple ? 1 : 0;
+            $multi[ $v->name ] = isset( $v->multiple ) && $v->multiple ? 1 : 0;
         }
 
         $f = $this->f;
@@ -325,11 +325,11 @@ class FCP_Forms__Files {
     
     public static function tmp_dir() {
         $uploads = wp_get_upload_dir()['basedir'];
+        $base = empty( $_POST['fcp-form--tmpdir'] ) ? 'aa' : $_POST['fcp-form--tmpdir'];
         return [
             'main' => $uploads . '/' . FCP_Forms::$tmp_dir,
-            'dir' => $uploads . '/' . FCP_Forms::$tmp_dir . '/' .
-                ( $_POST['fcp-form--tmpdir'] ? $_POST['fcp-form--tmpdir'] : 'aa' ),
-            'base' => $_POST['fcp-form--tmpdir']
+            'dir' => $uploads . '/' . FCP_Forms::$tmp_dir . '/' . $base,
+            'base' => $base,
         ];
     }
     

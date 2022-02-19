@@ -20,6 +20,18 @@ if ( !get_post_meta( $_GET['post'], 'entity-billing', true ) && !$admin_am ) {
     ]);
     return;
 }
+/*
+require_once __DIR__ . '/mail/mail.php';
+$mail_sent = FCP_FormsTariffMail::to_accountant( 'request', $_GET['post'] );
+
+//$smtp_opts = get_option( 'wp_mail_smtp' );
+
+array_push( $this->s->fields, (object) [
+    'type' => 'notice',
+    'text' => '<pre>**'.$mail_sent.'**</pre>',
+    'meta_box' => true,
+]);
+//*/
 
 
 // print field-by-field conditionally
