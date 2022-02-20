@@ -245,7 +245,7 @@ class FCP_Forms {
     
     public function process() { // when $_POST is passed by the client side
 
-        if ( !$_POST['fcp-form-name'] ) { // handle only the fcp-forms
+        if ( empty( $_POST['fcp-form-name'] ) ) { // handle only the fcp-forms
             return;
         }
         $form_name = $_POST['fcp-form-name'];
@@ -534,8 +534,7 @@ class FCP_Forms {
     public static function flatten($f, &$return = []) {
         foreach ( $f as $add ) {
 
-            if ( isset( $add->type ) &&
-                $add->type ) {
+            if ( isset( $add->type ) && $add->type ) {
                 $return[] = $add;
                 continue;
             }

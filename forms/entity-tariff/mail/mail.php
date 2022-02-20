@@ -1,20 +1,8 @@
 <?php
-/*
-if ( ! class_exists( '\PHPMailer\PHPMailer\PHPMailer', false ) ) {
-    require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
-    //use PHPMailer\PHPMailer\PHPMailer;
-}
 
-if ( ! class_exists( '\PHPMailer\PHPMailer\Exception', false ) ) {
-    require_once ABSPATH . WPINC . '/PHPMailer/Exception.php';
-    //use PHPMailer\PHPMailer\Exception;
-}
+// ++load all smtp values from db
+// ++move to more global place before spreading rest of notifications
 
-if ( ! class_exists( '\PHPMailer\PHPMailer\SMTP', false ) ) {
-    require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
-}
-//*/
-//wp_mail_smtp
 class FCP_FormsTariffMail {
 
     private static $details = [],
@@ -88,7 +76,7 @@ class FCP_FormsTariffMail {
             self::$details = [
                 'domain' => $_SERVER['SERVER_NAME'],
                 'url' => $url,
-                'sending' => 'robot@'.$_SERVER['SERVER_NAME'],
+                'sending' => 'kontakt@'.$_SERVER['SERVER_NAME'], //!!important for the smtp settings
                 'sending_name' => get_bloginfo( 'name' ),
                 'accountant' => 'finnish.ru@gmail.com', // 'buchhaltung@firmcatalyst.com',
                 'moderator' => 'finnish.ru@gmail.com', // add the function to pick the admin's email?
@@ -425,42 +413,63 @@ class FCP_FormsTariffMail {
             $m['message'], // the content
             $m['footer'] ? $m['footer'] : self::details()['footer'] // footer
         ]);
-        
-        // ++if classes don't exist - include first right here with no use OR wait till init?
+
+
+        if ( ! class_exists( '\PHPMailer\PHPMailer\PHPMailer', false ) ) { // ++or wait till init?
+            require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
+        }
+        if ( ! class_exists( '\PHPMailer\PHPMailer\Exception', false ) ) {
+            require_once ABSPATH . WPINC . '/PHPMailer/Exception.php';
+        }
+
         $mail = new \PHPMailer\PHPMailer\PHPMailer();
+        $mail->isHTML( true );
         $mail->CharSet = 'UTF-8';
         $mail->setFrom( $m['from'], $m['from_name'] );
         $mail->addAddress( $m['to'], $m['to_name'] );
         if ( $m['reply_to'] ) { $mail->addReplyTo( $m['reply_to'], $m['reply_to_name'] ); }
         $mail->Subject = $m['subject'];
-        $mail->msgHTML( $email_body );
+        //$mail->msgHTML( $email_body );
+        $mail->Body = $email_body;
+        //$mail->AltBody = '';
         $mail->AddEmbeddedImage( __DIR__ . '/attachments/klinikerfahrungen-logo.png', 'klinikerfahrungen-logo');
         // $mail->addAttachment( __DIR__ . '/attachments/Fünf Tipps dein Wert deiner Amazon Marke zu erhöhen.pdf' );
+
 //*
         // WP Mail SMTP
-        $smtp = get_option( 'wp_mail_smtp' );
-        if ( $smtp === false || isset( $smtp['mail'] ) && $smtp['mail']['mailer'] !== 'smtp' ) {
+        if ( ! class_exists( '\PHPMailer\PHPMailer\SMTP', false ) ) {
+            require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
+        }
+
+        $smtp = get_option( 'wp_mail_smtp' ); // ++cache it somewhere in class
+        if ( $smtp === false || $smtp['mail']['mailer'] !== 'smtp' ) {
             if ( $mail->send() ) { return true; }
         }
 
         // from options
-        if ( $smtp['mail']['from_email_force'] ) {
-            if ( $smtp['mail']['from_name_force'] ) {
-                $mail->setFrom( $smtp['mail']['from_email_force'], $smtp['mail']['from_name_force'] );
+        if ( !empty( $smtp['mail']['from_email_force'] ) ) {
+            if ( !empty( $smtp['mail']['from_name_force'] ) && !empty( $smtp['mail']['from_name'] ) ) {
+                $mail->setFrom( $smtp['mail']['from_email'], $smtp['mail']['from_name'] );
             } else {
-                $mail->setFrom( $smtp['mail']['from_email_force'], $m['from_name'] );
+                $mail->setFrom( $smtp['mail']['from_email'], $m['from_name'] );
             }
         }
-        
-        // smtp options
-        $mail->Host = $smtp['smtp']['host'];
-        $mail->Port = $smtp['smtp']['port'];
 
-        if ( $smtp['smtp']['auth'] ) {
+        // smtp options
+        //$mail->SMTPDebug = \PHPMailer\PHPMailer\SMTP::DEBUG_SERVER;
+        $mail->isSMTP();
+        $mail->Host = 'smtp.mailbox.org';//$smtp['smtp']['host'];
+        $mail->Port = '587';//$smtp['smtp']['port'];
+
+        if ( !empty( $smtp['smtp']['auth'] ) ) {
             $mail->SMTPAuth = true;
-            $mail->Username = $smtp['smtp']['user'];
-            $mail->Password = $smtp['smtp']['pass'];
+            $mail->Username = 'kontakt@klinikerfahrungen.de';//$smtp['smtp']['user'];
+            $mail->Password = 'FirmCatalyst2019!';//$smtp['smtp']['pass']; ++ where is it caming from
         }
+
+        //$mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+        $mail->SMTPSecure = 'tls';
+
 //*/
         if ( $mail->send() ) { return true; }
 
