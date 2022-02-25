@@ -121,6 +121,9 @@ msgstr "Dein Browser unterstützt keine HTML Videos."
 msgid "Working hours"
 msgstr "Öffnungszeiten"
 
+msgid "Thank you for adding the entry. It will become visible to other visitors as soon as passes the moderation."
+msgstr "Vielen Dank für Ihre Eintragung. Der Eintrag ist für alle Besucher sichtbar, nachdem er durch unser Team überprüft wurde."
+
 #. tags, actually
 msgid "Our range of treatments"
 msgstr "Unsere angebotenen Behandlungen"
@@ -144,3 +147,9 @@ msgstr "Geöffnet"
 
 msgid "Closed"
 msgstr "Geschlossen"
+
+msgid "Please add the closing time"
+msgstr "Wann schließt Ihr Unternehmen"
+
+msgid "Please add the opening time"
+msgstr "Bitte ergänzen Sie Ihre Öffnungszeiten"

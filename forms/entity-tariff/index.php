@@ -16,11 +16,12 @@ if ( $json === false ) { return; }
 
 
 new FCP_Add_Meta_Boxes( $json, (object) [
-    'title' => 'Tarif',
+    'title' => 'Tariff',
     'text_domain' => 'fcpfo',
     'post_types' => ['clinic', 'doctor'],
     'context' => 'side',
-    'priority' => 'default'
+    'priority' => 'default',
+    'text_domain' => 'fcpfo-et'
 ] );
 
 
@@ -65,6 +66,13 @@ register_activation_hook( $this->self_path_file, function() {
 register_deactivation_hook( $this->self_path_file, function() {
     wp_clear_scheduled_hook( 'fcp_forms_entity_tariff_prolong' );
 });
+
+
+// add translation languages
+add_action( 'plugins_loaded', function() {
+    load_plugin_textdomain( 'fcpfo-et', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+});
+
 
 add_action( 'fcp_forms_entity_tariff_prolong', function() {
 

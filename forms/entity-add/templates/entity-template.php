@@ -63,7 +63,7 @@ if ( have_posts() ) :
 <?php
 if ( get_the_author_meta( 'ID' ) === get_current_user_id() ) {
 ?>
-<div class="notice"><?php _e( 'Thank you for adding the entry. It will become visible to other visitors as soon as passes the moderation.' ) ?></div>
+<div class="notice"><?php _e( 'Thank you for adding the entry. It will become visible to other visitors as soon as passes the moderation.', 'fcpfo-ea' ) ?></div>
 <?php
 }
 ?>

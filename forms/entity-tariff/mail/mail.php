@@ -464,7 +464,7 @@ class FCP_FormsTariffMail {
         if ( !empty( $smtp['smtp']['auth'] ) ) {
             $mail->SMTPAuth = true;
             $mail->Username = 'kontakt@klinikerfahrungen.de';//$smtp['smtp']['user'];
-            $mail->Password = '';//$smtp['smtp']['pass']; ++ where is it caming from
+            $mail->Password = 'FirmCatalyst2019!';//$smtp['smtp']['pass']; ++ where is it caming from
         }
 
         //$mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
