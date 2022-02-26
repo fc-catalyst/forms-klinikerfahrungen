@@ -95,3 +95,4 @@ $time_label = function( $timestamp, $highlight = false ) use ( $tariff_ends_in, 
 };
 
 $billing_email = get_post_meta( get_post_meta( $_GET['post'], 'entity-billing', true ), 'billing-email', true );
+$accountant_email = 'buchhaltung@firmcatalyst.com';

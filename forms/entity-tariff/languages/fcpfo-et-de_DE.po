@@ -24,3 +24,59 @@ msgstr "Die folgenden Felder wirken sich nur auf bezahlte Tarife aus."
 
 msgid "Set 1 year from now"
 msgstr "1 Jahr in der Zukunft"
+
+msgid "The next tariff option is available to users %s days before the current paid tariff ends."
+msgstr "Nutzer haben die Möglichkeit %s Tage vor Ablauf einen neuen Tarif auszuwählen."
+
+msgid "If current tariff is free, you can schedule the paid one by picking a future date in the \"Active till\" field."
+msgstr "Ist der aktuelle Eintrag ein kostenloser Eintrag, dann kann dieser in einen kostenpflichtigen umgewandelt werden, indem ein neues Datum in der Zukunft im \"Active till\" Feld ausgewählt wird."
+
+msgid "You will be billed in a few days via your mentioned billing email <em>%s</em>. For any questions or problems with receiving the bill, please contact our accountant <a href=\"%s\">%s</a>."
+msgstr "Unsere Buchhaltung wird dir in Kürze eine Rechnung an die von dir hinterlegte Email <em>%s</em> in den Rechnungsdaten zusenden. Bei Fragen oder Problemen kontaktiere unsere Buchhaltung unter <a href=\"%s\">%s</a>."
+
+msgid "Please check your billing email <em>%s</em> and pay the bill to activate the tariff. For any questions please contact our accountant by <a href=\"%s\">%s</a>"
+msgstr "Bitte überprüfe die Email <em>%s</em> die du in den Rechnungsdaten hinterlegt hast. Nach Zahlungseingang wird dein Eintrag freigeschaltet. Bei Fragen oder Problemen kontaktiere unsere Buchhaltung unter <a href=\"%s\">%s</a>"
+
+msgid "The next tariff will be activated on %s, 00:00 local time."
+msgstr "Der neue Eintragungszeitraum wird aktiv ab dem %s, 00:00 lokale Zeit."
+
+#. msgid "For more information check out our tariff prices and conditions <a href=\"%s\" target=\"_blank\">here</a>."
+#. msgstr ""
+
+#. fields
+
+msgid "Payment status"
+msgstr "Zahlungsstatus"
+
+msgid "The tariff"
+msgstr "Der Tarif"
+
+msgid "The payment status"
+msgstr "Zahlstatus"
+
+msgid "Pending"
+msgstr "Ausstehend"
+
+msgid "Billed"
+msgstr "In Rechnung gestellt"
+
+msgid "Payed"
+msgstr "Bezahlt"
+
+msgid "Active till"
+msgstr "Aktiv bis"
+
+msgid "Start date"
+msgstr "Startdatum"
+
+msgid "End date"
+msgstr "Enddatum"
+
+msgid "Timezone"
+msgstr "Zeitzone"
+
+msgid "Timezone offset"
+msgstr "Zeitzonenverschiebung"
+
+msgid "The next tariff"
+msgstr "Neuer Eintragungszeitraum"

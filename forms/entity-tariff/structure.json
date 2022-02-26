@@ -26,7 +26,7 @@
         },
         {
             "type" : "select",
-            "placeholder" : "The payment status:",
+            "placeholder" : "The payment status",
             "name" : "entity-payment-status",
             "x_placeholder" : "None",
             "options" : {
@@ -42,7 +42,7 @@
         },
         {
             "type" : "text",
-            "title" : "Active till:",
+            "title" : "Active till",
             "placeholder" : "dd.mm.yyyy",
             "name" : "entity-tariff-till",
             "meta_box" : true,
@@ -60,7 +60,7 @@
         },
         {
             "type" : "select",
-            "title" : "Zeitzone:",
+            "title" : "Timezone",
             "name" : "entity-timezone",
             "options" : {},
             "value" : "Europe/Berlin",
@@ -71,7 +71,7 @@
         },
         {
             "type" : "text",
-            "title" : "Zeitzone Offset:",
+            "title" : "Timezone Offset",
             "name" : "entity-timezone-bias",
             "value" : "0",
             "meta_box" : true,
@@ -94,7 +94,7 @@
         },
         {
             "type" : "none",
-            "placeholder" : "The payment status:",
+            "placeholder" : "The payment status",
             "name" : "entity-payment-status-next",
             "x_placeholder" : "None",
             "options" : {},

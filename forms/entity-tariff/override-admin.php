@@ -15,11 +15,17 @@ if ( !get_post_meta( $_GET['post'], 'entity-billing', true ) && !$admin_am ) {
     $this->s->fields = [];
     array_push( $this->s->fields, (object) [
         'type' => 'notice',
-        'text' => '<p>To apply a different tariff, please select a billing details in the field above. Or fill in a new billing information <a href="/wp-admin/post-new.php?post_type=billing" target="_blank">here</a> first.</p>',
+        'text' => '<p>' .
+            sprintf(
+                __( 'To apply a different tariff, please select a billing details in the field above. Or fill in a new billing information <a href="%s" target="_blank">here</a> first.', 'fcpfo-et' ),
+                '/wp-admin/post-new.php?post_type=billing'
+                ) .
+            '</p>',
         'meta_box' => true,
     ]);
     return;
 }
+
 /*
 require_once __DIR__ . '/mail/mail.php';
 $mail_sent = FCP_FormsTariffMail::to_accountant( 'request', $_GET['post'] );
@@ -97,7 +103,7 @@ if ( $admin_am ) {
     if ( !$tariff_paid ) {
         FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff', [
             'type' => 'notice',
-            'text' => '<strong>The following fields effect only paid tariffs.</strong>',
+            'text' => '<strong>'.__( 'The following fields effect only paid tariffs.', 'fcpfo-et' ).'</strong>',
             'meta_box' => true,
         ], 'after' );
     }
@@ -118,7 +124,13 @@ if ( $admin_am ) {
     if ( $prolong_allowed ) {
         FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-next', [
             'type' => 'notice',
-            'text' => '<strong>The next tariff option is available to users '.( $prolong_gap / $day ).' days before the current <em>paid</em> tariff ends.</strong><span>If current tariff is free, you can schedule the paid one by picking a future date in the "Active till" field.</span>',
+            'text' =>
+                '<strong>' .
+                sprintf( __( 'The next tariff option is available to users %s days before the current paid tariff ends.', 'fcpfo-et' ), $prolong_gap / $day ) .
+                '</strong>' .
+                '<span>' .
+                __( 'If current tariff is free, you can schedule the paid one by picking a future date in the "Active till" field.', 'fcpfo-et' ).
+                '</span>',
             'meta_box' => true,
         ], 'before' );
     }
@@ -135,10 +147,22 @@ if ( !$admin_am ) {
     if ( $tariff_paid ) {
 
         if ( $values['entity-payment-status'] === 'pending' ) {
-            $status_message = '<em>Payment status - Pending: </em>You will be billed in a few days via your mentioned billing email <em>' . $billing_email . '</em> For any questions or problems with receiving the bill, please contact our accountant <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a>';
+            $status_message = '<em>'.
+            __( 'Payment status', 'fcpfo-et' ).': ' .
+            __( 'Pending', 'fcpfo-et' ).'. </em>' .
+            sprintf(
+                __( 'You will be billed in a few days via your mentioned billing email <em>%s</em>. For any questions or problems with receiving the bill, please contact our accountant <a href=\"%s\">%s</a>.', 'fcpfo-et' ),
+                $billing_email, $accountant_email, $accountant_email
+            );
 
         } elseif ( $values['entity-payment-status'] === 'billed' ) {
-            $status_message = '<em><font color="#35b32d">Payment status - Billed</font>: </em>Please check your billing email ' . $billing_email . ' and pay the bill to activate the tariff. <br>For any questions please contact our accountant by <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a><br>The initial free tariff will be restored automatically in '.floor( $billed_flush_gap / $day ).' days since the request, if not payed.';
+            $status_message = '<em><font color="#35b32d">'.
+            __( 'Payment status', 'fcpfo-et' ).': ' .
+            __( 'Billed', 'fcpfo-et' ).'. </font></em>' .
+            sprintf(
+                __( 'Please check your billing email <em>%s</em> and pay the bill to activate the tariff. For any questions please contact our accountant by <a href=\"%s\">%s</a>', 'fcpfo-et' ),
+                $billing_email, $accountant_email, $accountant_email
+            );
 
         }
         
@@ -156,13 +180,27 @@ if ( !$admin_am ) {
     if ( $tariff_paid_next && $prolong_allowed ) {
 
         if ( $values['entity-payment-status-next'] === 'pending' ) {
-            $status_message = '<em>Payment status - Pending: </em>You will be billed in a few days via your mentioned billing email <em>' . $billing_email . '</em> For any questions or problems with receiving the bill, please contact our accountant <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a>';
+            $status_message = '<em>'.
+            __( 'Payment status', 'fcpfo-et' ).': ' .
+            __( 'Pending', 'fcpfo-et' ).'. </em>' .
+            sprintf(
+                __( 'You will be billed in a few days via your mentioned billing email <em>%s</em>. For any questions or problems with receiving the bill, please contact our accountant <a href=\"%s\">%s</a>.', 'fcpfo-et' ),
+                $billing_email, $accountant_email, $accountant_email
+            );
 
         } elseif ( $values['entity-payment-status-next'] === 'billed' ) {
-            $status_message = '<em><font color="#35b32d">Payment status - Billed</font>: </em>Please check your billing email ' . $billing_email . ' and pay the bill to activate the tariff. <br>For any questions please contact our accountant by <a href="mailto:buchhaltung@firmcatalyst.com">buchhaltung@firmcatalyst.com</a><br>The initial free tariff will be restored automatically in '.floor( $billed_flush_gap / $day ).' days since the request, if not payed.';
+            $status_message = '<em><font color="#35b32d">'.
+            __( 'Payment status', 'fcpfo-et' ).': ' .
+            __( 'Billed', 'fcpfo-et' ).'. </font></em>' .
+            sprintf(
+                __( 'Please check your billing email <em>%s</em> and pay the bill to activate the tariff. For any questions please contact our accountant by <a href=\"%s\">%s</a>', 'fcpfo-et' ),
+                $billing_email, $accountant_email, $accountant_email
+            );
 
         } elseif ( $values['entity-payment-status-next'] === 'payed' ) {
-            $status_message = '<em>Payment status - Payed</em>';
+            $status_message = '<em>'.
+            __( 'Payment status', 'fcpfo-et' ).': ' .
+            __( 'Payed', 'fcpfo-et' ).'. </em>';
 
         }
         
@@ -181,7 +219,9 @@ if ( !$admin_am ) {
 
 //if ( $prolong_allowed && $tariff_paid && $tariff_paid_active ) {
 if ( $init_values['entity-tariff-till'] ) {
-    $tariff_next_start_label = date( $date_format, $init_values['entity-tariff-till'] + $day );
+    $tariff_next_start = date( $date_format, $init_values['entity-tariff-till'] + $day );
+    $tariff_next_start_label = '<font color="#35b32d" style="white-space:nowrap">'.$tariff_next_start.'</font>';
+/*
     $till_next = $init_values['entity-tariff-till'] - $time - $values['entity-timezone-bias'];
     if ( $till_next > $day ) {
         $till_next = round( $till_next / 60 / 60 / 24 ) . ' day(s)';
@@ -190,22 +230,33 @@ if ( $init_values['entity-tariff-till'] ) {
     } elseif ( $till_next <= 3600 ) {
         $till_next = round( $till_next / 60 ) . ' minute(s)';
     }
-
+//*/
     //$scheduled_to = date( 'd.m.Y H:i:s', wp_next_scheduled( 'fcp_forms_entity_tariff_prolong' ) );
     //$and_now_is = date( 'd.m.Y H:i:s', time() );
     //$the_event = wp_get_scheduled_event( 'fcp_forms_entity_tariff_prolong' );
     
     array_push( $this->s->fields, (object) [
         'type' => 'notice',
-        'text' => '<p>The next tariff will be activated on <font color="#35b32d" style="white-space:nowrap">'.$tariff_next_start_label.'</font>, 00:00 local time, <br>in '.$till_next.'</p>',
-        // <br>'.$scheduled_to.' <br>'.$and_now_is.' <br><pre>'.print_r( $the_event, true ).'</pre>
+        'text' => '<p>' .
+        sprintf(
+            __( 'The next tariff will be activated on %s, 00:00 local time.', 'fcpfo-et' ),
+            $tariff_next_start_label
+        ) .
+        '</p>',
+        // $tariff_next_start_label
+        // <br>in '.$till_next.'<br> '.$scheduled_to.' <br>now: '.$and_now_is.' <br><pre>'.print_r( $the_event, true ).'</pre>
         'meta_box' => true,
     ]);
 }
 
 array_push( $this->s->fields, (object) [
     'type' => 'notice',
-    'text' => '<p>For more information check out our tariff prices and conditions <a href="/preise-eintragung/" target="_blank">here</a></p>',
+    'text' => '<p>' .
+    sprintf(
+        __( 'For more information check out our tariff prices and conditions <a href=\"%s\" target=\"_blank\">here</a>.', 'fcpfo-et' ), 
+        '/preise-eintragung/'
+    ) .
+    '</p>',
     'meta_box' => true,
     'roles_view' => ['entity_delegate'],
 ]);
