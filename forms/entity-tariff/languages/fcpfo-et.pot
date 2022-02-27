@@ -40,8 +40,8 @@ msgstr ""
 msgid "The next tariff will be activated on %s, 00:00 local time."
 msgstr ""
 
-#. msgid "For more information check out our tariff prices and conditions <a href=\"%s\" target=\"_blank\">here</a>."
-#. msgstr ""
+msgid "For more information check out our tariff prices and conditions <a href=\"%s\" target=\"_blank\">here</a>."
+msgstr "Für mehr Informationen prüfen Sie unsere <a href=\"%s\" target=\"_blank\">Tarifpreise und Konditionen</a>"
 
 #. fields
 

@@ -36,6 +36,9 @@ msgstr "Rechnung noch unbezahlt"
 msgid "The client has not payed the Bill in a set up period of time. You can now cancel the Bill, or contact the client directly."
 msgstr "Der Kunde hat die Rechnung nicht rechtzeitig bezahlt. Du kannst die Rechnung stornieren oder den Kunden erneut erinnern."
 
+msgid "For %s; From %s, %s."
+msgstr "Für %s; Von %s, %s."
+
 #. emails to a client
 
 msgid "Your entry is published"

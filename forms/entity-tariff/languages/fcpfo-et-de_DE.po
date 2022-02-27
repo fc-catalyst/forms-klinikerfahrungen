@@ -39,8 +39,8 @@ msgstr "Bitte überprüfe die Email <em>%s</em> die du in den Rechnungsdaten hin
 msgid "The next tariff will be activated on %s, 00:00 local time."
 msgstr "Der neue Eintragungszeitraum wird aktiv ab dem %s, 00:00 lokale Zeit."
 
-#. msgid "For more information check out our tariff prices and conditions <a href=\"%s\" target=\"_blank\">here</a>."
-#. msgstr ""
+msgid "For more information check out our tariff prices and conditions <a href=\"%s\" target=\"_blank\">here</a>."
+msgstr ""
 
 #. fields
 

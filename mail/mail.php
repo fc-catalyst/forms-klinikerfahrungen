@@ -346,9 +346,10 @@ class FCP_FormsTariffMail {
             if ( $meta['billing-email'] ) { $message['reply_to'] = $meta['billing-email']; }
             if ( $meta['billing-name'] ) { $message['reply_to_name'] = $meta['billing-name']; }
             
-            $message['preheader'] = 'For ' . $data['title'] . '; ' .
-                'From ' . $meta['billing-company'] . ', ' .
-                $meta['billing-name'] . '. ';
+            $message['preheader'] = sprintf(
+                __( 'For %s; From %s, %s.' ),
+                $data['title'], $meta['billing-company'], $meta['billing-name']
+            );
 
         }
         

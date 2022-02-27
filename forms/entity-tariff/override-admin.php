@@ -277,7 +277,7 @@ array_push( $this->s->fields, (object) [
     'type' => 'notice',
     'text' => '<p>' .
     sprintf(
-        __( 'For more information check out our tariff prices and conditions <a href=\"%s\" target=\"_blank\">here</a>.', 'fcpfo-et' ), 
+        __( 'For more information check out our tariff prices and conditions <a href="%s" target="_blank">here</a>.', 'fcpfo-et' ), 
         '/preise-eintragung/'
     ) .
     '</p>',
