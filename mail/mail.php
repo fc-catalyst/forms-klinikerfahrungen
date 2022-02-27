@@ -17,9 +17,13 @@ class FCP_FormsTariffMail {
                 'sending' => 'kontakt@'.$_SERVER['SERVER_NAME'], // must be owned by smtp sender, if smtp
                 'sending_name' => get_bloginfo( 'name' ),
 
+                // ++add dynamic loading by role
                 'accountant' => 'finnish.ru@gmail.com', // 'rechnungen@klinikerfahrungen.de',
+                'accountant_locale' => 'de_DE',
                 'moderator' => 'finnish.ru@gmail.com', // 'kontakt@klinikerfahrungen.de'
+                'moderator_locale' => 'de_DE',
                 'admin' => 'finnish.ru@gmail.com', // technical purposes
+                'admin_locale' => 'en_US',
                 'client_fake' => 'finnish.ru@gmail.com', // for testing purposes
 
                 'footer' => '<a href="'.$url.'" target="blank" rel="noopener noreferrer">'.$_SERVER['SERVER_NAME'].'</a>',
@@ -58,17 +62,17 @@ class FCP_FormsTariffMail {
         'accountant' => [
             'request' => [
                 'Paid tariff request',
-                'A paid tariff is requested. Please, bill the client and mark the status as Billed. When the bill is payed, please remember to mark the status as Payed to activate the Tariff.',
+                'A paid tariff is requested. Please, bill the client and mark the status as "Billed". When the bill is payed, please remember to mark the status as "Payed" to activate the Tariff.',
                 ['entity-tariff', 'billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
             'prolong' => [
                 'Prolongation request',
-                'A Tariff prolongation is requested. Please bill the client and mark the entity prolongation status as Billed. When the bill is payed, please remember to mark the status as Payed to schedule or activate the Tariff.',
+                'A Tariff prolongation is requested. Please bill the client and mark the entity prolongation status as "Billed". When the bill is payed, please remember to mark the status as "Payed" to schedule or activate the Tariff.',
                 ['entity-tariff-next', 'billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
             'change' => [
                 'Tariff Change request',
-                'A Tariff change is requested in terms of prolongation. Please bill the client and mark the entity prolongation status as Billed. When the bill is payed, please remember to mark the status as Payed to schedule or activate the Tariff.',
+                'A Tariff change is requested in terms of prolongation. Please bill the client and mark the entity prolongation status as "Billed". When the bill is payed, please remember to mark the status as "Payed" to schedule or activate the Tariff.',
                 ['entity-tariff-next', 'billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
             'cancel' => [
@@ -290,9 +294,14 @@ class FCP_FormsTariffMail {
         $details = self::details();
 
         if ( !self::$messages[ $recipient ] || !self::$messages[ $recipient ][ $topic ] ) { return; }
-        
-        $subject = self::$messages[ $recipient ][ $topic ][0];
-        $message = '<p>' . self::$messages[ $recipient ][ $topic ][1] . '</p>';
+
+        // translations
+        $locale = $details[ $recipient . '_locale' ];
+        switch_to_locale( $locale );
+        load_textdomain( 'fcpfo--mail', __DIR__ . '/languages/fcpfo--mail-'.$locale.'.mo' );
+
+        $subject = __( self::$messages[ $recipient ][ $topic ][0], 'fcpfo--mail' );
+        $message = '<p>' . __( self::$messages[ $recipient ][ $topic ][1], 'fcpfo--mail' ) . '</p>';
         $footer = '<a href="'.$details['url'].'" target="blank" rel="noopener noreferrer">'.$details['domain'].'</a>';
 
         if ( $id ) {
@@ -306,9 +315,11 @@ class FCP_FormsTariffMail {
                 <a href="'.$details['url'].'/wp-admin/post.php?post='.$id.'&action=edit" target="_blank" rel="noopener noreferrer">'.__( 'Edit' ).'</a>
             ';
             
-            $datalist = self::message_datalist( $id, self::$messages[ $recipient ][ $topic ][2] );
+            $datalist = self::message_datalist( $id, self::$messages[ $recipient ][ $topic ][2] ); // ++translations
             $message .= $datalist ? '<br>'.$datalist : '';
         }
+        
+        restore_previous_locale();
         
         return [
             'subject' => $subject,

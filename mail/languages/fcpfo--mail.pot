@@ -1,0 +1,71 @@
+#. emails to the accountant
+
+msgid "Paid tariff request"
+msgstr ""
+
+msgid "A paid tariff is requested. Please, bill the client and mark the status as \"Billed\". When the bill is payed, please remember to mark the status as \"Payed\" to activate the Tariff."
+msgstr ""
+
+msgid "Prolongation request"
+msgstr ""
+
+msgid "A Tariff prolongation is requested. Please bill the client and mark the prolongation status as \"Billed\". When the bill is payed, please remember to mark the status as \"Payed\" to schedule or activate the Tariff."
+msgstr ""
+
+msgid "Tariff Change request"
+msgstr ""
+
+msgid "A Tariff change is requested in terms of prolongation. Please bill the client and mark the entity prolongation status as \"Billed\". When the bill is payed, please remember to mark the status as \"Payed\" to schedule or activate the Tariff."
+msgstr ""
+
+msgid "Bill not payed"
+msgstr ""
+
+msgid "The client has not payed the Bill in a set up period of time. You can now cancel the Bill, or contact the client directly."
+msgstr ""
+
+#. emails to a client
+
+msgid "Your entry is published"
+msgstr ""
+
+msgid "Your entry has just been published."
+msgstr ""
+
+msgid "New tariff is activated"
+msgstr ""
+
+msgid "Your new tariff is activated."
+msgstr ""
+
+msgid "Your tariff is prolonged"
+msgstr ""
+
+msgid "Your tariff is prolonged successfully."
+msgstr ""
+
+msgid "Your tariff is about to end"
+msgstr ""
+
+msgid "Your links will no longer be available for indexing by Search Engines, and other clinics will be advertised at the bottom of your page. The prolongation option is available in your Klinikerfahrungen account. Ignore this message to continue with a Free Tariff."
+msgstr ""
+
+msgid "Your tariff has just ended"
+msgstr ""
+
+msgid "Free Tariff is activated. Your links are no longer available for indexing by Search Engines, and other clinics will be advertised at the bottom of your page. You can choose a paid tariff in your Klinikerfahrungen account."
+msgstr ""
+
+#. emails to a moderator
+
+msgid "Clinic / doctor added"
+msgstr ""
+
+msgid "A new clinic or doctor has just been added. Please check it and publish, if it is valid."
+msgstr ""
+
+msgid "Clinic / doctor changed"
+msgstr ""
+
+msgid "A client has changed some information in an entry. Please check if it is still valid."
+msgstr "Ein Kunde hat seine Informationen im Eintrag überarbeitet. Bitte prüfe die Änderung auf Rechtmäßigkeit und ob diese unseren Regeln entspricht.

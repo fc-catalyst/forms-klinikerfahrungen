@@ -40,6 +40,22 @@ $print = FCP_FormsTariffMail::to_accountant( 'request', $_GET['post'] );
 //$print =  new \WPMailSMTP\Helpers\Crypto;
 //$print = $print::decrypt( get_option( 'wp_mail_smtp' )['smtp']['pass'] );
 
+//$print[] = [ get_locale(), get_user_locale(), determine_locale() ]; // website front, user / admin, currently used of <
+//$print[] = __( 'The next tariff', 'fcpfo-et' );
+//$print[] = switch_to_locale( 'de_DE' );
+//$print[] = __( 'The next tariff', 'fcpfo-et' );
+//$print[] = load_textdomain( 'fcpfo-et', __DIR__ . '/languages/fcpfo-et-de_DE.mo' );
+//$print[] = __( 'The next tariff', 'fcpfo-et' );
+//$print[] = restore_previous_locale();
+//$print[] = __( 'The next tariff', 'fcpfo-et' );
+
+//$print[] = __( 'View' );
+//$print[] = switch_to_locale( 'de_DE' );
+//$print[] = __( 'View' );
+//$print[] = restore_previous_locale();
+//$print[] = __( 'View' );
+
+
 array_push( $this->s->fields, (object) [
     'type' => 'notice',
     'text' => '<pre>**'.print_r( $print, true ).'**</pre>',
