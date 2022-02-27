@@ -255,6 +255,10 @@ class FCP_Forms__Draw {
                     <?php
                 }
 
+                // translations
+                if ( isset( $this->s->options->translation ) ) {
+                    $domain = $this->s->options->translation;
+                }
 
                 foreach ( $a->options as $k => $b ) :
                     ?>
@@ -262,7 +266,7 @@ class FCP_Forms__Draw {
                         value="<?php echo esc_attr( $k ) ?>"
                         <?php echo in_array( $k, $value ) ? 'selected' : '' ?>
                     >
-                            <?php echo $b ?>
+                            <?php echo isset( $domain ) ? __( $b, $domain ) : $b ?>
                     </option>
                     <?php
                 endforeach;
@@ -443,7 +447,15 @@ class FCP_Forms__Draw {
             $this->{ $method }( $a );
             return;
         }
-        
+
+        // translations ++move separately?
+        if ( isset( $this->s->options->translation ) && $domain = $this->s->options->translation ) {
+            foreach ( ['title', 'placeholder', 'subtitle', 'description'] as $v ) {
+                if ( !isset( $a->{ $v } ) ) { continue; }
+                $a->{ $v } = __( $a->{ $v }, $domain );
+            }
+        }
+
         $a->__required = $a->validate->notEmpty || $a->validate->minLetters && $a->validate->minLetters > 0 ? $o->required_mark : '';
         $a->placeholder = $a->__required && $a->placeholder && !$a->title ? $a->placeholder . $a->__required : $a->placeholder;
         

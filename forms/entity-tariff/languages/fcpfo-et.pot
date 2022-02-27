@@ -1,145 +1,82 @@
-#. The main register clinic / doctor form
-msgid "Clinic"
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de_DE\n"
+"X-Generator: Poedit 3.0\n"
+
+msgid "Tariff"
 msgstr ""
 
-msgid "Clinics"
+#. Tariff picking interfaces
+
+msgid "To apply a different tariff, please select a billing details in the field above. Or fill in a new billing information <a href=\"%s\" target=\"_blank\">here</a> first."
 msgstr ""
 
-msgid "View All Clinics"
+msgid "The following fields effect only paid tariffs."
 msgstr ""
 
-msgid "View Clinic"
+msgid "Set 1 year from now"
 msgstr ""
 
-msgid "Add New"
+msgid "The next tariff option is available to users %s days before the current paid tariff ends."
 msgstr ""
 
-msgid "Add New Clinic"
+msgid "If current tariff is free, you can schedule the paid one by picking a future date in the \"Active till\" field."
 msgstr ""
 
-msgid "Edit Clinic"
+msgid "You will be billed in a few days via your mentioned billing email <em>%s</em>. For any questions or problems with receiving the bill, please contact our accountant <a href=\"%s\">%s</a>."
 msgstr ""
 
-msgid "Update Clinic"
+msgid "Please check your billing email <em>%s</em> and pay the bill to activate the tariff. For any questions please contact our accountant by <a href=\"%s\">%s</a>"
 msgstr ""
 
-msgid "Search Clinic"
+msgid "The next tariff will be activated on %s, 00:00 local time."
 msgstr ""
 
-msgid "Clinic Not Found"
+#. msgid "For more information check out our tariff prices and conditions <a href=\"%s\" target=\"_blank\">here</a>."
+#. msgstr ""
+
+#. fields
+
+msgid "Payment status"
 msgstr ""
 
-msgid "Clinic Not found in Trash"
+msgid "The tariff"
 msgstr ""
 
-msgid "The list of clinics, registered by you"
+msgid "The payment status"
 msgstr ""
 
-msgid "Doctor"
+msgid "Pending"
 msgstr ""
 
-msgid "Doctors"
+msgid "Billed"
 msgstr ""
 
-msgid "View All Doctors"
+msgid "Payed"
 msgstr ""
 
-msgid "View Doctor"
+msgid "Active till"
 msgstr ""
 
-msgid "Add New"
+msgid "Start date"
 msgstr ""
 
-msgid "Add New Doctor"
+msgid "End date"
 msgstr ""
 
-msgid "Edit Doctor"
+msgid "Timezone"
 msgstr ""
 
-msgid "Update Doctor"
+msgid "Timezone offset"
 msgstr ""
 
-msgid "Search Doctor"
-msgstr ""
-
-msgid "Doctor Not Found"
-msgstr ""
-
-msgid "Doctor Not found in Trash"
-msgstr ""
-
-msgid "The list of doctors, registered by you"
-msgstr ""
-
-msgid "You don't have permission to add / edit a clinic or a doctor"
-msgstr ""
-
-#. templates
-msgid "Clinics and Doctors"
-msgstr ""
-
-msgid "Verified"
-msgstr ""
-
-msgid "Featured"
-msgstr ""
-
-msgid "Photo"
-msgstr ""
-
-msgid "Icon"
-msgstr ""
-
-msgid "Logo"
-msgstr ""
-
-msgid "E-mail"
-msgstr ""
-
-msgid "Website"
-msgstr ""
-
-msgid "Contact"
-msgstr ""
-
-msgid "About"
-msgstr ""
-
-msgid "Your browser does not support HTML video."
-msgstr ""
-
-msgid "Working hours"
-msgstr ""
-
-msgid "Thank you for adding the entry. It will become visible to other visitors as soon as passes the moderation."
-msgstr ""
-
-#. tags, actually
-msgid "Our range of treatments"
-msgstr ""
-
-#. search results
-msgid "Nothing"
-msgstr ""
-
-msgid "1 result"
-msgstr ""
-
-msgid "%s results"
-msgstr ""
-
-msgid "%s found"
-msgstr ""
-
-#. schedule
-msgid "Open"
-msgstr ""
-
-msgid "Closed"
-msgstr ""
-
-msgid "Please add the closing time"
-msgstr ""
-
-msgid "Please add the opening time"
+msgid "The next tariff"
 msgstr ""
