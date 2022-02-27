@@ -7,8 +7,8 @@ FCP_Forms::tz_set();
 
 $values = get_post_meta( $postID );
 foreach ( $values as &$v ) { $v = $v[0]; }
-require_once 'variables.php';
-require_once 'mail/mail.php';
+require_once __DIR__ . '/variables.php';
+require_once __DIR__ . '/../../mail/mail.php';
 
 
 // no tariff manipulations with no billing method picked

@@ -19,7 +19,7 @@ $_POST = $_POST + $uploads->format_for_storing();
 
 if ( current_user_can( 'administrator' ) ) { return; } // admin doesn't have to notify a moderator
 
-require_once __DIR__ . '/../entity-tariff/mail/mail.php';
+require_once __DIR__ . '/../../mail/mail.php';
 
 // notify the moderator about the new entity posted for review
 /*

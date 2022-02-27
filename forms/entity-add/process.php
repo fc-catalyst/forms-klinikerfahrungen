@@ -84,7 +84,7 @@ foreach ( $update_list as $k => $v ) {
 
 
 // notify the moderator
-require_once __DIR__ . '/../entity-tariff/mail/mail.php';
+require_once __DIR__ . '/../../mail/mail.php';
 FCP_FormsTariffMail::to_moderator( 'entity_added', $id );
 
 
