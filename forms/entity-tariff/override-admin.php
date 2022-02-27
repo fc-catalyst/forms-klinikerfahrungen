@@ -27,14 +27,22 @@ if ( !get_post_meta( $_GET['post'], 'entity-billing', true ) && !$admin_am ) {
 }
 
 /*
-require_once __DIR__ . '/mail/mail.php';
-$mail_sent = FCP_FormsTariffMail::to_accountant( 'request', $_GET['post'] );
+require_once __DIR__ . '/../../mail/mail.php';
+$print = FCP_FormsTariffMail::to_accountant( 'request', $_GET['post'] );
 
-//$smtp_opts = get_option( 'wp_mail_smtp' );
+//$print = get_option( 'wp_mail_smtp' );
+
+//$print = get_option( 'wp_mail_smtp' );
+//$print['smtp']['pass'] = base64_decode( $print['smtp']['pass'] );
+
+//$print = class_exists( '\WPMailSMTP\Helpers\Crypto' );
+
+//$print =  new \WPMailSMTP\Helpers\Crypto;
+//$print = $print::decrypt( get_option( 'wp_mail_smtp' )['smtp']['pass'] );
 
 array_push( $this->s->fields, (object) [
     'type' => 'notice',
-    'text' => '<pre>**'.$mail_sent.'**</pre>',
+    'text' => '<pre>**'.print_r( $print, true ).'**</pre>',
     'meta_box' => true,
 ]);
 //*/

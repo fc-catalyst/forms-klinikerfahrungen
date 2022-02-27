@@ -1,9 +1,57 @@
 <?php
 
 // ++load all smtp values from db
-// ++move to more global place before spreading rest of notifications
 
 class FCP_FormsTariffMail {
+
+    private static function details($a = []) {
+
+        if ( empty( self::$details ) ) {
+
+            $url = get_bloginfo( 'wpurl' );
+
+            self::$details = [
+                'domain' => $_SERVER['SERVER_NAME'],
+                'url' => $url,
+
+                'sending' => 'kontakt@'.$_SERVER['SERVER_NAME'], // must be owned by smtp sender, if smtp
+                'sending_name' => get_bloginfo( 'name' ),
+
+                'accountant' => 'finnish.ru@gmail.com', // 'rechnungen@klinikerfahrungen.de',
+                'moderator' => 'finnish.ru@gmail.com', // 'kontakt@klinikerfahrungen.de'
+                'admin' => 'finnish.ru@gmail.com', // technical purposes
+                'client_fake' => 'finnish.ru@gmail.com', // for testing purposes
+
+                'footer' => '<a href="'.$url.'" target="blank" rel="noopener noreferrer">'.$_SERVER['SERVER_NAME'].'</a>',
+
+                'issmtp' => true,
+/*
+                'smtp' => [
+                    'Host' => '',
+                    'Port' => '',
+                    'SMTPSecure' => '',
+                    'SMTPAuth' => true,
+                    'Username' => '',
+                    'Password' => '',
+                    'SMTPDebug' => true,
+                ],
+//*/
+                'WPMailSMTP' => true, // override settings with WP Mail SMTP
+            ];
+
+            if ( $details['issmtp'] && $details['WPMailSMTP'] && $smtp_override = self::WPMailSMTP() ) {
+                self::$details = array_merge( self::$details, $smtp_override );
+            }
+
+        }
+
+        if ( empty( $a ) ) {
+            return self::$details;
+        }
+
+        self::$details = array_merge( self::$details, $a );
+
+    }
 
     private static $details = [],
                   $messages = [ // ++'user, 'admin'
@@ -68,32 +116,6 @@ class FCP_FormsTariffMail {
             ],
         ]
     ];
-
-    private static function details($a = []) {
-
-        if ( empty( self::$details ) ) {
-            $url = get_bloginfo( 'wpurl' );
-            self::$details = [
-                'domain' => $_SERVER['SERVER_NAME'],
-                'url' => $url,
-                'sending' => 'kontakt@'.$_SERVER['SERVER_NAME'], //!!important for the smtp settings
-                'sending_name' => get_bloginfo( 'name' ),
-                'accountant' => 'finnish.ru@gmail.com', // 'buchhaltung@firmcatalyst.com',
-                'moderator' => 'finnish.ru@gmail.com', // add the function to pick the admin's email?
-                'client_fake' => 'finnish.ru@gmail.com', // for testing purposes
-                'admin' => 'vadim@firmcatalyst.com',
-                'footer' => '<a href="'.$url.'" target="blank" rel="noopener noreferrer">'.$_SERVER['SERVER_NAME'].'</a>'
-            ];
-            // 'http'.( !empty( $_SERVER['HTTPS'] && $_SERVER['HTTPS'] !== 'off' ) ? 's' : '' ).'://'
-        }
-
-        if ( empty( $a ) ) {
-            return self::$details;
-        }
-
-        self::$details = array_merge( self::$details, $a );
-
-    }
 
     // collect title && meta data && billing data by a post id or array of ids; also loads the jsons with titles
     public static function get_data($ids = [], $nocached = false, $cache = false) { 
@@ -240,7 +262,7 @@ class FCP_FormsTariffMail {
 
 /*
         // this doesn't work, as the title is saved much earlier, so comparing with itself, really
-        // ++can probably add a lower priority to FCP_Add_Meta_Boxes->saveMetaBoxes()
+        // ++can probably add an earlier number for FCP_Add_Meta_Boxes->saveMetaBoxes()
         if ( $data[ $id ]['title'] !== $data[ $id ]['cached']['title'] ) {
             $difference['entity-name'] = [
                 'title' => $structures['titles']['entity-name'],
@@ -415,10 +437,10 @@ class FCP_FormsTariffMail {
         ]);
 
 
-        if ( ! class_exists( '\PHPMailer\PHPMailer\PHPMailer', false ) ) { // ++or wait till init?
+        if ( !class_exists( '\PHPMailer\PHPMailer\PHPMailer', false ) ) { // not sure it is needed and works
             require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
         }
-        if ( ! class_exists( '\PHPMailer\PHPMailer\Exception', false ) ) {
+        if ( !class_exists( '\PHPMailer\PHPMailer\Exception', false ) ) {
             require_once ABSPATH . WPINC . '/PHPMailer/Exception.php';
         }
 
@@ -433,48 +455,56 @@ class FCP_FormsTariffMail {
         $mail->Body = $email_body;
         //$mail->AltBody = '';
         $mail->AddEmbeddedImage( __DIR__ . '/attachments/klinikerfahrungen-logo.png', 'klinikerfahrungen-logo');
-        // $mail->addAttachment( __DIR__ . '/attachments/Fünf Tipps dein Wert deiner Amazon Marke zu erhöhen.pdf' );
+        // $mail->addAttachment( __DIR__ . '/attachments/Fünf Tipps.pdf' );
 
 //*
-        // WP Mail SMTP
-        if ( ! class_exists( '\PHPMailer\PHPMailer\SMTP', false ) ) {
+        // SMTP
+        if ( !self::$details['issmtp'] || empty( self::$details['smtp'] ) ) { return $mail->send(); }
+
+        if ( !class_exists( '\PHPMailer\PHPMailer\SMTP', false ) ) {
             require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
         }
 
-        $smtp = get_option( 'wp_mail_smtp' ); // ++cache it somewhere in class
-        if ( $smtp === false || $smtp['mail']['mailer'] !== 'smtp' ) {
-            if ( $mail->send() ) { return true; }
-        }
-
-        // from options
-        if ( !empty( $smtp['mail']['from_email_force'] ) ) {
-            if ( !empty( $smtp['mail']['from_name_force'] ) && !empty( $smtp['mail']['from_name'] ) ) {
-                $mail->setFrom( $smtp['mail']['from_email'], $smtp['mail']['from_name'] );
-            } else {
-                $mail->setFrom( $smtp['mail']['from_email'], $m['from_name'] );
-            }
-        }
-
-        // smtp options
-        //$mail->SMTPDebug = \PHPMailer\PHPMailer\SMTP::DEBUG_SERVER;
         $mail->isSMTP();
-        $mail->Host = 'smtp.mailbox.org';//$smtp['smtp']['host'];
-        $mail->Port = '587';//$smtp['smtp']['port'];
-
-        if ( !empty( $smtp['smtp']['auth'] ) ) {
-            $mail->SMTPAuth = true;
-            $mail->Username = 'kontakt@klinikerfahrungen.de';//$smtp['smtp']['user'];
-            $mail->Password = '';//$smtp['smtp']['pass']; ++ where is it caming from
+        foreach ( self::$details['smtp'] as $k => $v ) {
+            $mail->{ $k } = $v;
         }
-
-        //$mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
-        $mail->SMTPSecure = 'tls';
-
 //*/
-        if ( $mail->send() ) { return true; }
+        return $mail->send();
 
     }
-    
+
+    private static function WPMailSMTP() {
+
+        $smtp = get_option( 'wp_mail_smtp' );
+
+        if ( $smtp['mail']['mailer'] === 'smtp' ) {
+
+            $details['smtp']['Host'] = $smtp['smtp']['host'];
+            $details['smtp']['Port'] = $smtp['smtp']['port'];
+            $details['smtp']['SMTPSecure'] = $smtp['smtp']['encryption'];
+
+            if ( $smtp['smtp']['auth'] && class_exists( '\WPMailSMTP\Helpers\Crypto' ) ) {
+                $details['smtp']['SMTPAuth'] = $smtp['smtp']['auth'];
+                $details['smtp']['Username'] = $smtp['smtp']['user'];
+
+                $decrypt =  new \WPMailSMTP\Helpers\Crypto;
+                $details['smtp']['Password'] = $decrypt::decrypt( $smtp['smtp']['pass'] );
+            }
+
+            if ( $smtp['mail']['from_email_force'] ) {
+                $details['sending'] = $smtp['mail']['from_email'];
+            }
+
+            if ( $smtp['mail']['from_name_force'] ) {
+                $details['sending_name'] = $smtp['mail']['from_name'];
+            }
+
+            return $details;
+        }
+
+    }
+
     private static function send_to_print($m) { // a sort of debugging function
         if ( !current_user_can( 'administrator' ) ) { return false; }
 
