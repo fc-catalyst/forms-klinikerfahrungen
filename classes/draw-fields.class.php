@@ -387,7 +387,7 @@ class FCP_Forms__Draw {
         if ( isset( $a->async ) ) {
         
         ?>
-        <div class="replace-with-recaptcha"></div>
+        <div class="replace-with-recaptcha <?php self::e_field_id( $a->name ) ?>"></div>
         <script>
             fcLoadScriptVariable( '', 'jQuery', function() {
                 let t = '';
@@ -395,8 +395,8 @@ class FCP_Forms__Draw {
                 const d = new Date();
                 t = + d + d.getMilliseconds();
                 <?php } ?>
-                jQuery.get( '/wordpress/wp-json/fcp-forms/v1/rscaptcha/' + t, function( data ) { 
-                    jQuery( '.replace-with-recaptcha' ).replaceWith( data.content );
+                jQuery.get( '/wp-json/fcp-forms/v1/rscaptcha/' + t, function( data ) { 
+                    jQuery( '.replace-with-recaptcha.<?php self::e_field_id( $a->name ) ?>' ).replaceWith( data.content );
                 });
             });
         </script>

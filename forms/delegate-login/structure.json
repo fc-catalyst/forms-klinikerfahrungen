@@ -57,7 +57,7 @@
                     "validate" : {
                         "rscaptcha" : "captcha"
                     },
-                    "async" : "soft"
+                    "async" : "hard"
                 },
                 {
                     "type" : "checkbox",

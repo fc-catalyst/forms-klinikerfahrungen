@@ -78,7 +78,7 @@
                     "validate" : {
                         "rscaptcha" : "captcha"
                     },
-                    "async" : "soft"
+                    "async" : "hard"
                 },
                 {
                     "gtype" : "row",

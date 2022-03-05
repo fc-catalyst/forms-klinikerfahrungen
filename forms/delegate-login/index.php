@@ -85,6 +85,8 @@ add_action( 'login_form', function() {
     foreach ( $json as $v ) {
         if ( $v->type !== 'rscaptcha' ) { continue; }
 
+        unset( $v->async );
+
         echo '<div class="captcha_wrap">';
         FCP_Forms__Draw::rscaptcha_print( $v );
         echo '</div>';
