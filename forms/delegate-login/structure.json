@@ -41,7 +41,8 @@
                         "chars" : "abcdefghijkmnopqrstuvwxyz2345789",
                         "char_length" : 4,
                         "img_size" : [170, 40],
-                        "bg" : [62, 145, 161],
+                        "bg" : [75, 158, 174],
+                        "bg_x" : [62, 145, 161],
                         "fg" : [255, 255, 255],
                         "fonts" : [
                             "BrandonGrotesque-Black.ttf",
@@ -55,7 +56,8 @@
                     },
                     "validate" : {
                         "rscaptcha" : "captcha"
-                    }
+                    },
+                    "async" : "soft"
                 },
                 {
                     "type" : "checkbox",

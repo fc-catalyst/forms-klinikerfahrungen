@@ -214,6 +214,56 @@ class FCP_Forms {
             // fcp-forms/languages
             load_plugin_textdomain( 'fcpfo', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
         });
+        
+        // Really Simple Captcha async loading to override cloudflare hard caching
+        add_action( 'rest_api_init', function () {
+
+            $args = [
+                'methods'  => 'GET',
+                'callback' => function( WP_REST_Request $request ) {
+                    if ( !class_exists( 'ReallySimpleCaptcha' ) ) {
+                        return new WP_Error(
+                            'rscaptcha_not_active',
+                            'Really Simple Captcha plugin not active',
+                            [ 'status' => 404 ]
+                        );
+                    }
+
+                    // get the rscaptcha field
+                    ob_start();
+                    $json = FCP_Forms::structure( 'delegate-login' );
+                    if ( $json === false ) { return; }
+                    $json = FCP_Forms::flatten( $json->fields );
+                    foreach ( $json as $v ) {
+                        if ( $v->type !== 'rscaptcha' ) { continue; }
+                        unset( $v->async );
+                        FCP_Forms__Draw::rscaptcha_print( $v );
+                    }
+
+                    $content = ob_get_contents();
+                    ob_end_clean();
+                    
+                    //return new WP_REST_Response( true, 200 );
+                    $result = new WP_REST_Response( (object) [
+                        'content' => FCP_Forms__Draw::align_html_codes( $content ),
+                    ], 200 );
+
+                    $result->set_headers( ['Cache-Control' => 'no-cache'] ); // ++make dependent on the structure json
+                    // wp_get_nocache_headers(); ++ maybe use those, instead of just set headers
+                    // nocache_headers();
+
+                    return $result;
+                },
+                'permission_callback' => function() { // just a debugging rake
+                    if ( empty( $_SERVER['HTTP_REFERER'] ) ) { return false; }
+                    if ( strtolower( parse_url( $_SERVER['HTTP_REFERER'], PHP_URL_HOST ) ) !== strtolower( $_SERVER['HTTP_HOST'] ) ) { return false; }
+                    return true;
+                },
+            ];
+
+            register_rest_route( 'fcp-forms/v1', '/rscaptcha', $args );
+            register_rest_route( 'fcp-forms/v1', '/rscaptcha/(?P<c>[\d\w]+)', $args );
+        });
 
     }
     
@@ -788,7 +838,6 @@ new FCP_Forms();
     filter multiple fields empty values, as schedule fills in too many rows
     exclude dirs, starting from -- - take from gutenberg
     make the password validate simple test
-    add regexp filter
     front-end validation
         autofill with front-end validation
     ++aria

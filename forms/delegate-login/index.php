@@ -74,7 +74,7 @@ add_action( 'login_enqueue_scripts', function() {
 });
 
 
-// really simple captcha to login page
+// really simple captcha to login page ++move to register?
 add_action( 'login_form', function() {
     if ( !class_exists( 'FCP_Forms__Draw' ) ) { return; }
     

@@ -383,6 +383,28 @@ class FCP_Forms__Draw {
     }
     public static function rscaptcha_print($a) {
         if ( !class_exists( 'ReallySimpleCaptcha' ) ) { return; }
+
+        if ( isset( $a->async ) ) {
+        
+        ?>
+        <div class="replace-with-recaptcha"></div>
+        <script>
+            fcLoadScriptVariable( '', 'jQuery', function() {
+                let t = '';
+                <?php if ( $a->async === 'hard' ) { ?>
+                const d = new Date();
+                t = + d + d.getMilliseconds();
+                <?php } ?>
+                jQuery.get( '/wordpress/wp-json/fcp-forms/v1/rscaptcha/' + t, function( data ) { 
+                    jQuery( '.replace-with-recaptcha' ).replaceWith( data.content );
+                });
+            });
+        </script>
+        <?php
+
+            return;
+        }
+        
         $b = new ReallySimpleCaptcha();
         $b->cleanup( $a->prefs->cleanup_minutes ? $a->prefs->cleanup_minutes : 60 ); // 60 is the plugin's default
         $prefs = [ 'chars', 'char_length', 'fonts', 'tmp_dir', 'img_size', 'bg', 'fg', 'base', 'font_size', 'font_char_width', 'img_type' ];
@@ -398,7 +420,7 @@ class FCP_Forms__Draw {
 
             if ( $v === 'fonts' ) {
                 foreach ( $a->prefs->{ $v } as $m => &$u ) {
-                    $path = dirname( __FILE__ ) . '/../assets/captcha-fonts/' . $u;
+                    $path = __DIR__ . '/../assets/captcha-fonts/' . $u;
                     if ( !is_file( $path ) ) {
                         unset( $a->prefs->{ $v }[ $m ] );
                         continue;
@@ -666,11 +688,11 @@ class FCP_Forms__Draw {
         $content = ob_get_contents();
         ob_end_clean();
 
-        echo $this->align_html_codes( $content );
+        echo self::align_html_codes( $content );
 
     }
     
-    private function align_html_codes($c) {
+    public static function align_html_codes($c) {
 
         $init = $c; // store if a heavy preg throws an error ( can catch it with preg_last_error() )
 

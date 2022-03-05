@@ -1,13 +1,14 @@
 // set up popup blocks
+
+// workhours popup----------------------------
 fcLoadScriptVariable(
     window.fcp_forms_assets_url + 'popup.js',
     'FCP_Forms_Popup',
     function() {
-        
+
+        if ( jQuery( '#entity-working-hours' ).length === 0 ) { return; }
+
         const $ = jQuery;
-
-
-        // workhours popup----------------------------
         const workhours_popup = new FCP_Forms_Popup( '#entity-working-hours' );
 
         $( '#entity-working-hours_entity-add' ).on( 'click', function() {
@@ -41,9 +42,22 @@ fcLoadScriptVariable(
             });
         });
         $( '#entity-working-hours h3' ).append( $lunch );
+        
+    },
+    ['jQuery'],
+    true
+);
 
 
-        // gmap popup----------------------------
+// gmap popup----------------------------
+fcLoadScriptVariable(
+    window.fcp_forms_assets_url + 'popup.js',
+    'FCP_Forms_Popup',
+    function() {
+
+        if ( jQuery( '#entity-specify-map' ).length === 0 ) { return; }
+
+        const $ = jQuery;
         const gmap_popup = new FCP_Forms_Popup( '#entity-specify-map' ),
               $gmap_holder = $( '.fct-gmap-pick' );
         let gmap, marker; // they are here to allow the address field to change the position
