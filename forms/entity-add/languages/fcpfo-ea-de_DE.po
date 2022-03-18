@@ -135,10 +135,13 @@ msgid "1 result"
 msgstr "Ein Ergebnis"
 
 msgid "%s results"
-msgstr "% Ergebnisse"
+msgstr "%s Ergebnisse"
 
 msgid "%s found"
 msgstr "%s Ergebnisse gefunden"
+
+msgid "Within %s km radius"
+msgstr "Im Umkreis von %s km"
 
 #. schedule
 msgid "Open"

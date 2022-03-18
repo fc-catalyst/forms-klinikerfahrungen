@@ -195,3 +195,60 @@ function fct_free_account() {
     if ( $tariff && $tariff !== 'kostenloser_eintrag' && $status === 'payed' ) { return false; }
     return true;
 }
+
+function fct_entity_tile_print($footer = '') {
+    static $badgesdir = '';
+    if ( !$badgesdir ) {
+        $badgesdir = str_replace( ABSPATH, get_site_url() . '/', dirname( __DIR__ ) . '/templates/images/' );
+    }
+?>
+    <article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-<?php echo get_post_status() ?> entry" itemscope="" itemtype="https://schema.org/CreativeWork">
+
+        <a class="entry-link-cover" rel="bookmark" href="<?php the_permalink(); ?>" title="<?php the_title() ?>"></a>
+
+        <header class="entry-header">
+            <div class="entity-badges">
+                <img loading="lazy" width="23" height="38" src="<?php echo $badgesdir . 'verified.png' ?>" alt="" title="<?php _e( 'Verified', 'fcpfo-ea' ) ?>" />
+                <?php if ( fct1_meta( 'entity-featured' ) ) { ?>
+                    <img loading="lazy" width="23" height="38" src="<?php echo $badgesdir . 'featured.png' ?>" alt="" title="<?php _e( 'Featured', 'fcpfo-ea' ) ?>" />
+                <?php } ?>
+            </div>
+            <?php if ( $back_img = fct1_meta( 'entity-photo' )[0] ) { ?>
+                <div class="entry-photo">
+                    <?php
+                        fct1_image_print(
+                            'entity/' . get_the_ID() . '/' . $back_img,
+                            [454, 210],
+                            ['center', 'top'],
+                            get_the_title() . ' ' . __( 'Photo', 'fcpfo-ea' )
+                        )
+                    ?>
+                </div>
+            <?php } ?>
+            <h2 class="entry-title" itemprop="headline">
+                <a href="<?php the_permalink() ?>"><?php the_title() ?></a>
+            </h2>
+        </header>
+        <div class="entry-details">
+            <?php if ( $ava = fct1_meta_print( 'entity-avatar', true )[0] ) { ?>
+            <div class="entity-avatar">
+                <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $ava, [74,74], 0, get_the_title() . ' ' . __( 'Icon', 'fcpfo-ea' ) ) ?>
+            </div>
+            <?php } ?>
+            <div class="entity-about">
+                <p>
+                    <?php fct1_meta_print( 'entity-specialty' ); fct1_meta_print( 'entity-geo-city', false, ' in ' ) ?>
+                </p>
+                <?php if ( method_exists( 'FCP_Comment_Rate', 'print_stars_total' ) ) { ?>
+                    <?php FCP_Comment_Rate::print_stars_total() ?>
+                <?php } ?>
+            </div>
+        </div>
+        <?php if ( !empty( $footer ) ) { ?>
+        <footer>
+            <?php echo $footer ?>
+        </footer>
+        <?php } ?>
+    </article>
+<?php
+}

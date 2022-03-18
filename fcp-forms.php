@@ -248,9 +248,9 @@ class FCP_Forms {
                         'content' => FCP_Forms__Draw::align_html_codes( $content ),
                     ], 200 );
 
-                    $result->set_headers( ['Cache-Control' => 'no-cache'] ); // ++make dependent on the structure json
-                    // wp_get_nocache_headers(); ++ maybe use those, instead of just set headers
-                    // nocache_headers();
+                    //$result->set_headers( ['Cache-Control' => 'no-cache'] ); // ++make dependent on the structure json
+                    //wp_get_nocache_headers(); ++ maybe use those, instead of just set headers
+                    nocache_headers();
 
                     return $result;
                 },

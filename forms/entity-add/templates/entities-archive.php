@@ -1,8 +1,8 @@
 <?php
 
-$imgs_dir = str_replace( ABSPATH, get_site_url() . '/', dirname( __DIR__ ) . '/templates/images/' );
-
 get_header();
+
+include_once ( __DIR__ . '/functions.php' );
 
 $args = [
     'post_type'        => ['clinic', 'doctor'],
@@ -33,68 +33,90 @@ if ( $wp_query->have_posts() ) {
     while ( $wp_query->have_posts() ) {
         $wp_query->the_post();
 
-?>
-
-<article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-<?php echo get_post_status() ?> entry" itemscope="" itemtype="https://schema.org/CreativeWork">
-
-    <a class="entry-link-cover" rel="bookmark" href="<?php the_permalink(); ?>" title="<?php the_title() ?>"></a>
-
-    <header class="entry-header">
-        <div class="entity-badges">
-            <img loading="lazy" width="23" height="38" src="<?php echo $imgs_dir . 'verified.png' ?>" alt="" title="<?php _e( 'Verified', 'fcpfo-ea' ) ?>" />
-            <?php if ( fct1_meta( 'entity-featured' ) ) { ?>
-                <img loading="lazy" width="23" height="38" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="" title="<?php _e( 'Featured', 'fcpfo-ea' ) ?>" />
-            <?php } ?>
-        </div>
-        <?php if ( $back_img = fct1_meta( 'entity-photo' )[0] ) { ?>
-            <div class="entry-photo">
-                <?php
-                    fct1_image_print(
-                        'entity/' . get_the_ID() . '/' . $back_img,
-                        [454, 210],
-                        ['center', 'top'],
-                        get_the_title() . ' ' . __( 'Photo', 'fcpfo-ea' )
-                    )
-                ?>
-            </div>
-        <?php } ?>
-        <h2 class="entry-title" itemprop="headline">
-            <a href="<?php the_permalink() ?>"><?php the_title() ?></a>
-        </h2>
-    </header>
-    <div class="entry-details">
-        <?php if ( $ava = fct1_meta_print( 'entity-avatar', true )[0] ) { ?>
-        <div class="entity-avatar">
-            <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $ava, [74,74], 0, get_the_title() . ' ' . __( 'Icon', 'fcpfo-ea' ) ) ?>
-        </div>
-        <?php } ?>
-        <div class="entity-about">
-            <p>
-                <?php fct1_meta_print( 'entity-specialty' ); fct1_meta_print( 'entity-geo-city', false, ' in ' ) ?>
-            </p>
-            <?php if ( method_exists( 'FCP_Comment_Rate', 'print_stars_total' ) ) { ?>
-                <?php FCP_Comment_Rate::print_stars_total() ?>
-            <?php } ?>
-        </div>
-    </div>
-
-</article>
-
-
-<?php
+        fct_entity_tile_print();
         
     }
     get_template_part( 'template-parts/pagination' );
     ?></div><!-- /wrap-width --><?php
 } else {
-    fct_search_stats( '<h2 style="text-align:center">', '</h2>' );
+    fct_search_stats( '<h2 id="nothing-found-headline">', '</h2>' );
+    // delay the dramatic headline appearance as more results still can appear ++can do better ++can add loader
+    ?>
+<style>
+#nothing-found-headline {
+    text-align:center;
+    opacity:0;
+    animation:nothingFoundHeadline 0.4s ease-in 3s forwards;
 }
+@keyframes nothingFoundHeadline { to { opacity:1; } }
+</style>
+    <?php
+}
+
+// load results async in a wider area, if not many found ++can place in a separate file
+if ( $args['meta_query'] && $wp_query->post_count < 7 ) {
+?>
+<script>
+fcLoadScriptVariable(
+    '',
+    'jQuery',
+    function() {
+
+        const $ = jQuery,
+              _ = new URLSearchParams( window.location.search ),
+              [ plc, spc ] = [ _.get('place'), _.get('specialty') ],
+              $holder = $( '#main-content .wrap-width' );
+
+        if ( plc === null || spc === null ) { return }
+        if ( $holder.length === 0 || $holder.find( 'article' ).length > 6 ) { return }
+
+        fcLoadScriptVariable( // ++move outside?
+            'https://maps.googleapis.com/maps/api/js?key='+fcGmapKey+'&libraries=places&language=de-DE',
+            'google',
+            function() {
+
+                // get the already printed ids
+                const pids = [];
+
+                $holder.find( 'article' ).each( function() {
+                    const cls = $( this ).attr( 'class' );
+                    if ( !~cls.indexOf( 'post-' ) ) { return true }
+                    pids.push( cls.replace( /^.*post\-(\d+).*$/, "$1" ) );
+                });
+
+                // get the lat lng by address (state, postcode)
+                const geocoder = new google.maps.Geocoder();
+                geocoder.geocode(
+                    {
+                        componentRestrictions: { country: 'de' },
+                        address: plc
+                    },
+                    function(places, status) {
+                        if ( status !== 'OK' || !places[0] ) { return }
+
+                        const [ lat, lng ] = [ places[0].geometry.location.lat(), places[0].geometry.location.lng() ];
+                        if ( !lat || !lng ) { return }
+
+                        $.get( '/wp-json/fcp-forms/v1/entities_around/' + [lat,lng,spc].join('/') + (pids[0] ? '/'+pids.join(',') : ''), function( data ) {
+                            $holder.append( data.content );
+                            $holder.children( 'h2' ).remove();
+                        });
+
+                    }
+                );
+            }
+        );
+    }
+);
+</script>
+<?php
+}
+
+wp_reset_query();
 
 ?>
 <div style="height:80px" aria-hidden="true" class="wp-block-spacer"></div>
 <?php
-
-wp_reset_query();
 
 get_footer();
 

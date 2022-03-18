@@ -391,10 +391,10 @@ class FCP_Forms__Draw {
         <script>
             fcLoadScriptVariable( '', 'jQuery', function() {
                 let t = '';
-                <?php if ( $a->async === 'hard' ) { ?>
+                <?php if ( $a->async === 'hard' ) { // cach a random ?>
                 const d = new Date();
                 t = + d + d.getMilliseconds();
-                <?php } ?>
+                <?php } // / cach a random ?>
                 jQuery.get( '/wp-json/fcp-forms/v1/rscaptcha/' + t, function( data ) { 
                     jQuery( '.replace-with-recaptcha.<?php self::e_field_id( $a->name ) ?>' ).replaceWith( data.content );
                 });
