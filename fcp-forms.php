@@ -692,7 +692,7 @@ class FCP_Forms {
         }
     
         if( empty( $user ) ) {
-            $user = wp_get_current_user();
+            $user = wp_get_current_user(); //instance of WP_Error filter??
         }
 
         if( empty( $user ) || !in_array( $role, (array) $user->roles ) ) {
