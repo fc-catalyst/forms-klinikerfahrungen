@@ -59,6 +59,7 @@ class FCP_Forms {
         // initial forms settings, which must have even without the form on the page
         $this->forms = array_values( array_diff( scandir( $this->forms_path ), [ '.', '..' ] ) );
         foreach ( $this->forms as $dir ) {
+            if ( $dir[0] === '-' ) { continue; } // dirs, starting with '-' are skipped // ++add to other parts
             @include_once $this->forms_path . $dir . '/' . 'index.php';
         }
 
