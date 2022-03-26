@@ -165,7 +165,7 @@ fcLoadScriptVariable(
         const ac = new google.maps.places.Autocomplete(
             $input[0],
             {
-                componentRestrictions: { country: ['de'] },
+                componentRestrictions: { country: ['de', 'at', 'ch'] }, // Germany, Austria, Switzerland
                 fields: ['address_components', 'formatted_address', 'geometry'], // ++'place_id' to load rating someday
                 types: ['address']
             }
