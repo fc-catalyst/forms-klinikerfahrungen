@@ -1,16 +1,26 @@
 <?php
 
+include_once ( __DIR__ . '/functions.php' );
+
 $imgs_dir = str_replace( ABSPATH, get_site_url() . '/', dirname( __DIR__ ) . '/templates/images/' );
 
 get_header();
 
-include_once ( __DIR__ . '/functions.php' );
 
 if ( have_posts() ) :
     while ( have_posts() ) :
         the_post();
 
         $doctor = get_post_type() === 'doctor';
+        
+        $place = fct1_meta( 'entity-geo-city' ) ? fct1_meta( 'entity-geo-city' ) : fct1_meta( 'entity-region' );
+        
+        $link_to_search = '/kliniken/?';
+        foreach ( [ 'place' => $place, 'specialty' => fct1_meta( 'entity-specialty' ) ] as $k => $v ) {
+            if ( !$v ) { continue; }
+            $link_to_search .= $k . '=' . urlencode( $v ) . '&';
+        }
+        $link_to_search = rtrim( $link_to_search, '&' );
 ?>
 
 <article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-<?php echo get_post_status() ?> entry" itemscope itemtype="https://schema.org/<?php echo $doctor ? 'MedicalOrganization' : 'MedicalClinic' ?>">
@@ -29,12 +39,13 @@ if ( have_posts() ) :
             <?php } ?>
         </div>
         <h1 itemprop="name"><?php the_title() ?></h1>
-        <p><?php
-                fct1_meta_print( 'entity-specialty', false, '<span itemprop="medicalSpecialty">', '</span>' ); fct1_meta_print( 'entity-geo-city', false, ' in ' );
-        ?></p>
+        <p><a href="<?php echo $link_to_search ?>" target="_blank"><?php
+                echo fct1_meta( 'entity-specialty', '<span itemprop="medicalSpecialty">', '</span>' );
+                echo $place ? ' in ' . $place : '';
+        ?></a></p>
         
         <?php if ( method_exists( 'FCP_Comment_Rate', 'print_rating_summary_short' ) ) { ?>
-            <?php FCP_Comment_Rate::print_rating_summary_short() ?>
+            <?php \FCP_Comment_Rate::print_rating_summary_short() ?>
         <?php } ?>
         
         <?php if ( comments_open() || wp_count_comments( get_the_ID() )->approved ) { ?>
@@ -69,6 +80,7 @@ if ( get_the_author_meta( 'ID' ) === get_current_user_id() ) {
 ?>
 
 <?php
+
     $template = [];
     $template[] = 'full';
     

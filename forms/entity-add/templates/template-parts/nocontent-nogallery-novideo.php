@@ -3,17 +3,14 @@
 
         <h2><?php _e( 'About', 'fcpfo-ea' ) ?></h2>
 
-        <?php echo fct_entity_content_filter( 
-            fct1_meta( 'entity-content' ),
-            fct1_meta( 'entity-tariff' )
-        ) ?>
+        <?php echo \fcpf\eat\entity_content_filter( fct1_meta( 'entity-content' ) ) ?>
 
-        <?php fct_entity_print_tags() ?>
+        <?php \fcpf\eat\entity_print_tags() ?>
 
         <div style="height:35px" aria-hidden="true" class="wp-block-spacer"></div>
         
         <div class="is-content-justification-full">
-            <?php fct_print_gmap() ?>
+            <?php \fcpf\eat\print_gmap() ?>
         </div>
 
     </div>
@@ -25,11 +22,11 @@
         <div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
     
         <div class="wp-block-buttons is-content-justification-full">
-            <?php fct_print_contact_buttons() ?>
+            <?php \fcpf\eat\print_contact_buttons() ?>
         </div>
         
         <div class="wp-block-buttons is-content-justification-full">
-            <?php fct_entity_print_schedule( true ) ?>
+            <?php \fcpf\eat\entity_print_schedule( true ) ?>
         </div>
     </div>
     

@@ -1,7 +1,9 @@
 <?php
 
-function fct_print_video() {
-    $url = fct1_meta_print( 'entity-video', true );
+namespace fcpf\eat;
+
+function print_video() {
+    $url = fct1_meta( 'entity-video' );
 
     if ( !$url ) { return; }
 
@@ -24,7 +26,8 @@ function fct_print_video() {
     
     // youtube
 	if ( preg_match(
-        '/^(?:https?\:\/\/(?:www\.)?youtu(?:.?)+[=\/]{1}([\w-]{11})(?:.?))$/i', $url, $match
+   //'/^(?:https?\:\/\/(?:www\.)?youtu(?:.?)+[=\/]{1}([\w-]{11})(?:.?))$/i', $url, $match
+        '/^https?\:\/\/(?:www\.)?youtu(?:.)+[=\/]{1}([\w_\-]{11})(?:[^\w_\-].+)*$/i', $url, $match
     ) ) {
         ?>
         <div class="fct-video">
@@ -37,10 +40,10 @@ function fct_print_video() {
 
 }
 
-function fct_print_gmap() {
+function print_gmap() {
     
     $addr = fct1_meta( 'entity-address' );
-    $lat = fct1_meta( 'entity-geo-lat' );
+    $lat  = fct1_meta( 'entity-geo-lat' );
     $long = fct1_meta( 'entity-geo-long' );
     $zoom = fct1_meta( 'entity-zoom' );
 
@@ -62,22 +65,22 @@ function fct_print_gmap() {
     ?>
     <div itemprop="contactPoint" itemscope itemtype="https://schema.org/ContactPoint">
         <meta itemprop="contactType" content="customer service">
-        <meta itemprop="telephone" content="<?php fct1_meta_print( 'entity-phone' ) ?>">
+        <meta itemprop="telephone" content="<?php echo fct1_meta( 'entity-phone' ) ?>">
     </div>
     <?php
 }
 
-function fct_print_contact_buttons() {
-    fct_print_contact_button( 'entity-phone', fct1_meta( 'entity-phone' ), 'telephone' );
-    fct_print_contact_button( 'entity-email', __( 'E-mail', 'fcpfo-ea' ) );
-    fct_print_contact_button( 'entity-website', __( 'Website', 'fcpfo-ea' ), 'url' );
+function print_contact_buttons() {
+    print_contact_button( 'entity-phone', fct1_meta( 'entity-phone' ), 'telephone' );
+    print_contact_button( 'entity-email', __( 'E-mail', 'fcpfo-ea' ) );
+    print_contact_button( 'entity-website', __( 'Website', 'fcpfo-ea' ), 'url' );
 }
 
-function fct_print_contact_button($meta, $name, $itemprop = '') {
+function print_contact_button($meta, $name, $itemprop = '') {
     $button = fct1_meta( $meta );
     if ( !$button ) { return; }
     
-    $commercial = !fct_free_account();
+    $commercial = !free_account();
 
     if ( strpos( $meta, 'phone' ) !== false ) { $prefix = 'tel:'; }
     if ( strpos( $meta, 'mail' ) !== false ) { $prefix = 'mailto:'; }
@@ -91,7 +94,7 @@ function fct_print_contact_button($meta, $name, $itemprop = '') {
     <?php
 }
 
-function fct_entity_print_schedule($toggle_in = false) {
+function entity_print_schedule($toggle_in = false) {
 
     $fields = [
         'entity-mo' => 'Monday', // -open, -close, translation goes lower
@@ -121,7 +124,7 @@ function fct_entity_print_schedule($toggle_in = false) {
             if ( !empty( $values[ $k ] ) ) { continue; }
         }
         
-        $values[ $k ][] = '<small>' . __( 'Closed', 'fcpfo-ea' ) . '</small>';
+        $values[ $k ][] = '<small>' . \__( 'Closed', 'fcpfo-ea' ) . '</small>';
 
     }
     
@@ -159,7 +162,7 @@ function fct_entity_print_schedule($toggle_in = false) {
     <?php
 }
 
-function fct_entity_print_gallery() {
+function entity_print_gallery() {
 
     $gallery = fct1_meta( 'gallery-images' );
     if ( empty( $gallery ) ) { return; }
@@ -176,27 +179,27 @@ function fct_entity_print_gallery() {
             </figure>
         <?php } ?>
     </div>
-<?
+<?php
 }
 
-function fct_entity_content_filter($content, $tariff = '') { // $tariff is a rudiment here
+function entity_content_filter($content, $tariff = '') { // $tariff is a rudiment here
     if ( !$content ) { return; }
-    return apply_filters( 'the_content', fct1_a_clear( $content, !fct_free_account() ) );
+    return apply_filters( 'the_content', fct1_a_clear( $content, free_account() ) );
 }
 
-function fct_entity_print_tags() {
-    fct1_meta_print( 'entity-tags', false, '<h2>'.__( 'Our range of treatments', 'fcpfo-ea' ).'</h2><p>', '</p>' );
+function entity_print_tags() {
+    echo fct1_meta( 'entity-tags', '<h2>'.__( 'Our range of treatments', 'fcpfo-ea' ).'</h2><p>', '</p>' );
     // Unser Behandlungsspektrum
 }
 
-function fct_free_account() {
+function free_account() {
     $tariff = fct1_meta( 'entity-tariff' );
     $status = fct1_meta( 'entity-payment-status' );
     if ( $tariff && $tariff !== 'kostenloser_eintrag' && $status === 'payed' ) { return false; }
     return true;
 }
 
-function fct_entity_tile_print($footer = '') {
+function entity_tile_print($footer = '') {
     static $badgesdir = '';
     if ( !$badgesdir ) {
         $badgesdir = str_replace( ABSPATH, get_site_url() . '/', dirname( __DIR__ ) . '/templates/images/' );
@@ -230,17 +233,17 @@ function fct_entity_tile_print($footer = '') {
             </h2>
         </header>
         <div class="entry-details">
-            <?php if ( $ava = fct1_meta_print( 'entity-avatar', true )[0] ) { ?>
+            <?php if ( $ava = fct1_meta( 'entity-avatar' )[0] ) { ?>
             <div class="entity-avatar">
                 <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $ava, [74,74], 0, get_the_title() . ' ' . __( 'Icon', 'fcpfo-ea' ) ) ?>
             </div>
             <?php } ?>
             <div class="entity-about">
                 <p>
-                    <?php fct1_meta_print( 'entity-specialty' ); fct1_meta_print( 'entity-geo-city', false, ' in ' ) ?>
+                    <?php echo fct1_meta( 'entity-specialty' ); echo fct1_meta( 'entity-geo-city', ' in ' ) ?>
                 </p>
                 <?php if ( method_exists( 'FCP_Comment_Rate', 'print_stars_total' ) ) { ?>
-                    <?php FCP_Comment_Rate::print_stars_total() ?>
+                    <?php \FCP_Comment_Rate::print_stars_total() ?>
                 <?php } ?>
             </div>
         </div>

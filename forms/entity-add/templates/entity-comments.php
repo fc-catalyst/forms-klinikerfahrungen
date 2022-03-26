@@ -53,4 +53,3 @@ if ( post_password_required() ) {
 </div>
 
 <?php
-

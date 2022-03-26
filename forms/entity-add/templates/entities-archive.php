@@ -1,8 +1,11 @@
 <?php
 
-get_header();
+namespace fcpf\eaa;
 
 include_once ( __DIR__ . '/functions.php' );
+use fcpf\eat as eat;
+
+get_header();
 
 $args = [
     'post_type'        => ['clinic', 'doctor'],
@@ -13,9 +16,9 @@ $args = [
     'post_status'      => ['publish', 'private'],
 ];
 
-$args['meta_query'] = fct_archive_filters();
+$args['meta_query'] = archive_filters();
 
-$wp_query = new WP_Query( $args );
+$wp_query = new \WP_Query( $args );
 
 
 ?>
@@ -23,7 +26,7 @@ $wp_query = new WP_Query( $args );
     <?php //the_archive_title( '<h1>', '</h1>' ) ?>
     <h1><?php _e( 'Clinics and Doctors', 'fcpfo-ea' ) ?></h1>
     
-    <?php fct_search_stats( '<p style="margin-top:-25px;opacity:0.45">', '.</p>' ) ?>
+    <?php search_stats( '<p style="margin-top:-25px;opacity:0.45">', '.</p>' ) ?>
 
     <?php echo do_shortcode('[fcp-form dir="entity-search" notcontent]') ?>
     
@@ -33,13 +36,13 @@ if ( $wp_query->have_posts() ) {
     while ( $wp_query->have_posts() ) {
         $wp_query->the_post();
 
-        fct_entity_tile_print();
+        eat\entity_tile_print();
         
     }
     get_template_part( 'template-parts/pagination' );
     ?></div><!-- /wrap-width --><?php
 } else {
-    fct_search_stats( '<h2 id="nothing-found-headline">', '</h2>' );
+    search_stats( '<h2 id="nothing-found-headline">', '</h2>' );
     // delay the dramatic headline appearance as more results still can appear ++can do better ++can add loader
     ?>
 <style>
@@ -117,11 +120,11 @@ wp_reset_query();
 ?>
 <div style="height:80px" aria-hidden="true" class="wp-block-spacer"></div>
 <?php
-
+//*/
 get_footer();
 
 
-function fct_archive_filters() {
+function archive_filters() {
     global $wpdb;
 
     $query_meta = [];
@@ -165,7 +168,7 @@ function fct_archive_filters() {
     return $query_meta[0];
 }
 
-function fct_search_stats($before = '', $after = '') {
+function search_stats($before = '', $after = '') {
     if ( !$_GET['specialty'] && !$_GET['place'] ) { return; }
     
     global $wp_query;

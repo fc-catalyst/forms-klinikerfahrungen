@@ -1,7 +1,6 @@
 <?php
 
-// post types for clinics & doctors
-
+// add post types for clinics & doctors
 if ( !class_exists( 'FCPAddPostType' ) ) {
     include_once $this->self_path . 'classes/add-post-type.class.php';
 }
@@ -16,7 +15,7 @@ register_deactivation_hook( $this->self_path_file, function() {
 });
 
 new FCPAddPostType( [
-    'name' => 'Clinic', // the translation goes inside the class
+    'name' => 'Clinic',
     'type' => 'clinic',
     'slug' => 'kliniken',
     'plural' => 'Clinics',
@@ -32,7 +31,7 @@ new FCPAddPostType( [
     'text_domain' => 'fcpfo-ea',
 ] );
 
-new FCPAddPostType( [ // basically the clone of clinics for now
+new FCPAddPostType( [
     'name' => 'Doctor',
     'type' => 'doctor',
     'slug' => 'doctor',
@@ -89,18 +88,6 @@ add_filter( 'comments_template', function( $template ) {
     return $template;
 }, 99 );
 
-/*
-add_action( 'pre_get_posts', function( $query ) {
-
-    $url = explode( "/", $_SERVER['REQUEST_URI'] ); // do in a different way!!
-
-    if ( $url[1] == 'clinic' ) {
-        $query->is_main_query();
-        $query->set( 'posts_per_page', 10 );
-    }
-
-} );
-*/
 
 // style the wp-admin // it is not in fcp-forms.php as it might have more conditions to appear
 add_action( 'admin_enqueue_scripts', function($hook) use ($dir) {
@@ -138,17 +125,6 @@ if ( !class_exists( 'FCP_Forms__Draw' ) ) {
 
 $json = FCP_Forms::structure( $dir );
 if ( $json === false ) { return; }
-
-/* moved to override.php && override-admin.php
-global $wpdb;
-$options = $wpdb->get_col( '
-    SELECT `meta_value`
-    FROM `'.$wpdb->postmeta.'`
-    WHERE `meta_key` = "entity-specialty" AND `meta_value` <> ""
-    GROUP BY `meta_value` ASC
-');
-FCP_Forms::save_options( 'entity-specialty', $options );
-//*/
 
 new FCP_Add_Meta_Boxes( $json, (object) [
     'title' => 'Unternehmensinformationen',
