@@ -39,9 +39,9 @@ if ( have_posts() ) :
             <?php } ?>
         </div>
         <h1 itemprop="name"><?php the_title() ?></h1>
-        <p><a href="<?php echo $link_to_search ?>" target="_blank"><?php
+        <p><a href="<?php echo $link_to_search ?>"><?php
                 echo fct1_meta( 'entity-specialty', '<span itemprop="medicalSpecialty">', '</span>' );
-                echo $place ? ' in ' . $place : '';
+                echo $place ? ' <span>in '.$place.' </span>' : '';
         ?></a></p>
         
         <?php if ( method_exists( 'FCP_Comment_Rate', 'print_rating_summary_short' ) ) { ?>
