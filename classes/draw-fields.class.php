@@ -646,16 +646,16 @@ class FCP_Forms__Draw {
         <?php
     }
 
-    private function e_field_id($field_name) {
+    private static function e_field_id($field_name) {
         echo self::__field_id( $field_name );
     }
-    private function e_field_name($field_name) {
+    private static function e_field_name($field_name) {
         echo self::__field_name( $field_name );
     }
-    private function __field_id ($field_name) {
+    private static function __field_id ($field_name) {
         return isset( $this ) && $this instanceof self ? $field_name . '_' . $this->s->options->form_name : $field_name;
     }
-    private function __field_name ($field_name) {
+    private static function __field_name ($field_name) {
         return $field_name;
     }
     
