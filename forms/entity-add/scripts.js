@@ -158,6 +158,7 @@ fcLoadScriptVariable(
             $input = $( '#entity-address_entity-add' );
         if ( !$input.length ) { return }
 
+        const countries = ['de', 'at', 'ch']; // Germany, Austria, Switzerland
 
         let is_correct = false; // make sure, the visitor used the autocomplete, so the hidden fields are filled correctly
 
@@ -165,7 +166,7 @@ fcLoadScriptVariable(
         const ac = new google.maps.places.Autocomplete(
             $input[0],
             {
-                componentRestrictions: { country: ['de', 'at', 'ch'] }, // Germany, Austria, Switzerland
+                componentRestrictions: { country: countries },
                 fields: ['address_components', 'formatted_address', 'geometry'], // ++'place_id' to load rating someday
                 types: ['address']
             }
@@ -187,21 +188,15 @@ fcLoadScriptVariable(
             setTimeout( function() { // just a measure of economy, as `blur` fires before `place_changed`
             
                 if ( is_correct ) { return }
-                
-                const geocoder = new google.maps.Geocoder();
 
-                geocoder.geocode(
-                    {
-                        componentRestrictions: { country: 'de' },
-                        address: $input.val()
-                        //placeId: placeId
-                    },
-                    function(places, status) {
-                        if ( status !== 'OK' ) { fillInValues(); return }
+                autosuggest( $input.val(),
+                    function( place ) {
                         if ( is_correct || freeze ) { return }
-                        fillInValues( places[0] );
-                    }
+                        fillInValues( place );
+                    },
+                    fillInValues // just passes empty value
                 );
+
             }, 200 );
 
         });
@@ -213,20 +208,12 @@ fcLoadScriptVariable(
 
             e.preventDefault();
             
-            const geocoder = new google.maps.Geocoder();
-            if ( !geocoder.geocode ) { submit(); return }
-
-            geocoder.geocode(
-                {
-                    componentRestrictions: { country: 'de' },
-                    address: $input.val()
-                    //placeId: placeId
-                },
-                function(places, status) {
-                    if ( status !== 'OK' ) { submit(); return }
-                    fillInValues( places[0] );
+            autosuggest( $input.val(),
+                function( place ) {
+                    fillInValues( place );
                     submit();
-                }
+                },
+                submit
             );
             
             function submit() {
@@ -310,6 +297,42 @@ fcLoadScriptVariable(
         
         function gmap_move() {
             $( '#entity-specify-map' )[0].dispatchEvent( new CustomEvent( 'popup_map_move' ) );
+        }
+        
+        function autosuggest(address, success_func, fail_func) {
+
+            if ( !address ) { return }
+            if ( !success_func || typeof success_func !== 'function' ) { success_func = (a) => {}; }
+            if ( !fail_func || typeof fail_func !== 'function' ) { fail_func = () => {}; }
+
+            const geocoder = new google.maps.Geocoder();
+            if ( !geocoder || !geocoder.geocode ) { fail_func(); return }
+
+            let i = 0;
+            iterate();
+
+            function iterate() {
+                if ( i >= countries.length ) { fail_func(); return }
+                geocoder.geocode(
+                    {
+                        componentRestrictions: { country: countries[i] },
+                        address: address
+                        //placeId: placeId
+                    },
+                    function(places, status) {
+                        if ( status !== 'OK' || !places[0] || !places[0].geometry ) {
+                            fail_func();
+                            return;
+                        }
+                        if ( !~places[0].formatted_address.indexOf( ',' ) ) { // the address is only the country name
+                            i++;
+                            iterate();
+                            return;
+                        }
+                        success_func( places[0] );
+                    }
+                );                
+            }
         }
 
     },
