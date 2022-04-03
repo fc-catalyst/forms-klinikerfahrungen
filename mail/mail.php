@@ -1,7 +1,5 @@
 <?php
 
-// ++load all smtp values from db
-
 class FCP_FormsTariffMail {
 
     private static function details($a = []) {
@@ -41,9 +39,10 @@ class FCP_FormsTariffMail {
                 ],
 //*/
                 'WPMailSMTP' => true, // override settings with WP Mail SMTP
+                'debug' => false,
             ];
 
-            if ( $details['issmtp'] && $details['WPMailSMTP'] && $smtp_override = self::WPMailSMTP() ) {
+            if ( self::$details['issmtp'] && self::$details['WPMailSMTP'] && $smtp_override = self::WPMailSMTP() ) {
                 self::$details = array_merge( self::$details, $smtp_override );
             }
 
@@ -424,7 +423,7 @@ class FCP_FormsTariffMail {
 
         $details = self::details();
 
-        $message['subject'] = $details['sending_name'] . ' ' . 'Message';
+        $message['subject'] = 'Message from ' . $message['name'];
         $message['footer'] = $details['footer'];
 
         $message['from'] = $details['sending'];
@@ -443,8 +442,6 @@ class FCP_FormsTariffMail {
     public static function send($m) {
 
         if ( !empty( array_diff( ['subject', 'message', 'from', 'to'], array_keys( $m ) ) ) ) { return; }
-
-        // if ( self::send_to_print( $m ) ) { return; } // comment in common state - only for testing purposes
 
         static $template = '';
         
@@ -489,19 +486,30 @@ class FCP_FormsTariffMail {
         $mail->AddEmbeddedImage( __DIR__ . '/attachments/klinikerfahrungen-logo.png', 'klinikerfahrungen-logo');
         // $mail->addAttachment( __DIR__ . '/attachments/Fünf Tipps.pdf' );
 
-//*
+        // a small debug
+        if ( self::$details['debug'] ) {
+            self::send_to_print( self::$details );
+            self::send_to_print( $m );
+        }
+        
         // SMTP
-        if ( !self::$details['issmtp'] || empty( self::$details['smtp'] ) ) { return $mail->send(); }
+        $details = self::details();
+        if ( !$details['issmtp'] || empty( $details['smtp'] ) ) { return $mail->send(); }
 
         if ( !class_exists( '\PHPMailer\PHPMailer\SMTP', false ) ) {
             require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
         }
 
         $mail->isSMTP();
-        foreach ( self::$details['smtp'] as $k => $v ) {
+        foreach ( $details['smtp'] as $k => $v ) {
             $mail->{ $k } = $v;
         }
-//*/
+
+        if ( $details['smtp']['SMTPDebug'] ) {
+            $mail->send();
+            exit;
+        }
+
         return $mail->send();
 
     }
@@ -532,6 +540,10 @@ class FCP_FormsTariffMail {
                 $details['sending_name'] = $smtp['mail']['from_name'];
             }
 
+            if ( self::$details['debug'] ) {
+                $details['smtp']['SMTPDebug'] = true;
+            }
+
             return $details;
         }
 
@@ -544,7 +556,7 @@ class FCP_FormsTariffMail {
             echo '<pre>';
             print_r( $m );
             echo '</pre>';
-            exit;
+            //exit;
         }
 
         add_action( 'wp_footer', function() use ( $m ) {
