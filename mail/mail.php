@@ -419,6 +419,26 @@ class FCP_FormsTariffMail {
 
         return self::send( $message );
     }
+
+    public static function to_moderator_custom($message) {
+
+        $details = self::details();
+
+        $message['subject'] = $details['sending_name'] . ' ' . 'Message';
+        $message['footer'] = $details['footer'];
+
+        $message['from'] = $details['sending'];
+        $message['from_name'] = $message['name'];
+        $message['to'] = $details['moderator'];
+        $message['to_name'] = $details['moderator_name'];
+        
+        $message['reply_to'] = $message['email'];
+        $message['reply_to_name'] = $message['name'];
+
+        $message['message'] = wpautop( $message['message'] );
+
+        return self::send( $message );
+    }
     
     public static function send($m) {
 
