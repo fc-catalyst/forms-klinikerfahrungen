@@ -12,7 +12,13 @@ $init_values = $values;
 
 // no tariff manipulations with no billing method picked
 if ( !get_post_meta( $_GET['post'], 'entity-billing', true ) && !$admin_am ) {
+
+    $tariff = FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff' );
+    $tariff->roles_view = ['entity_delegate'];
+
     $this->s->fields = [];
+
+    array_push( $this->s->fields, $tariff );
     array_push( $this->s->fields, (object) [
         'type' => 'notice',
         'text' => '<p>' .
