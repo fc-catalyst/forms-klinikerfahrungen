@@ -93,10 +93,9 @@ add_action( 'wp_before_admin_bar_render', function() {
 add_action( 'admin_menu', function(){  
     if ( !self::check_role( 'entity_delegate' ) ) { return; }
     remove_menu_page( 'index.php' );
+    // ++maybe modify for delegates' benefit
 });
-
-// redirect from dashboard to the list of clinics
-add_action( 'admin_enqueue_scripts', function() {
+add_action( 'admin_enqueue_scripts', function() { // redirect from dashboard to the list of clinics
     if ( !self::check_role( 'entity_delegate' ) ) { return; }
     if ( get_current_screen()->id != 'dashboard' ) { return; }
     wp_redirect( get_option( 'siteurl' ) . '/wp-admin/edit.php?post_type=clinic' );
@@ -159,7 +158,7 @@ add_action( 'admin_footer', function() {
     <?php
 });
 
-
+/*
 // custom user meta Trusted
 add_action( 'show_user_profile', 'trust_delegate_print' );
 add_action( 'edit_user_profile', 'trust_delegate_print' );
@@ -181,7 +180,9 @@ function trust_delegate_print($user) {
 }
 
 function trust_delegate_save($user_id) {
+//if ( !FCP_Forms::check_role( 'administrator' ) && !FCP_Forms::check_role( 'entity_delegate', $user_id ) ) { return; }
     if ( !FCP_Forms::check_role( 'administrator' ) ) { return; }
     if ( !FCP_Forms::check_role( 'entity_delegate', $user_id ) ) { return; }
     update_user_meta( $user_id, 'user-trusted', $_POST['user-trusted'] );
 }
+//*/

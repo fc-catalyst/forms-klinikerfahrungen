@@ -153,6 +153,8 @@ class FCP_Add_Meta_Boxes {
             }
             update_post_meta( $postID, $f->name, $_POST[ $f->name ] );
         }
+        
+        //clean_post_cache( $postID ); // ++not sure it is needed
 
 	}
 

@@ -103,7 +103,7 @@ add_action( 'admin_enqueue_scripts', function($hook) use ($dir) {
         'fcp-forms-entity-admin',
         $this->forms_url . $dir . '/scripts-admin.js',
         ['jquery'],
-        $this->js_ver 
+        $this->js_ver
     );
 });
 

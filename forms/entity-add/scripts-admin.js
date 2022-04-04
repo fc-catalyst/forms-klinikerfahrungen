@@ -109,6 +109,7 @@ fcLoadScriptVariable(
             if ( is_correct ) { return } // && $input.not( ':focus' ) OR && !freeze
 
             e.preventDefault();
+            e.originalEvent.submitter.setAttribute( 'type', 'hidden' ); // the submit button value also gotta be submitted
 
             autosuggest( $input.val(),
                 function( place ) {
