@@ -14,7 +14,7 @@ $init_values = $values;
 if ( !get_post_meta( $_GET['post'], 'entity-billing', true ) && !$admin_am ) {
 
     $tariff = FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff' );
-    $tariff->roles_view = ['entity_delegate'];
+    $tariff->roles_view = ['administrator', 'entity_delegate'];
 
     $this->s->fields = [];
 

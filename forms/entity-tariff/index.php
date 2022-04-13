@@ -139,6 +139,39 @@ ON sq0.ID = sq' . implode( '.ID AND sq0.ID = sq', array_slice( array_keys( array
     FCP_Forms::tz_reset();
 });
 
+function fcp_tariff_filter_text($text) {
+    if ( !$text ) { return ''; }
+    
+    $tariff_running = fcp_tariff_get()->running;
+    switch ( $tariff_running ) {
+        case 'standardeintrag':
+            return fct1_a_clear_all( $text, 0 );
+        case 'premiumeintrag':
+            return fct1_a_clear_all( $text, 1, [
+                'rel' => [
+                    'internal' => '--remove',
+                    'external' => 'noopener',
+                ]
+            ]);
+        default:
+            return fct1_a_clear_all( $text, 0 );
+    }
+}
+
+function fcp_tariff_get() {
+    $free = 'kostenloser_eintrag';
+    $tariff = fct1_meta( 'entity-tariff' );
+    $status = fct1_meta( 'entity-payment-status' );
+    $payed = $tariff && $tariff !== $free && $status === 'payed';
+
+    return (object) [
+        'tariff' => $tariff,
+        'paid' => $tariff !== $free,
+        'running' => $payed ? $tariff : $free,
+        'running_paid' => $payed, //++??
+    ];
+}
+
 function fcp_flush_tariff_by_id($p, &$values = []) {
     if ( !$p ) { return; }
     if ( is_array( $p ) ) { $p = (object) $p; }

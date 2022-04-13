@@ -76,19 +76,32 @@ function print_contact_buttons() {
     print_contact_button( 'entity-website', __( 'Website', 'fcpfo-ea' ), 'url' );
 }
 
-function print_contact_button($meta, $name, $itemprop = '') {
-    $button = fct1_meta( $meta );
-    if ( !$button ) { return; }
-    
-    $commercial = !free_account();
+function print_contact_button($meta_name, $name, $itemprop = '') {
+    $meta_value = fct1_meta( $meta_name );
+    if ( !$meta_value ) { return; }
 
-    if ( strpos( $meta, 'phone' ) !== false ) { $prefix = 'tel:'; }
-    if ( strpos( $meta, 'mail' ) !== false ) { $prefix = 'mailto:'; }
+    if ( strpos( $meta_name, 'phone' ) !== false ) { $prefix = 'tel:'; }
+    if ( strpos( $meta_name, 'mail' ) !== false ) { $prefix = 'mailto:'; }
+    if ( strpos( $meta_name, 'website' ) !== false ) {
+        $attrs = ' target="_blank"';
+
+        $tariff_running = fcp_tariff_get()->running;
+        switch ( $tariff_running ) {
+            case 'standardeintrag':
+                $attrs .= ' rel="nofollow noopener noreferrer"';
+                break;
+            case 'premiumeintrag':
+                $attrs .= ' rel="noopener"';
+                break;
+            default:
+                return;
+        }
+    }
 
     ?>
         <div class="wp-block-button is-style-outline">
-            <a class="wp-block-button__link has-text-color" href="<?php echo $prefix ?><?php echo $button ?>" style="color:var(--h-color)" rel="noopener<?php echo $commercial ? '' : ' nofollow noreferrer' ?>">
-                <strong<?php echo $itemprop ? ' itemprop="'.$itemprop.'" content="'.$button.'" ' : '' ?>><?php echo $name ?></strong>
+            <a class="wp-block-button__link has-text-color" href="<?php echo $prefix ?><?php echo $meta_value ?>" style="color:var(--h-color)"<?php echo $attrs ?>>
+                <strong<?php echo $itemprop ? ' itemprop="'.$itemprop.'" content="'.$meta_value.'" ' : '' ?>><?php echo $name ?></strong>
             </a>
         </div>
     <?php
@@ -182,21 +195,16 @@ function entity_print_gallery() {
 <?php
 }
 
-function entity_content_filter($content, $tariff = '') { // $tariff is a rudiment here
-    if ( !$content ) { return; }
-    return apply_filters( 'the_content', fct1_a_clear( $content, free_account() ) );
+function entity_content_filter($content) {
+    if ( !$content ) { return ''; }
+    remove_filter( 'the_content', 'do_shortcode', 11 );
+    return apply_filters( 'the_content', fcp_tariff_filter_text( $content ) );
+    add_filter( 'the_content', 'do_shortcode', 11 );
 }
 
 function entity_print_tags() {
     echo fct1_meta( 'entity-tags', '<h2>'.__( 'Our range of treatments', 'fcpfo-ea' ).'</h2><p>', '</p>' );
     // Unser Behandlungsspektrum
-}
-
-function free_account() {
-    $tariff = fct1_meta( 'entity-tariff' );
-    $status = fct1_meta( 'entity-payment-status' );
-    if ( $tariff && $tariff !== 'kostenloser_eintrag' && $status === 'payed' ) { return false; }
-    return true;
 }
 
 function entity_tile_print($footer = '') {
