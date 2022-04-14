@@ -34,7 +34,7 @@ new FCPAddPostType( [
 new FCPAddPostType( [
     'name' => 'Doctor',
     'type' => 'doctor',
-    'slug' => 'doctor',
+    'slug' => 'aerzte',
     'plural' => 'Doctors',
     'description' => 'The list of doctors, registered by you',
     'fields' => ['title', 'comments', 'author'],
