@@ -218,7 +218,6 @@
                             "subtitle" : "(<a href=\"/preise-eintragung/\" target=\"_blank\">Kosten für einen Eintrag</a>)",
                             "name" : "entity-tariff",
                             "options" : {
-                                "standardeintrag" : "Standardeintrag",
                                 "premiumeintrag" : "Premiumeintrag",
                                 "kostenloser_eintrag" : "Kostenloser Eintrag"
                             },

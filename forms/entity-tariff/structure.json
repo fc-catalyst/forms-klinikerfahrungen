@@ -14,7 +14,6 @@
             "type" : "select",
             "name" : "entity-tariff",
             "options" : {
-                "standardeintrag" : "Standardeintrag",
                 "premiumeintrag" : "Premiumeintrag",
                 "kostenloser_eintrag" : "Kostenloser Eintrag"
             },
