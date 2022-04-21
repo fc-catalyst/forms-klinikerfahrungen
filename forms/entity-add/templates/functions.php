@@ -94,7 +94,7 @@ function print_contact_button($meta_name, $name, $itemprop = '') {
                 $attrs .= ' rel="noopener"';
                 break;
             default:
-                return;
+                $attrs .= ' rel="nofollow noopener noreferrer"';
         }
     }
 
