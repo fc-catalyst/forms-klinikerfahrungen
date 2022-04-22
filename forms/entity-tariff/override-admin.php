@@ -139,7 +139,7 @@ if ( $admin_am ) {
     }
 
     // date picker helping functions
-    $one_year_from_now_plus_one_day = date( 'd.m.Y', strtotime( '+1 year', $time_local + $day ) );
+    $one_year_from_now_plus_one_day = date( 'd.m.Y', strtotime( '+1 year', $time_local ) );
     FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-tariff-till', [
         'type' => 'notice',
         'text' => '<a href="#" id="one-year-ahead" style="margin-top:-12px">'.__( 'Set 1 year from now', 'fcpfo-et' ).'</a><script>

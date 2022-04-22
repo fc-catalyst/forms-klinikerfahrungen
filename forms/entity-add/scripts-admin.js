@@ -24,7 +24,7 @@ fcLoadScriptVariable(
 
         // gmap-------------------------------
         const countries = ['de', 'at', 'ch']; // Germany, Austria, Switzerland
-        const $gmap_holder = $( '.fct-gmap-pick' );
+        const $gmap_holder = $( '.fct1-gmap-pick' );
         $gmap_holder.css( 'min-height', '312px' );
 
         function getLatLngZoom() {

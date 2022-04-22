@@ -29,10 +29,10 @@ if ( have_posts() ) :
 
 <!-- gutenberg copy start -->
 
-<div class="wp-block-columns alignwide are-vertically-aligned-center fct-entity-hero">
+<div class="wp-block-columns alignwide are-vertically-aligned-center fct1-entity-hero">
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:66.66%">
-        <div class="fct-entity-badges">
+        <div class="fct1-entity-badges">
             <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'verified.png' ?>" alt="<?php _e( 'Verified', 'fcpfo-ea' ) ?>" title="<?php _e( 'Verified', 'fcpfo-ea' ) ?>" />
             <?php if ( fct1_meta( 'entity-featured' ) ) { ?>
                 <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="<?php _e( 'Featured', 'fcpfo-ea' ) ?>" title="<?php _e( 'Featured', 'fcpfo-ea' ) ?>" />
@@ -61,7 +61,7 @@ if ( have_posts() ) :
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:33.33%">
         <?php if ( $logo = fct1_meta( 'entity-avatar' )[0] ) { ?>
-        <div class="fct-entity-photo">
+        <div class="fct1-entity-photo">
             <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $logo, [600,600], 0, get_the_title() . ' ' . __( 'Logo', 'fcpfo-ea' ), $doctor ? 'photo' : 'logo' ) ?>
         </div>
         <?php } ?>
@@ -113,7 +113,7 @@ if ( get_the_author_meta( 'ID' ) === get_current_user_id() ) {
             $back_img = fct1_image_src( 'entity/' . get_the_ID() . '/' . $back_img, [1440,1440], ['center','top'] );
             ?>
             <style>
-                .post-<?php the_ID() ?> .fct-entity-hero {
+                .post-<?php the_ID() ?> .fct1-entity-hero {
                     --entity-bg:url( '<?php echo $back_img[0] ?>' );
                 }
             </style>

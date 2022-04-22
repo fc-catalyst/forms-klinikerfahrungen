@@ -59,7 +59,7 @@ fcLoadScriptVariable(
 
         const $ = jQuery;
         const gmap_popup = new FCP_Forms_Popup( '#entity-specify-map' ),
-              $gmap_holder = $( '.fct-gmap-pick' );
+              $gmap_holder = $( '.fct1-gmap-pick' );
         let gmap, marker; // they are here to allow the address field to change the position
 
         $( '#entity-map_entity-add' ).on( 'click', function() {

@@ -10,7 +10,18 @@
             "name" : "hide-h1",
             "meta_box" : "only",
             "options" : {
-                "1" : "Hide the H1 headline"
+                "1" : "Remove the H1 headline"
+            },
+            "roles_edit" : [
+                "administrator"
+            ]
+        },
+        {
+            "type" : "checkbox",
+            "name" : "hide-top-gap",
+            "meta_box" : "only",
+            "options" : {
+                "1" : "Remove top gap behind menu"
             },
             "roles_edit" : [
                 "administrator"

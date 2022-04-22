@@ -13,7 +13,7 @@ function print_video() {
     if ( in_array( $format , $video_formats ) ) {
 
         ?>
-        <div class="fct-video">
+        <div class="fct1-video">
             <video width="600" controls>
                 <source src="<?php echo $url ?>" type="video/<?php echo $format ?>">
                 <?php _e( 'Your browser does not support HTML video.', 'fcpfo-ea' ) ?>
@@ -30,7 +30,7 @@ function print_video() {
         '/^https?\:\/\/(?:www\.)?youtu(?:.)+[=\/]{1}([\w_\-]{11})(?:[^\w_\-].+)*$/i', $url, $match
     ) ) {
         ?>
-        <div class="fct-video">
+        <div class="fct1-video">
             <iframe src="https://www.youtube.com/embed/<?php echo $match[1] ?>?feature=oembed&autoplay=0" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" width="600" height="312" class="youtube"></iframe>
         </div>
         <?php
@@ -49,7 +49,7 @@ function print_gmap() {
 
     ?>
     <?php echo $addr ? '<meta itemprop="address" content="'.$addr.'">' : '' ?>
-    <div class="fct-gmap-view" itemprop="geo" itemscope itemtype="https://schema.org/GeoCoordinates"
+    <div class="fct1-gmap-view" itemprop="geo" itemscope itemtype="https://schema.org/GeoCoordinates"
         <?php echo $addr ? 'data-addr="'.$addr.'"' : '' ?>
         <?php echo $lat ? 'data-lat="'.$lat.'"' : '' ?>
         <?php echo $long ? 'data-lng="'.$long.'"' : '' ?>
@@ -144,12 +144,12 @@ function entity_print_schedule($toggle_in = false) {
     if ( empty( $schema ) ) { return; }
     
     ?>
-    <div class="wp-block-button is-style-outline fct-button-select fct-open-next<?php echo $toggle_in ? ' fct-active' : '' ?>">
+    <div class="wp-block-button is-style-outline fct1-button-select fct1-open-next<?php echo $toggle_in ? ' fct1-active' : '' ?>">
         <a class="wp-block-button__link has-text-color" href="#" style="color:var(--h-color)">
             <strong><?php _e( 'Working hours', 'fcpfo-ea' ) ?></strong>
         </a>
     </div>
-    <dl class="fct-schedule-list">
+    <dl class="fct1-schedule-list">
     <?php
     
     foreach ( $values as $k => $v ) {

@@ -530,7 +530,7 @@
             "fields" : [
                 {
                     "type" : "notice",
-                    "text" : "<div class=\"fct-gmap-pick\"></div>",
+                    "text" : "<div class=\"fct1-gmap-pick\"></div>",
                     "meta_box" : true
                 },
                 {

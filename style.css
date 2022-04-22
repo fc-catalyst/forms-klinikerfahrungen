@@ -150,7 +150,7 @@
     transform:scale(1, 1.8);
     font-size:inherit;
 }
-.fcp-form--main .fct-gmap-pick button::before, /* override the gmap & tinymce buttons from a popup */
+.fcp-form--main .fct1-gmap-pick button::before, /* override the gmap & tinymce buttons from a popup */
 .fcp-form--main .wp-editor-wrap button::before {
     content:none;
 }
