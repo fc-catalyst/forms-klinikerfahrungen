@@ -423,7 +423,7 @@ class FCP_FormsTariffMail {
 
         $details = self::details();
 
-        $message['subject'] = 'Message from ' . $message['name'];
+        $message['subject'] = sprintf( __( 'Message from %s', 'fcpfo' ),  $message['name'] );
         $message['footer'] = $details['footer'];
 
         $message['from'] = $details['sending'];

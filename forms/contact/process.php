@@ -6,7 +6,7 @@ Process the form data
 if ( $warning || !empty( $warns->result ) ) { return; }
 
 $message = array_merge( $_POST, [
-    'subject' => 'Message from ' . get_bloginfo( 'name' )
+    'subject' => sprintf( __( 'Message from %s', 'fcpfo' ),  get_bloginfo( 'name' ) )
 ]);
 
 require_once __DIR__ . '/../../mail/mail.php';

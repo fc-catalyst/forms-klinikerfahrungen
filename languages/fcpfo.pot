@@ -145,3 +145,17 @@ msgstr ""
 
 msgid "Not limited (free)"
 msgstr ""
+
+#. contact
+msgid "Your message is sent successfully!"
+msgstr ""
+
+msgid "An error appeared, the message is not sent."
+msgstr ""
+
+msgid "Please contact directly by %s"
+msgstr ""
+
+#. mailing & contact
+msgid "Message from %s"
+msgstr ""

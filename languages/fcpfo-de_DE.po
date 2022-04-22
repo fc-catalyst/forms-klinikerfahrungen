@@ -157,3 +157,17 @@ msgstr "Kein Enddatum hinterlegt oder kürzlich geendet"
 
 msgid "Not limited (free)"
 msgstr "Unbegrenzt (kostenlos)"
+
+#. contact
+msgid "Your message is sent successfully!"
+msgstr "Ihre Nachricht wurde erfolgreich versendet!"
+
+msgid "An error appeared, the message is not sent."
+msgstr "Ein Fehler ist aufgetreten, Ihre Nachricht konnte nicht gesendet werden."
+
+msgid "Please contact directly by %s"
+msgstr "Bitte kontaktieren Sie uns direkt über %s"
+
+#. mailing & contact
+msgid "Message from %s"
+msgstr "Nachricht von %s"
