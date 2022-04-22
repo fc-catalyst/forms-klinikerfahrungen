@@ -195,11 +195,9 @@ function entity_print_gallery() {
 <?php
 }
 
-function entity_content_filter($content) {
-    if ( !$content ) { return ''; }
-    remove_filter( 'the_content', 'do_shortcode', 11 );
-    return apply_filters( 'the_content', fcp_tariff_filter_text( $content ) );
-    add_filter( 'the_content', 'do_shortcode', 11 );
+function entity_content_filter($text) {
+    if ( !$text ) { return ''; }
+    return apply_filters( 'the_content', fcp_tariff_filter_text( $text ) );
 }
 
 function entity_print_tags() {

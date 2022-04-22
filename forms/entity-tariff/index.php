@@ -142,12 +142,16 @@ ON sq0.ID = sq' . implode( '.ID AND sq0.ID = sq', array_slice( array_keys( array
 function fcp_tariff_filter_text($text) {
     if ( !$text ) { return ''; }
     
+    // remove shortcodes
+    $text = preg_replace( '/\[[\w\/][\w\d\-_]*(.*?)\]/i', '', $text );
+    
+    // filter links
     $tariff_running = fcp_tariff_get()->running;
     switch ( $tariff_running ) {
         case 'standardeintrag':
             return fct1_a_clear_all( $text, 0 );
         case 'premiumeintrag':
-            return fct1_a_clear_all( $text, 1, [
+            return fct1_a_clear_all( $text, 0, [
                 'rel' => [
                     'internal' => '--remove',
                     'external' => 'noopener',
