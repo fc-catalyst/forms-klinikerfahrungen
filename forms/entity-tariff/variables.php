@@ -8,7 +8,7 @@ if ( !isset( $values ) ) { return; }
 
 // timing variables
 $day = DAY_IN_SECONDS;
-$prolong_gap = $day * 14; // a time period, when prolongation option becomes available
+$prolong_gap = $day * 30; // a time period, when prolongation option becomes available
 $billed_flush_gap = $day * 30; // a time period to pay the bill - flushes the tariff to a free one when ends
 
 

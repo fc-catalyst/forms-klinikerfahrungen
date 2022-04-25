@@ -11,7 +11,7 @@ $message = array_merge( $_POST, [
 
 require_once __DIR__ . '/../../mail/mail.php';
 
-if ( FCP_FormsTariffMail::to_moderator_custom( $message ) ) {
+if ( FCP_FormsMail::to_moderator_custom( $message ) ) {
     $redirect = add_query_arg( 'success', '', get_permalink() );
     return;
 }

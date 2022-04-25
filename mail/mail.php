@@ -1,6 +1,6 @@
 <?php
 
-class FCP_FormsTariffMail {
+class FCP_FormsMail {
 
     private static function details($a = []) {
 
@@ -39,7 +39,7 @@ class FCP_FormsTariffMail {
                 ],
 //*/
                 'WPMailSMTP' => true, // override settings with WP Mail SMTP
-                'debug' => false,
+                'debug' => true,
                 'smtpdebug' => false,
             ];
 
@@ -60,7 +60,7 @@ class FCP_FormsTariffMail {
     private static $details = [],
                   $messages = [ // ++'user, 'admin'
         'accountant' => [
-            'request' => [
+            'request' => [ // works
                 'Paid tariff request',
                 'A paid tariff is requested. Please, bill the client and mark the status as "Billed". When the bill is payed, please remember to mark the status as "Payed" to activate the Tariff.',
                 ['entity-tariff', 'billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
@@ -75,7 +75,7 @@ class FCP_FormsTariffMail {
                 'A Tariff change is requested in terms of prolongation. Please bill the client and mark the entity prolongation status as "Billed". When the bill is payed, please remember to mark the status as "Payed" to schedule or activate the Tariff.',
                 ['entity-tariff-next', 'billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
-            'cancel' => [
+            'cancel' => [ // chron
                 'Bill not payed',
                 'The client has not payed the Bill in a set up period of time. You can now cancel the Bill, or contact the client directly.',
                 ['billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
@@ -83,7 +83,7 @@ class FCP_FormsTariffMail {
         ],
 
         'client' => [
-            'published' => [
+            'published' => [ // ++published and waiting for activation??
                 'Your entry is published',
                 'Your entry has just been published.',
                 ['entity-tariff'],
@@ -103,13 +103,13 @@ class FCP_FormsTariffMail {
                 'Your tariff is about to end. The prolongation option is available in your Klinikerfahrungen account. Ignore this message to continue with a Free Tariff',
                 ['entity-tariff'],
             ],
-            'ended' => [
+            'ended' => [ // ++--
                 'Your tariff has just ended',
                 'Your tariff has just ended. Free Tariff is activated.',
             ],
         ],
         'moderator' => [
-            'entity_added' => [ // submitted for review
+            'entity_added' => [ // submitted for review // works
                 'Clinic / doctor added',
                 'A new clinic or doctor has just been added. Please check it and publish, if it is valid.',
                 []
@@ -144,7 +144,7 @@ class FCP_FormsTariffMail {
             self::get_structures( 'billing-add' );
             self::get_structures( 'entity-tariff' );
         }
-        
+
         if ( !$nocached && !empty( $combined ) ) { // use cached values from $combined
             $ids_filtered = array_diff( $ids, array_keys( $combined ) );
             if ( empty( $ids_filtered ) ) {
@@ -154,13 +154,12 @@ class FCP_FormsTariffMail {
         }
 
         global $wpdb;
-        $data = [];
         
         // select titles
         $r = $wpdb->get_results( '
             SELECT `ID`, `post_title`
             FROM `'.$wpdb->posts.'`
-            WHERE `ID` IN ('.implode(',',$ids).')
+            WHERE `ID` IN (' . implode( ',', $ids ) . ')
         ');
         $titles = [];
         foreach ( $r as $k => $v ) { $titles[ $v->ID ] = $v->post_title; }
@@ -173,7 +172,7 @@ class FCP_FormsTariffMail {
         ');
         // AND `meta_key` IN ( "entity-tariff", "entity-tariff-next", "entity-billing" )
         $metas = [];
-        $bill_ids = [];
+        $bill_ids = [0];
         foreach ( $r as $k => $v ) {
             $metas[ $v->post_id ][ $v->meta_key ] = $v->meta_value;
             if ( $v->meta_key !== 'entity-billing' ) { continue; }
@@ -193,15 +192,18 @@ class FCP_FormsTariffMail {
 
         // combine && save the results
         foreach ( $titles as $k => $v ) {
-            if ( $cache && $combined[ $k ] ) { // for comparison puprose
+            if ( $cache && $combined[ $k ] ) { // for comparison puprose: current goes to ['cached'], new replaces
                 $combined[ $k ]['cached'] = $combined[ $k ];
             }
             $combined[ $k ]['title'] = $v;
-            $combined[ $k ]['meta'] = array_merge( $metas[ $k ], $billings[ $metas[ $k ]['entity-billing'] ] );
-            // metas have unique names, so who cares
+            $combined[ $k ]['meta'] = array_merge(
+                $metas[ $k ],
+                isset( $billings[ $metas[ $k ]['entity-billing'] ] ) ? $billings[ $metas[ $k ]['entity-billing'] ] : []
+            );
+            // metas have unique names, so who cares, that they are along with the initial metas
         }
 
-        return $filter_result( $filter_result( $combined ) );
+        return $filter_result( $combined );
     }
     
     private static function get_structures($form = '') { // no division by forms, as metas are unique anyways
@@ -276,6 +278,7 @@ class FCP_FormsTariffMail {
         }
 //*/
 
+        //self::get_structures( 'entity-add' ); // list the exact fields to compare (basically, only the content)++
         foreach ( $structures['titles'] as $k => $v ) {
             if ( $data[ $id ]['meta'][ $k ] === $data[ $id ]['cached']['meta'][ $k ] ) { continue; }
             $difference[ $k ] = [

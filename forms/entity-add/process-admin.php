@@ -44,15 +44,18 @@ require_once __DIR__ . '/../../mail/mail.php';
 
 // notify the moderator about the new entity posted for review
 
-/*
+/* moved to index.php to a status-transition hook.. ++recheck, maybe
 if ( count( $warns->result ) < 4 && $post->post_status === 'pending' ) { // ++a temporary measure for the aboves
     
-    FCP_FormsTariffMail::to_moderator( 'entity_added', $postID );
+    FCP_FormsMail::to_moderator( 'entity_added', $postID );
     return;
 }
 //*/
+
 // notify the moderator about the changes
-FCP_FormsTariffMail::get_data( $postID ); // cache the meta data before saving
-add_action( 'save_post', function() use ( $postID ) {
-    FCP_FormsTariffMail::to_moderator( 'entity_updated', $postID ); // entity_update sends only if there are changes
-}, 20 );
+if ( $_POST['original_post_status'] === 'publish' ) {
+    FCP_FormsMail::get_data( $postID ); // cache the meta data before saving
+    add_action( 'save_post', function() use ( $postID ) { // delay to compare newly saved data with the cached one
+        FCP_FormsMail::to_moderator( 'entity_updated', $postID ); // entity_update sends only if there are changes
+    }, 20 );
+}

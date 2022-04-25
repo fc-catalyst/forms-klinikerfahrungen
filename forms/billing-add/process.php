@@ -65,7 +65,7 @@ if ( $_POST['entity-id'] ) {
 
     // request the bill
     require_once __DIR__ . '/../../mail/mail.php';
-    FCP_FormsTariffMail::to_accountant( 'request', $entity->posts[0]->ID );
+    FCP_FormsMail::to_accountant( 'request', $entity->posts[0]->ID );
 }
 
 

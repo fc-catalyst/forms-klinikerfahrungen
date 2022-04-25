@@ -78,11 +78,11 @@ foreach ( $update_list as $k => $v ) {
     update_post_meta( $id, $k, $v );
 }
 
-
+/* moved to index.php to a status-transition hook.. ++recheck, maybe
 // notify the moderator
 require_once __DIR__ . '/../../mail/mail.php';
-FCP_FormsTariffMail::to_moderator( 'entity_added', $id );
-
+FCP_FormsMail::to_moderator( 'entity_added', $id );
+//*/
 
 // REDIRECT
 if ( $_POST['entity-tariff'] === 'kostenloser_eintrag' ) {

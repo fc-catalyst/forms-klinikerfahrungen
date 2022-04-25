@@ -286,5 +286,6 @@ add_action( 'rest_api_init', function () { // it is in entity-add to easier incl
 add_action( 'transition_post_status', function($new_status, $old_status, $post) {
     if ( !in_array( $post->post_type, ['clinic', 'doctor'] ) ) { return; }
     if ( $new_status !== 'pending' || !in_array( $old_status, ['new', 'draft', 'auto-draft'] ) ) { return; }
-    FCP_FormsTariffMail::to_moderator( 'entity_added', $post->ID );
+    require_once __DIR__ . '/../../mail/mail.php';
+    FCP_FormsMail::to_moderator( 'entity_added', $post->ID );
 }, 10, 3 );

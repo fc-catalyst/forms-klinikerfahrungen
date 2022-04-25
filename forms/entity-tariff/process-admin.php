@@ -17,6 +17,10 @@ if ( !$values['entity-billing'] && !$admin_am ) {
     return;
 }
 
+$free_tariff = 'kostenloser_eintrag';
+$values['entity-tariff'] = $values['entity-tariff'] ? $values['entity-tariff'] : $free_tariff;
+$_POST['entity-tariff'] = $_POST['entity-tariff'] ? $_POST['entity-tariff'] : $free_tariff;
+
 $tariff_change = $_POST['entity-tariff'] !== $values['entity-tariff'];
 $pay_status_change = $_POST['entity-payment-status'] !== $values['entity-payment-status'];
 // $tariff_next_change = $_POST['entity-tariff-next'] !== $values['entity-tariff-next']; // moved lower
@@ -40,8 +44,8 @@ if ( !$admin_am && $tariff_change && !$tariff_paid ) { // tariff is about to cha
     FCP_Forms::json_attr_by_name( $this->s->fields, 'entity-payment-status', 'roles_edit', ['entity_delegate'] );
 
     // notify the accountant
-    add_action( 'save_post', function() use ( $postID ) {
-        FCP_FormsTariffMail::to_accountant( 'request', $postID );
+    add_action( 'save_post', function() use ( $postID ) { // to check if saving goes just fine
+        FCP_FormsMail::to_accountant( 'request', $postID );
     }, 20 );
 }
 
@@ -93,11 +97,11 @@ if ( $prolong_allowed ) {
 
     }
 
-    // notify the accountant to bill the proonging
+    // notify the accountant to bill the prolonging
     if ( !$admin_am && $tariff_next_change && $_POST['entity-tariff-next'] !== $tariff_default ) {
         $prolong_tariff = $_POST['entity-tariff-next'] === $values['entity-tariff']; // else - change
         add_action( 'save_post', function() use ( $postID, $prolong_tariff ) {
-            FCP_FormsTariffMail::to_accountant( $prolong_tariff ? 'prolong' : 'change', $postID );
+            FCP_FormsMail::to_accountant( $prolong_tariff ? 'prolong' : 'change', $postID );
         }, 20 );
     }
 }

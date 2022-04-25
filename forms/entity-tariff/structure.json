@@ -70,13 +70,13 @@
             ]
         },
         {
-            "type" : "text",
+            "type" : "hidden",
             "title" : "Timezone Offset",
             "name" : "entity-timezone-bias",
             "value" : "0",
             "meta_box" : true,
-            "roles_view" : [
-                ""
+            "roles_edit" : [
+                "administrator"
             ],
             "Y_description" : "gotta invent the invisible fields to exist in structure, but not flush on save and manipulated only by back-end"
         },

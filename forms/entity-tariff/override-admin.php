@@ -34,7 +34,7 @@ if ( !get_post_meta( $_GET['post'], 'entity-billing', true ) && !$admin_am ) {
 
 /*
 require_once __DIR__ . '/../../mail/mail.php';
-$print = FCP_FormsTariffMail::to_accountant( 'request', $_GET['post'] );
+$print = FCP_FormsMail::to_accountant( 'request', $_GET['post'] );
 
 //$print = get_option( 'wp_mail_smtp' );
 

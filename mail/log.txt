@@ -1,0 +1,230 @@
+
+------------- 22:32:16 (25.04.2022) -------------
+Array
+(
+    [0] => Array
+        (
+            [domain] => 127.0.0.3
+            [url] => http://127.0.0.3
+            [sending] => kontakt@127.0.0.3
+            [sending_name] => Testing Environment
+            [accountant] => finnish.ru@gmail.com
+            [accountant_locale] => de_DE
+            [moderator] => finnish.ru@gmail.com
+            [moderator_locale] => de_DE
+            [admin] => finnish.ru@gmail.com
+            [admin_locale] => en_US
+            [client_fake] => finnish.ru@gmail.com
+            [footer] => <a href="http://127.0.0.3" target="blank" rel="noopener noreferrer">127.0.0.3</a>
+            [issmtp] => 1
+            [WPMailSMTP] => 1
+            [debug] => 1
+            [smtpdebug] => 
+        )
+
+    [1] => Array
+        (
+            [subject] => Klinik / Arzt überarbeitet
+            [message] => 
+                <p>Ein Kunde hat seine Informationen im Eintrag überarbeitet. Bitte prüfe die Änderung auf Rechtmäßigkeit und ob diese unseren Regeln entspricht.</p>
+                <br>
+                <h2>Prolong test clinic</h2>
+                <a href="http://127.0.0.3/?p=1079" target="_blank" rel="noopener noreferrer">Anschauen</a>
+                |
+                <a href="http://127.0.0.3/wp-admin/post.php?post=1079&action=edit" target="_blank" rel="noopener noreferrer">Bearbeiten</a>
+            <h3>Difference:</h3><ul><li>
+                    <strong>Der Name des Unternehmens auf den die Rechnung ausgestellt werden soll:</strong><br>
+                    Request test 1 &ndash; <em>Before</em><br>
+                     &ndash; <em>After</em>
+                </li><li>
+                    <strong>Rechnungsadresse:</strong><br>
+                    addr &ndash; <em>Before</em><br>
+                     &ndash; <em>After</em>
+                </li><li>
+                    <strong>Person name:</strong><br>
+                    Someone &ndash; <em>Before</em><br>
+                     &ndash; <em>After</em>
+                </li><li>
+                    <strong>Emailadresse für Rechnung:</strong><br>
+                    client@dd.dd &ndash; <em>Before</em><br>
+                     &ndash; <em>After</em>
+                </li></ul>
+            [footer] => <a href="http://127.0.0.3" target="blank" rel="noopener noreferrer">127.0.0.3</a>
+            [_recipient] => moderator
+            [_topic] => entity_updated
+            [from] => kontakt@127.0.0.3
+            [from_name] => Testing Environment
+            [to] => finnish.ru@gmail.com
+            [to_name] => 
+        )
+
+)
+
+
+
+------------- 22:32:32 (25.04.2022) -------------
+Array
+(
+    [0] => Array
+        (
+            [domain] => 127.0.0.3
+            [url] => http://127.0.0.3
+            [sending] => kontakt@127.0.0.3
+            [sending_name] => Testing Environment
+            [accountant] => finnish.ru@gmail.com
+            [accountant_locale] => de_DE
+            [moderator] => finnish.ru@gmail.com
+            [moderator_locale] => de_DE
+            [admin] => finnish.ru@gmail.com
+            [admin_locale] => en_US
+            [client_fake] => finnish.ru@gmail.com
+            [footer] => <a href="http://127.0.0.3" target="blank" rel="noopener noreferrer">127.0.0.3</a>
+            [issmtp] => 1
+            [WPMailSMTP] => 1
+            [debug] => 1
+            [smtpdebug] => 
+        )
+
+    [1] => Array
+        (
+            [subject] => Klinik / Arzt überarbeitet
+            [message] => 
+                <p>Ein Kunde hat seine Informationen im Eintrag überarbeitet. Bitte prüfe die Änderung auf Rechtmäßigkeit und ob diese unseren Regeln entspricht.</p>
+                <br>
+                <h2>Prolong test clinic</h2>
+                <a href="http://127.0.0.3/?p=1079" target="_blank" rel="noopener noreferrer">Anschauen</a>
+                |
+                <a href="http://127.0.0.3/wp-admin/post.php?post=1079&action=edit" target="_blank" rel="noopener noreferrer">Bearbeiten</a>
+            <h3>Difference:</h3><ul><li>
+                    <strong>Der Name des Unternehmens auf den die Rechnung ausgestellt werden soll:</strong><br>
+                     &ndash; <em>Before</em><br>
+                    Request test 1 &ndash; <em>After</em>
+                </li><li>
+                    <strong>Rechnungsadresse:</strong><br>
+                     &ndash; <em>Before</em><br>
+                    addr &ndash; <em>After</em>
+                </li><li>
+                    <strong>Person name:</strong><br>
+                     &ndash; <em>Before</em><br>
+                    Someone &ndash; <em>After</em>
+                </li><li>
+                    <strong>Emailadresse für Rechnung:</strong><br>
+                     &ndash; <em>Before</em><br>
+                    client@dd.dd &ndash; <em>After</em>
+                </li></ul>
+            [footer] => <a href="http://127.0.0.3" target="blank" rel="noopener noreferrer">127.0.0.3</a>
+            [_recipient] => moderator
+            [_topic] => entity_updated
+            [from] => kontakt@127.0.0.3
+            [from_name] => Testing Environment
+            [to] => finnish.ru@gmail.com
+            [to_name] => 
+        )
+
+)
+
+
+
+------------- 22:33:04 (25.04.2022) -------------
+Array
+(
+    [0] => Array
+        (
+            [domain] => 127.0.0.3
+            [url] => http://127.0.0.3
+            [sending] => kontakt@127.0.0.3
+            [sending_name] => Testing Environment
+            [accountant] => finnish.ru@gmail.com
+            [accountant_locale] => de_DE
+            [moderator] => finnish.ru@gmail.com
+            [moderator_locale] => de_DE
+            [admin] => finnish.ru@gmail.com
+            [admin_locale] => en_US
+            [client_fake] => finnish.ru@gmail.com
+            [footer] => <a href="http://127.0.0.3" target="blank" rel="noopener noreferrer">127.0.0.3</a>
+            [issmtp] => 1
+            [WPMailSMTP] => 1
+            [debug] => 1
+            [smtpdebug] => 
+        )
+
+    [1] => Array
+        (
+            [subject] => Klinik / Arzt überarbeitet
+            [message] => 
+                <p>Ein Kunde hat seine Informationen im Eintrag überarbeitet. Bitte prüfe die Änderung auf Rechtmäßigkeit und ob diese unseren Regeln entspricht.</p>
+                <br>
+                <h2>Prolong test clinic</h2>
+                <a href="http://127.0.0.3/?p=1079" target="_blank" rel="noopener noreferrer">Anschauen</a>
+                |
+                <a href="http://127.0.0.3/wp-admin/post.php?post=1079&action=edit" target="_blank" rel="noopener noreferrer">Bearbeiten</a>
+            <h3>Difference:</h3><ul><li>
+                    <strong>Wählen Sie Ihren Tarif:</strong><br>
+                    kostenloser_eintrag &ndash; <em>Before</em><br>
+                    premiumeintrag &ndash; <em>After</em>
+                </li><li>
+                    <strong>The payment status:</strong><br>
+                     &ndash; <em>Before</em><br>
+                    pending &ndash; <em>After</em>
+                </li></ul>
+            [footer] => <a href="http://127.0.0.3" target="blank" rel="noopener noreferrer">127.0.0.3</a>
+            [_recipient] => moderator
+            [_topic] => entity_updated
+            [from] => kontakt@127.0.0.3
+            [from_name] => Testing Environment
+            [to] => finnish.ru@gmail.com
+            [to_name] => 
+        )
+
+)
+
+
+
+------------- 22:33:04 (25.04.2022) -------------
+Array
+(
+    [0] => Array
+        (
+            [domain] => 127.0.0.3
+            [url] => http://127.0.0.3
+            [sending] => kontakt@127.0.0.3
+            [sending_name] => Testing Environment
+            [accountant] => finnish.ru@gmail.com
+            [accountant_locale] => de_DE
+            [moderator] => finnish.ru@gmail.com
+            [moderator_locale] => de_DE
+            [admin] => finnish.ru@gmail.com
+            [admin_locale] => en_US
+            [client_fake] => finnish.ru@gmail.com
+            [footer] => <a href="http://127.0.0.3" target="blank" rel="noopener noreferrer">127.0.0.3</a>
+            [issmtp] => 1
+            [WPMailSMTP] => 1
+            [debug] => 1
+            [smtpdebug] => 
+        )
+
+    [1] => Array
+        (
+            [subject] => Anfrage kostenpflichtiger Eintrag
+            [message] => 
+                <p>Ein kostenpflichtiger Eintrag wurde gemeldet. Bitte eine Rechnung an den Kunden ausstellen und im WordPress Backend als "In Rechnung gestellt" markieren. Nach Zahlungseingang, den Eintrag auf "Bezahlt" umstellen um den Eintragszeitraum zu starten.</p>
+                <br>
+                <h2>Prolong test clinic</h2>
+                <a href="http://127.0.0.3/?p=1079" target="_blank" rel="noopener noreferrer">Anschauen</a>
+                |
+                <a href="http://127.0.0.3/wp-admin/post.php?post=1079&action=edit" target="_blank" rel="noopener noreferrer">Bearbeiten</a>
+            <br><ul><li>Wählen Sie Ihren Tarif: <strong>Premiumeintrag</strong></li><li>Der Name des Unternehmens auf den die Rechnung ausgestellt werden soll: <strong>Request test 1</strong></li><li>Rechnungsadresse: <strong>addr</strong></li><li>Person name: <strong>Someone</strong></li><li>Emailadresse für Rechnung: <strong>client@dd.dd</strong></li><li>Umsatzsteuernummer VAT ID (optional): <strong>–</strong></li></ul>
+            [footer] => <a href="http://127.0.0.3" target="blank" rel="noopener noreferrer">127.0.0.3</a>
+            [_recipient] => accountant
+            [_topic] => request
+            [from] => kontakt@127.0.0.3
+            [from_name] => Testing Environment
+            [to] => finnish.ru@gmail.com
+            [reply_to] => client@dd.dd
+            [reply_to_name] => Someone
+            [preheader] => For Prolong test clinic; From Request test 1, Someone.
+        )
+
+)
+
+
