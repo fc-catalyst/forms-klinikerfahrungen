@@ -40,6 +40,7 @@ class FCP_FormsTariffMail {
 //*/
                 'WPMailSMTP' => true, // override settings with WP Mail SMTP
                 'debug' => false,
+                'smtpdebug' => false,
             ];
 
             if ( self::$details['issmtp'] && self::$details['WPMailSMTP'] && $smtp_override = self::WPMailSMTP() ) {
@@ -324,6 +325,8 @@ class FCP_FormsTariffMail {
             'subject' => $subject,
             'message' => $message,
             'footer' => $footer,
+            '_recipient' => $recipient,
+            '_topic' => $topic,
         ];
     }
     
@@ -488,8 +491,7 @@ class FCP_FormsTariffMail {
 
         // a small debug
         if ( self::$details['debug'] ) {
-            self::send_to_print( self::$details );
-            self::send_to_print( $m );
+            return fct1_log( [ self::$details, $m ], __DIR__ );
         }
         
         // SMTP
@@ -540,44 +542,13 @@ class FCP_FormsTariffMail {
                 $details['sending_name'] = $smtp['mail']['from_name'];
             }
 
-            if ( self::$details['debug'] ) {
+            if ( self::$details['smtpdebug'] ) {
                 $details['smtp']['SMTPDebug'] = true;
             }
 
             return $details;
         }
 
-    }
-
-    private static function send_to_print($m) { // a sort of debugging function
-        if ( !current_user_can( 'administrator' ) ) { return false; }
-
-        if ( !empty( $_POST ) ) {
-            echo '<pre>';
-            print_r( $m );
-            echo '</pre>';
-            //exit;
-        }
-
-        add_action( 'wp_footer', function() use ( $m ) {
-            FCP_FormsTariffMail::console_log( $m );
-        });
-        add_action( 'admin_footer', function() use ( $m ) {
-            FCP_FormsTariffMail::console_log( $m );
-        });
-        
-        return true;
-    }
-    
-    public static function console_log($m) {
-    ?>
-        <pre id="print_to_console" style="display:none">
-        <?php print_r( $m ) ?>
-        </pre>
-        <script>
-            console.log( jQuery( '#print_to_console' ).html() );
-        </script>
-    <?php
     }
 
 }
