@@ -17,25 +17,40 @@ if ( !$uploads->upload([
 
 $_POST = $_POST + $uploads->format_for_storing();
 
-if ( current_user_can( 'administrator' ) ) { return; } // admin doesn't have to notify a moderator
+
+// custom workhours validation - can only have pairs open-close
+$schedule_fields = [
+    'entity-mo',
+    'entity-tu',
+    'entity-we',
+    'entity-th',
+    'entity-fr',
+    'entity-sa',
+    'entity-su',
+];
+foreach ( $schedule_fields as $v ) {
+    if ( $_POST[ $v.'-open' ][0] && !$_POST[ $v.'-close' ][0] || $_POST[ $v.'-open' ][1] && !$_POST[ $v.'-close' ][1] ) {
+        $warns->add_result( $v.'-close', __( 'Please add the closing time', 'fcpfo-ea' ) );
+    }
+    if ( !$_POST[ $v.'-open' ][0] && $_POST[ $v.'-close' ][0] || !$_POST[ $v.'-open' ][1] && $_POST[ $v.'-close' ][1] ) {
+        $warns->add_result( $v.'-open', __( 'Please add the opening time', 'fcpfo-ea' ) );
+    }
+}
+
+
+if ( current_user_can( 'administrator' ) ) { return; } // admins don't have to notify a moderator
 
 require_once __DIR__ . '/../../mail/mail.php';
 
 // notify the moderator about the new entity posted for review
+
 /*
-// ++better use the transition hooks
-    add_action( 'draft_to_pending', 'notify_me_for_pending' );
-    add_action( 'auto-draft_to_pending', 'notify_me_for_pending' );
-    add_action( 'transition_post_status', 'my_post_new' );
-//    https://wordpress.stackexchange.com/questions/111863/custom-function-for-submit-for-review-hook
-    ++!!change to pending only if all fields are valid!!!
-//*/
 if ( count( $warns->result ) < 4 && $post->post_status === 'pending' ) { // ++a temporary measure for the aboves
     
     FCP_FormsTariffMail::to_moderator( 'entity_added', $postID );
     return;
 }
-
+//*/
 // notify the moderator about the changes
 FCP_FormsTariffMail::get_data( $postID ); // cache the meta data before saving
 add_action( 'save_post', function() use ( $postID ) {

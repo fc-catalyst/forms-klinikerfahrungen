@@ -18,12 +18,8 @@ if ( !get_userdata( wp_get_current_user()->ID )->allcaps['edit_entities'] ) {
 if ( !$uploads->upload_tmp() ) {
     return;
 }
-/*
-echo '<pre>';
-print_r( $_POST );
-echo '</pre>';
-exit;
-//*/
+
+
 // custom workhours validation - can only have pairs open-close
 $schedule_fields = [
     'entity-mo',

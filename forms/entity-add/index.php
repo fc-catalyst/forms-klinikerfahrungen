@@ -281,3 +281,10 @@ add_action( 'rest_api_init', function () { // it is in entity-add to easier incl
     register_rest_route( 'fcp-forms/v1', '/entities_around/(?P<lat>\d{1,3}\.?\d*)/(?P<lng>\d{1,3}\.?\d*)/(?P<spc>.+)', $args );
     // ++add var with no specialty
 });
+
+// notify the moderator about the new entity posted for review
+add_action( 'transition_post_status', function($new_status, $old_status, $post) {
+    if ( !in_array( $post->post_type, ['clinic', 'doctor'] ) ) { return; }
+    if ( $new_status !== 'pending' || !in_array( $old_status, ['new', 'draft', 'auto-draft'] ) ) { return; }
+    FCP_FormsTariffMail::to_moderator( 'entity_added', $post->ID );
+}, 10, 3 );
