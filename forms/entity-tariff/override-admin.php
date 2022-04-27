@@ -199,7 +199,7 @@ if ( !$admin_am ) {
         if ( $status_message ) {
             FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-payment-status', [
                 'type' => 'notice',
-                'text' => $status_message,
+                'text' => '<div>'.$status_message.'</div>',
                 'meta_box' => true,
             ], 'override' );
             unset( $status_message );
@@ -237,7 +237,7 @@ if ( !$admin_am ) {
         if ( $status_message ) {
             FCP_Forms::json_field_by_sibling( $this->s->fields, 'entity-payment-status-next', [
                 'type' => 'notice',
-                'text' => $status_message,
+                'text' => '<div>'.$status_message.'</div>',
                 'meta_box' => true,
             ], 'override' );
             unset( $status_message );

@@ -16,13 +16,13 @@ class FCP_FormsMail {
                 'sending_name' => get_bloginfo( 'name' ),
 
                 // ++add dynamic loading by role
-                'accountant' => 'finnish.ru@gmail.com', // 'rechnungen@klinikerfahrungen.de',
+                'accountant' => 'rechnungen@klinikerfahrungen.de',
                 'accountant_locale' => 'de_DE',
-                'moderator' => 'finnish.ru@gmail.com', // 'kontakt@klinikerfahrungen.de'
+                'moderator' => 'kontakt@klinikerfahrungen.de',
                 'moderator_locale' => 'de_DE',
-                'admin' => 'finnish.ru@gmail.com', // technical purposes
+                'admin' => 'vadim.volkov@firmcatalyst.com', // technical purposes
                 'admin_locale' => 'en_US',
-                'client_fake' => 'finnish.ru@gmail.com', // for testing purposes
+                'client_fake' => 'vadim.volkov@firmcatalyst.com', // for testing purposes
 
                 'footer' => '<a href="'.$url.'" target="blank" rel="noopener noreferrer">'.$_SERVER['SERVER_NAME'].'</a>',
 
@@ -39,7 +39,8 @@ class FCP_FormsMail {
                 ],
 //*/
                 'WPMailSMTP' => true, // override settings with WP Mail SMTP
-                'debug' => true,
+
+                'debug' => false,
                 'smtpdebug' => false,
             ];
 
@@ -114,7 +115,7 @@ class FCP_FormsMail {
                 'A new clinic or doctor has just been added. Please check it and publish, if it is valid.',
                 []
             ],
-            'entity_updated' => [
+            'entity_updated' => [ // works
                 'Clinic / doctor changed',
                 'A client has changed some information in an entry. Please check if it is still valid.',
             ],
@@ -278,8 +279,11 @@ class FCP_FormsMail {
         }
 //*/
 
-        //self::get_structures( 'entity-add' ); // list the exact fields to compare (basically, only the content)++
+        //++ I should improve to $compare = self::get_structures( 'entity-add' ); so here is a crutch of manual list of fields for comparison
+        $compare = ['entity-name', 'entity-phone', 'entity-featured', 'entity-email', 'entity-website', 'entity-address', 'entity-map', 'entity-specialty', 'entity-working-hours', 'entity-avatar', 'entity-photo', 'entity-video', 'entity-tags', 'entity-tariff', 'entity-content', 'entity-mo-open', 'entity-mo-close', 'entity-tu-open', 'entity-tu-close', 'entity-we-open', 'entity-we-close', 'entity-th-open', 'entity-th-close', 'entity-fr-open', 'entity-fr-close', 'entity-sa-open', 'entity-sa-close', 'entity-su-open', 'entity-su-close'];
+
         foreach ( $structures['titles'] as $k => $v ) {
+            if ( !in_array( $k, $compare ) ) { continue; }
             if ( $data[ $id ]['meta'][ $k ] === $data[ $id ]['cached']['meta'][ $k ] ) { continue; }
             $difference[ $k ] = [
                 'title' => $v,

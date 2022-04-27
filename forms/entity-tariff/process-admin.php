@@ -100,7 +100,7 @@ if ( $prolong_allowed ) {
     // notify the accountant to bill the prolonging
     if ( !$admin_am && $tariff_next_change && $_POST['entity-tariff-next'] !== $tariff_default ) {
         $prolong_tariff = $_POST['entity-tariff-next'] === $values['entity-tariff']; // else - change
-        add_action( 'save_post', function() use ( $postID, $prolong_tariff ) {
+        add_action( 'save_post', function() use ( $postID, $prolong_tariff ) { // ++only if published??
             FCP_FormsMail::to_accountant( $prolong_tariff ? 'prolong' : 'change', $postID );
         }, 20 );
     }
