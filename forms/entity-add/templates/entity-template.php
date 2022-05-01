@@ -74,7 +74,13 @@ if ( have_posts() ) :
 <?php
 if ( get_the_author_meta( 'ID' ) === get_current_user_id() ) {
 ?>
-<div class="notice"><?php _e( 'Thank you for adding the entry. It will become visible to other visitors as soon as passes the moderation.', 'fcpfo-ea' ) ?></div>
+<div class="notice"><?php
+    if ( fcp_tariff_get()->paid ) {
+        _e( 'Thank you for adding the entry. We will bill you shortly. Your entry will become visible to other visitors as soon as the bill is payed, and the content passes the moderation.', 'fcpfo-ea' );
+    } else {
+        _e( 'Thank you for adding the entry. It will become visible to other visitors as soon as passes the moderation.', 'fcpfo-ea' );
+    }
+?></div>
 <?php
 }
 ?>
