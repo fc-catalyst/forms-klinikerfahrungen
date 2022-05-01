@@ -22,7 +22,6 @@ class FCP_FormsMail {
                 'moderator_locale' => 'de_DE',
                 'admin' => 'vadim.volkov@firmcatalyst.com', // technical purposes
                 'admin_locale' => 'en_US',
-                'client_fake' => 'vadim.volkov@firmcatalyst.com', // for testing purposes
 
                 'footer' => '<a href="'.$url.'" target="blank" rel="noopener noreferrer">'.$_SERVER['SERVER_NAME'].'</a>',
 
@@ -84,11 +83,6 @@ class FCP_FormsMail {
         ],
 
         'client' => [
-            'published' => [ // ++published and waiting for activation??
-                'Your entry is published',
-                'Your entry has just been published.',
-                ['entity-tariff'],
-            ],
             'activated' => [ // payed
                 'New tariff is activated',
                 'Your new tariff is activated.',
@@ -109,6 +103,15 @@ class FCP_FormsMail {
                 'Your tariff has just ended. Free Tariff is activated.',
             ],
         ],
+
+        'user' => [
+            'published' => [
+                'Your entry is published',
+                'Your entry has just been published.',
+                ['entity-tariff'],
+            ],
+        ],
+        
         'moderator' => [
             'entity_added' => [ // submitted for review // works
                 'Clinic / doctor added',
@@ -156,15 +159,19 @@ class FCP_FormsMail {
 
         global $wpdb;
         
-        // select titles
+        // select titles & authors
         $r = $wpdb->get_results( '
-            SELECT `ID`, `post_title`
+            SELECT `ID`, `post_author`, `post_title`
             FROM `'.$wpdb->posts.'`
             WHERE `ID` IN (' . implode( ',', $ids ) . ')
         ');
         $titles = [];
-        foreach ( $r as $k => $v ) { $titles[ $v->ID ] = $v->post_title; }
-
+        $author_ids = [0];
+        foreach ( $r as $k => $v ) {
+            $titles[ $v->ID ] = $v->post_title;
+            $author_ids[ $v->ID ] = $v->post_author;
+        }
+        
         // select meta
         $r = $wpdb->get_results( '
             SELECT `post_id`, `meta_key`, `meta_value`
@@ -191,6 +198,17 @@ class FCP_FormsMail {
             $billings[ $v->post_id ][ $v->meta_key ] = $v->meta_value;
         }
 
+        // select authors
+        $r = $wpdb->get_results( '
+            SELECT `ID`, `user_email`, `display_name`
+            FROM `'.$wpdb->users.'`
+            WHERE `ID` IN (' . implode( ',', $author_ids ) . ')
+        ');
+        $authors = [];
+        foreach ( $r as $k => $v ) {
+            $authors[ $v->ID ] = [ $v->user_email, $v->display_name ];
+        }
+
         // combine && save the results
         foreach ( $titles as $k => $v ) {
             if ( $cache && $combined[ $k ] ) { // for comparison puprose: current goes to ['cached'], new replaces
@@ -201,7 +219,8 @@ class FCP_FormsMail {
                 $metas[ $k ],
                 isset( $billings[ $metas[ $k ]['entity-billing'] ] ) ? $billings[ $metas[ $k ]['entity-billing'] ] : []
             );
-            // metas have unique names, so who cares, that they are along with the initial metas
+            // metas have unique names, so who cares, that billings are along with the original metas
+            $combined[ $k ]['author'] = $authors[ $author_ids[ $k ] ];
         }
 
         return $filter_result( $combined );
@@ -375,13 +394,34 @@ class FCP_FormsMail {
         $message['from'] = $details['sending'];
         $message['from_name'] = $details['sending_name'];
 
-        $meta = self::get_data( $id )[$id]['meta'];
+        $meta = self::get_data( $id )[ $id ]['meta'];
         if ( !$meta['billing-email'] ) { return; }
 
-        $message['to'] = $details['client_fake'];// $meta['billing-email'];
-        if ( $meta['billing-name'] ) { $message['to_name'] = $meta['billing-name']; }
+        $message['to'] = $meta['billing-email'];
+        $message['to_name'] = $meta['billing-name'] ? $meta['billing-name'] : '';
 
         $message['reply_to'] = $details['accountant'];
+
+        return self::send( $message );
+    }
+    
+    public static function to_user($topic, $id) { // it is best to run get_data first, if multiple ids
+
+        $message = self::message_content( 'user', $topic, $id );
+        if ( !$message ) { return; }
+
+        $details = self::details();
+
+        $message['from'] = $details['sending'];
+        $message['from_name'] = $details['sending_name'];
+        
+        // ++use the correct locale from user meta
+        
+        $author = self::get_data( $id )[ $id ]['author'];
+        $message['to'] = $author[0];
+        $message['to_name'] = $author[1] ? $author[1] : '';
+
+        $message['reply_to'] = $details['moderator'];
 
         return self::send( $message );
     }

@@ -289,3 +289,11 @@ add_action( 'transition_post_status', function($new_status, $old_status, $post) 
     require_once __DIR__ . '/../../mail/mail.php';
     FCP_FormsMail::to_moderator( 'entity_added', $post->ID );
 }, 10, 3 );
+
+// notify the client, that the new entity was published
+add_action( 'transition_post_status', function($new_status, $old_status, $post) {
+    if ( !in_array( $post->post_type, ['clinic', 'doctor'] ) ) { return; }
+    if ( $old_status === 'publish' || $new_status !== 'publish' ) { return; }
+    require_once __DIR__ . '/../../mail/mail.php';
+    FCP_FormsMail::to_user( 'published', $post->ID );
+}, 10, 3 );
