@@ -72,7 +72,7 @@ if ( have_posts() ) :
 
 <div style="height:35px" aria-hidden="true" class="wp-block-spacer"></div>
 <?php
-if ( get_the_author_meta( 'ID' ) === get_current_user_id() ) {
+if ( get_post_status() !== 'publish' && get_the_author_meta( 'ID' ) === get_current_user_id() ) {
 ?>
 <div class="notice"><?php
     if ( fcp_tariff_get()->paid ) {
