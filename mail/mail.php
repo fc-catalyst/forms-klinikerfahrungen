@@ -16,9 +16,9 @@ class FCP_FormsMail {
                 'sending_name' => get_bloginfo( 'name' ),
 
                 // ++add dynamic loading by role
-                'accountant' => 'rechnungen@klinikerfahrungen.de',
+                'accountant' => 'buchhaltung@firmcatalyst.com',
                 'accountant_locale' => 'de_DE',
-                'moderator' => 'kontakt@klinikerfahrungen.de',
+                'moderator' => 'anne-kathrin.mueller@firmcatalyst.com',//'kontakt@klinikerfahrungen.de',
                 'moderator_locale' => 'de_DE',
                 'admin' => 'vadim.volkov@firmcatalyst.com', // technical purposes
                 'admin_locale' => 'en_US',
