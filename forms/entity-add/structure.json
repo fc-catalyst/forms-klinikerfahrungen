@@ -230,12 +230,13 @@
                 {
                     "type" : "textarea",
                     "title" : "Beschreiben Sie Ihr Unternehmen",
-                    "subtitle" : "(mindestens 300 Wörter)",
+                    "subtitle" : "(mindestens 300 Buchstaben, maximal <span id=\"entity-content-words-limit\">450</span> Wörter)",
                     "name" : "entity-content",
                     "rows" : 8,
                     "validate" : {
                         "minLetters" : 300
                     },
+                    "_comment" : "maximum words is not an input filter, but the printing one",
                     "meta_box" : true,
                     "tinymce" : true
                 }

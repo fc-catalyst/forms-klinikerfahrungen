@@ -149,17 +149,23 @@ function fcp_tariff_filter_text($text) {
     $tariff_running = fcp_tariff_get()->running;
     switch ( $tariff_running ) {
         case 'standardeintrag':
-            return fct1_a_clear_all( $text, 0 );
+            $text = fct1_a_clear_all( $text, 0 );
+            $text = fct1_html_words_limit( $text, 850 );
+            break;
         case 'premiumeintrag':
-            return fct1_a_clear_all( $text, 0, [
+            $text = fct1_a_clear_all( $text, 0, [
                 'rel' => [
                     'internal' => '--remove',
                     'external' => 'noopener',
                 ]
             ]);
-        default:
-            return fct1_a_clear_all( $text, 0 );
+            $text = fct1_html_words_limit( $text, 850 );
+            break;
+        default: // 'kostenloser_eintrag'
+            $text = fct1_a_clear_all( $text, 0 );
+            $text = fct1_html_words_limit( $text, 450 );
     }
+    return $text;
 }
 
 function fcp_tariff_get() {

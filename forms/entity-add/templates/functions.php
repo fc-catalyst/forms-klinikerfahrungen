@@ -197,7 +197,8 @@ function entity_print_gallery() {
 
 function entity_content_filter($text) {
     if ( !$text ) { return ''; }
-    return apply_filters( 'the_content', fcp_tariff_filter_text( $text ) );
+    return fcp_tariff_filter_text( apply_filters( 'the_content', $text ) );
+    //return apply_filters( 'the_content', $text );
 }
 
 function entity_print_tags() {

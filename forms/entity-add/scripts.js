@@ -338,3 +338,19 @@ fcLoadScriptVariable(
     },
     ['jQuery'],
 );
+
+// change the max words limit label
+fcLoadScriptVariable(
+    '',
+    'jQuery',
+    function() {
+        const $ = jQuery;
+        $( '#entity-tariff_entity-add input' ).on( 'change', function() {
+            const tariffs = {
+                'premiumeintrag' : 850,
+                'kostenloser_eintrag' : 450
+            };
+            $( '#entity-content-words-limit' ).text( tariffs[ $( this ).val() ] );
+        });
+    }
+);

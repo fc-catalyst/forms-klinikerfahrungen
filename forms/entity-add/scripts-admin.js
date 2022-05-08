@@ -278,3 +278,17 @@ fcLoadScriptVariable(
         $( '#entity-working-hours h3' ).append( $lunch );
     }
 );
+
+// change the max words limit label
+fcLoadScriptVariable(
+    '',
+    'jQuery',
+    function() {
+        const $ = jQuery;
+        const tariffs = {
+            'premiumeintrag' : 850,
+            'kostenloser_eintrag' : 450
+        };
+        $( '#entity-content-words-limit' ).text( tariffs[ $( '#entity-tariff_entity-tariff' ).val() ] );
+    }
+);
