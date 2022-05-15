@@ -1,6 +1,7 @@
 {
     "options" : {
         "method" : "post",
+        "autocomplete" : "off",
         "print_method" : "server",
         "json_validate" : 1,
         "required_mark" : "*",
@@ -24,7 +25,8 @@
                             "validate" : {
                                 "notEmpty" : true,
                                 "email" : true
-                            }
+                            },
+                            "autocomplete" : "nope1"
                         }
                     ]
                 },
@@ -39,7 +41,8 @@
                             "validate" : {
                                 "notEmpty" : true,
                                 "password" : true
-                            }
+                            },
+                            "autocomplete" : "nope2"
                         },
                         {
                             "type" : "password",
