@@ -7,13 +7,32 @@ use fcpf\eat as eat;
 
 get_header();
 
+
+$the_query = new \WP_Query( [
+    'post_type'        => 'fct-section',
+    'name'        => 'entities-hero'
+]);
+
+if ( $the_query->have_posts() ) {
+    ?><style>body::before{content:none}</style><?php
+    while ( $the_query->have_posts() ) {
+        $the_query->the_post();
+?>		
+        <div class="entry-content">
+            <?php the_content() ?>
+        </div>
+<?php
+    }
+    wp_reset_postdata();
+}
+
+
 $args = [
     'post_type'        => ['clinic', 'doctor'],
     'orderby'          => 'date',
     'order'            => 'DESC',
     'posts_per_page'   => '12',
     'paged'            => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
-    'post_status'      => ['publish', 'private'],
 ];
 
 $args['meta_query'] = archive_filters();
@@ -22,15 +41,16 @@ $wp_query = new \WP_Query( $args );
 
 
 ?>
-    <div class="wrap-width">
-    <?php //the_archive_title( '<h1>', '</h1>' ) ?>
-    <h1><?php _e( 'Clinics and Doctors', 'fcpfo-ea' ) ?></h1>
-    
-    <?php search_stats( '<p style="margin-top:-25px;opacity:0.45">', '.</p>' ) ?>
+    <div class="entry-content">
+        <div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+        <?php search_stats( '<p style="margin-top:-25px;opacity:0.45">', '.</p>' ) ?>
+        <?php echo do_shortcode('[fcp-form dir="entity-search" notcontent]') ?>
+        <div style="height:1px" aria-hidden="true" class="wp-block-spacer"></div>
+    </div>
 
-    <?php echo do_shortcode('[fcp-form dir="entity-search" notcontent]') ?>
-    
+    <div class="wrap-width">
 <?php
+
 
 if ( $wp_query->have_posts() ) {
     while ( $wp_query->have_posts() ) {
@@ -40,7 +60,7 @@ if ( $wp_query->have_posts() ) {
         
     }
     get_template_part( 'template-parts/pagination' );
-    ?></div><!-- /wrap-width --><?php
+    ?></div><?php
 } else {
     search_stats( '<h2 id="nothing-found-headline">', '</h2>' );
     // delay the dramatic headline appearance as more results still can appear ++can do better ++can add loader

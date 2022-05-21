@@ -9,7 +9,6 @@
     "fields" : [
         {
             "type" : "text",
-            "title" : "z.B. Chirurgie, Hausarzt",
             "placeholder" : "z.B. Chirurgie, Hausarzt",
             "name" : "specialty",
             "validate" : {
@@ -17,7 +16,6 @@
         },
         {
             "type" : "text",
-            "title" : "Postleitzahl oder Stadt",
             "placeholder" : "Postleitzahl oder Stadt",
             "name" : "place",
             "validate" : {

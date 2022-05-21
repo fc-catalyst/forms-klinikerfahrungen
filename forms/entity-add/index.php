@@ -19,6 +19,7 @@ new FCPAddPostType( [
     'type' => 'clinic',
     'slug' => 'kliniken',
     'plural' => 'Clinics',
+    'archives' => 'Clinics and Doctors',
     'description' => 'The list of clinics, registered by you',
     'fields' => ['title', 'comments', 'author'],
     'hierarchical' => false,
