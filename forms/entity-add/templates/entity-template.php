@@ -29,27 +29,32 @@ if ( have_posts() ) :
 
 <!-- gutenberg copy start -->
 
-<div class="wp-block-columns alignwide are-vertically-aligned-center fct1-entity-hero">
+<header class="wp-block-columns alignwide are-vertically-aligned-center fct1-hero">
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:66.66%">
-        <div class="fct1-entity-badges">
-            <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'verified.png' ?>" alt="<?php _e( 'Verified', 'fcpfo-ea' ) ?>" title="<?php _e( 'Verified', 'fcpfo-ea' ) ?>" />
+
+        <div class="entry-badges">
+            <div class="entry-verified" title="<?php _e( 'Verified', 'fcpfo-ea' ) ?>"></div>
             <?php if ( fct1_meta( 'entity-featured' ) ) { ?>
-                <img loading="lazy" width="46" height="76" src="<?php echo $imgs_dir . 'featured.png' ?>" alt="<?php _e( 'Featured', 'fcpfo-ea' ) ?>" title="<?php _e( 'Featured', 'fcpfo-ea' ) ?>" />
+            <div class="entry-featured" title="<?php _e( 'Featured', 'fcpfo-ea' ) ?>"></div>
             <?php } ?>
         </div>
+
         <h1 itemprop="name"><?php the_title() ?></h1>
-        <p><a href="<?php echo $link_to_search ?>"><?php
+
+        <div class="entry-about"><a href="<?php echo $link_to_search ?>"><?php
                 echo fct1_meta( 'entity-specialty', '<span itemprop="medicalSpecialty">', '</span>' );
                 echo $place ? ' <span>in '.$place.' </span>' : '';
-        ?></a></p>
+        ?></a></div>
         
         <?php if ( method_exists( 'FCP_Comment_Rate', 'print_rating_summary_short' ) ) { ?>
+        <div class="entry-rating">
             <?php \FCP_Comment_Rate::print_rating_summary_short() ?>
+        </div>
         <?php } ?>
         
         <?php if ( comments_open() || wp_count_comments( get_the_ID() )->approved ) { ?>
-        <div class="wp-block-buttons">
+        <div class="wp-block-buttons entry-rate">
             <div class="wp-block-button is-style-outline">
                 <a class="wp-block-button__link has-white-color has-text-color" href="#bewertungen">
                     <?php _e( wp_count_comments( get_the_ID() )->approved ? 'Reviews' : 'Review and Rate', 'fcpcr' ) ?>
@@ -57,17 +62,30 @@ if ( have_posts() ) :
             </div>
         </div>
         <?php } ?>
+        
+        <?php
+        if ( function_exists( 'yoast_breadcrumb' ) ) {
+            yoast_breadcrumb( '<div class="yoast-breadcrumbs">', '</div>' );
+        }
+        ?>
+
     </div>
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:33.33%">
         <?php if ( $logo = fct1_meta( 'entity-avatar' )[0] ) { ?>
-        <div class="fct1-entity-photo">
+        <div class="entry-avatar">
             <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $logo, [600,600], 0, get_the_title() . ' ' . __( 'Logo', 'fcpfo-ea' ), $doctor ? 'photo' : 'logo' ) ?>
         </div>
         <?php } ?>
     </div>
 
-</div>
+    <?php if ( $background = fct1_meta( 'entity-background' )[0] ) { ?>
+    <div class="entry-background">
+        <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $background, [1400, 600], 1 ) ?>
+    </div>
+    <?php } ?>
+
+</header>
 
 
 <div style="height:35px" aria-hidden="true" class="wp-block-spacer"></div>
@@ -113,20 +131,6 @@ if ( get_post_status() !== 'publish' && get_the_author_meta( 'ID' ) === get_curr
 
         </div>
     </div>
-<?php
-
-        if ( $back_img = fct1_meta( 'entity-photo' )[0] ) { // ++to image && itemprop
-            $back_img = fct1_image_src( 'entity/' . get_the_ID() . '/' . $back_img, [1440,1440], ['center','top'] );
-            ?>
-            <style>
-                .post-<?php the_ID() ?> .fct1-entity-hero {
-                    --entity-bg:url( '<?php echo $back_img[0] ?>' );
-                }
-            </style>
-            <meta itemprop="image" content="<?php echo $back_img[0] ?>">
-            <?php
-        }
-?>
 </article>
 
 <?php echo current_user_can( 'edit_post' ) ? edit_post_link() : '' ?>

@@ -117,6 +117,13 @@
     width:100%;
     margin-bottom:12px;
 }
+.fcp-form-field-w > input[type=file] ~ fieldset { /* hotfix */
+    margin-top:-14px;
+}
+.fcp-form-field-w > input[type=file],
+.fcp-form-field-w > input[type=file] ~ fieldset { /* hotfix */
+    margin-bottom:24px;
+}
 
 .fcp-form-field-warn {
     margin:0;

@@ -13,7 +13,7 @@ function print_video() {
     if ( in_array( $format , $video_formats ) ) {
 
         ?>
-        <div class="fct1-video">
+        <div class="entity-video">
             <video width="600" controls>
                 <source src="<?php echo $url ?>" type="video/<?php echo $format ?>">
                 <?php _e( 'Your browser does not support HTML video.', 'fcpfo-ea' ) ?>
@@ -30,7 +30,7 @@ function print_video() {
         '/^https?\:\/\/(?:www\.)?youtu(?:.)+[=\/]{1}([\w_\-]{11})(?:[^\w_\-].+)*$/i', $url, $match
     ) ) {
         ?>
-        <div class="fct1-video">
+        <div class="entity-video">
             <iframe src="https://www.youtube.com/embed/<?php echo $match[1] ?>?feature=oembed&autoplay=0" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" width="600" height="312" class="youtube"></iframe>
         </div>
         <?php
@@ -42,14 +42,31 @@ function print_video() {
 
 function print_gmap() {
     
+    // address (required)
     $addr = fct1_meta( 'entity-address' );
-    $lat  = fct1_meta( 'entity-geo-lat' );
-    $long = fct1_meta( 'entity-geo-long' );
-    $zoom = fct1_meta( 'entity-zoom' );
-
     ?>
     <?php echo $addr ? '<meta itemprop="address" content="'.$addr.'">' : '' ?>
-    <div class="fct1-gmap-view" itemprop="geo" itemscope itemtype="https://schema.org/GeoCoordinates"
+    <?php
+    
+    // contact point (phone is required)
+    ?>
+    <div itemprop="contactPoint" itemscope itemtype="https://schema.org/ContactPoint">
+        <meta itemprop="contactType" content="customer service">
+        <meta itemprop="telephone" content="<?php echo fct1_meta( 'entity-phone' ) ?>">
+    </div>
+    <?php
+    
+    // google maps print (required, but has legacy)
+    list( $lat, $long, $zoom ) = [
+        fct1_meta( 'entity-geo-lat' ),
+        fct1_meta( 'entity-geo-long' ),
+        fct1_meta( 'entity-zoom' )
+    ];
+
+    if ( !$lat ) return;
+    
+    ?>
+    <div class="entity-map fct1-gmap-view" itemprop="geo" itemscope itemtype="https://schema.org/GeoCoordinates"
         <?php echo $addr ? 'data-addr="'.$addr.'"' : '' ?>
         <?php echo $lat ? 'data-lat="'.$lat.'"' : '' ?>
         <?php echo $long ? 'data-lng="'.$long.'"' : '' ?>
@@ -60,29 +77,28 @@ function print_gmap() {
         <?php echo $long ? '<meta itemprop="longitude" content="'.$long.'">' : '' ?>
     </div>
     <?php
-    
-    // schema part
-    ?>
-    <div itemprop="contactPoint" itemscope itemtype="https://schema.org/ContactPoint">
-        <meta itemprop="contactType" content="customer service">
-        <meta itemprop="telephone" content="<?php echo fct1_meta( 'entity-phone' ) ?>">
-    </div>
-    <?php
 }
 
 function print_contact_buttons() {
+    ?>
+    <div class="fct1-group">
+    <?php
     print_contact_button( 'entity-phone', fct1_meta( 'entity-phone' ), 'telephone' );
     print_contact_button( 'entity-email', __( 'E-mail', 'fcpfo-ea' ) );
     print_contact_button( 'entity-website', __( 'Website', 'fcpfo-ea' ), 'url' );
+    ?>
+    </div>
+    <?php
 }
 
 function print_contact_button($meta_name, $name, $itemprop = '') {
     $meta_value = fct1_meta( $meta_name );
     if ( !$meta_value ) { return; }
 
-    if ( strpos( $meta_name, 'phone' ) !== false ) { $prefix = 'tel:'; }
-    if ( strpos( $meta_name, 'mail' ) !== false ) { $prefix = 'mailto:'; }
+    if ( strpos( $meta_name, 'phone' ) !== false ) { $prefix = 'tel:'; $img = 'phone'; }
+    if ( strpos( $meta_name, 'mail' ) !== false ) { $prefix = 'mailto:'; $img = 'mail'; }
     if ( strpos( $meta_name, 'website' ) !== false ) {
+        $img = 'website';
         $attrs = ' target="_blank"';
 
         $tariff_running = fcp_tariff_get()->running;
@@ -97,17 +113,17 @@ function print_contact_button($meta_name, $name, $itemprop = '') {
                 $attrs .= ' rel="nofollow noopener noreferrer"';
         }
     }
-
+//++ fix the imgs url again
     ?>
-        <div class="wp-block-button is-style-outline">
-            <a class="wp-block-button__link has-text-color" href="<?php echo $prefix ?><?php echo $meta_value ?>" style="color:var(--h-color)"<?php echo $attrs ?>>
-                <strong<?php echo $itemprop ? ' itemprop="'.$itemprop.'" content="'.$meta_value.'" ' : '' ?>><?php echo $name ?></strong>
-            </a>
+        <div class="fct1-tile-one">
+            <a href="<?php echo $prefix ?><?php echo $meta_value ?>"<?php echo $attrs ?>></a>
+            <img src="/wp-content/plugins/fcp-forms/forms/entity-add/templates/imgs/<?php echo $img ?>.svg" class="attachment-full size-full" alt="" loading="lazy">
+            <p<?php echo $itemprop ? ' itemprop="'.$itemprop.'" content="'.$meta_value.'" ' : '' ?>><?php echo $name ?></p>
         </div>
     <?php
 }
 
-function entity_print_schedule($toggle_in = false) {
+function entity_print_workhours($toggle_in = false) {
 
     $fields = [
         'entity-mo' => 'Monday', // -open, -close, translation goes lower
@@ -144,12 +160,9 @@ function entity_print_schedule($toggle_in = false) {
     if ( empty( $schema ) ) { return; }
     
     ?>
-    <div class="wp-block-button is-style-outline fct1-button-select fct1-open-next<?php echo $toggle_in ? ' fct1-active' : '' ?>">
-        <a class="wp-block-button__link has-text-color" href="#" style="color:var(--h-color)">
-            <strong><?php _e( 'Working hours', 'fcpfo-ea' ) ?></strong>
-        </a>
-    </div>
-    <dl class="fct1-schedule-list">
+<div class="entity-workhours">
+    <a href="#" class="fct1-open-next<?php echo $toggle_in ? ' active' : '' ?>"><?php _e( 'Working hours', 'fcpfo-ea' ) ?></a>
+    <dl>
     <?php
     
     foreach ( $values as $k => $v ) {
@@ -172,6 +185,7 @@ function entity_print_schedule($toggle_in = false) {
     
     ?>
     </dl>
+</div>
     <?php
 }
 
@@ -181,8 +195,6 @@ function entity_print_gallery() {
     if ( empty( $gallery ) ) { return; }
 
 ?>
-    <h2 class="with-line"><?php _e( 'Gallery', 'fcpfo' ) ?></h2>
-
     <div id="entity-gallery">
         <?php foreach ( $gallery as $v ) { ?>
             <figure class="wp-block-image">
@@ -204,6 +216,16 @@ function entity_content_filter($text) {
 function entity_print_tags() {
     echo fct1_meta( 'entity-tags', '<h2>'.__( 'Our range of treatments', 'fcpfo-ea' ).'</h2><p>', '</p>' );
     // Unser Behandlungsspektrum
+}
+
+function entity_photo_print() {
+    //<meta itemprop="image" content="<?php echo $back_img[0]
+    $img = fct1_meta( 'entity-photo' );
+    if ( !$img || !$img[0] ) { return; }
+    $img = fct1_image_src( 'entity/' . get_the_ID() . '/' . $img[0], [800,500], ['center','top'] );
+    ?>
+    <div class="entity-photo"><img src="<?php echo $img[0] ?>" alt="<?php the_title(); echo ' ' . __( 'Photo', 'fcpfo-ea' ) ?>" width="<?php echo $img[1] ?>" height="<?php echo $img[2] ?>" loading="lazy" /></div>
+    <?php
 }
 
 function entity_tile_print($footer = '') {

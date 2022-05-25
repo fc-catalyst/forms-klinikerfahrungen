@@ -5,27 +5,24 @@
 
         <?php echo \fcpf\eat\entity_content_filter( fct1_meta( 'entity-content' ) ) ?>
 
+        <?php \fcpf\eat\entity_photo_print() ?>
+
         <?php \fcpf\eat\entity_print_tags() ?>
 
         <div style="height:35px" aria-hidden="true" class="wp-block-spacer"></div>
-        
-        <div class="wp-block-buttons is-content-justification-full">
-            <?php \fcpf\eat\print_contact_buttons() ?>
-        </div>
-        
-        <div class="wp-block-buttons is-content-justification-full">
-            <?php \fcpf\eat\entity_print_schedule() ?>
-        </div>
+
+        <?php \fcpf\eat\print_contact_buttons() ?>
+
+        <?php \fcpf\eat\entity_print_workhours() ?>
 
         <div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
-        <div class="is-content-justification-full">
-            <?php \fcpf\eat\print_gmap() ?>
-        </div>
-        
+
+        <?php \fcpf\eat\print_gmap() ?>
+
         <div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
-        <div class="is-content-justification-full">
-            <?php \fcpf\eat\print_video() ?>
-        </div>
+
+        <?php \fcpf\eat\print_video() ?>
+
     </div>
     <div class="wp-block-column" style="flex-basis:33.33%">
         <?php \fcpf\eat\entity_print_gallery() ?>

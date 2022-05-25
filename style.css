@@ -122,9 +122,12 @@
 .fcp-form--main input[type=file] + label {
     display:block!important;
 }
-
 .fcp-form--main input[type=file] + label + fieldset > label > input {
     opacity:0!important;
+}
+.fcp-form--main input[type=file] ~ fieldset { /* a layout hotfix override */
+    margin-top:0;
+    margin-bottom:0;
 }
 
 /* empty */

@@ -191,6 +191,25 @@
                             "meta_box" : "only"
                         },
                         {
+                            "type" : "file",
+                            "title" : "The header background",
+                            "name" : "entity-background",
+                            "validate" : {
+                                "default" : true,
+                                "maxSize" : 1000000,
+                                "extension" : [
+                                    "jpg",
+                                    "jpeg"
+                                ]
+                            },
+                            "meta_box" : "only"
+                        },
+                        {
+                            "type" : "notice",
+                            "text" : "<p><strong>Note, that you can upload even more images to the <a href=\"#entity-gallery\">gallery below</a>.</strong></p>",
+                            "meta_box" : "only"
+                        },
+                        {
                             "type" : "text",
                             "title" : "Tragen die Video-URL ein",
                             "name" : "entity-video",
