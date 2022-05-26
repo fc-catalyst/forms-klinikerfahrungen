@@ -79,9 +79,9 @@ function print_gmap() {
     <?php
 }
 
-function print_contact_buttons() {
+function print_contact_buttons($sidebar = false) {
     ?>
-    <div class="fct1-group">
+    <div class="fct1-group<?php echo $sidebar ? ' sidebar' : '' ?>">
     <?php
     print_contact_button( 'entity-phone', fct1_meta( 'entity-phone' ), 'telephone' );
     print_contact_button( 'entity-email', __( 'E-mail', 'fcpfo-ea' ) );
@@ -222,7 +222,7 @@ function entity_photo_print() {
     //<meta itemprop="image" content="<?php echo $back_img[0]
     $img = fct1_meta( 'entity-photo' );
     if ( !$img || !$img[0] ) { return; }
-    $img = fct1_image_src( 'entity/' . get_the_ID() . '/' . $img[0], [800,500], ['center','top'] );
+    $img = fct1_image_src( 'entity/' . get_the_ID() . '/' . $img[0], [800,500] );
     ?>
     <div class="entity-photo"><img src="<?php echo $img[0] ?>" alt="<?php the_title(); echo ' ' . __( 'Photo', 'fcpfo-ea' ) ?>" width="<?php echo $img[1] ?>" height="<?php echo $img[2] ?>" loading="lazy" /></div>
     <?php

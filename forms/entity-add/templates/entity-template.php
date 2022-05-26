@@ -106,6 +106,7 @@ if ( get_post_status() !== 'publish' && get_the_author_meta( 'ID' ) === get_curr
 <?php
 
     $template = [];
+
     $template[] = 'full';
     
     $countcont = strlen( strip_tags( fct1_meta( 'entity-content' ) ) );
@@ -124,7 +125,12 @@ if ( get_post_status() !== 'publish' && get_the_author_meta( 'ID' ) === get_curr
         unset( $template[0] );
     }
 
+    if ( current_user_can( 'administrator' ) ) {
+        echo '<p>Template: <strong>'.implode( '-', $template ).'</strong></p>';
+    }
+
     include_once ( __DIR__ . '/template-parts/' . implode( '-', $template ) . '.php' );
+
 ?>
 
 <!-- gutenberg copy end -->
