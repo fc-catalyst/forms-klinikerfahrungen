@@ -206,7 +206,7 @@
                         },
                         {
                             "type" : "notice",
-                            "text" : "<p><strong>Note, that you can upload even more images to the <a href=\"#entity-gallery\">gallery below</a>.</strong></p>",
+                            "text" : "<p><strong>Beachten Sie, dass Sie noch mehr Bilder in die <a href=\"#entity-gallery\">Galerie unten</a> hochladen können.</strong></p>",
                             "meta_box" : "only"
                         },
                         {

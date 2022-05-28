@@ -13,7 +13,9 @@
        
     </div>
 
-    <div class="wp-block-column" style="flex-basis:33.33%; padding-top:106px">
+    <div class="wp-block-column" style="flex-basis:33.33%">
+    
+        <div style="height:97px" aria-hidden="true" class="wp-block-spacer"></div>
 
         <?php \fcpf\eat\print_gmap() ?>
 

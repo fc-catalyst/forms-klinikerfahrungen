@@ -8,19 +8,25 @@
         <?php \fcpf\eat\entity_photo_print() ?>
 
         <?php \fcpf\eat\entity_print_tags() ?>
-
-        <div style="height:35px" aria-hidden="true" class="wp-block-spacer"></div>
-
-        <?php \fcpf\eat\print_contact_buttons() ?>
-
-        <?php \fcpf\eat\entity_print_workhours() ?>
         
-        <div style="height:45px" aria-hidden="true" class="wp-block-spacer"></div>
+        <div style="height:40px" aria-hidden="true" class="wp-block-spacer"></div>
 
         <?php \fcpf\eat\print_gmap() ?>
 
+        <div style="height:25px" aria-hidden="true" class="wp-block-spacer"></div>
+        
+        <?php \fcpf\eat\entity_print_workhours() ?>
+
+        <div style="height:15px" aria-hidden="true" class="wp-block-spacer"></div>
+
+        <?php \fcpf\eat\print_contact_buttons() ?>
+
     </div>
     <div class="wp-block-column" style="flex-basis:33.33%">
+    
+        <div style="height:89px" aria-hidden="true" class="wp-block-spacer"></div>
+        
         <?php \fcpf\eat\entity_print_gallery() ?>
+
     </div>    
 </div>

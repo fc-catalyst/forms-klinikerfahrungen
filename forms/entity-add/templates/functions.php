@@ -224,7 +224,7 @@ function entity_photo_print() {
     if ( !$img || !$img[0] ) { return; }
     $img = fct1_image_src( 'entity/' . get_the_ID() . '/' . $img[0], [800,500] );
     ?>
-    <div class="entity-photo"><img src="<?php echo $img[0] ?>" alt="<?php the_title(); echo ' ' . __( 'Photo', 'fcpfo-ea' ) ?>" width="<?php echo $img[1] ?>" height="<?php echo $img[2] ?>" loading="lazy" /></div>
+    <div class="entity-photo"><img src="<?php echo $img[0] ?>" alt="<?php the_title(); echo ' ' . __( 'Photo', 'fcpfo-ea' ) ?>" width="<?php echo $img[1] ?>" height="<?php echo $img[2] ?>" loading="lazy" itemprop="<?php echo get_post_type() === 'doctor' ? 'image' : 'photo' ?>"/></div>
     <?php
 }
 

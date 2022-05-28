@@ -81,7 +81,7 @@ if ( have_posts() ) :
 
     <?php if ( $background = fct1_meta( 'entity-background' )[0] ) { ?>
     <div class="entry-background">
-        <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $background, [1400, 600], 1 ) ?>
+        <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $background, [1400, 600], 1, '', 'image' ) ?>
     </div>
     <?php } ?>
 
@@ -110,7 +110,7 @@ if ( get_post_status() !== 'publish' && get_the_author_meta( 'ID' ) === get_curr
     $template[] = 'full';
     
     $countcont = strlen( strip_tags( fct1_meta( 'entity-content' ) ) );
-    if ( $countcont < 800 && !fct1_meta( 'entity-tags' ) || $countcont < 400 ) {
+    if ( $countcont < 800 && !fct1_meta( 'entity-tags' ) || $countcont < 400 && !fct1_meta( 'entity-photo' ) ) {
         $template[] = 'nocontent';
     }
     
