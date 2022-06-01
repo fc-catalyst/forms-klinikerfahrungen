@@ -141,15 +141,13 @@ if ( get_post_status() !== 'publish' && get_the_author_meta( 'ID' ) === get_curr
 
 <script>
 /* vertical gallery crop & add scrolling */
-if ( jQuery( '#entity-gallery' ).length ) {
-    fcLoadScriptVariable(
-        '/wp-content/plugins/fcp-forms/forms/entity-add/templates/assets/gallery-vertical.js',
-        'fcAddGallery',
-        function() { fcAddGallery( '#entity-gallery' ) },
-        [],
-        true
-    );
-}
+fcLoadScriptVariable(
+    '/wp-content/plugins/fcp-forms/forms/entity-add/templates/assets/gallery-vertical.js',
+    'fcAddGallery',
+    function() { fcAddGallery( '#entity-gallery' ) },
+    [],
+    true
+);
 </script>
 
 <?php echo current_user_can( 'edit_post' ) ? edit_post_link() : '' ?>
