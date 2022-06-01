@@ -563,7 +563,7 @@ class FCP_Forms__Draw {
         $content = ob_get_contents();
         ob_end_clean();
 
-        return $this->align_html_codes( $content );
+        return self::align_html_codes( $content );
     }
     
     private function printField($f) {
