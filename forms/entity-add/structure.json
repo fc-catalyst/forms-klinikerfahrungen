@@ -221,7 +221,7 @@
                         {
                             "type" : "text",
                             "name" : "entity-tags",
-                            "title" : "Tags",
+                            "title" : "Angebotenen Behandlungen",
                             "placeholder" : "Beispiel: Zahnarzt, Kieferorthopäde",
                             "meta_box" : "only"
                         }

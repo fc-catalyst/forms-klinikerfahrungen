@@ -92,13 +92,13 @@ fcLoadScriptVariable(
             );
             
             fcLoadScriptVariable(
-                '/wp-content/themes/fct1/assets/smarts/gmap-view.js?' + + new Date(),
+                '/wp-content/themes/fct1/assets/smarts/gmap-view.js',
                 'fcAddGmapView',
                 function() {
                     gmap = fcAddGmapView( $gmap_holder, false, getLatLngZoom() );
 
                     fcLoadScriptVariable(
-                        '/wp-content/themes/fct1/assets/smarts/gmap-pick.js?' + + new Date(),
+                        '/wp-content/themes/fct1/assets/smarts/gmap-pick.js',
                         'fcAddGmapPick',
                         function() {
                             marker = fcAddGmapPick( gmap, $gmap_holder[0] );

@@ -215,7 +215,7 @@ function entity_content_filter($text) {
 
 function entity_print_tags() {
     echo fct1_meta( 'entity-tags', '<h2>'.__( 'Our range of treatments', 'fcpfo-ea' ).'</h2><p>', '</p>' );
-    // Unser Behandlungsspektrum
+    // Unsere angebotenen Behandlungen
 }
 
 function entity_photo_print() {
@@ -235,18 +235,22 @@ function entity_tile_print($footer = '') {
         <a class="entry-link-cover" rel="bookmark" href="<?php the_permalink(); ?>" title="<?php the_title() ?>"></a>
 
         <header class="entry-header">
-            <?php if ( $back_img = fct1_meta( 'entity-photo' )[0] ) { ?>
-            <div class="entry-photo">
+        <?php
+            $photo = fct1_meta( 'entity-photo' )[0];
+            $backg = fct1_meta( 'entity-background' )[0];
+            if ( $photo || $backg ) {
+        ?>
+            <div class="entry-photo<?php echo !$photo ? ' entry-background' : '' ?>">
                 <?php
                     fct1_image_print(
-                        'entity/' . get_the_ID() . '/' . $back_img,
+                        'entity/' . get_the_ID() . '/' . ( !$photo ? $backg : $photo ),
                         [454, 210],
                         ['center', 'top'],
-                        get_the_title() . ' ' . __( 'Photo', 'fcpfo-ea' )
+                        get_the_title()
                     )
                 ?>
             </div>
-            <?php } ?>
+        <?php } ?>
             <h2 class="entry-title" itemprop="headline">
                 <a href="<?php the_permalink() ?>"><?php the_title() ?></a>
             </h2>
