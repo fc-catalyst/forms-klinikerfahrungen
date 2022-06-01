@@ -18,7 +18,7 @@ defined( 'ABSPATH' ) || exit;
 
 class FCP_Forms {
 
-	public static $dev = true,
+	public static $dev = false,
                   $tmp_dir = 'fcp-forms-tmps',
                   $text_domain = 'fcpfo', // ++ delete or use
                   $prefix = 'fcpf',
@@ -38,10 +38,10 @@ class FCP_Forms {
 		
 		$this->assets = $this->self_url . 'assets/';
 
-		$this->css_ver = '1.0.7' . ( self::$dev ? '.'.time() : '' );
-		$this->js_ver = '1.1.1' . ( self::$dev ? '.'.time() : '' );
-		$this->css_adm_ver = '0.0.1' . ( self::$dev ? '.'.time() : '' );
-		$this->js_adm_ver = '0.0.1' . ( self::$dev ? '.'.time() : '' );
+		$this->css_ver = '1.0.8' . ( self::$dev ? '.'.time() : '' );
+		$this->js_ver = '1.1.2' . ( self::$dev ? '.'.time() : '' );
+		$this->css_adm_ver = '0.0.2' . ( self::$dev ? '.'.time() : '' );
+		$this->js_adm_ver = '0.0.2' . ( self::$dev ? '.'.time() : '' );
 
 	}
 
