@@ -129,7 +129,7 @@ if ( get_post_status() !== 'publish' && get_the_author_meta( 'ID' ) === get_curr
         echo '<p>Template: <strong>'.implode( '-', $template ).'</strong></p>';
     }
 
-    include_once ( __DIR__ . '/template-parts/' . implode( '-', $template ) . '.php' );
+    include_once ( __DIR__ . '/layouts/' . implode( '-', $template ) . '.php' );
 
 ?>
 
