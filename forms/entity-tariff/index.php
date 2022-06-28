@@ -147,12 +147,23 @@ function fcp_tariff_filter_text($text) {
     
     // filter links
     $tariff_running = fcp_tariff_get()->running;
+
     switch ( $tariff_running ) {
         case 'standardeintrag':
             $text = fct1_a_clear_all( $text, 0 );
             $text = fct1_html_words_limit( $text, 850 );
             break;
         case 'premiumeintrag':
+            // ++-- the exception, which works till the older clients use old agb
+            if ( fct1_meta( 'entity-old-agb' ) ) {
+                return fct1_a_clear_all( $text, 2, [
+                    'rel' => [
+                        'internal' => '--remove',
+                        'external' => 'noopener',
+                    ]
+                ]);
+            }
+            // ++/
             $text = fct1_a_clear_all( $text, 0, [
                 'rel' => [
                     'internal' => '--remove',

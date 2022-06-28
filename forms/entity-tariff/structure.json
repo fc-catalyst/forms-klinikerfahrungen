@@ -81,6 +81,17 @@
             "Y_description" : "gotta invent the invisible fields to exist in structure, but not flush on save and manipulated only by back-end"
         },
         {
+            "type" : "checkbox",
+            "name" : "entity-old-agb",
+            "meta_box" : true,
+            "options" : {
+                "1" : "<strong style='color:orange'>Apply Old AGB</strong>"
+            },
+            "roles_edit" : [
+                "administrator"
+            ]
+        },
+        {
             "type" : "none",
             "title" : "<strong>The next tariff</strong>",
             "name" : "entity-tariff-next",
