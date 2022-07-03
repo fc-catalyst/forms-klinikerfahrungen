@@ -63,11 +63,8 @@ if ( have_posts() ) :
         </div>
         <?php } ?>
         
-        <?php
-        if ( function_exists( 'yoast_breadcrumb' ) ) {
-            yoast_breadcrumb( '<div class="yoast-breadcrumbs">', '</div>' );
-        }
-        ?>
+        <?php if (function_exists('yoast_breadcrumb')){yoast_breadcrumb('<div class="yoast-breadcrumbs">','</div>');} ?>
+        <?php if (function_exists('rank_math_the_breadcrumbs')){rank_math_the_breadcrumbs();} ?>
 
     </div>
 

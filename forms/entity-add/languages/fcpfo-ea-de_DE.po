@@ -5,10 +5,11 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: Dominik Stein\n"
 "Language-Team: \n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de_DE\n"
+"X-Generator: Poedit 3.1\n"
 
 #. The main register clinic / doctor form
 msgid "Clinic"
@@ -45,7 +46,7 @@ msgid "Clinic Not found in Trash"
 msgstr "Klinik nicht unter gelöschten Einträgen gefunden"
 
 msgid "The list of clinics, registered by you"
-msgstr "Liste der Kliniken, die durch deinen Account registriert wurden"
+msgstr "Liste der Kliniken, die durch Ihren Account hinzugefügt wurden"
 
 msgid "Doctor"
 msgstr "Arzt"
@@ -78,10 +79,10 @@ msgid "Doctor Not found in Trash"
 msgstr "Arzt nicht unter gelöschten Einträgen gefunden"
 
 msgid "The list of doctors, registered by you"
-msgstr "Die Liste der Ärzte, die mit deinem Benutzeraccount registriert wurden"
+msgstr "Die Liste der Ärzte, die mit Ihrem Benutzeraccount hinzugefügt wurden"
 
 msgid "You don't have permission to add / edit a clinic or a doctor"
-msgstr "Du hast keine Rechte einen neuen Arzt oder eine neue Klinik hinzuzufügen"
+msgstr "Sie haben keine Rechte einen neuen Arzt oder eine neue Klinik hinzuzufügen"
 
 #. templates
 msgid "Clinics and Doctors"
@@ -121,11 +122,11 @@ msgid "Working hours"
 msgstr "Öffnungszeiten"
 
 msgid "Thank you for adding the entry. It will become visible to other visitors as soon as passes the moderation."
-msgstr "Vielen Dank für Ihre Eintragung. Der Eintrag ist für alle Besucher sichtbar, nachdem er durch unser Team überprüft wurde."
+msgstr "Vielen Dank für Ihre Eintragung. Der Eintrag ist für alle Besucher sichtbar, nachdem der Eintrag durch unser Team überprüft wurde."
 
 #. tags, actually
 msgid "Our range of treatments"
-msgstr "Unsere angebotenen Behandlungen"
+msgstr "Angebotene Behandlungen"
 
 #. search results
 msgid "Nothing"

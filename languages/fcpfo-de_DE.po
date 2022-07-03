@@ -5,10 +5,11 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: Dominik Stein\n"
 "Language-Team: \n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: de_DE\n"
+"X-Generator: Poedit 3.1\n"
 
 #. fcp-forms.php
 msgid "Some fields are not filled correctly"
@@ -22,7 +23,7 @@ msgid "The Initial value is restored"
 msgstr "Der ursprüngliche Wert wurde wiederhergestellt"
 
 msgid "Some fields were not filled correctly. Please, correct the values and submit again."
-msgstr "Manche Eingaben konnten nicht korrekt verarbeitet werden. Bitte korrigiere die Fehler und probiere es erneut."
+msgstr "Manche Eingaben konnten nicht korrekt verarbeitet werden. Bitte korrigieren Sie die Fehler und probieren es erneut."
 
 #. classes/draw-fields
 msgid "No value set"
@@ -92,16 +93,16 @@ msgid "The file %s extension doesn't fit the allowed list: %s"
 msgstr "Dieses Dateiformat ist auf unserer Webseite nicht erlaubt: %s"
 
 msgid "The maximum content length is %s symbols, your current content is %s"
-msgstr "Die erlaubte Zeichenlänge beträgt %s. Dein Inhalt ist %s Zeichen lang."
+msgstr "Die erlaubte Zeichenlänge beträgt %s. Ihr Inhalt ist %s Zeichen lang"
 
 msgid "The minimum content length is %s symbols, your current content is %s"
-msgstr "Es werden mindestens %s Zeichen benötigt. Dein Inhalt ist %s Zeichen lang."
+msgstr "Es werden mindestens %s Zeichen benötigt. Ihr Inhalt ist %s Zeichen lang"
 
 msgid "The maximum text length is %s symbols, your current content is %s"
-msgstr "Die erlaubte Textlänge beträgt %s Zeichen. Dein Inhalt ist %s Zeichen lang."
+msgstr "Die erlaubte Textlänge beträgt %s Zeichen. Ihr Inhalt ist %s Zeichen lang"
 
 msgid "The minimum text length is %s symbols, your current content is %s"
-msgstr "Die Minimum Textlängebeträgt %s Zeichen. Dein Inhalt ist %s Zeichen lang."
+msgstr "Die Minimum Textlängebeträgt %s Zeichen. Ihr Inhalt ist %s Zeichen lang"
 
 #. the forms common
 msgid "Activate"
@@ -142,7 +143,7 @@ msgstr "Klinik / Arzt"
 
 #. gallery
 msgid "Gallery"
-msgstr "Gallerie"
+msgstr "Galerie"
 
 #. tariff
 msgid "Tariff is active till"
