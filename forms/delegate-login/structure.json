@@ -45,9 +45,9 @@
                         "bg_x" : [62, 145, 161],
                         "fg" : [255, 255, 255],
                         "fonts" : [
-                            "BrandonGrotesque-Black.ttf",
-                            "BrandonGrotesque-Regular.ttf",
-                            "BrandonGrotesque-Light.ttf"
+                            "jost-v13-latin-300.ttf",
+                            "jost-v13-latin-500italic.ttf",
+                            "jost-v13-latin-800.ttf"
                         ],
                         "font_size_vars" : [16, 17, 18, 19],
                         "font_char_width_vars" : [15, 19, 26, 30],
