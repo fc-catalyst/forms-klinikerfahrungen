@@ -68,6 +68,83 @@ register_deactivation_hook( $this->self_path_file, function() {
 });
 
 
+// sortable meta fields
+add_filter( 'manage_clinic_posts_columns', function( $columns ) {
+    $columns['tariff'] = __( 'Tariff', '' );
+    $columns['tariff-payed'] = __( 'Payed', '' );
+    $columns['tariff-till'] = __( 'Till', '' );
+    //unset( $columns['date'] );
+    return $columns;
+});
+add_action( 'manage_clinic_posts_custom_column' , function( $column, $post_id ) {
+    switch ( $column ) {
+
+        case 'tariff' :
+            echo get_post_meta( $post_id , 'entity-tariff' , true );
+            break;
+        case 'tariff-payed' :
+            echo get_post_meta( $post_id , 'entity-payment-status' , true );
+            break;
+        case 'tariff-till' :
+            $till = get_post_meta( $post_id , 'entity-tariff-till' , true );
+            echo $till ? date( 'd.m.Y', $till ) : 'Not set';
+            break;
+    }
+}, 10, 2 );
+add_filter( 'manage_edit-clinic_sortable_columns', function( $columns ) {
+    $columns['tariff-till'] = 'tariff-till';
+    return $columns;
+});
+
+add_filter( 'manage_doctor_posts_columns', function( $columns ) {
+    $columns['tariff'] = __( 'Tariff', '' );
+    $columns['tariff-payed'] = __( 'Payed', '' );
+    $columns['tariff-till'] = __( 'Till', '' );
+    //unset( $columns['date'] );
+    return $columns;
+});
+add_action( 'manage_doctor_posts_custom_column' , function( $column, $post_id ) {
+    switch ( $column ) {
+
+        case 'tariff' :
+            echo get_post_meta( $post_id , 'entity-tariff' , true );
+            break;
+        case 'tariff-payed' :
+            echo get_post_meta( $post_id , 'entity-payment-status' , true );
+            break;
+        case 'tariff-till' :
+            $till = get_post_meta( $post_id , 'entity-tariff-till' , true );
+            echo $till ? date( 'd.m.Y', $till ) : 'Not set';
+            break;
+    }
+}, 10, 2 );
+add_filter( 'manage_edit-doctor_sortable_columns', function( $columns ) {
+    $columns['tariff-till'] = 'tariff-till';
+    return $columns;
+});
+
+add_action( 'pre_get_posts', function( $query ) {
+    global $pagenow;
+    if( !is_admin() || $pagenow !== 'edit.php' || $_GET['post_type'] !== 'clinic' && $_GET['post_type'] !== 'doctor' ) { return; }
+    if( $query->get( 'orderby') !== 'tariff-till' ) { return; }
+
+    $meta_query = [
+        'relation' => 'OR',
+        [
+            'key' => 'entity-tariff-till',
+            'compare' => 'NOT EXISTS',
+        ],
+        [
+            'key' => 'entity-tariff-till',
+        ],
+    ];
+    
+    //$query->set( 'meta_key', 'entity-tariff-till' );
+    $query->set( 'meta_query', $meta_query );
+    $query->set( 'orderby', 'meta_value_num' ); //meta_value
+});
+
+
 // add translation languages
 add_action( 'plugins_loaded', function() {
     load_plugin_textdomain( 'fcpfo-et', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );

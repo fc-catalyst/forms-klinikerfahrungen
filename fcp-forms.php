@@ -837,12 +837,11 @@ new FCP_Forms();
 /*
     globalize delegate register styles
     filter multiple fields empty values, as schedule fills in too many rows
-    exclude dirs, starting from -- - take from gutenberg
     make the password validate simple test
     front-end validation
         autofill with front-end validation
-    ++aria
-    on clear trash - remove the clinic logo dir
-    img preview to admin
+    aria
+    on clear trash - remove the clinic imgs dir
+    img preview in wp-admin
     print tmp dir only if a file type exists
 //*/
