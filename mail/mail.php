@@ -17,11 +17,18 @@ class FCP_FormsMail {
 
                 // ++add dynamic loading by role
                 'accountant' => 'buchhaltung@firmcatalyst.com',
+                'accountant_name' => 'Accountant',
                 'accountant_locale' => 'de_DE',
-                'moderator' => 'anne-kathrin.mueller@firmcatalyst.com',//'kontakt@klinikerfahrungen.de',
+                'moderator' => 'buchhaltung@firmcatalyst.com',//'kontakt@klinikerfahrungen.de',
+                'moderator_name' => 'Moderator',
                 'moderator_locale' => 'de_DE',
-                'admin' => 'vadim.volkov@firmcatalyst.com', // technical purposes
+                'admin' => 'developer@firmcatalyst.com', // technical purposes
+                'admin_name' => 'Admin', // technical purposes
                 'admin_locale' => 'en_US',
+
+                // tmp ++personal locales are not ready here
+                'user_locale' => 'de_DE',
+                'client_locale' => 'de_DE',
 
                 'footer' => '<a href="'.$url.'" target="blank" rel="noopener noreferrer">'.$_SERVER['SERVER_NAME'].'</a>',
 
@@ -93,9 +100,11 @@ class FCP_FormsMail {
                 'Your tariff is prolonged successfully.',
                 ['entity-tariff'],
             ],
-            'ending' => [
-                'Your tariff is about to end',
-                'Your tariff is about to end. The prolongation option is available in your Klinikerfahrungen account. Ignore this message to continue with a Free Tariff',
+            'ends' => [
+                'Your Listing is expiring',
+                'you Premium-Listing on our plattform will expire in %expire_days days: %listing_link. If no action is taken, your premium entry will be automatically changed into a standard entry. This means your company description will be reduced to a maximum of 450 words and you will loose your valueable DoFollow Link.
+
+Keeping your premium features only costs you 29€/year. In order to keep your premium listing, you need to extend the membership in your profile: %listing_edit_link.',
                 ['entity-tariff'],
             ],
             'ended' => [ // ++--
@@ -322,28 +331,34 @@ class FCP_FormsMail {
         if ( !self::$messages[ $recipient ] || !self::$messages[ $recipient ][ $topic ] ) { return; }
 
         // translations
-        $locale = $details[ $recipient . '_locale' ];
+        $locale = $details[ $recipient . '_locale' ]; // ++make dynamic, according to user's settings
         switch_to_locale( $locale );
         load_textdomain( 'fcpfo--mail', __DIR__ . '/languages/fcpfo--mail-'.$locale.'.mo' );
 
         $subject = __( self::$messages[ $recipient ][ $topic ][0], 'fcpfo--mail' );
-        $message = '<p>' . __( self::$messages[ $recipient ][ $topic ][1], 'fcpfo--mail' ) . '</p>';
-        $footer = '<a href="'.$details['url'].'" target="blank" rel="noopener noreferrer">'.$details['domain'].'</a>';
+        $footer = '<a href="'.$details['url'].'">'.$details['domain'].'</a>';
+        
+        $title = self::get_data( $id )[$id]['title'];
+        $message = __( self::$messages[ $recipient ][ $topic ][1], 'fcpfo--mail' );
+        $message = strtr( $message, [ // ++use this method on mail-template.html too instead of sprintf
+            '%expire_days' => '30',
+            '%listing_link' => '<a href="'.$details['url'].'/?p='.$id.'">'.$title.'</a>',
+            '%listing_edit_link' => '<a href="'.$details['url'].'/wp-admin/post.php?post='.$id.'&action=edit">'.__( 'Edit' ).'</a>',
+        ]);
 
+        
         if ( $id ) {
-
             $message  = '
                 '.$message.'
-                <br>
-                <h2>'.self::get_data( $id )[$id]['title'].'</h2>
-                <a href="'.$details['url'].'/?p='.$id.'" target="_blank" rel="noopener noreferrer">'.__( 'View' ).'</a>
-                |
-                <a href="'.$details['url'].'/wp-admin/post.php?post='.$id.'&action=edit" target="_blank" rel="noopener noreferrer">'.__( 'Edit' ).'</a>
+                <h2>'.$title.'</h2>
+                <a href="'.$details['url'].'/?p='.$id.'">'.__( 'View' ).'</a> | <a href="'.$details['url'].'/wp-admin/post.php?post='.$id.'&action=edit">'.__( 'Edit' ).'</a>
             ';
             
             $datalist = self::message_datalist( $id, self::$messages[ $recipient ][ $topic ][2] ); // ++translations
-            $message .= $datalist ? '<br>'.$datalist : '';
+            $message .= $datalist ? "\n".$datalist : '';
         }
+        
+        $message = wpautop( $message );
         
         restore_previous_locale();
         
@@ -378,7 +393,8 @@ class FCP_FormsMail {
                 __( 'For %s; From %s, %s.' ),
                 $data['title'], $meta['billing-company'], $meta['billing-name']
             );
-
+            
+            $message['message'] = '<p>' . $message['preheader'] . '</p>' . $message['message'];
         }
         
         return self::send( $message );
@@ -397,10 +413,12 @@ class FCP_FormsMail {
         $meta = self::get_data( $id )[ $id ]['meta'];
         if ( !$meta['billing-email'] ) { return; }
 
-        $message['to'] = $meta['billing-email'];
+        $message['to'] = [ $meta['billing-email'], $details['admin'] ];
         $message['to_name'] = $meta['billing-name'] ? $meta['billing-name'] : '';
 
         $message['reply_to'] = $details['accountant'];
+
+        $message['message'] = self::message_wrap( $message );
 
         return self::send( $message );
     }
@@ -415,13 +433,17 @@ class FCP_FormsMail {
         $message['from'] = $details['sending'];
         $message['from_name'] = $details['sending_name'];
         
-        // ++use the correct locale from user meta
+        // ++use the correct locale from user meta - apply in message_content
+        // ++add locale to the message body too
         
         $author = self::get_data( $id )[ $id ]['author'];
+
         $message['to'] = $author[0];
         $message['to_name'] = $author[1] ? $author[1] : '';
 
         $message['reply_to'] = $details['moderator'];
+
+        $message['message'] = self::message_wrap( $message );
 
         return self::send( $message );
     }
@@ -490,7 +512,7 @@ class FCP_FormsMail {
     }
     
     public static function send($m) {
-
+//++ replace all possible leftovers, %xxxspace?
         if ( !empty( array_diff( ['subject', 'message', 'from', 'to'], array_keys( $m ) ) ) ) { return; }
 
         static $template = '';
@@ -515,6 +537,7 @@ class FCP_FormsMail {
             $m['footer'] ? $m['footer'] : self::details()['footer'] // footer
         ]);
 
+        if ( is_array( $m['to'] ) && $m['to'][1] ) { list( $m['to'], $m['to2'] ) = $m['to']; }
 
         if ( !class_exists( '\PHPMailer\PHPMailer\PHPMailer', false ) ) { // not sure it is needed and works
             require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
@@ -528,6 +551,7 @@ class FCP_FormsMail {
         $mail->CharSet = 'UTF-8';
         $mail->setFrom( $m['from'], $m['from_name'] );
         $mail->addAddress( $m['to'], $m['to_name'] );
+        if ( $m['to2'] ) { $mail->AddBCC( $m['to2'] ); }
         if ( $m['reply_to'] ) { $mail->addReplyTo( $m['reply_to'], $m['reply_to_name'] ); }
         $mail->Subject = $m['subject'];
         //$mail->msgHTML( $email_body );
@@ -596,6 +620,25 @@ class FCP_FormsMail {
             return $details;
         }
 
+    }
+    
+    private static function message_wrap($message) {
+
+        // before
+        $message['message'] = '<p>' .
+            __( 'Hey', 'fcpfo--mail' ) .
+            ( $message['to_name'] ? ' ' . $message['to_name'] : '' ) . ',</p>' .
+            $message['message'];
+
+        // after
+        $message['message'] .= '<p>' . 
+            sprintf( __( 'If you need assistence, please contact our team at: %s.', 'fcpfo--mail' ), $message['from'] ) . 
+            '</p>' .
+            '<p><em>' .
+            sprintf( __( "Greetings from Berlin,\nTeam %s", 'fcpfo--mail' ), $message['footer'] ) .
+            '</em></p>';
+
+        return $message['message'];
     }
 
 }

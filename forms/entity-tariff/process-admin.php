@@ -17,13 +17,14 @@ if ( !$values['entity-billing'] && !$admin_am ) {
     return;
 }
 
-$free_tariff = 'kostenloser_eintrag';
+$free_tariff = 'kostenloser_eintrag'; // ++Y not $tariff_default ?
 $values['entity-tariff'] = $values['entity-tariff'] ? $values['entity-tariff'] : $free_tariff;
 $_POST['entity-tariff'] = $_POST['entity-tariff'] ? $_POST['entity-tariff'] : $free_tariff;
 
 $tariff_change = $_POST['entity-tariff'] !== $values['entity-tariff'];
 $pay_status_change = $_POST['entity-payment-status'] !== $values['entity-payment-status'];
 // $tariff_next_change = $_POST['entity-tariff-next'] !== $values['entity-tariff-next']; // moved lower
+$tariff_payed_paid = $_POST['entity-tariff'] !== $free_tariff && $_POST['entity-payment-status'] === 'payed';
 
 
 // processing the values
@@ -117,6 +118,25 @@ if ( $_POST['entity-tariff-next'] === $tariff_default ) {
 }
 if ( $_POST['entity-tariff-till'] < $time ) {
     $_POST['entity-tariff-till'] = 0;
+}
+
+
+// schedule the notifications
+if ( $admin_am ) {
+    wp_clear_scheduled_hook( 'fcp_forms_entity_tariff_ends', [ $postID ] );
+
+    $period_before = 60 * 60 * 24 * 30;
+
+    if ( $tariff_payed_paid && $_POST['entity-tariff-till'] > time() + $period_before ) {
+
+        wp_schedule_single_event(
+            $_POST['entity-tariff-till'] - $period_before,
+            'fcp_forms_entity_tariff_ends',
+            [ $postID ]
+        );
+
+    }
+
 }
 
 

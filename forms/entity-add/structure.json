@@ -232,8 +232,9 @@
                     "fields" : [
                         {
                             "type" : "radio",
-                            "cols" : 3,
-                            "title" : "Wählen Sie Ihren Tarif",
+                            "cols" : 2,
+                            "x_title" : "Wählen Sie Ihren Tarif",
+                            "title" : "Ihr Tarif",
                             "subtitle" : "(<a href=\"/preise-eintragung/\" target=\"_blank\">Kosten für einen Eintrag</a>)",
                             "name" : "entity-tariff",
                             "options" : {
