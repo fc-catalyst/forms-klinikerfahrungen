@@ -71,7 +71,7 @@ msgid "Your tariff is prolonged successfully."
 msgstr "Dein Eintrag wurde erfolgreich verlängert."
 
 msgid "Your Listing is expiring"
-msgstr "Dein Eintrag läuft bald ab"
+msgstr "Ihr Eintrag läuft bald ab"
 
 msgid "you Premium-Listing on our plattform will expire in %expire_days days: %listing_link. If no action is taken, your premium entry will be automatically changed into a standard entry. This means your company description will be reduced to a maximum of 450 words and you will loose your valueable DoFollow Link.\n"
 "\n"
