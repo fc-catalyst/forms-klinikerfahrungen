@@ -154,8 +154,8 @@ add_action( 'plugins_loaded', function() {
 
 // scheduled actions
 add_action( 'fcp_forms_entity_tariff_ends', function($id) { // creates / updates on paid payed save
-    require_once __DIR__ . '/../../mail/mail.php';
-    FCP_FormsMail::to_client( 'ends', $id );
+    //require_once __DIR__ . '/../../mail/mail.php'; // ++restore in 1 year? january 2023 add condition
+    //FCP_FormsMail::to_client( 'ends', $id );
 }, 10, 1 );
 
 add_action( 'fcp_forms_entity_tariff_prolong', function() {
