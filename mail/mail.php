@@ -68,68 +68,69 @@ class FCP_FormsMail {
                   $messages = [ // ++'user, 'admin'
         'accountant' => [
             'request' => [ // works
-                'Paid tariff request',
-                'A paid tariff is requested. Please, bill the client and mark the status as "Billed". When the bill is payed, please remember to mark the status as "Payed" to activate the Tariff.',
-                ['entity-tariff', 'billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
+                'subject' => 'Paid tariff request',
+                'content' => 'A paid tariff is requested. Please, bill the client and mark the status as "Billed". When the bill is payed, please remember to mark the status as "Payed" to activate the Tariff.',
+                'list' => ['entity-tariff', 'billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
             'prolong' => [
-                'Prolongation request',
-                'A Tariff prolongation is requested. Please bill the client and mark the entity prolongation status as "Billed". When the bill is payed, please remember to mark the status as "Payed" to schedule or activate the Tariff.',
-                ['entity-tariff-next', 'billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
+                'subject' => 'Prolongation request',
+                'content' => 'A Tariff prolongation is requested. Please bill the client and mark the entity prolongation status as "Billed". When the bill is payed, please remember to mark the status as "Payed" to schedule or activate the Tariff.',
+                'list' => ['entity-tariff-next', 'billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
             'change' => [
-                'Tariff Change request',
-                'A Tariff change is requested in terms of prolongation. Please bill the client and mark the entity prolongation status as "Billed". When the bill is payed, please remember to mark the status as "Payed" to schedule or activate the Tariff.',
-                ['entity-tariff-next', 'billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
+                'subject' => 'Tariff Change request',
+                'content' => 'A Tariff change is requested in terms of prolongation. Please bill the client and mark the entity prolongation status as "Billed". When the bill is payed, please remember to mark the status as "Payed" to schedule or activate the Tariff.',
+                'list' => ['entity-tariff-next', 'billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
             'cancel' => [ // chron
-                'Bill not payed',
-                'The client has not payed the Bill in a set up period of time. You can now cancel the Bill, or contact the client directly.',
-                ['billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
+                'subject' => 'Bill not payed',
+                'content' => 'The client has not payed the Bill in a set up period of time. You can now cancel the Bill, or contact the client directly.',
+                'list' => ['billing-company', 'billing-address', 'billing-name', 'billing-email', 'billing-vat'],
             ],
         ],
 
         'client' => [
             'activated' => [ // payed
-                'New tariff is activated',
-                'Your new tariff is activated.',
-                ['entity-tariff'],
+                'subject' => 'New tariff is activated',
+                'content' => 'Your new tariff is activated.',
+                'list' => ['entity-tariff'],
             ],
             'prolonged' => [ // payed
-                'Your tariff is prolonged',
-                'Your tariff is prolonged successfully.',
-                ['entity-tariff'],
+                'subject' => 'Your tariff is prolonged',
+                'content' => 'Your tariff is prolonged successfully.',
+                'list' => ['entity-tariff'],
             ],
             'ends' => [
-                'Your Listing is expiring',
-                'you Premium-Listing on our plattform will expire in %expire_days days: %listing_link. If no action is taken, your premium entry will be automatically changed into a standard entry. This means your company description will be reduced to a maximum of 450 words and you will loose your valueable DoFollow Link.
+                'subject' => 'Important: your listing on klinikerfahrungen.de will expire in %expire_days days',
+                'heading' => 'Your Listing is expiring',
+                'content' => 'you Premium-Listing on our plattform will expire in %expire_days days: %listing_link. If no action is taken, your premium entry will be automatically changed into a standard entry. This means your company description will be reduced to a maximum of 450 words and you will loose your valueable DoFollow Link.
 
-Keeping your premium features only costs you 29€/year. In order to keep your premium listing, you need to extend the membership in your profile: %listing_edit_link.',
-                ['entity-tariff'],
+Keeping your premium features only costs you 29€/year. In order to keep your premium listing, you need to extend the membership in your profile: %listing_edit_link.
+
+In this tutorial we show you how to renew your listing: %tutorial_link',
             ],
-            'ended' => [ // ++--
-                'Your tariff has just ended',
-                'Your tariff has just ended. Free Tariff is activated.',
+            'ended' => [
+                'subject' => 'Your tariff has just ended',
+                'content' => 'Your tariff has just ended. Free Tariff is activated.',
             ],
         ],
 
         'user' => [
             'published' => [
-                'Your entry is published',
-                'Your entry has just been published.',
-                ['entity-tariff'],
+                'subject' => 'Your entry is published',
+                'content' => 'Your entry has just been published.',
+                'list' => ['entity-tariff'],
             ],
         ],
         
         'moderator' => [
             'entity_added' => [ // submitted for review // works
-                'Clinic / doctor added',
-                'A new clinic or doctor has just been added. Please check it and publish, if it is valid.',
-                []
+                'subject' => 'Clinic / doctor added',
+                'content' => 'A new clinic or doctor has just been added. Please check it and publish, if it is valid.',
             ],
             'entity_updated' => [ // works
-                'Clinic / doctor changed',
-                'A client has changed some information in an entry. Please check if it is still valid.',
+                'subject' => 'Clinic / doctor changed',
+                'content' => 'A client has changed some information in an entry. Please check if it is still valid.',
             ],
         ]
     ];
@@ -329,32 +330,37 @@ Keeping your premium features only costs you 29€/year. In order to keep your p
         $details = self::details();
 
         if ( !self::$messages[ $recipient ] || !self::$messages[ $recipient ][ $topic ] ) { return; }
+        
+        $m = self::$messages[ $recipient ][ $topic ];
 
         // translations
         $locale = $details[ $recipient . '_locale' ]; // ++make dynamic, according to user's settings
         switch_to_locale( $locale );
         load_textdomain( 'fcpfo--mail', __DIR__ . '/languages/fcpfo--mail-'.$locale.'.mo' );
 
-        $subject = __( self::$messages[ $recipient ][ $topic ][0], 'fcpfo--mail' );
-        $footer = '<a href="'.$details['url'].'">'.$details['domain'].'</a>';
+        $subject = __( $m['subject'] ? $m['subject'] : $m['heading'], 'fcpfo--mail' );
+        $heading = __( $m['heading'] ? $m['heading'] : $m['subject'], 'fcpfo--mail' );
+            
+        $footer = '<a href="'.$details['url'].'">'.$details['domain'].'</a> | <a href="/impressum/">'.__( 'Legal Notice', 'fcpfo--mail' ).'</a> | <a href="/datenschutzerklarung/">'.__( 'Privacy Policy', 'fcpfo--mail' ).'</a>';
         
-        $title = self::get_data( $id )[$id]['title'];
-        $message = __( self::$messages[ $recipient ][ $topic ][1], 'fcpfo--mail' );
+        $listing = self::get_data( $id )[$id]['title'];
+        $message = __( $m['content'], 'fcpfo--mail' );
         $message = strtr( $message, [ // ++use this method on mail-template.html too instead of sprintf
             '%expire_days' => '30',
-            '%listing_link' => '<a href="'.$details['url'].'/?p='.$id.'">'.$title.'</a>',
-            '%listing_edit_link' => '<a href="'.$details['url'].'/wp-admin/post.php?post='.$id.'&action=edit">'.__( 'Edit' ).'</a>',
+            '%listing_link' => '<a href="'.$details['url'].'/?p='.$id.'">'.$listing.'</a>',
+            '%listing_edit_link' => '<a href="'.$details['url'].'/wp-admin/post.php?post='.$id.'&action=edit">'.__( 'Prolong', 'fcpfo--mail' ).'</a>',
+            '%tutorial_link' => '<a href="/unternehmenseintrag-verlaengern/">'.__( 'How to renew your listing', 'fcpfo--mail' ).'</a>',
         ]);
 
         
         if ( $id ) {
             $message  = '
                 '.$message.'
-                <h2>'.$title.'</h2>
-                <a href="'.$details['url'].'/?p='.$id.'">'.__( 'View' ).'</a> | <a href="'.$details['url'].'/wp-admin/post.php?post='.$id.'&action=edit">'.__( 'Edit' ).'</a>
+                <h2>'.$listing.'</h2>
+                <a href="'.$details['url'].'/?p='.$id.'">'.__( 'View the listing', 'fcpfo--mail' ).'</a> | <a href="'.$details['url'].'/wp-admin/post.php?post='.$id.'&action=edit">'.__( 'Edit the listing', 'fcpfo--mail' ).'</a>
             ';
             
-            $datalist = self::message_datalist( $id, self::$messages[ $recipient ][ $topic ][2] ); // ++translations
+            $datalist = self::message_datalist( $id, $m['list'] ); // ++translations
             $message .= $datalist ? "\n".$datalist : '';
         }
         
@@ -364,6 +370,7 @@ Keeping your premium features only costs you 29€/year. In order to keep your p
         
         return [
             'subject' => $subject,
+            'heading' => $heading,
             'message' => $message,
             'footer' => $footer,
             '_recipient' => $recipient,
@@ -532,7 +539,7 @@ Keeping your premium features only costs you 29€/year. In order to keep your p
         $email_body = $vsprintf( $template, [
             $m['subject'], // title
             $m['preheader'] ? $m['preheader'] : substr( strip_tags( $m['message'] ), 0, 80 ) . '…', // preview header
-            $m['subject'], // h1
+            $m['heading'], // h1
             $m['message'], // the content
             $m['footer'] ? $m['footer'] : self::details()['footer'] // footer
         ]);
