@@ -10,6 +10,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de_DE\n"
 
+#. common
+
+msgid "View"
+msgstr "Anschauen"
+
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgid "View the listing"
+msgstr "Eintrag ansehen"
+
+msgid "Edit the listing"
+msgstr "Unternehmen bearbeiten"
+
+msgid "Prolong"
+msgstr "Verlängern"
+
+msgid "Legal Notice"
+msgstr "Impressum"
+
+msgid "Privacy Policy"
+msgstr "Datenschutzerklärung"
+
 #. emails to the accountant
 
 msgid "Paid tariff request"
@@ -50,7 +73,7 @@ msgstr "Benötigen Sie weitere Hilfe, dann kontaktieren Sie unser Team bitte unt
 msgid "Greetings from Berlin,\n"
 "Team %s"
 msgstr "Mit lieben Grüßen aus Berlin,\n"
-"Das Team von %s"
+"das Team von %s"
 
 msgid "Your entry is published"
 msgstr "Dein Eintrag ist veröffentlicht."
@@ -73,12 +96,22 @@ msgstr "Dein Eintrag wurde erfolgreich verlängert."
 msgid "Your Listing is expiring"
 msgstr "Ihr Eintrag läuft bald ab"
 
+msgid "Important: your listing on klinikerfahrungen.de will expire in %expire_days days"
+msgstr "Wichtig: Ihr Unternehmseintrag auf klinikerfahrungen.de läuft in %expire_days Tagen ab"
+
 msgid "you Premium-Listing on our plattform will expire in %expire_days days: %listing_link. If no action is taken, your premium entry will be automatically changed into a standard entry. This means your company description will be reduced to a maximum of 450 words and you will loose your valueable DoFollow Link.\n"
 "\n"
-"Keeping your premium features only costs you 29€/year. In order to keep your premium listing, you need to extend the membership in your profile: %listing_edit_link."
+"Keeping your premium features only costs you 29€/year. In order to keep your premium listing, you need to extend the membership in your profile: %listing_edit_link.\n"
+"\n"
+"In this tutorial we show you how to renew your listing: %tutorial_link"
 msgstr "Ihr Premium-Eintrag auf unserer Plattform wird in %expire_days Tagen auslaufen: %listing_link. Wenn Sie Ihre Premium-Mitgliedschaft nicht verlängern, wird Ihr Eintrag automatisch in einen Standardeintrag umgewandelt. Das bedeutet sie verlieren all Ihre Premium-Vorteile. Sie verlieren Ihren wervollen DoFollow Link und Ihre Unternehmensbeschreibung wird auf 450 Wörter gekürzt.\n"
 "\n"
-"Es kostet Sie nur 29€ im Jahr, Ihren Premiumstatus zu behalten! Ihren Premium-Eintrag können Sie in Ihrem Klinikerfahrungen-Profil verlängern: %listing_edit_link."
+"Es kostet Sie nur 29€ im Jahr, Ihren Premiumstatus zu behalten! Ihren Premium-Eintrag können Sie in Ihrem Klinikerfahrungen-Profil verlängern: %listing_edit_link.\n"
+"\n"
+"In diesem Tutorial zeigen wir Ihnen, wie Sie Ihren Unternehmenseintrag verlängern: %tutorial_link"
+
+msgid "How to renew your listing"
+msgstr "Wie den Eintrag verlängern"
 
 msgid "Your tariff has just ended"
 msgstr "Dein Eintrag ist abgelaufen"
