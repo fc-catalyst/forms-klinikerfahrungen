@@ -333,30 +333,36 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
         
         $m = self::$messages[ $recipient ][ $topic ];
 
+        $entity = self::get_data( $id )[$id]['title'];
+
         // translations
+        $replacements = function($text) use ($details, $id, $entity) { //++move as a separate method when is demanded by other sending options
+            return strtr( $text, [ // ++use this method on mail-template.html too instead of sprintf
+                '%expire_days' => '30',
+                '%listing_link' => '<a href="'.$details['url'].'/?p='.$id.'">'.$entity.'</a>',
+                '%listing_edit_link' => '<a href="'.$details['url'].'/wp-admin/post.php?post='.$id.'&action=edit">'.__( 'Prolong', 'fcpfo--mail' ).'</a>',
+                '%tutorial_link' => '<a href="'.$details['url'].'/unternehmenseintrag-verlaengern/">'.__( 'How to renew your listing', 'fcpfo--mail' ).'</a>',
+            ]);
+        };
+        
         $locale = $details[ $recipient . '_locale' ]; // ++make dynamic, according to user's settings
         switch_to_locale( $locale );
         load_textdomain( 'fcpfo--mail', __DIR__ . '/languages/fcpfo--mail-'.$locale.'.mo' );
 
         $subject = __( $m['subject'] ? $m['subject'] : $m['heading'], 'fcpfo--mail' );
+        $subject = $replacements( $subject );
         $heading = __( $m['heading'] ? $m['heading'] : $m['subject'], 'fcpfo--mail' );
-            
-        $footer = '<a href="'.$details['url'].'">'.$details['domain'].'</a> | <a href="/impressum/">'.__( 'Legal Notice', 'fcpfo--mail' ).'</a> | <a href="/datenschutzerklarung/">'.__( 'Privacy Policy', 'fcpfo--mail' ).'</a>';
-        
-        $listing = self::get_data( $id )[$id]['title'];
-        $message = __( $m['content'], 'fcpfo--mail' );
-        $message = strtr( $message, [ // ++use this method on mail-template.html too instead of sprintf
-            '%expire_days' => '30',
-            '%listing_link' => '<a href="'.$details['url'].'/?p='.$id.'">'.$listing.'</a>',
-            '%listing_edit_link' => '<a href="'.$details['url'].'/wp-admin/post.php?post='.$id.'&action=edit">'.__( 'Prolong', 'fcpfo--mail' ).'</a>',
-            '%tutorial_link' => '<a href="/unternehmenseintrag-verlaengern/">'.__( 'How to renew your listing', 'fcpfo--mail' ).'</a>',
-        ]);
+        $heading = $replacements( $heading );
 
-        
+        $footer = '<a href="'.$details['url'].'">'.$details['domain'].'</a> | <a href="'.$details['url'].'/impressum/">'.__( 'Legal Notice', 'fcpfo--mail' ).'</a> | <a href="'.$details['url'].'/datenschutzerklarung/">'.__( 'Privacy Policy', 'fcpfo--mail' ).'</a>';
+
+        $message = __( $m['content'], 'fcpfo--mail' );
+        $message = $replacements( $message );
+
         if ( $id ) {
             $message  = '
                 '.$message.'
-                <h2>'.$listing.'</h2>
+                <h2>'.$entity.'</h2>
                 <a href="'.$details['url'].'/?p='.$id.'">'.__( 'View the listing', 'fcpfo--mail' ).'</a> | <a href="'.$details['url'].'/wp-admin/post.php?post='.$id.'&action=edit">'.__( 'Edit the listing', 'fcpfo--mail' ).'</a>
             ';
             
@@ -387,7 +393,7 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
 
         $message['from'] = $details['sending'];
         $message['from_name'] = $details['sending_name'];
-        $message['to'] = $details['accountant'];
+        $message['to'] = [ $details['accountant'], $details['admin'] ]; // ++--admin is for testing here for now
         
         if ( $id ) {
             $data = self::get_data( $id )[$id];
@@ -420,7 +426,7 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
         $meta = self::get_data( $id )[ $id ]['meta'];
         if ( !$meta['billing-email'] ) { return; }
 
-        $message['to'] = [ $meta['billing-email'], $details['admin'] ];
+        $message['to'] = [ $meta['billing-email'], $details['admin'] ]; // ++--admin is for testing here for now
         $message['to_name'] = $meta['billing-name'] ? $meta['billing-name'] : '';
 
         $message['reply_to'] = $details['accountant'];
@@ -445,7 +451,7 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
         
         $author = self::get_data( $id )[ $id ]['author'];
 
-        $message['to'] = $author[0];
+        $message['to'] = [ $author[0], $details['admin'] ]; // ++--admin is for testing here for now
         $message['to_name'] = $author[1] ? $author[1] : '';
 
         $message['reply_to'] = $details['moderator'];
@@ -472,7 +478,7 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
 
         $message['from'] = $details['sending'];
         $message['from_name'] = $details['sending_name'];
-        $message['to'] = $details['moderator'];
+        $message['to'] = [ $details['moderator'], $details['admin'] ]; // ++--admin is for testing here for now
         $message['to_name'] = $details['moderator_name'];
 
         if ( !empty( $difference ) ) { // ++move to a separate function?
@@ -507,7 +513,7 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
 
         $message['from'] = $details['sending'];
         $message['from_name'] = $message['name'];
-        $message['to'] = $details['moderator'];
+        $message['to'] = [ $details['moderator'], $details['admin'] ]; // ++--admin is for testing here for now
         $message['to_name'] = $details['moderator_name'];
         
         $message['reply_to'] = $message['email'];
@@ -642,7 +648,7 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
             sprintf( __( 'If you need assistence, please contact our team at: %s.', 'fcpfo--mail' ), $message['from'] ) . 
             '</p>' .
             '<p><em>' .
-            sprintf( __( "Greetings from Berlin,\nTeam %s", 'fcpfo--mail' ), $message['footer'] ) .
+            sprintf( __( "Greetings from Berlin,\nTeam %s", 'fcpfo--mail' ), self::details()['domain'] ) .
             '</em></p>';
 
         return $message['message'];

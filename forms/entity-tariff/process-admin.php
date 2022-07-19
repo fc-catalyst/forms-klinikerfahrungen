@@ -126,7 +126,8 @@ if ( $admin_am ) {
     wp_clear_scheduled_hook( 'fcp_forms_entity_tariff_ends', [ $postID ] );
 
     $period_before = 60 * 60 * 24 * 30;
-
+//++if not prolonged (prolongation is requested)
+//++if the user is not in the exceptions list
     if ( $tariff_payed_paid && $_POST['entity-tariff-till'] > time() + $period_before ) {
 
         wp_schedule_single_event(
