@@ -104,14 +104,14 @@ msgid "you Premium-Listing on our plattform will expire in %expire_days days: %l
 "Keeping your premium features only costs you 29€/year. In order to keep your premium listing, you need to extend the membership in your profile: %listing_edit_link.\n"
 "\n"
 "In this tutorial we show you how to renew your listing: %tutorial_link"
-msgstr "Ihr Premium-Eintrag auf unserer Plattform wird in %expire_days Tagen auslaufen: %listing_link. Wenn Sie Ihre Premium-Mitgliedschaft nicht verlängern, wird Ihr Eintrag automatisch in einen Standardeintrag umgewandelt. Das bedeutet sie verlieren all Ihre Premium-Vorteile. Sie verlieren Ihren wervollen DoFollow Link und Ihre Unternehmensbeschreibung wird auf 450 Wörter gekürzt.\n"
+msgstr "Ihr Premium-Eintrag auf unserer Plattform wird in %expire_days Tagen auslaufen: %listing_link. Wenn Sie Ihre Premium-Mitgliedschaft nicht verlängern, wird Ihr Eintrag automatisch in einen Standardeintrag umgewandelt. Das bedeutet sie verlieren all Ihre Premium-Vorteile. Sie verlieren Ihren wertvollen DoFollow Link und Ihre Unternehmensbeschreibung wird auf 450 Wörter gekürzt.\n"
 "\n"
 "Es kostet Sie nur 29€ im Jahr, Ihren Premiumstatus zu behalten! Ihren Premium-Eintrag können Sie in Ihrem Klinikerfahrungen-Profil verlängern: %listing_edit_link.\n"
 "\n"
 "In diesem Tutorial zeigen wir Ihnen, wie Sie Ihren Unternehmenseintrag verlängern: %tutorial_link"
 
 msgid "How to renew your listing"
-msgstr "Wie den Eintrag verlängern"
+msgstr "Wie verlängert man den Eintrag"
 
 msgid "Your tariff has just ended"
 msgstr "Dein Eintrag ist abgelaufen"
