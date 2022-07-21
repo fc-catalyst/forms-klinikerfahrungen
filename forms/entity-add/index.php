@@ -51,7 +51,6 @@ new FCPAddPostType( [
 
 
 // pages templates ++move the templates to the FCPADDPostType class
-
 add_filter( 'template_include', function( $template ) {
 
     $new_template = $template; // default theme template
@@ -283,6 +282,22 @@ add_action( 'rest_api_init', function () { // it is in entity-add to easier incl
     register_rest_route( 'fcp-forms/v1', '/entities_around/(?P<lat>\d{1,3}\.?\d*)/(?P<lng>\d{1,3}\.?\d*)/(?P<spc>.+)', $args );
     // ++add var with no specialty
 });
+
+
+// rank math breadcrumbs fix
+add_filter( 'rank_math/frontend/breadcrumb/items', function( $crumbs, $class ) {
+    foreach ( $crumbs as &$v ) {
+        if ( $v[0] === 'Klinik' ) {
+            $v[0] = 'Kliniken und Ärzte'; // ++or get the title dynamically
+        }
+        if ( $v[0] === 'Arzt' ) {
+            $v[0] = 'Kliniken und Ärzte';
+            $v[1] = home_url( '/kliniken/' );
+        }
+    }
+	return $crumbs;
+}, 10, 2);
+
 
 // notify the moderator about the new entity posted for review
 add_action( 'transition_post_status', function($new_status, $old_status, $post) {
