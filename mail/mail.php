@@ -508,7 +508,8 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
 
         $details = self::details();
 
-        $message['subject'] = sprintf( __( 'Message from %s', 'fcpfo' ),  $message['name'] );
+        //++move the translation here?
+        $message['heading'] = $message['subject'] = sprintf( __( 'Message from %s', 'fcpfo' ),  $message['name'] );
         $message['footer'] = $details['footer'];
 
         $message['from'] = $details['sending'];
@@ -519,7 +520,7 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
         $message['reply_to'] = $message['email'];
         $message['reply_to_name'] = $message['name'];
 
-        $message['message'] = wpautop( $message['message'] );
+        $message['message'] = wpautop( esc_html( stripslashes( $message['message'] ) ) );
 
         return self::send( $message );
     }
