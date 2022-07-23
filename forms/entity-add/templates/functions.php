@@ -13,30 +13,18 @@ function print_video() {
     if ( in_array( $format , $video_formats ) ) {
 
         ?>
-        <div class="entity-video">
-            <video width="600" controls>
-                <source src="<?php echo $url ?>" type="video/<?php echo $format ?>">
-                <?php _e( 'Your browser does not support HTML video.', 'fcpfo-ea' ) ?>
-            </video>
-        </div>
+        <div class="entity-video fct1-video" data-source="direct" data-src="<?php echo $url ?>" data-type="video/<?php echo $format ?>" data-error="<?php _e( 'Your browser does not support HTML video.', 'fcpfo-ea' ) ?>"></div>
         <?php
 
         return;
     }
     
     // youtube
-	if ( preg_match(
-   //'/^(?:https?\:\/\/(?:www\.)?youtu(?:.?)+[=\/]{1}([\w-]{11})(?:.?))$/i', $url, $match
-        '/^https?\:\/\/(?:www\.)?youtu(?:.)+[=\/]{1}([\w_\-]{11})(?:[^\w_\-].+)*$/i', $url, $match
-    ) ) {
+	if ( preg_match( '/^https?\:\/\/(?:www\.)?youtu(?:.)+[=\/]{1}([\w_\-]{11})(?:[^\w_\-].+)*$/i', $url, $match ) ) {
         ?>
-        <div class="entity-video">
-            <iframe src="https://www.youtube.com/embed/<?php echo $match[1] ?>?feature=oembed&autoplay=0" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" width="600" height="312" class="youtube"></iframe>
-        </div>
+        <div class="entity-video fct1-video" data-source="youtube" data-src="https://www.youtube.com/embed/<?php echo $match[1] ?>?feature=oembed&autoplay=0"><?php echo do_shortcode( '[borlabs-cookie id="youtube" type="content-blocker"] [/borlabs-cookie]' ) ?></div>
         <?php
     }
-
-	return $filtered_data;
 
 }
 
@@ -64,7 +52,7 @@ function print_gmap() {
     ];
 
     if ( !$lat ) return;
-    
+   
     ?>
     <div class="entity-map fct1-gmap-view" itemprop="geo" itemscope itemtype="https://schema.org/GeoCoordinates"
         <?php echo $addr ? 'data-addr="'.$addr.'"' : '' ?>
@@ -75,6 +63,7 @@ function print_gmap() {
     >
         <?php echo $lat ? '<meta itemprop="latitude" content="'.$lat.'">' : '' ?>
         <?php echo $long ? '<meta itemprop="longitude" content="'.$long.'">' : '' ?>
+        <?php echo do_shortcode( '[borlabs-cookie id="googlemaps" type="content-blocker"] [/borlabs-cookie]' ) ?>
     </div>
     <?php
 }
