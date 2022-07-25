@@ -73,7 +73,7 @@ if ( isset( $_GET['step3'] ) ) {
                 'entity-id',
                 [
                     'type' => 'notice',
-                    'text' => 'Will be assigned to: ' . get_the_title()
+                    'text' => 'Wird ausgestellt an: ' . get_the_title()
                 ],
                 'after'
             );
@@ -83,7 +83,7 @@ if ( isset( $_GET['step3'] ) ) {
                 'billing-submit',
                 [
                     'type' => 'notice',
-                    'text' => '<p>Nach Bestätigung der Registrierung, erhalten Sie in Kürze eine Rechnung.</p>',
+                    'text' => '<p>Nach Bestätigung der Registrierung erhalten Sie in Kürze eine Rechnung.</p>',
                 ],
                 'before'
             );
