@@ -15,13 +15,13 @@ register_activation_hook( $this->self_path_file, function() {
         'edit_private_entities' => true,
         'delete_entities' => true,
         //'publish_entities' => true, // only submit for review
-        //'delete_published_entities' => true, // set to false, so that a client doesn't remove it accidentally
+        'delete_published_entities' => true, // set to false, so that a client doesn't remove it accidentally
 
         'edit_billings' => true,
-        'edit_published_billings' => true,
-        'edit_private_billings' => true,
+        //'edit_published_billings' => true,
+        //'edit_private_billings' => true,
         'delete_billings' => true,
-        'publish_billings' => true,
+        //'publish_billings' => true,
     ]);
     
     
@@ -50,12 +50,37 @@ register_activation_hook( $this->self_path_file, function() {
     $role->add_cap( 'delete_published_billings' );
     $role->add_cap( 'delete_private_billings' );
     $role->add_cap( 'delete_others_billings' );
-    $role->add_cap( 'publish_billings' );
+    //$role->add_cap( 'publish_billings' );
 //*/
 });
 
 register_deactivation_hook( $this->self_path_file, function() {
+
     remove_role( 'entity_delegate' );
+
+    $role = get_role( 'administrator' );
+
+    $role->remove_cap( 'read_private_entities' );
+    $role->remove_cap( 'edit_entities' );
+    $role->remove_cap( 'edit_published_entities' );
+    $role->remove_cap( 'edit_private_entities' );
+    $role->remove_cap( 'edit_others_entities' );
+    $role->remove_cap( 'delete_entities' );
+    $role->remove_cap( 'delete_published_entities' );
+    $role->remove_cap( 'delete_private_entities' );
+    $role->remove_cap( 'delete_others_entities' );
+    $role->remove_cap( 'publish_entities' );
+
+    $role->remove_cap( 'read_private_billings' );
+    $role->remove_cap( 'edit_billings' );
+    $role->remove_cap( 'edit_published_billings' );
+    $role->remove_cap( 'edit_private_billings' );
+    $role->remove_cap( 'edit_others_billings' );
+    $role->remove_cap( 'delete_billings' );
+    $role->remove_cap( 'delete_published_billings' );
+    $role->remove_cap( 'delete_private_billings' );
+    $role->remove_cap( 'delete_others_billings' );
+    $role->remove_cap( 'publish_billings' );
 });
 
 

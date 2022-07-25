@@ -9,7 +9,7 @@ $wp_query = new WP_Query([
     'post_type'      => 'billing',
     'p'              => $_POST['entity-billing'],
     'posts_per_page' => 1,
-    'post_status'    => ['publish', 'private'],
+    'post_status'    => ['any', 'active'],
 ]);
 
 if ( $wp_query->have_posts() ) {

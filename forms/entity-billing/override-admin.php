@@ -14,7 +14,7 @@ $billing_posts = get_posts([
     'post_type' => 'billing',
     'orderby' => 'post_title',
     'order'   => 'ASC',
-    'post_status' => 'any',
+    'post_status' => ['any', 'active'],
     'posts_per_page' => -1,
 ]);
 
