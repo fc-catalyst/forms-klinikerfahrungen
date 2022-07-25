@@ -73,6 +73,7 @@ add_filter( 'manage_clinic_posts_columns', function( $columns ) {
     $columns['tariff'] = __( 'Tariff', '' );
     $columns['tariff-payed'] = __( 'Payed', '' );
     $columns['tariff-till'] = __( 'Till', '' );
+    unset( $columns['worthy'] ); // ++--not needed if Worthy plugin is not used
     //unset( $columns['date'] );
     return $columns;
 });
@@ -96,10 +97,11 @@ add_filter( 'manage_edit-clinic_sortable_columns', function( $columns ) {
     return $columns;
 });
 
-add_filter( 'manage_doctor_posts_columns', function( $columns ) {
+add_filter( 'manage_doctor_posts_columns', function( $columns ) { // ++that's stupid to repeat - just use namespace and functions
     $columns['tariff'] = __( 'Tariff', '' );
     $columns['tariff-payed'] = __( 'Payed', '' );
     $columns['tariff-till'] = __( 'Till', '' );
+    unset( $columns['worthy'] ); // ++--not needed if Worthy plugin is not used
     //unset( $columns['date'] );
     return $columns;
 });

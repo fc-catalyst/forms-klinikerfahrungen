@@ -33,3 +33,9 @@ new FCP_Add_Meta_Boxes( $json, (object) [
     'context' => 'side',
     'priority' => 'default',
 ] );
+
+// ++--not needed if Worthy plugin is not used - removes the Worthy column from the list of billings
+add_filter( 'manage_billing_posts_columns', function( $columns ) {
+    unset( $columns['worthy'] );
+    return $columns;
+});
