@@ -181,7 +181,7 @@ if ( !$admin_am ) {
             __( 'Payment status', 'fcpfo-et' ).': ' .
             __( 'Pending', 'fcpfo-et' ).'. </em>' .
             sprintf(
-                __( 'You will be billed in a few days via your mentioned billing email <em>%s</em>. For any questions or problems with receiving the bill, please contact our accountant <a href=\"%s\">%s</a>.', 'fcpfo-et' ),
+                __( 'You will be billed in a few days via your mentioned billing email <em>%s</em>. For any questions or problems with receiving the bill, please contact our accountant <a href="%s">%s</a>.', 'fcpfo-et' ),
                 $billing_email, $accountant_email, $accountant_email
             );
 
@@ -190,7 +190,7 @@ if ( !$admin_am ) {
             __( 'Payment status', 'fcpfo-et' ).': ' .
             __( 'Billed', 'fcpfo-et' ).'. </font></em>' .
             sprintf(
-                __( 'Please check your billing email <em>%s</em> and pay the bill to activate the tariff. For any questions please contact our accountant by <a href=\"%s\">%s</a>', 'fcpfo-et' ),
+                __( 'Please check your billing email <em>%s</em> and pay the bill to activate the tariff. For any questions please contact our accountant by <a href="%s">%s</a>', 'fcpfo-et' ),
                 $billing_email, $accountant_email, $accountant_email
             );
 
@@ -214,7 +214,7 @@ if ( !$admin_am ) {
             __( 'Payment status', 'fcpfo-et' ).': ' .
             __( 'Pending', 'fcpfo-et' ).'. </em>' .
             sprintf(
-                __( 'You will be billed in a few days via your mentioned billing email <em>%s</em>. For any questions or problems with receiving the bill, please contact our accountant <a href=\"%s\">%s</a>.', 'fcpfo-et' ),
+                __( 'You will be billed in a few days via your mentioned billing email <em>%s</em>. For any questions or problems with receiving the bill, please contact our accountant <a href="%s">%s</a>.', 'fcpfo-et' ),
                 $billing_email, $accountant_email, $accountant_email
             );
 
@@ -223,7 +223,7 @@ if ( !$admin_am ) {
             __( 'Payment status', 'fcpfo-et' ).': ' .
             __( 'Billed', 'fcpfo-et' ).'. </font></em>' .
             sprintf(
-                __( 'Please check your billing email <em>%s</em> and pay the bill to activate the tariff. For any questions please contact our accountant by <a href=\"%s\">%s</a>', 'fcpfo-et' ),
+                __( 'Please check your billing email <em>%s</em> and pay the bill to activate the tariff. For any questions please contact our accountant by <a href="%s">%s</a>', 'fcpfo-et' ),
                 $billing_email, $accountant_email, $accountant_email
             );
 
