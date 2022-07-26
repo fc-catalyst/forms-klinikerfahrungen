@@ -26,6 +26,16 @@
             "roles_edit" : [
                 "administrator"
             ]
+        },
+        {
+            "type" : "select",
+            "name" : "custom-header",
+            "meta_box" : "only",
+            "placeholder" : "Apply custom header",
+            "options" : {},
+            "roles_edit" : [
+                "administrator"
+            ]
         }
     ]
 }

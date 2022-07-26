@@ -14,8 +14,9 @@ if ( $json === false ) { return; }
 
 
 new FCP_Add_Meta_Boxes( $json, (object) [
-    'title' => __( 'Page options'. 'fcpfo' ),
+    'title' => __( 'Page options', 'fcpfo' ),
     'post_types' => ['page'],
     'context' => 'side',
     'priority' => 'default'
-] );
+]);
+
