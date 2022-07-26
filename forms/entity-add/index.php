@@ -284,6 +284,39 @@ add_action( 'rest_api_init', function () { // it is in entity-add to easier incl
 });
 
 
+// hide the images on trash
+add_action( 'transition_post_status', function($new_status, $old_status, $post) {
+    if ( !in_array( $post->post_type, ['clinic', 'doctor'] ) ) { return; }
+    $dir = wp_get_upload_dir()['basedir'] . '/entity/' . $post->ID;
+
+    if ( $old_status !== 'trash' && $new_status === 'trash' ) { // just rename the dir ++can add a hash, instead of _trash
+        rename( $dir, $dir . '_trashed' );
+    }
+    
+    if ( $old_status === 'trash' && $new_status !== 'trash' ) {
+        rename( $dir . '_trashed', $dir );
+    }
+}, 10, 3 );
+
+// delete images on delete
+add_action( 'delete_post', function($postID) {
+    $dir = wp_get_upload_dir()['basedir'] . '/entity/' . $postID;
+    $rmdir = function($dir) use (&$rmdir) {
+        $files = array_diff( scandir( $dir ), ['.', '..'] );
+        foreach ( $files as $file ) {
+            if ( is_dir( $dir . '/' . $file ) ) {
+                $rmdir( $dir . '/' . $file );
+                continue;
+            }
+            unlink( $dir . '/' . $file );
+        }
+        rmdir( $dir );
+    };
+    $rmdir( $dir . '_trashed' );
+    $rmdir( $dir );
+});
+
+
 // rank math breadcrumbs fix
 add_filter( 'rank_math/frontend/breadcrumb/items', function( $crumbs, $class ) {
     foreach ( $crumbs as &$v ) {
