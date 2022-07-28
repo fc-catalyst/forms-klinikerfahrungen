@@ -284,18 +284,46 @@ add_action( 'rest_api_init', function () { // it is in entity-add to easier incl
 });
 
 
-// hide the images on trash
+// hide the images on trash and back
 add_action( 'transition_post_status', function($new_status, $old_status, $post) {
     if ( !in_array( $post->post_type, ['clinic', 'doctor'] ) ) { return; }
-    $dir = wp_get_upload_dir()['basedir'] . '/entity/' . $post->ID;
+    $upl = wp_get_upload_dir();
+    $dir = $upl['basedir'] . '/entity/' . $post->ID;
+    $url = $upl['url'] . '/entity/' . $post->ID;
 
-    if ( $old_status !== 'trash' && $new_status === 'trash' ) { // just rename the dir ++can add a hash, instead of _trash
-        rename( $dir, $dir . '_trashed' );
-    }
-    
+    // restore
     if ( $old_status === 'trash' && $new_status !== 'trash' ) {
         rename( $dir . '_trashed', $dir );
     }
+
+    // clear cloudflare cached images on trash
+    if ( $old_status !== 'trash' && $new_status === 'trash' ) {
+        if ( class_exists( '\CF\WordPress\HooksByURL' ) ) {
+            $imgs = [];
+            $get_urls = function($d) use (&$get_urls, &$imgs, $dir, $url) {
+                $files = array_diff( scandir( $d ), ['.', '..'] );
+                foreach ( $files as $file ) {
+                    if ( is_dir( $d . '/' . $file ) ) {
+                        $get_urls( $d . '/' . $file );
+                        continue;
+                    }
+                    if ( in_array( pathinfo( $file, PATHINFO_EXTENSION ), ['jpg', 'jpeg', 'png', 'gif'] ) ) {
+                        $imgs[] = str_replace( $dir, $url, $d ) . '/' . $file;
+                    }
+                }
+            };
+            $get_urls( $dir );
+            
+            $cf = new \CF\WordPress\HooksByURL();
+            $cf->purgeCacheByRelevantURLsTRUE( $imgs );
+        }
+    }
+
+    // trash
+    if ( $old_status !== 'trash' && $new_status === 'trash' ) {
+        rename( $dir, $dir . '_trashed' );
+    }
+
 }, 10, 3 );
 
 // delete images on delete
@@ -347,3 +375,10 @@ add_action( 'transition_post_status', function($new_status, $old_status, $post) 
     require_once __DIR__ . '/../../mail/mail.php';
     FCP_FormsMail::to_user( 'published', $post->ID );
 }, 10, 3 );
+
+// the cloudflare plugin clear by url, made for images, which remain even after hidding
+add_action( 'plugins_loaded', function() {
+    if ( !is_admin() ) { return; }
+    if ( !class_exists( '\CF\WordPress\Hooks' ) ) { return; }
+    require_once( __DIR__ . '/inc/cloudflare_extend.php' );
+});
