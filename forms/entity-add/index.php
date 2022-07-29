@@ -313,9 +313,11 @@ add_action( 'transition_post_status', function($new_status, $old_status, $post) 
                 }
             };
             $get_urls( $dir );
-            
-            $cf = new \CF\WordPress\HooksByURL();
-            $cf->purgeCacheByRelevantURLsTRUE( $imgs );
+
+            if ( !empty( $imgs ) ) {
+                $cf = new \CF\WordPress\HooksByURL();
+                $cf->purgeCacheByRelevantURLsTRUE( $imgs );
+            }
         }
     }
 
@@ -359,7 +361,7 @@ add_filter( 'rank_math/frontend/breadcrumb/items', function( $crumbs, $class ) {
 	return $crumbs;
 }, 10, 2);
 
-
+/*
 // notify the moderator about the new entity posted for review
 add_action( 'transition_post_status', function($new_status, $old_status, $post) {
     if ( !in_array( $post->post_type, ['clinic', 'doctor'] ) ) { return; }
@@ -375,7 +377,7 @@ add_action( 'transition_post_status', function($new_status, $old_status, $post) 
     require_once __DIR__ . '/../../mail/mail.php';
     FCP_FormsMail::to_user( 'published', $post->ID );
 }, 10, 3 );
-
+//*/
 // the cloudflare plugin clear by url, made for images, which remain even after hidding
 add_action( 'plugins_loaded', function() {
     if ( !is_admin() ) { return; }

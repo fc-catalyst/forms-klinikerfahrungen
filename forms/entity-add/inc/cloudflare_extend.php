@@ -15,9 +15,7 @@ class HooksByURL extends Hooks {
                 return;
             }
 
-            if ( !is_string( $urls ) ) {
-                $urls = [ $urls ];
-            }
+            $urls = (array) $urls;
 /*
             $postIds = (array) $postIds;
             $urls = [];
@@ -59,7 +57,7 @@ class HooksByURL extends Hooks {
 
             // Filter by unique urls
             $urls = array_values(array_filter(array_unique($urls)));
-
+/*
             $activePageRules = $this->api->getPageRules($zoneTag, "active");
             $hasCacheOverride = $this->pageRuleContains($activePageRules, "cache_level", "cache_everything");
 
@@ -82,7 +80,7 @@ class HooksByURL extends Hooks {
                 $this->logger->debug("zone level always_use_https is enabled, removing HTTP based URLs");
                 $urls = array_filter($urls, array($this, "urlIsHTTPS"));
             }
-
+//*/
             if (!empty($urls)) {
                 //do_action('cloudflare_purged_urls', $urls, $postIds);
                 $chunks = array_chunk($urls, 30);
