@@ -576,9 +576,10 @@ class FCP_Forms__Draw {
             $method = 'field_' . $f->type;
         }
         if ( !method_exists( $this, $method ) ) { return; }
+        if ( isset( $f->options ) ) { $f->options = $this->order( $f ); }
         $this->field__wrap( $f, $method );
     }
-    
+
     private function printGroup($f) {
 
         /*
@@ -672,6 +673,27 @@ class FCP_Forms__Draw {
         return ' fcp-form-small';
     }
 
+    private function order( $f ) {
+        if ( !isset( $f->order ) ) { return $f->options; }
+        $f->options = (array) $f->options;
+        if ( $f->order[0] === 'key' ) {
+            if ( $f->order[1] === 'ASC' ) {
+                ksort( $f->options );
+            }
+            if ( $f->order[1] === 'DESC' ) {
+                krsort( $f->options );
+            }
+        }
+        if ( $f->order[0] === 'value' ) {
+            if ( $f->order[1] === 'ASC' ) {
+                asort( $f->options );
+            }
+            if ( $f->order[1] === 'DESC' ) {
+                arsort( $f->options );
+            }
+        }
+        return (object) $f->options;
+    }
 
     public function print_meta_boxes() {
         ob_start();
