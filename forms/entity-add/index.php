@@ -30,7 +30,16 @@ new FCPAddPostType( [
     'has_archive' => true,
     'capability_type' => ['entity', 'entities'],
     'text_domain' => 'fcpfo-ea',
-] );
+    'x-taxonomies' => [
+        'name' => 'Field',
+        'type' => 'field',
+        'plural' => 'Fields',
+        'description' => 'The list of categories for Clinics and Doctors',
+        'public' => true, // ++turn to false in the end
+        'hierarchical' => true,
+        'show_admin_column' => false
+    ]
+]);
 
 new FCPAddPostType( [
     'name' => 'Doctor',
@@ -47,7 +56,8 @@ new FCPAddPostType( [
     'has_archive' => true,
     'capability_type' => ['entity', 'entities'],
     'text_domain' => 'fcpfo-ea',
-] );
+    'x-taxonomies' => [ 'type' => 'field' ]
+]);
 
 
 // pages templates ++move the templates to the FCPADDPostType class
@@ -73,7 +83,9 @@ add_filter( 'template_include', function( $template ) {
 }, 99 );
 
 add_filter( 'comments_template', function( $template ) {
-
+//print_r( $template );
+//exit;
+//return $template;
     $new_template = $template; // default theme template
     $path = $this->forms_path . 'entity-add/templates/';
 
@@ -361,7 +373,7 @@ add_filter( 'rank_math/frontend/breadcrumb/items', function( $crumbs, $class ) {
 	return $crumbs;
 }, 10, 2);
 
-/*
+//*
 // notify the moderator about the new entity posted for review
 add_action( 'transition_post_status', function($new_status, $old_status, $post) {
     if ( !in_array( $post->post_type, ['clinic', 'doctor'] ) ) { return; }
@@ -378,6 +390,7 @@ add_action( 'transition_post_status', function($new_status, $old_status, $post) 
     FCP_FormsMail::to_user( 'published', $post->ID );
 }, 10, 3 );
 //*/
+
 // the cloudflare plugin clear by url, made for images, which remain even after hidding
 add_action( 'plugins_loaded', function() {
     if ( !is_admin() ) { return; }

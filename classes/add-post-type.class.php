@@ -60,10 +60,54 @@ class FCPAddPostType {
             'exclude_from_search' => $p['public'] ? false : true,
             'publicly_queryable'  => $p['public'],
             'capability_type'     => $p['capability_type'] ? $p['capability_type'] : 'page',
-            'map_meta_cap'        => $p['capability_type'] || $p['capability'] ? true : null
+            'map_meta_cap'        => $p['capability_type'] || $p['capability'] ? true : null,
         ];
         if ( $p['slug'] ) {
             $args['rewrite'] = [ 'slug' => $p['slug'] ];
+        }
+        
+        if ( !$p['taxonomies'] ) {
+            register_post_type( $p['type'], $args );
+            return;
+        }
+
+        // custom taxonomies
+        $t = $p['taxonomies'];
+
+        //++foreach
+        if ( !taxonomy_exists( $t['type'] ) ) {
+            //++improve all the params according to modern
+            $taxlabels = [
+                'name'                => __( $t['plural'], $td ),
+                'singular_name'       => __( $t['name'], $td ),
+                'menu_name'           => __( $t['plural'], $td ),
+                'all_items'           => __( 'All ' . $t['plural'], $td ),
+                'view_item'           => __( 'View ' . $t['name'], $td ),
+                'add_new_item'        => __( 'Add New ' . $t['name'], $td ),
+                'edit_item'           => __( 'Edit ' . $t['name'], $td ),
+                'update_item'         => __( 'Update ' . $t['name'], $td ),
+                'search_items'        => __( 'Search ' . $t['name'], $td ),
+                'parent_item'         => __( 'Parent ' . $t['plural'], $td ),
+                'parent_item_colon'   => __( 'Parent ' . $t['plural'], $td ) . ':',
+                'new_item_name'       => __( 'New ' . $t['name'] . ' title', $td ),
+                'back_to_items'       => __( '← Back to ' . $t['name'], $td ),
+            ];
+        
+            $taxargs = [
+                'label'               => __( $t['name'], $td ),
+                'labels'              => $taxlabels,
+                'description'         => __( $t['description'], $td ),
+                'public'              => $t['public'],
+                'hierarchical'        => $t['hierarchical'],
+                'show_admin_column'   => $t['show_admin_column'],
+            ];
+ 
+            register_taxonomy( $t['type'], $p['type'], $taxargs );
+
+        }
+
+        if ( $p['taxonomies'] ) {
+            $args['taxonomies'] = [ $t['type'] ];
         }
 
         register_post_type( $p['type'], $args );
