@@ -47,17 +47,18 @@ if ( have_posts() ) :
                 echo $place ? ' <span>in '.$place.' </span>' : '';
         ?></a></div>
         
-        <?php if ( method_exists( 'FCP_Comment_Rate', 'print_rating_summary_short' ) ) { ?>
+        <?php if ( method_exists( '\FCP_Comment_Rate', 'print_rating_summary_short' ) ) { ?>
         <div class="entry-rating">
             <?php \FCP_Comment_Rate::print_rating_summary_short() ?>
         </div>
         <?php } ?>
-        
-        <?php if ( comments_open() || wp_count_comments( get_the_ID() )->approved ) { ?>
+
+        <?php if ( comments_open() || get_comments_number() ) { ?>
+
         <div class="wp-block-buttons entry-rate">
             <div class="wp-block-button is-style-outline">
-                <a class="wp-block-button__link has-white-color has-text-color" href="#bewertungen">
-                    <?php _e( wp_count_comments( get_the_ID() )->approved ? 'Reviews' : 'Review and Rate', 'fcpcr' ) ?>
+                <a class="wp-block-button__link has-white-color has-text-color" href="#comments">
+                    <?php _e( get_comments_number() ? 'Reviews' : 'Review and Rate', 'fcpcr' ) ?>
                 </a>
             </div>
         </div>
@@ -149,11 +150,7 @@ fcLoadScriptVariable(
 
 <?php echo current_user_can( 'edit_post' ) ? edit_post_link() : '' ?>
 
-<div style="height:100px" aria-hidden="true" class="wp-block-spacer"></div>
-
-<div class="entry-content" id="bewertungen">
-    <?php comments_template() ?>
-</div>
+<?php comments_template() ?>
 
 <div style="height:80px" aria-hidden="true" class="wp-block-spacer"></div>
 
