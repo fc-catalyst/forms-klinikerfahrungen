@@ -30,7 +30,7 @@ if ( post_password_required() ) {
             </div>
             
             <div class="wp-block-column" style="flex-basis:33.33%">
-                <?php FCP_Comment_Rate::print_rating_summary() ?>
+                <?php FCP_Comment_Rate::summary_print() ?>
             </div>
 
         </div>

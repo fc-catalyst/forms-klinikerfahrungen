@@ -260,8 +260,8 @@ function entity_tile_print($footer = '') {
                 <p>
                     <?php echo fct1_meta( 'entity-specialty' ); echo fct1_meta( 'entity-geo-city', ' in ' ) ?>
                 </p>
-                <?php if ( method_exists( 'FCP_Comment_Rate', 'print_stars_total' ) ) { ?>
-                    <?php \FCP_Comment_Rate::print_stars_total() ?>
+                <?php if ( method_exists( 'FCP_Comment_Rate', 'stars_total_print' ) ) { ?>
+                    <?php \FCP_Comment_Rate::stars_total_print() ?>
                 <?php } ?>
             </div>
         </div>

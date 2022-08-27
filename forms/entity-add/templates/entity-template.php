@@ -47,9 +47,9 @@ if ( have_posts() ) :
                 echo $place ? ' <span>in '.$place.' </span>' : '';
         ?></a></div>
         
-        <?php if ( method_exists( 'FCP_Comment_Rate', 'print_rating_summary_short' ) ) { ?>
+        <?php if ( method_exists( 'FCP_Comment_Rate', 'stars_n_rating_print' ) ) { ?>
         <div class="entry-rating">
-            <?php \FCP_Comment_Rate::print_rating_summary_short() ?>
+            <?php FCP_Comment_Rate::stars_n_rating_print() ?>
         </div>
         <?php } ?>
         
