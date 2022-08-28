@@ -32,11 +32,21 @@ if ( !comments_open() && !get_comments_number() || !post_type_supports( get_post
 
     <?php } ?>
 
-    <?php
-    // print the form
-    if ( comments_open() ) { comment_form(); }
-    ?>
-
+    <?php if ( comments_open() ) { comment_form(); } ?>
+    <?php if ( comments_open() ) { ?>
+    <style>
+    .cr_main-fields {
+        display:flex;
+        flex-wrap:wrap;
+        justify-content:space-between;
+    }
+    .cr_main-fields > * {
+        width:100%;
+        margin-bottom:0;
+    }
+    </style>
+    <?php } ?>
+    
 </div>
 
 <?php

@@ -50,6 +50,16 @@ if ( have_posts() ) :
         <?php if ( method_exists( '\FCP_Comment_Rate', 'stars_n_rating_print' ) ) { ?>
         <div class="entry-rating">
             <?php \FCP_Comment_Rate::stars_n_rating_print() ?>
+            <style>
+            .entry-rating .cr_stars_bar > div {
+                background-color:#fff;
+            }
+            .entry-rating .cr_stars_bar + span {
+                margin-left:12px;
+                font-size:26px;
+                color:#f5b309;
+            }
+            </style>
         </div>
         <?php } ?>
 
@@ -62,6 +72,25 @@ if ( have_posts() ) :
                 </a>
             </div>
         </div>
+        <style>
+        .entry-rate {
+            margin-top:30px;
+        }
+        .entry-rate .wp-block-button__link {
+            padding-top:0.3em;
+            padding-bottom:0.3em;
+            text-transform:uppercase;
+            font-size:16px;
+            font-weight:700;
+        }
+        .entry-rate .wp-block-button__link::after {
+            content:'\000BB';
+            display:inline-block;
+            margin-left:10px;
+            font-weight:300;
+            transform:rotate( 90deg ) scale( 1.3 );
+        }
+        </style>
         <?php } ?>
         
         <?php if (function_exists('yoast_breadcrumb')){yoast_breadcrumb('<div class="yoast-breadcrumbs">','</div>');} ?>
