@@ -20,10 +20,10 @@ if ( !comments_open() && !get_comments_number() || !post_type_supports( get_post
                 <?php the_comments_pagination(); ?>
             </div>
             <?php
-            if ( class_exists( 'FCP_Comment_Rate' ) ) {
+            if ( method_exists( 'FCP_Comment_Rate', 'summary_print' ) ) {
                 ?>
                 <div class="wp-block-column" style="flex-basis:33.33%">
-                    <?php FCP_Comment_Rate::print_rating_summary() ?>
+                    <?php FCP_Comment_Rate::summary_print() ?>
                 </div>
                 <?php
             }

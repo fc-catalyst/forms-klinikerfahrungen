@@ -49,6 +49,8 @@ $wp_query = new \WP_Query( $args );
     </div>
 
     <div class="wrap-width">
+    
+    <style>.entity-about .cr_stars_bar{width:50%;max-width:115px;margin-top:8px;}</style>
 <?php
 
 
