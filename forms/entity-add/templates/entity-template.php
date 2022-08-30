@@ -51,6 +51,9 @@ if ( have_posts() ) :
         <div class="entry-rating">
             <?php \FCP_Comment_Rate::stars_n_rating_print() ?>
             <style>
+            .entry-rating .cr_stars_bar::before {
+                background-color:#ffffff33;
+            }
             .entry-rating .cr_stars_bar > div {
                 background-color:#fff;
             }
