@@ -47,20 +47,59 @@ if ( have_posts() ) :
                 echo $place ? ' <span>in '.$place.' </span>' : '';
         ?></a></div>
         
+<<<<<<< HEAD
         <?php if ( method_exists( 'FCP_Comment_Rate', 'stars_n_rating_print' ) ) { ?>
         <div class="entry-rating">
             <?php FCP_Comment_Rate::stars_n_rating_print() ?>
+=======
+        <?php if ( method_exists( '\FCP_Comment_Rate', 'stars_n_rating_print' ) ) { ?>
+        <div class="entry-rating">
+            <?php \FCP_Comment_Rate::stars_n_rating_print() ?>
+            <style>
+            .entry-rating .cr_stars_bar::before {
+                background-color:#ffffff33;
+            }
+            .entry-rating .cr_stars_bar > div {
+                background-color:#fff;
+            }
+            .entry-rating .cr_stars_bar + span {
+                margin-left:12px;
+                font-size:26px;
+                color:#f5b309;
+            }
+            </style>
+>>>>>>> comments-separate
         </div>
         <?php } ?>
-        
-        <?php if ( comments_open() || wp_count_comments( get_the_ID() )->approved ) { ?>
+
+        <?php if ( comments_open() || get_comments_number() ) { ?>
+
         <div class="wp-block-buttons entry-rate">
             <div class="wp-block-button is-style-outline">
-                <a class="wp-block-button__link has-white-color has-text-color" href="#bewertungen">
-                    <?php _e( wp_count_comments( get_the_ID() )->approved ? 'Reviews' : 'Review and Rate', 'fcpcr' ) ?>
+                <a class="wp-block-button__link has-white-color has-text-color" href="#comments">
+                    <?php _e( get_comments_number() ? 'Reviews' : 'Review and Rate', 'fcpcr' ) ?>
                 </a>
             </div>
         </div>
+        <style>
+        .entry-rate {
+            margin-top:30px;
+        }
+        .entry-rate .wp-block-button__link {
+            padding-top:0.3em;
+            padding-bottom:0.3em;
+            text-transform:uppercase;
+            font-size:16px;
+            font-weight:700;
+        }
+        .entry-rate .wp-block-button__link::after {
+            content:'\000BB';
+            display:inline-block;
+            margin-left:10px;
+            font-weight:300;
+            transform:rotate( 90deg ) scale( 1.3 );
+        }
+        </style>
         <?php } ?>
         
         <?php if (function_exists('yoast_breadcrumb')){yoast_breadcrumb('<div class="yoast-breadcrumbs">','</div>');} ?>
@@ -149,11 +188,7 @@ fcLoadScriptVariable(
 
 <?php echo current_user_can( 'edit_post' ) ? edit_post_link() : '' ?>
 
-<div style="height:100px" aria-hidden="true" class="wp-block-spacer"></div>
-
-<div class="entry-content" id="bewertungen">
-    <?php comments_template() ?>
-</div>
+<?php comments_template() ?>
 
 <div style="height:80px" aria-hidden="true" class="wp-block-spacer"></div>
 

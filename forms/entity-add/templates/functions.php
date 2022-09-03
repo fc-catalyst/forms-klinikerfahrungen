@@ -106,7 +106,7 @@ function print_contact_button($meta_name, $name, $itemprop = '') {
     ?>
         <div class="fct1-tile-one">
             <a href="<?php echo $prefix ?><?php echo $meta_value ?>"<?php echo $attrs ?>></a>
-            <img src="/wp-content/plugins/fcp-forms/forms/entity-add/templates/imgs/<?php echo $img ?>.svg" class="attachment-full size-full" alt="" loading="lazy">
+            <img width="100" height="80" src="/wp-content/plugins/fcp-forms/forms/entity-add/templates/imgs/<?php echo $img ?>.svg" class="attachment-full size-full" alt="" loading="lazy">
             <p<?php echo $itemprop ? ' itemprop="'.$itemprop.'" content="'.$meta_value.'" ' : '' ?>><?php echo $name ?></p>
         </div>
     <?php
@@ -260,7 +260,11 @@ function entity_tile_print($footer = '') {
                 <p>
                     <?php echo fct1_meta( 'entity-specialty' ); echo fct1_meta( 'entity-geo-city', ' in ' ) ?>
                 </p>
+<<<<<<< HEAD
                 <?php if ( method_exists( 'FCP_Comment_Rate', 'stars_total_print' ) ) { ?>
+=======
+                <?php if ( method_exists( '\FCP_Comment_Rate', 'stars_total_print' ) ) { ?>
+>>>>>>> comments-separate
                     <?php \FCP_Comment_Rate::stars_total_print() ?>
                 <?php } ?>
             </div>

@@ -3,19 +3,17 @@
  * The template for displaying comments
 */
 
-if ( post_password_required() ) {
-	return;
-}
+if ( post_password_required() ) { return; }
+if ( !comments_open() && !get_comments_number() || !post_type_supports( get_post_type(), 'comments' ) ) { return; }
 
 ?>
-<div id="comments" class="comments-area">
+<div style="height:100px" aria-hidden="true" class="wp-block-spacer"></div>
+<div id="comments" class="comments-area entry-content">
 
-	<?php
+    <?php if ( have_comments() ) { ?>
 
-	if ( have_comments() ) {
-
-    ?>
         <div class="wp-block-columns">
+<<<<<<< HEAD
             <div class="wp-block-column comments-list">
 
                 <?php wp_list_comments() ?>
@@ -31,25 +29,42 @@ if ( post_password_required() ) {
             
             <div class="wp-block-column" style="flex-basis:33.33%">
                 <?php FCP_Comment_Rate::summary_print() ?>
+=======
+            <div class="wp-block-column">
+                <ul class="comments-list">
+                    <?php wp_list_comments() ?>
+                </ul>
+                <?php the_comments_pagination(); ?>
+>>>>>>> comments-separate
             </div>
-
+            <?php
+            if ( method_exists( 'FCP_Comment_Rate', 'summary_print' ) ) {
+                ?>
+                <div class="wp-block-column" style="flex-basis:33.33%">
+                    <?php FCP_Comment_Rate::summary_print() ?>
+                </div>
+                <?php
+            }
+            ?>
         </div>
-        
-        <?php
 
-	}
+    <?php } ?>
 
-	if ( comments_open() ) {
-        comment_form();
-/*	} else {
-		?>
-		<p class="no-comments"><?php _e( 'Comments are closed.' ) ?></p>
-		<?php
-//*/
+    <?php if ( comments_open() ) { comment_form(); } ?>
+    <?php if ( comments_open() ) { ?>
+    <style>
+    .cr_main-fields {
+        display:flex;
+        flex-wrap:wrap;
+        justify-content:space-between;
     }
-
-	?>
-
+    .cr_main-fields > * {
+        width:100%;
+        margin-bottom:0;
+    }
+    </style>
+    <?php } ?>
+    
 </div>
 
 <?php
