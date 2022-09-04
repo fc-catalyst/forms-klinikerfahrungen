@@ -47,11 +47,6 @@ if ( have_posts() ) :
                 echo $place ? ' <span>in '.$place.' </span>' : '';
         ?></a></div>
         
-<<<<<<< HEAD
-        <?php if ( method_exists( 'FCP_Comment_Rate', 'stars_n_rating_print' ) ) { ?>
-        <div class="entry-rating">
-            <?php FCP_Comment_Rate::stars_n_rating_print() ?>
-=======
         <?php if ( method_exists( '\FCP_Comment_Rate', 'stars_n_rating_print' ) ) { ?>
         <div class="entry-rating">
             <?php \FCP_Comment_Rate::stars_n_rating_print() ?>
@@ -68,7 +63,6 @@ if ( have_posts() ) :
                 color:#f5b309;
             }
             </style>
->>>>>>> comments-separate
         </div>
         <?php } ?>
 

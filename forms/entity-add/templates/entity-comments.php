@@ -13,29 +13,11 @@ if ( !comments_open() && !get_comments_number() || !post_type_supports( get_post
     <?php if ( have_comments() ) { ?>
 
         <div class="wp-block-columns">
-<<<<<<< HEAD
-            <div class="wp-block-column comments-list">
-
-                <?php wp_list_comments() ?>
-                
-                <?php
-                the_comments_pagination([
-                    'prev_text' => '&lt;&nbsp;prev',
-                    'next_text' => 'next&nbsp;&gt;'
-                ]);
-                ?>
-
-            </div>
-            
-            <div class="wp-block-column" style="flex-basis:33.33%">
-                <?php FCP_Comment_Rate::summary_print() ?>
-=======
             <div class="wp-block-column">
                 <ul class="comments-list">
                     <?php wp_list_comments() ?>
                 </ul>
                 <?php the_comments_pagination(); ?>
->>>>>>> comments-separate
             </div>
             <?php
             if ( method_exists( 'FCP_Comment_Rate', 'summary_print' ) ) {

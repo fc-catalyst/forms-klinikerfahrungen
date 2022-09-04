@@ -51,11 +51,6 @@ $wp_query = new \WP_Query( $args );
     <style>.entity-about .cr_stars_bar{width:50%;max-width:115px;margin-top:8px;}</style>
 
     <div class="wrap-width">
-<<<<<<< HEAD
-    <style>.entity-about .cr_stars_bar{width:50%;max-width:115px;margin-top:8px;}</style>
-=======
-    
->>>>>>> comments-separate
 <?php
 
 
