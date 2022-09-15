@@ -282,8 +282,8 @@ fcLoadScriptVariable(
 // change the max words limit label
 fcLoadScriptVariable(
     '',
-    'jQuery',
-    function() {
+    'tinymce',
+    async function() {
         const $ = jQuery;
         
         // change the words higher limit after the tariff
@@ -301,10 +301,16 @@ fcLoadScriptVariable(
 
         // change the left words counter number
         const $words_left = $( '.entity-content-words-count' );
-        const editor = tinymce.get( 'entity-content_entity-add' );
-        //console.log( editor.on );
-        let timer = setTimeout( () => {} );
-        
+        let editor = tinymce.get( 'entity-content_entity-add' );
+        await new Promise( resolve => { // editor.on loads asyncroniously, so waiting for it
+            const check = () => {
+                if ( editor !== null && editor.on ) { resolve(); return }
+                editor = tinymce.get( 'entity-content_entity-add' );
+                setTimeout( check, 500 );
+            };
+            check();
+        });
+
         const words_left_count = () => {
             const text = editor.getContent( { format : 'text' } );
             const words_count = text.replace( /[\.\,\;\?\!\s_]+/g, ' ' ).trim().split( ' ' ).length;
@@ -316,15 +322,20 @@ fcLoadScriptVariable(
                 $words_left.removeClass( 'fcp-form-warning' );
             }
         };
+        let timer = setTimeout( () => {} );
         const words_left_trigger = () => {
             clearTimeout( timer );
             timer = setTimeout( words_left_count, 1000 );
         };
-        editor.on( 'LoadContent', words_left_count );
+
         editor.on( 'KeyUp', words_left_trigger );
         editor.on( 'Change', words_left_trigger );
         $( '#entity-tariff_entity-tariff' ).on( 'change', function() {
             words_left_count();
         });
-    }
+        if ( $( '#entity-content_entity-add' ).val() ) {
+            words_left_trigger();
+        }
+    },
+    ['jQuery']
 );
