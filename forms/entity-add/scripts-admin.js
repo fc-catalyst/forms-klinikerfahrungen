@@ -296,12 +296,13 @@ fcLoadScriptVariable(
         $( '#entity-tariff_entity-tariff' ).on( 'change', function() {
             limit = tariffs[ $( this ).val() ];
             $( '.entity-content-words-limit' ).text( limit );
-            words_left_count();
         });
-        
+        $( '.entity-content-words-limit' ).text( limit );
+
         // change the left words counter number
         const $words_left = $( '.entity-content-words-count' );
         const editor = tinymce.get( 'entity-content_entity-add' );
+        //console.log( editor.on );
         let timer = setTimeout( () => {} );
         
         const words_left_count = () => {
@@ -319,7 +320,11 @@ fcLoadScriptVariable(
             clearTimeout( timer );
             timer = setTimeout( words_left_count, 1000 );
         };
-        editor.on( 'keyup', words_left_trigger );
-        editor.on( 'change', words_left_trigger );
+        editor.on( 'LoadContent', words_left_count );
+        editor.on( 'KeyUp', words_left_trigger );
+        editor.on( 'Change', words_left_trigger );
+        $( '#entity-tariff_entity-tariff' ).on( 'change', function() {
+            words_left_count();
+        });
     }
 );

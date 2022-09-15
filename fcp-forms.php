@@ -39,9 +39,9 @@ class FCP_Forms {
 		$this->assets = $this->self_url . 'assets/';
 
 		$this->css_ver = '1.0.9' . ( self::$dev ? '.'.time() : '' );
-		$this->js_ver = '1.1.3' . ( self::$dev ? '.'.time() : '' );
+		$this->js_ver = '1.1.4' . ( self::$dev ? '.'.time() : '' );
 		$this->css_adm_ver = '0.0.3' . ( self::$dev ? '.'.time() : '' );
-		$this->js_adm_ver = '0.0.3' . ( self::$dev ? '.'.time() : '' );
+		$this->js_adm_ver = '0.0.4' . ( self::$dev ? '.'.time() : '' );
 
 	}
 

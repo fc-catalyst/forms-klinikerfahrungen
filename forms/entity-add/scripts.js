@@ -379,7 +379,7 @@ fcLoadScriptVariable(
             clearTimeout( timer );
             timer = setTimeout( words_left_count, 1000 );
         };
-        editor.on( 'keyup', words_left_trigger );
-        editor.on( 'change', words_left_trigger );
+        editor.on( 'KeyUp', words_left_trigger );
+        editor.on( 'Change', words_left_trigger );
     }
 );
