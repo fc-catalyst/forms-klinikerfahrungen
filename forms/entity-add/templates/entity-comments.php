@@ -7,7 +7,7 @@ if ( post_password_required() ) { return; }
 if ( !comments_open() && !get_comments_number() || !post_type_supports( get_post_type(), 'comments' ) ) { return; }
 
 ?>
-<div style="height:100px" aria-hidden="true" class="wp-block-spacer"></div>
+<div style="height:60px" aria-hidden="true" class="wp-block-spacer"></div>
 <div id="comments" class="comments-area entry-content">
 
     <?php if ( have_comments() ) { ?>
