@@ -345,12 +345,41 @@ fcLoadScriptVariable(
     'jQuery',
     function() {
         const $ = jQuery;
+        
+        // change the words higher limit after the tariff
+        const tariffs = {
+            'kostenloser_eintrag' : 450,
+            'premiumeintrag' : 850
+        };
+
+        let limit = tariffs['kostenloser_eintrag'];
         $( '#entity-tariff_entity-add input' ).on( 'change', function() {
-            const tariffs = {
-                'premiumeintrag' : 850,
-                'kostenloser_eintrag' : 450
-            };
-            $( '#entity-content-words-limit' ).text( tariffs[ $( this ).val() ] );
+            limit = tariffs[ $( this ).val() ];
+            $( '.entity-content-words-limit' ).text( limit );
+            words_left_count();
         });
+
+        // change the left words counter number
+        const $words_left = $( '.entity-content-words-count' );
+        const editor = tinymce.get( 'entity-content_entity-add' );
+        let timer = setTimeout( () => {} );
+        
+        const words_left_count = () => {
+            const text = editor.getContent( { format : 'text' } );
+            const words_count = text.replace( /[\.\,\;\?\!\s_]+/g, ' ' ).trim().split( ' ' ).length;
+            const words_left = limit - words_count;
+            $words_left.text( words_left );
+            if ( words_left < 0 ) {
+                $words_left.addClass( 'fcp-form-warning' );
+            } else {
+                $words_left.removeClass( 'fcp-form-warning' );
+            }
+        };
+        const words_left_trigger = () => {
+            clearTimeout( timer );
+            timer = setTimeout( words_left_count, 1000 );
+        };
+        editor.on( 'keyup', words_left_trigger );
+        editor.on( 'change', words_left_trigger );
     }
 );
