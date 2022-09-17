@@ -41,7 +41,7 @@ class FCP_Forms__Validate {
         if ( !$a || $a && $rule[0] && preg_match( '/'.$rule[0].'/', $a ) ) {
             return false;
         }
-        return sprintf( __( 'Doesn\'t fit the pattern %s', 'fcpfo' ), $rule[1] );
+        return sprintf( __( 'Doesn\'t fit the pattern %s', 'fcpfo' ), isset( $rule[1] ) ? $rule[1] : '' );
     }
 
     private function test_email($rule, $a) {

@@ -10,7 +10,9 @@ class FCP_Forms__Draw {
         $v = $v ? $v : []; // probably, remove those in later versions of php
         $f = $f ? $f : [];
 
-        $s->options->warning = $v['fcp-form--'.$s->options->form_name.'--warning'];
+        if ( isset( $v['fcp-form--'.$s->options->form_name.'--warning'] ) ) {
+            $s->options->warning = $v['fcp-form--'.$s->options->form_name.'--warning'];
+        }
         $s->options->required_mark = $s->options->required_mark ? $s->options->required_mark : '*';
        
         $this->s = $s;
@@ -24,14 +26,16 @@ class FCP_Forms__Draw {
     private function add_values(&$f, $v) {
         foreach ( $f as &$add ) {
 
-            if ( $add->gtype ) {
+            if ( isset( $add->gtype) ) {
                 $this->add_values( $add->fields, $v );
                 continue;
             }
         
-            if ( $add->type ) {
-                $add->warning = $v['fcp-form--'.$this->s->options->form_name.'--warnings'][ $add->name ];
-                $add->savedValue = $v[ $add->name ];
+            if ( isset( $add->type ) ) {
+                if ( isset( $this->s->options->form_name ) && isset( $add->name ) && isset( $v['fcp-form--'.$this->s->options->form_name.'--warnings'][ $add->name ] ) ) {
+                    $add->warning = $v['fcp-form--'.$this->s->options->form_name.'--warnings'][ $add->name ];
+                }
+                $add->savedValue = isset( $add->name ) && isset( $v[ $add->name ] ) ? $v[ $add->name ] : '';
 
                 if ( $add->type === 'file' ) {
                     $add->uploaded_fields = $add->name.'--uploaded';
@@ -52,12 +56,12 @@ class FCP_Forms__Draw {
 
     private function field_text($a) {
 
-        $value = $a->savedValue ? $a->savedValue : $a->value; //++ can unite the following to a function
+        $value = isset( $a->savedValue ) && $a->savedValue ? $a->savedValue : ( isset( $a->value ) ? $a->value : '' ); //++ can unite the following to a function
         $value = is_array( $value ) ? $value : [ $value ];
 
         foreach ( $value as $k => $v ) {
 
-            if ( empty( $v ) && !$a->keep_empty && count( array_values( $value ) ) > 1 ) {
+            if ( empty( $v ) && !isset( $a->keep_empty ) && count( array_values( $value ) ) > 1 ) {
                 continue;
             }
 
@@ -66,13 +70,13 @@ class FCP_Forms__Draw {
         ?>
         <input
             type="text"
-            name="<?php $this->e_field_name( $a->name ) ?><?php echo $a->multiple ? '['.$k.']' : '' ?>"
+            name="<?php $this->e_field_name( $a->name ) ?><?php echo isset( $a->multiple ) ? '['.$k.']' : '' ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
-            <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
-            placeholder="<?php echo $a->placeholder ?>"
+            <?php echo isset( $a->size ) ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
+            placeholder="<?php echo isset( $a->placeholder ) ? $a->placeholder  : '' ?>"
             value="<?php echo esc_attr( $v ) ?>"
-            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
-            <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
+            class="<?php echo isset( $a->warning ) ? 'fcp-f-invalid' : '' ?>"
+            <?php echo isset( $a->autofill ) ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
             <?php echo isset( $a->autocomplete ) ? 'autocomplete="'.$a->autocomplete.'"' : '' ?>
         />
         <?php
@@ -114,7 +118,7 @@ class FCP_Forms__Draw {
             type="button"
             name="<?php $this->e_field_name( $a->name ) ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
-            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?><?php echo $this->smaller_font( $a->title, $this->s->options - 2 ) ?>"
+            class="<?php echo !empty( $a->warning ) ? 'fcp-f-invalid' : '' ?><?php echo $this->smaller_font( $a->title, $this->s->options->reduce_font_after - 2 ) ?>"
         ><?php echo $a->value ?></button>
         <?php
     }
@@ -125,8 +129,8 @@ class FCP_Forms__Draw {
             type="hidden"
             name="<?php $this->e_field_name( $a->name ) ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
-            value="<?php echo esc_attr( $a->savedValue ? $a->savedValue : $a->value ) ?>"
-            <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
+            value="<?php echo esc_attr( isset( $a->savedValue ) ? $a->savedValue : ( isset( $a->value ) ? $a->value : '' ) ) ?>"
+            <?php echo isset( $a->autofill ) ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
         />
         <?php
     }
@@ -137,7 +141,7 @@ class FCP_Forms__Draw {
             $buttons = ['undo', 'redo', '|', 'formatselect', 'bold', 'italic', '|', 'link', 'unlink', '|', 'bullist', 'numlist'];
         
             wp_editor(
-                $a->savedValue ? $a->savedValue : $a->value,
+                isset( $a->savedValue ) ? $a->savedValue : ( isset( $a->value ) ? $a->value : '' ),
                 $this->__field_id( $a->name ),
                 [
                     'media_buttons' => 0,
@@ -173,8 +177,8 @@ class FCP_Forms__Draw {
         <fieldset
             id="<?php $this->e_field_id( $a->name ) ?>"
             class="
-                <?php echo $a->cols ? 'fcp-form-cols-' . $a->cols : '' ?>
-                <?php echo $a->warning ? 'fcp-f-invalid' : '' ?>
+                <?php echo isset( $a->cols ) ? 'fcp-form-cols-' . $a->cols : '' ?>
+                <?php echo !empty( $a->warning ) ? 'fcp-f-invalid' : '' ?>
             "
         >
         
@@ -209,8 +213,8 @@ class FCP_Forms__Draw {
         <fieldset 
             id="<?php $this->e_field_id( $a->name ) ?>"
             class="
-                <?php echo $a->cols ? 'fcp-form-cols-' . $a->cols : '' ?>
-                <?php echo $a->warning ? 'fcp-f-invalid' : '' ?>
+                <?php echo isset( $a->cols ) ? 'fcp-form-cols-' . $a->cols : '' ?>
+                <?php echo !empty( $a->warning ) ? 'fcp-f-invalid' : '' ?>
             "
         >
         
@@ -238,18 +242,18 @@ class FCP_Forms__Draw {
     
     private function field_select($a) {
 
-        $value = $a->savedValue ? $a->savedValue : $a->value;
+        $value = isset( $a->savedValue ) && $a->savedValue ? $a->savedValue : ( isset( $a->value ) ? $a->value : '' );
         $value = is_array( $value ) ? $value : [ $value ];
 
         ?>
         <select
-            name="<?php $this->e_field_name( $a->name ) ?><?php echo $a->multiple ? '[]' : '' ?>"
+            name="<?php $this->e_field_name( $a->name ) ?><?php echo isset( $a->multiple ) ? '[]' : '' ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
-            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
-            <?php echo $a->multiple ? 'multiple' : '' ?>
+            class="<?php echo !empty( $a->warning ) ? 'fcp-f-invalid' : '' ?>"
+            <?php echo isset( $a->multiple ) ? 'multiple' : '' ?>
         >
             <?php
-                if ( $a->placeholder ) {
+                if ( isset( $a->placeholder ) ) {
                     ?>
                     <option value=""><?php echo $a->placeholder ?></option>
                     <?php
@@ -328,20 +332,20 @@ class FCP_Forms__Draw {
         ?>
         <input
             type="file"
-            name="<?php $this->e_field_name( $a->name ) ?><?php echo $a->multiple ? '[]' : '' ?>"
+            name="<?php $this->e_field_name( $a->name ) ?><?php echo isset( $a->multiple ) ? '[]' : '' ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
             class="
                 <?php echo empty( $a->savedValue ) ? 'fcp-form-empty' : '' ?>
-                <?php echo $a->warning ? 'fcp-f-invalid' : '' ?>
+                <?php echo !empty( $a->warning ) ? 'fcp-f-invalid' : '' ?>
             "
-            <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
-            <?php echo $a->multiple ? 'multiple' : '' ?>
+            <?php echo isset( $a->size ) ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
+            <?php echo isset( $a->multiple ) ? 'multiple' : '' ?>
             data-select-file="<?php _e( 'Select File', 'fcpfo' ) ?>"
             data-select-files="<?php _e( 'Select Files', 'fcpfo' ) ?>"
             data-files-selected="<?php _e( 'files selected', 'fcpfo' ) ?>"
         />
         <label for="<?php $this->e_field_id( $a->name ) ?>">
-            <?php echo $label ? $label : __( $a->multiple ? 'Select Files' : 'Select File', 'fcpfo' ) ?>
+            <?php echo !empty( $label ) ? $label : __( isset( $a->multiple ) ? 'Select Files' : 'Select File', 'fcpfo' ) ?>
         </label>
         <?php
 
@@ -372,7 +376,7 @@ class FCP_Forms__Draw {
             type="submit"
             name="<?php $this->e_field_name( $a->name ) ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
-            <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
+            <?php echo isset( $a->size ) ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             value="<?php echo esc_attr( $a->value ) ?>"
         />
         <?php
@@ -478,9 +482,10 @@ class FCP_Forms__Draw {
             }
         }
 
-        $a->__required = $a->validate->notEmpty || $a->validate->minLetters && $a->validate->minLetters > 0 ? $o->required_mark : '';
-        $a->placeholder = $a->__required && $a->placeholder && !$a->title ? $a->placeholder . $a->__required : $a->placeholder;
-        
+        $a->__required = ( isset( $a->validate ) && ( isset( $a->validate->notEmpty ) || isset( $a->validate->minLetters ) && $a->validate->minLetters > 0 ) ) ? $o->required_mark : '';
+        if ( isset( $a->placeholder ) ) {
+            $a->placeholder = isset( $a->__required ) && !isset( $a->title ) ? $a->placeholder . $a->__required : $a->placeholder;
+        }
         ?>
         <div class="fcp-form-field-w">
         <?php echo isset( $a->before ) ? $a->before : '' ?>
@@ -490,7 +495,7 @@ class FCP_Forms__Draw {
             ?>
             <span class="fcp-form-field-h<?php echo $this->smaller_font( $a->title, $o->reduce_font_after ) ?>">
                 <?php echo $a->title ?><?php echo $a->__required ?>
-                <?php echo $a->subtitle ? ' <small>'.$a->subtitle.'</small>' : '' ?>
+                <?php echo isset( $a->subtitle ) ? ' <small>'.$a->subtitle.'</small>' : '' ?>
             </span>
             <?php
         }
@@ -521,30 +526,30 @@ class FCP_Forms__Draw {
         ?>
 
         
-        <?php echo $o->before ?>
+        <?php echo isset( $o->before ) ? $o->before : '' ?>
         <form
             class="fcp-form
-                <?php echo $o->inherit_styles === false ? '' : 'fcp-form--main' ?>
+                <?php echo isset( $o->inherit_styles ) && $o->inherit_styles === false ? '' : 'fcp-form--main' ?>
                 <?php echo 'fcp-form-' . $o->form_name ?>
                 <?php echo $o->width ? 'fcp-form--' . $o->width : '' ?>
             "
             method="<?php echo $o->method ? $o->method : 'post' ?>"
             <?php echo $o->enctype ? 'enctype="'.$o->enctype.'"' : '' ?>
-            <?php echo $o->autocomplete ? 'autocomplete="'.$o->autocomplete.'"' : '' ?>
+            <?php echo isset( $o->autocomplete ) ? 'autocomplete="'.$o->autocomplete.'"' : '' ?>
         >
         
         <?php
-        if ( $o->warning ) {
+        if ( !empty( $o->warning ) ) {
             ?>
             <div class="fcp-form-warning"><?php echo $o->warning ?></div>
             <?php
         }
         foreach ( $this->s->fields as $f ) {
-            if ( $f->type ) { // common field print
+            if ( isset( $f->type ) ) { // common field print
                 $this->printField( $f );
                 continue;
             }
-            if ( $f->gtype ) { // group of fields print
+            if ( isset( $f->gtype ) ) { // group of fields print
                 $this->printGroup( $f );
             }
         }
@@ -553,10 +558,10 @@ class FCP_Forms__Draw {
         <?php wp_nonce_field( FCP_Forms::plugin_unid(), 'fcp-form--' . $o->form_name ) ?>
         <input type="hidden" name="fcp-form-name" value="<?php echo $o->form_name ?>" />
         <input type="hidden" name="fcp-form--tmpdir"
-            value="<?php echo $_POST['fcp-form--tmpdir'] ? $_POST['fcp-form--tmpdir'] : FCP_Forms::unique() ?>"
+            value="<?php echo !empty( $_POST['fcp-form--tmpdir'] ) ? $_POST['fcp-form--tmpdir'] : FCP_Forms::unique() ?>"
         />
         </form>
-        <?php echo $o->after ?>
+        <?php echo isset( $o->after ) ? $o->after : '' ?>
 
 
         <?php
@@ -567,15 +572,15 @@ class FCP_Forms__Draw {
     }
     
     private function printField($f) {
-        if ( is_admin() && !$f->meta_box ) { return; }
-        if ( !is_admin() && $f->meta_box === 'only' ) { return; }
+        if ( is_admin() && !isset( $f->meta_box ) ) { return; }
+        if ( !is_admin() && isset( $f->meta_box ) && $f->meta_box === 'only' ) { return; }
         if ( isset( $f->roles_view ) && FCP_Forms::role_allow( $f->roles_view ) ) {
             $method = 'field_' . $f->type . '_view';
         }
-        if ( !isset( $f->roles_view ) && !isset( $f->roles_edit ) || FCP_Forms::role_allow( $f->roles_edit ) ) {
+        if ( !isset( $f->roles_view ) && !isset( $f->roles_edit ) || isset( $f->roles_edit ) && FCP_Forms::role_allow( $f->roles_edit ) ) {
             $method = 'field_' . $f->type;
         }
-        if ( !method_exists( $this, $method ) ) { return; }
+        if ( !isset( $method ) || !method_exists( $this, $method ) ) { return; }
         if ( isset( $f->options ) ) { $f->options = $this->order( $f ); }
         $this->field__wrap( $f, $method );
     }
@@ -593,26 +598,26 @@ class FCP_Forms__Draw {
             class="
                 fcp-form-group
                 fcp-form-group-<?php echo $f->gtype ?>
-                <?php echo $f->cols ? ' fcp-form-cols-'.$f->cols : '' ?>
+                <?php echo isset( $f->cols ) ? ' fcp-form-cols-'.$f->cols : '' ?>
             "
-            <?php echo $f->id ? 'id="'.$f->id.'"' : '' ?>
+            <?php echo isset( $f->id ) ? 'id="'.$f->id.'"' : '' ?>
         >
         <?php
-            if ( $f->title || $f->description ) {
+            if ( isset( $f->title ) || isset( $f->description ) ) {
                 ?>
                 <div class="fcp-form-group-h">
                 <?php
                 if ( $f->title ) {
-                    $h2 = $f->title_tag ? $f->title_tag : 'h2';
+                    $h2 = isset( $f->title_tag ) ? $f->title_tag : 'h2';
                     ?>
                     <<?php echo $h2 ?>>
-                        <?php echo $f->title ?>
-                        <?php echo $f->subtitle ? ' <small>'.$f->subtitle.'</small>' : '' ?>
+                        <?php echo isset( $f->title ) ? $f->title : '' ?>
+                        <?php echo isset( $f->subtitle ) ? ' <small>'.$f->subtitle.'</small>' : '' ?>
                     </<?php echo $h2 ?>>
                     <?php
                 }
 
-                if ( $f->description ) {
+                if ( isset( $f->description ) ) {
                     ?>
                     <div class="fcp-form-group-d"><?php echo $f->description ?></div>
                     <?php
@@ -625,11 +630,11 @@ class FCP_Forms__Draw {
         <?php
         if ( is_array( $f->fields ) ) {
             foreach ( $f->fields as $gf ) {
-                if ( $gf->type ) { // common field print
+                if ( isset( $gf->type ) ) { // common field print
                     $this->printField( $gf );
                     continue;
                 }
-                if ( $gf->gtype ) { // group of fields print
+                if ( isset( $gf->gtype ) ) { // group of fields print
                     $this->printGroup( $gf );
                 }
             }
@@ -702,11 +707,11 @@ class FCP_Forms__Draw {
         ?><div class="fcp-form fcp-form--half"><?php
         
         foreach ( $this->s->fields as $f ) {
-            if ( $f->type ) { // common field print
+            if ( isset( $f->type ) ) { // common field print
                 $this->printField( $f );
                 continue;
             }
-            if ( $f->gtype ) { // group of fields print
+            if ( isset( $f->gtype ) ) { // group of fields print
                 $this->printGroup( $f );
             }
         }

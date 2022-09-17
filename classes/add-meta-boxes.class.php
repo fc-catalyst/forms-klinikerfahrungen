@@ -29,14 +29,15 @@ class FCP_Add_Meta_Boxes {
         $values0 = get_post_meta( $post->ID );
         // meta names to structure names
         $fields = FCP_Forms::flatten( $this->s->fields );
+        $values = [];
         foreach ( $fields as $f ) {
 
-            if ( !$values0[ $f->name ] ) { continue; }
+            if ( !isset( $f->name ) || !isset( $values0[ $f->name ] ) ) { continue; }
             
             $values[ $f->name ] = $values0[ $f->name ][0];
 
             if (
-                $f->multiple ||
+                isset( $f->multiple ) ||
                 $f->type === 'checkbox' && count( (array) $f->options ) > 1 ||
                 $f->type === 'file'
             ) {
@@ -50,7 +51,7 @@ class FCP_Add_Meta_Boxes {
         }
 
         // add warnings
-        if ( $_COOKIE[ $p->warn_name ] ) {
+        if ( isset( $_COOKIE[ $p->warn_name ] ) ) {
             foreach ( $_COOKIE[ $p->warn_name ] as $k => $v ) {
                 $values[ $p->warn_name ][$k] = json_decode( stripslashes( $v ) );
                 $values[ $p->warn_name ][$k][] = __( 'The Initial value is restored', 'fcpfo' );
@@ -79,7 +80,7 @@ class FCP_Add_Meta_Boxes {
 
 		add_meta_box(
             $this->s->options->form_name,
-            __( $p->title, $p->text_domain ),
+            __( $p->title, isset( $p->text_domain ) ? $p->text_domain : '' ),
             [ $draw, 'print_meta_boxes' ],
             $p->post_types,
             $p->context,

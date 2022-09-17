@@ -342,8 +342,12 @@ add_action( 'transition_post_status', function($new_status, $old_status, $post) 
 
 // delete images on delete
 add_action( 'delete_post', function($postID) {
+
+    if ( !in_array( get_post_type( $postID ), ['clinic', 'doctor'] ) ) { return; }
+
     $dir = wp_get_upload_dir()['basedir'] . '/entity/' . $postID;
     $rmdir = function($dir) use (&$rmdir) {
+        if ( !is_dir( $dir ) ) { return; }
         $files = array_diff( scandir( $dir ), ['.', '..'] );
         foreach ( $files as $file ) {
             if ( is_dir( $dir . '/' . $file ) ) {

@@ -30,7 +30,7 @@ class FCPAddPostType {
             'singular_name'       => __( $p['name'], $td ),
             'menu_name'           => __( $p['plural'], $td ),
             'all_items'           => __( 'View All ' . $p['plural'], $td ),
-            'archives'            => __( $p['archives'] ? $p['archives'] : 'All ' . $p['plural'], $td ),
+            'archives'            => __( isset( $p['archives'] ) ? $p['archives'] : 'All ' . $p['plural'], $td ),
             'view_item'           => __( 'View ' . $p['name'], $td ),
             'add_new'             => __( 'Add New', $td ),
             'add_new_item'        => __( 'Add New ' . $p['name'], $td ),
@@ -66,7 +66,7 @@ class FCPAddPostType {
             $args['rewrite'] = [ 'slug' => $p['slug'] ];
         }
         
-        if ( !$p['taxonomies'] ) {
+        if ( !isset( $p['taxonomies'] ) ) {
             register_post_type( $p['type'], $args );
             return;
         }

@@ -109,7 +109,7 @@ class FCP_Forms {
             $first_screen = array_values( array_unique( $first_screen ) );
             $second_screen = array_values( array_unique( $second_screen ) );
 
-            if ( !$first_screen[0] && !$second_screen[0] ) { return; }
+            if ( !isset( $first_screen[0] ) && !isset( $second_screen[0] ) ) { return; }
 
             // if a form has its own style.css - don't use main style.css at all; ++maybe add attr or an option to avoid
             // always use layout (if a form is found), just vary if on first screen or second.
@@ -119,7 +119,7 @@ class FCP_Forms {
             $default_layout_first_loaded = false;
             $default_style_first_loaded = false;
 
-            if ( $first_screen[0] ) {
+            if ( isset( $first_screen[0] ) ) {
                 echo '<style>';
 
                 // main layout load
@@ -150,7 +150,7 @@ class FCP_Forms {
 
 
             // not first screen styles
-            if ( !$second_screen[0] ) { return; }
+            if ( !isset( $second_screen[0] ) ) { return; }
 
             $styles_depend_on = [];
             
@@ -488,10 +488,10 @@ class FCP_Forms {
 	private function fix_shortcode_atts($allowed, $atts) { // turns isset to = true and fixes the default lowercase
         foreach ( $allowed as $k => $v ) {
             $l = strtolower( $k );
-            if ( $atts[ $l ] === 'false' ) { // 'false' value to boolean
+            if ( isset( $atts[ $l ] ) && $atts[ $l ] === 'false' ) { // 'false' value to boolean
                 $atts[ $l ] = false;
             }
-            if ( $atts[ $l ] && !$atts[ $k ] ) { // fix the default atts lowercase attr key
+            if ( isset( $atts[ $l ] ) && $atts[ $l ] && !$atts[ $k ] ) { // fix the default atts lowercase attr key
                 $atts[ $k ] = $atts[ $l ];
                 unset( $atts[ $l ] );
                 continue;
@@ -525,10 +525,10 @@ class FCP_Forms {
         $json = self::structure( $dir );
         if ( $json === false ) { return; }
 
-        $this->form_tab[ $dir ] = $json->options->tab ? $json->options->tab : '';
+        $this->form_tab[ $dir ] = isset( $json->options->tab ) ? $json->options->tab : '';
 
         // hide if $_GET
-        if ( isset( $json->options->hide_on_GET ) && !$atts['ignore_hide_on_GET'] ) { // ++to atts
+        if ( isset( $json->options->hide_on_GET ) && !isset( $atts['ignore_hide_on_GET'] ) ) { // ++to atts
             foreach ( (array) $json->options->hide_on_GET as $k => $v ) {
 
                 if ( !is_array( $v ) ) {
@@ -555,10 +555,8 @@ class FCP_Forms {
 
         // overriding json with shortcode atts
         if ( $json->fields[0]->gtype == 'section' ) {
-            $json->fields[0]->title = $atts['title'] !== false ?
-                $atts['title'] : $json->fields[0]->title;
-            $json->fields[0]->title_tag = $atts['title_tag'] !== false ?
-                $atts['title_tag'] : $json->fields[0]->title_tag;
+            $json->fields[0]->title = isset( $atts['title'] ) && $atts['title'] !== false ? $atts['title'] : ( isset( $json->fields[0]->title ) ? $json->fields[0]->title : '' );
+            $json->fields[0]->title_tag = isset( $atts['title_tag'] ) && $atts['title_tag'] !== false ? $atts['title_tag'] : ( isset( $json->fields[0]->title_tag ) ? $json->fields[0]->title_tag : '' );
         }
         if ( $atts['redirect'] ) {
             $json->fields[] = (object) [
@@ -844,4 +842,5 @@ new FCP_Forms();
     on clear trash - remove the clinic imgs dir
     img preview in wp-admin
     print tmp dir only if a file type exists
+    instead of number of isset-s - use a blueprint of allowed array and default values and autofill the default values
 //*/
