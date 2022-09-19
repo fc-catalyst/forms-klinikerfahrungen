@@ -340,7 +340,7 @@ class FCP_Forms {
         @include_once( $this->forms_path . $form_name . '/process.php' );
 
         // failure
-        if ( $warning || !empty( $warns->result ) ) {
+        if ( isset( $warning ) || !empty( $warns->result ) ) {
             $_POST['fcp-form--'.$form_name.'--warning'] = $warning; // passing to printing hook via globals
             $_POST['fcp-form--'.$form_name.'--warnings'] = $warns->result;
             return;
@@ -348,11 +348,11 @@ class FCP_Forms {
 
         // success
 
-        if ( $_POST['fcp--redirect'] ) { // process.php $redirect overrides by $atts['redirect']
+        if ( isset( $_POST['fcp--redirect'] ) ) { // process.php $redirect overrides by $atts['redirect']
             $redirect = $_POST['fcp--redirect'];
         }
 
-        if ( $redirect ) {
+        if ( isset( $redirect ) ) {
             wp_redirect( $redirect );
             exit;
         }
@@ -554,7 +554,7 @@ class FCP_Forms {
         }
 
         // overriding json with shortcode atts
-        if ( $json->fields[0]->gtype == 'section' ) {
+        if ( isset( $json->fields[0]->gtype ) && $json->fields[0]->gtype === 'section' ) {
             $json->fields[0]->title = isset( $atts['title'] ) && $atts['title'] !== false ? $atts['title'] : ( isset( $json->fields[0]->title ) ? $json->fields[0]->title : '' );
             $json->fields[0]->title_tag = isset( $atts['title_tag'] ) && $atts['title_tag'] !== false ? $atts['title_tag'] : ( isset( $json->fields[0]->title_tag ) ? $json->fields[0]->title_tag : '' );
         }

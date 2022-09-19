@@ -70,7 +70,7 @@ class FCP_Forms__Files {
 
         // by warnings
         foreach ( $f as $k => $v ) {
-            if ( !$this->w[ $v['field'] ] ) { // no warnings for the field
+            if ( empty( $this->w[ $v['field'] ] ) ) { // no warnings for the field
                 continue;
             }
             if ( !in_array( $v['name'], $this->w[ $v['field'] ] ) ) { // no warnings for the file by name

@@ -13,7 +13,7 @@ class FCP_Forms__Draw {
         if ( isset( $v['fcp-form--'.$s->options->form_name.'--warning'] ) ) {
             $s->options->warning = $v['fcp-form--'.$s->options->form_name.'--warning'];
         }
-        $s->options->required_mark = $s->options->required_mark ? $s->options->required_mark : '*';
+        $s->options->required_mark = isset( $s->options->required_mark ) ? $s->options->required_mark : '*';
        
         $this->s = $s;
         $this->s->fields = $this->add_values( $s->fields, array_merge( $v, $f ) );
@@ -531,10 +531,10 @@ class FCP_Forms__Draw {
             class="fcp-form
                 <?php echo isset( $o->inherit_styles ) && $o->inherit_styles === false ? '' : 'fcp-form--main' ?>
                 <?php echo 'fcp-form-' . $o->form_name ?>
-                <?php echo $o->width ? 'fcp-form--' . $o->width : '' ?>
+                <?php echo isset( $o->width ) ? 'fcp-form--' . $o->width : '' ?>
             "
             method="<?php echo $o->method ? $o->method : 'post' ?>"
-            <?php echo $o->enctype ? 'enctype="'.$o->enctype.'"' : '' ?>
+            <?php echo isset( $o->enctype ) ? 'enctype="'.$o->enctype.'"' : '' ?>
             <?php echo isset( $o->autocomplete ) ? 'autocomplete="'.$o->autocomplete.'"' : '' ?>
         >
         

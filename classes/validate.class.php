@@ -123,7 +123,7 @@ class FCP_Forms__Validate {
     }
 
     private function test_file_maxSize($rule, $a) {
-        if ( !$a['name'] ) {
+        if ( empty( $a['name'] ) ) {
             return false;
         }
         if ( is_numeric( $rule ) && $a['size'] < $rule ) {
@@ -133,7 +133,7 @@ class FCP_Forms__Validate {
     }
     
     private function test_file_extension($rule, $a) {
-        if ( !$a['name'] ) {
+        if ( empty( $a['name'] ) ) {
             return false;
         }
         $ext = pathinfo( $a['name'], PATHINFO_EXTENSION );
@@ -186,7 +186,7 @@ class FCP_Forms__Validate {
 
                     } else {
 
-                        if ( $this->addResult( $method, $f->name, $rule, $this->v[ $f->name ] ) ) {
+                        if ( isset ( $this->v[ $f->name ] ) && $this->addResult( $method, $f->name, $rule, $this->v[ $f->name ] ) ) {
                             $this->files_failed[ $f->name ][] = $this->v[ $f->name ]['name'];
                         }
                     }

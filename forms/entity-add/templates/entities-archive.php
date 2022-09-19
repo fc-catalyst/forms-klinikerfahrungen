@@ -151,7 +151,7 @@ function archive_filters() {
 
     $query_meta = [];
 
-    if ( $_GET['place'] ) {
+    if ( !empty( $_GET['place'] ) ) {
         $val = $wpdb->_real_escape( htmlspecialchars( urldecode( $_GET['place'] ) ) );
 
         $query_meta[] = [
@@ -171,7 +171,7 @@ function archive_filters() {
         ];
     }
 
-    if ( $_GET['specialty'] ) {
+    if ( !empty( $_GET['specialty'] ) ) {
         $val = $wpdb->_real_escape( htmlspecialchars( urldecode( $_GET['specialty'] ) ) );
 
         $query_meta[] = [ [
@@ -187,11 +187,11 @@ function archive_filters() {
         return $query_meta;
     }
     
-    return $query_meta[0];
+    return empty( $query_meta[0] ) ? $query_meta[0] : '';
 }
 
 function search_stats($before = '', $after = '') {
-    if ( !$_GET['specialty'] && !$_GET['place'] ) { return; }
+    if ( empty( $_GET['specialty'] ) && empty( $_GET['place'] ) ) { return; }
     
     global $wp_query;
     if ( $wp_query->have_posts() ) {
