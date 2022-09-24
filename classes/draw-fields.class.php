@@ -105,9 +105,9 @@ class FCP_Forms__Draw {
             type="password"
             name="<?php $this->e_field_name( $a->name ) ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
-            <?php echo $a->size ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
+            <?php echo isset( $a->size ) ? 'size="'.$a->size.'" style="width:auto;"' : '' ?>
             placeholder="<?php echo $a->placeholder ?>"
-            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
+            class="<?php echo isset( $a->warning ) ? 'fcp-f-invalid' : '' ?>"
         />
         <?php
     }
@@ -449,7 +449,7 @@ class FCP_Forms__Draw {
             id="<?php echo self::field_name_clean( $a->name ) ?>"
             style="width:<?php echo $b->img_size[0] ?>px;height:<?php echo $b->img_size[1] ?>px"
             placeholder="<?php echo $a->placeholder ?>"
-            class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
+            class="<?php echo isset( $a->warning ) ? 'fcp-f-invalid' : '' ?>"
         />
         <span></span>
         <img

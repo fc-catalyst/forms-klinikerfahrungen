@@ -136,7 +136,7 @@ function entity_print_workhours($toggle_in = false) {
                     continue;
                 }
                 $values[ $k ][] = $open[ $l ] . ' - ' . $close[ $l ]; // format
-                $schema[ $k ]['open'] = $schema[ $k ]['open'] ? $schema[ $k ]['open'] : $open[ $l ];
+                $schema[ $k ]['open'] = isset( $schema[ $k ]['open'] ) ? $schema[ $k ]['open'] : $open[ $l ];
                 $schema[ $k ]['close'] = $close[ $l ];
             }
             if ( !empty( $values[ $k ] ) ) { continue; }
@@ -163,7 +163,7 @@ function entity_print_workhours($toggle_in = false) {
             <?php echo implode( '<br/>', $v ) ?>
         </dd>
 
-        <?php if ( !$schema[ $k ] ) { continue; } ?>
+        <?php if ( empty( $schema[ $k ] ) ) { continue; } ?>
         <meta itemprop="openingHours" content="<?php
             echo substr( $fields[ $k ], 0, 2 ) . ' ' .
                  $schema[ $k ]['open'] . '-' .
@@ -225,8 +225,8 @@ function entity_tile_print($footer = '') {
 
         <header class="entry-header">
         <?php
-            $photo = fct1_meta( 'entity-photo' )[0];
-            $backg = fct1_meta( 'entity-background' )[0];
+            $photo = fct1_meta( 'entity-photo', '', '', true )[0];
+            $backg = fct1_meta( 'entity-background', '', '', true )[0];
             if ( $photo || $backg ) {
         ?>
             <div class="entry-photo<?php echo !$photo ? ' entry-background' : '' ?>">
@@ -251,7 +251,7 @@ function entity_tile_print($footer = '') {
             </div>
         </header>
         <div class="entry-details">
-            <?php if ( $ava = fct1_meta( 'entity-avatar' )[0] ) { ?>
+            <?php if ( $ava = fct1_meta( 'entity-avatar', '', '', true )[0] ) { ?>
             <div class="entity-avatar">
                 <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $ava, [74,74], 0, get_the_title() . ' ' . __( 'Icon', 'fcpfo-ea' ) ) ?>
             </div>

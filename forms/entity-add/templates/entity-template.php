@@ -102,14 +102,14 @@ if ( have_posts() ) :
     </div>
 
     <div class="wp-block-column is-vertically-aligned-center" style="flex-basis:33.33%">
-        <?php if ( $logo = fct1_meta( 'entity-avatar' )[0] ) { ?>
+        <?php if ( $logo = fct1_meta( 'entity-avatar', '', '', true )[0] ) { ?>
         <div class="entry-avatar">
             <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $logo, [600,600], 0, get_the_title() . ' ' . __( 'Logo', 'fcpfo-ea' ), $doctor ? 'photo' : 'logo' ) ?>
         </div>
         <?php } ?>
     </div>
 
-    <?php if ( $background = fct1_meta( 'entity-background' )[0] ) { ?>
+    <?php if ( $background = fct1_meta( 'entity-background', '', '', true )[0] ) { ?>
     <div class="entry-background">
         <?php fct1_image_print( 'entity/' . get_the_ID() . '/' . $background, [1400, 600], 1, '', 'image' ) ?>
     </div>
@@ -151,7 +151,7 @@ if ( get_post_status() !== 'publish' && get_the_author_meta( 'ID' ) === get_curr
         $template[] = 'novideo';
     }
     
-    if ( $template[1] ) {
+    if ( !empty( $template[1] ) ) {
         unset( $template[0] );
     }
 

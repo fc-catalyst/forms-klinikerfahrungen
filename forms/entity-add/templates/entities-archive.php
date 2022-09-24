@@ -187,7 +187,7 @@ function archive_filters() {
         return $query_meta;
     }
     
-    return empty( $query_meta[0] ) ? $query_meta[0] : '';
+    return !empty( $query_meta[0] ) ? $query_meta[0] : '';
 }
 
 function search_stats($before = '', $after = '') {

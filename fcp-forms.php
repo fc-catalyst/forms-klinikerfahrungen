@@ -412,10 +412,10 @@ class FCP_Forms {
             $form = $this->add_shortcode_main( ['dir' => $dir] + $atts );
             if ( !$form ) { continue; }
             
-            $labels[] = $tabs[ $k ] ? $tabs[ $k ] : 
+            $labels[] = !empty( $tabs[ $k ] ) ? $tabs[ $k ] : 
                 ( $this->form_tab[ $dir ] ? $this->form_tab[ $dir ] : $dir );
             $forms .= $form;
-            if ( $_POST['fcp-form-name'] && $dir == $_POST['fcp-form-name'] ) {
+            if ( !empty( $_POST['fcp-form-name'] ) && $dir === $_POST['fcp-form-name'] ) {
                 $at = array_key_last( $labels );
             }
         }
