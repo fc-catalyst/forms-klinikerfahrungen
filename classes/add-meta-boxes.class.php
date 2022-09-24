@@ -127,7 +127,7 @@ class FCP_Add_Meta_Boxes {
             if ( !isset( $f->meta_box ) || !isset( $f->name ) || !$f->name || !isset( $f->type ) || $f->type === 'none' ) { continue; }
             
             // the options for select are required even if itself is not
-            if ( $f->type === 'select' && $_POST[ $f->name ] && !isset( $f->options->{ $_POST[ $f->name ] } ) ) {
+            if ( $f->type === 'select' && !empty( $_POST[ $f->name ] ) && !isset( $f->options->{ $_POST[ $f->name ] } ) ) {
                 continue;
             }
             

@@ -105,7 +105,7 @@ function print_contact_button($meta_name, $name, $itemprop = '') {
 //++ fix the imgs url again
     ?>
         <div class="fct1-tile-one">
-            <a href="<?php echo $prefix ?><?php echo $meta_value ?>"<?php echo isset( $attrs ) ? $attrs : '' ?>></a>
+            <a href="<?php echo isset( $prefix ) ? $prefix : '' ?><?php echo $meta_value ?>"<?php echo isset( $attrs ) ? $attrs : '' ?>></a>
             <img width="100" height="80" src="/wp-content/plugins/fcp-forms/forms/entity-add/templates/imgs/<?php echo $img ?>.svg" class="attachment-full size-full" alt="" loading="lazy">
             <p<?php echo $itemprop ? ' itemprop="'.$itemprop.'" content="'.$meta_value.'" ' : '' ?>><?php echo $name ?></p>
         </div>

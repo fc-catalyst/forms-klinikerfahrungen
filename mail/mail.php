@@ -226,7 +226,7 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
             }
             $combined[ $k ]['title'] = $v;
             $combined[ $k ]['meta'] = array_merge(
-                $metas[ $k ],
+                isset( $metas[ $k ] ) ? $metas[ $k ] : [],
                 isset( $billings[ $metas[ $k ]['entity-billing'] ] ) ? $billings[ $metas[ $k ]['entity-billing'] ] : []
             );
             // metas have unique names, so who cares, that billings are along with the original metas
@@ -246,11 +246,11 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
         $json = FCP_Forms::flatten( $json->fields );
 
         foreach ( $json as $v ) {
-            $title = $v->title ? $v->title : $v->placeholder;
-            if ( $v->name && $title ) {
+            $title = isset( $v->title ) ? $v->title : ( isset( $v->placeholder ) ? $v->placeholder : '' );
+            if ( isset( $v->name ) && $title ) {
                 $titles['titles'][ $v->name ] = $title;
             }
-            if ( $v->options ) {
+            if ( isset( $v->options ) ) {
                 $titles['options'][ $v->name ] = $v->options;
             }
         }
@@ -351,7 +351,7 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
 
         $subject = __( $m['subject'] ? $m['subject'] : $m['heading'], 'fcpfo--mail' );
         $subject = $replacements( $subject );
-        $heading = __( $m['heading'] ? $m['heading'] : $m['subject'], 'fcpfo--mail' );
+        $heading = __( isset( $m['heading'] ) ? $m['heading'] : $m['subject'], 'fcpfo--mail' );
         $heading = $replacements( $heading );
 
         $footer = '<a href="'.$details['url'].'">'.$details['domain'].'</a> | <a href="'.$details['url'].'/impressum/">'.__( 'Legal Notice', 'fcpfo--mail' ).'</a> | <a href="'.$details['url'].'/datenschutzerklarung/">'.__( 'Privacy Policy', 'fcpfo--mail' ).'</a>';
@@ -366,7 +366,7 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
                 <a href="'.$details['url'].'/?p='.$id.'">'.__( 'View the listing', 'fcpfo--mail' ).'</a> | <a href="'.$details['url'].'/wp-admin/post.php?post='.$id.'&action=edit">'.__( 'Edit the listing', 'fcpfo--mail' ).'</a>
             ';
             
-            $datalist = self::message_datalist( $id, $m['list'] ); // ++translations
+            $datalist = self::message_datalist( $id, empty( $m['list'] ) ? null : $m['list'] ); // ++translations
             $message .= $datalist ? "\n".$datalist : '';
         }
         
@@ -545,7 +545,7 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
 
         $email_body = $vsprintf( $template, [
             $m['subject'], // title
-            $m['preheader'] ? $m['preheader'] : substr( strip_tags( $m['message'] ), 0, 80 ) . '…', // preview header
+            !empty( $m['preheader'] ) ? $m['preheader'] : substr( strip_tags( $m['message'] ), 0, 80 ) . '…', // preview header
             $m['heading'], // h1
             $m['message'], // the content
             $m['footer'] ? $m['footer'] : self::details()['footer'] // footer
@@ -565,8 +565,8 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
         $mail->CharSet = 'UTF-8';
         $mail->setFrom( $m['from'], $m['from_name'] );
         $mail->addAddress( $m['to'], $m['to_name'] );
-        if ( $m['to2'] ) { $mail->AddBCC( $m['to2'] ); }
-        if ( $m['reply_to'] ) { $mail->addReplyTo( $m['reply_to'], $m['reply_to_name'] ); }
+        if ( !empty( $m['to2'] ) ) { $mail->AddBCC( $m['to2'] ); }
+        if ( !empty( $m['reply_to'] ) ) { $mail->addReplyTo( $m['reply_to'], $m['reply_to_name'] ); }
         $mail->Subject = $m['subject'];
         //$mail->msgHTML( $email_body );
         $mail->Body = $email_body;
@@ -592,7 +592,7 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
             $mail->{ $k } = $v;
         }
 
-        if ( $details['smtp']['SMTPDebug'] ) {
+        if ( isset( $details['smtp']['SMTPDebug'] ) && $details['smtp']['SMTPDebug'] ) {
             $mail->send();
             exit;
         }

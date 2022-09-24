@@ -14,7 +14,7 @@ class FCP_Forms__Draw {
             $s->options->warning = $v['fcp-form--'.$s->options->form_name.'--warning'];
         }
         $s->options->required_mark = isset( $s->options->required_mark ) ? $s->options->required_mark : '*';
-       
+
         $this->s = $s;
         $this->s->fields = $this->add_values( $s->fields, array_merge( $v, $f ) );
         if ( !is_admin() ) {
@@ -51,7 +51,7 @@ class FCP_Forms__Draw {
         echo $a->text;
     }
     private function field_notice_view($a) {
-        echo $a->view->before . $a->text . $a->view->after;
+        echo isset( $a->view ) ? $a->view->before . $a->text . $a->view->after : $a->text;
     }
 
     private function field_text($a) {

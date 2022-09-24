@@ -313,6 +313,7 @@ add_action( 'transition_post_status', function($new_status, $old_status, $post) 
         if ( class_exists( '\CF\WordPress\HooksByURL' ) ) {
             $imgs = [];
             $get_urls = function($d) use (&$get_urls, &$imgs, $dir, $url) {
+                if ( !is_dir( $d ) ) { return; }
                 $files = array_diff( scandir( $d ), ['.', '..'] );
                 foreach ( $files as $file ) {
                     if ( is_dir( $d . '/' . $file ) ) {
