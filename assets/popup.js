@@ -19,7 +19,8 @@ function FCP_Forms_Popup(section) {
     this.show = function(target) {
         this.section.classList.add( 'fcp-active' );
         document.querySelector( 'body' ).style.overflow = 'hidden';
-        document.addEventListener( 'keydown', key_press );
+        document.addEventListener( 'keydown', enter_press );
+        document.addEventListener( 'keydown', esc_press );
         presave_values();
         this.section.querySelector( 'input, button, select, textarea' ).focus();
         if ( typeof target === 'object' ) {
@@ -33,7 +34,8 @@ function FCP_Forms_Popup(section) {
     this.hide = function() {
         this.section.classList.remove( 'fcp-active' );
         document.querySelector( 'body' ).style.overflow = null;
-        document.removeEventListener( 'keydown', key_press );
+        document.removeEventListener( 'keydown', enter_press );
+        document.removeEventListener( 'keydown', esc_press );
         if ( typeof self.target !== 'undefined' ) {
             self.target.focus();
         }
@@ -60,13 +62,17 @@ function FCP_Forms_Popup(section) {
     });
     this.section.appendChild( discard );
 
-    function key_press(e) {
+    function enter_press(e) {
         if ( e.code === 'Enter' ) {
             if ( !~['input','button','select','textarea'].indexOf( e.target.nodeName.toLowerCase() ) ) { return true; }
             e.preventDefault();
             self.hide();
             return false;
         }
+    }
+    this.enter_press = enter_press;
+
+    function esc_press(e) {
         if ( e.code === 'Escape' ) {
             e.preventDefault();
             self.hide();
@@ -74,6 +80,7 @@ function FCP_Forms_Popup(section) {
             return false;
         }
     }
+    this.esc_press = esc_press;
 
     function presave_values() {
         self.section.querySelectorAll( 'input, button, select, textarea' ).forEach( function(a) {

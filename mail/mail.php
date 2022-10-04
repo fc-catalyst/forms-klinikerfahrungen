@@ -527,6 +527,7 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
     
     public static function send($m) {
 //++ replace all possible leftovers, %xxxspace?
+        //return;
         if ( !empty( array_diff( ['subject', 'message', 'from', 'to'], array_keys( $m ) ) ) ) { return; }
 
         static $template = '';

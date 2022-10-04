@@ -638,6 +638,11 @@
                     "name" : "entity-geo-zoom",
                     "meta_box" : true,
                     "value" : 17
+                },
+                {
+                    "type" : "hidden",
+                    "name" : "entity-geo-street_number",
+                    "meta_box" : true
                 }
             ]
         }

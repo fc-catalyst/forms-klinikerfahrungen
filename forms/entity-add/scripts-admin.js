@@ -20,6 +20,8 @@ fcLoadScriptVariable(
     'google',
     function() {
 
+        if ( !~location.hostname.indexOf('.') ) { return }
+
         const $ = jQuery;
 
         // gmap-------------------------------

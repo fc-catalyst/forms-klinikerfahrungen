@@ -3,6 +3,8 @@ fcLoadScriptVariable(
     'google',
     function() {
 
+        if ( !~location.hostname.indexOf('.') ) { return }
+
         let autocompleteFilled = false; // make sure, the visitor used the autocomplete popup
         const $ = jQuery,
               $autocompleteInput = $( '#billing-address_billing-add' );

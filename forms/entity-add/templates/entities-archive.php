@@ -100,6 +100,8 @@ fcLoadScriptVariable(
             'google',
             function() {
 
+                if ( !~location.hostname.indexOf('.') ) { return }
+
                 // get the already printed ids
                 const pids = [];
 

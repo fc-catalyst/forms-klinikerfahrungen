@@ -18,6 +18,10 @@ if ( !$uploads->upload([
 
 $_POST = $_POST + $uploads->format_for_storing();
 
+// custom address validation - can only be with street_number
+if ( empty( $_POST[ 'entity-geo-street_number' ] ) && strpos( $_SERVER['HTTP_HOST'], '.' ) !== false ) { // && not local server
+    $warns->add_result( 'entity-address', __( 'The address must have a street number', 'fcpfo-ea' ) );
+}
 
 // custom workhours validation - can only have pairs open-close
 $schedule_fields = [

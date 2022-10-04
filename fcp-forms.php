@@ -3,7 +3,7 @@
 /*
 Plugin Name: FCP Forms Engine
 Description: JSON structured forms engine with pre-made forms examples.
-Version: 1.0.0
+Version: 1.0.1
 Requires at least: 4.7
 Requires PHP: 7.0.0
 Author: Firmcatalyst, Vadim Volkov

@@ -58,8 +58,8 @@ fcLoadScriptVariable(
         if ( jQuery( '#entity-specify-map' ).length === 0 ) { return; }
 
         const $ = jQuery;
-        const gmap_popup = new FCP_Forms_Popup( '#entity-specify-map' ),
-              $gmap_holder = $( '.fct1-gmap-pick' );
+        const gmap_popup = new FCP_Forms_Popup( '#entity-specify-map' );
+        const $gmap_holder = $( '.fct1-gmap-pick' );
         let gmap, marker; // they are here to allow the address field to change the position
 
         $( '#entity-map_entity-add' ).on( 'click', function() {
@@ -95,6 +95,9 @@ fcLoadScriptVariable(
                 '/wp-content/themes/fct1/assets/smarts/gmap-view.js',
                 'fcAddGmapView',
                 function() {
+
+                    if ( !~location.hostname.indexOf('.') ) { return }
+
                     gmap = fcAddGmapView( $gmap_holder, false, getLatLngZoom() );
 
                     fcLoadScriptVariable(
@@ -125,12 +128,27 @@ fcLoadScriptVariable(
 
         
         // moving the address field to the popup and back
+        const $address_field = $( '#entity-address_entity-add' );
+        const $form = $address_field.parents( 'form' );
+
+        const prevent_defaut = (e) => e.preventDefault();
+        const prevent_default_submit = (e) => {
+            $form[0].addEventListener( 'submit', prevent_defaut );
+        };
+        const restore_default_submit = (e) => {
+            $form[0].removeEventListener( 'submit', prevent_defaut );
+        };
         const $init_after = $( '#entity-address_entity-add' ).parent().children().first();
         gmap_popup.section.addEventListener( 'popup_opened', function() {
-            $gmap_holder.before( $( '#entity-address_entity-add' ) );
+            $gmap_holder.before( $address_field );
+            $address_field[0].addEventListener( 'focus', prevent_default_submit );
+            $address_field[0].addEventListener( 'blur', restore_default_submit );
+            document.removeEventListener( 'keydown', gmap_popup.enter_press ); // don't close the popup on enter
         });
         gmap_popup.section.addEventListener( 'popup_closed', function() {
-            $init_after.after( $( '#entity-address_entity-add' ) );
+            $init_after.after( $address_field );
+            $address_field[0].removeEventListener( 'focus', prevent_default_submit );
+            $address_field[0].removeEventListener( 'blur', restore_default_submit );
         });
 
         // moving the map by new address field
@@ -153,6 +171,8 @@ fcLoadScriptVariable(
     'https://maps.googleapis.com/maps/api/js?key='+fcGmapKey+'&libraries=places&language=de-DE',
     'google',
     function() {
+
+        if ( !~location.hostname.indexOf('.') ) { return }
 
         const $ = jQuery,
             $input = $( '#entity-address_entity-add' );
@@ -238,7 +258,8 @@ fcLoadScriptVariable(
                 'geo-city': '',
                 'geo-postcode': '',
                 'geo-lat': '',
-                'geo-long': ''
+                'geo-long': '',
+                'geo-street_number' : ''
             },
                 prefix = 'entity-',
                 postfix = '_entity-add';
@@ -267,12 +288,19 @@ fcLoadScriptVariable(
                         values['region'] = component.short_name;
                         break;
                     }
+                    case "street_number": { // demanded attribute for the address to be correct, not saving
+                        values['geo-street_number'] = component.short_name || component.long_name;
+                        break;
+                    }
                 }
             }
 
             values['geo-postcode'] = postcode;
             values['geo-lat'] = place.geometry.location.lat();
             values['geo-long'] = place.geometry.location.lng();
+
+            const geo_zoom = $( '#'+prefix+'geo-zoom'+postfix ).val();
+            values['geo-zoom'] = geo_zoom ? geo_zoom : '17';
 
             apply_values();
             
