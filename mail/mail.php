@@ -526,8 +526,13 @@ In this tutorial we show you how to renew your listing: %tutorial_link',
     }
     
     public static function send($m) {
-//++ replace all possible leftovers, %xxxspace?
-        //return;
+
+        // don't send from local server
+        if ( strpos( $_SERVER['HTTP_HOST'], '.' ) === false ) { return; } 
+
+        // don't send from staging
+        if ( !empty( $_COOKIE['RAIDBOXES_STAGING'] ) ) { return; }
+
         if ( !empty( array_diff( ['subject', 'message', 'from', 'to'], array_keys( $m ) ) ) ) { return; }
 
         static $template = '';
