@@ -143,7 +143,8 @@ fcLoadScriptVariable(
                 'geo-city': '',
                 'geo-postcode': '',
                 'geo-lat': '',
-                'geo-long': ''
+                'geo-long': '',
+                'geo-street_number' : ''
             },
                 prefix = 'entity-',
                 postfix = '_entity-add';
@@ -172,12 +173,19 @@ fcLoadScriptVariable(
                         values['region'] = component.short_name;
                         break;
                     }
+                    case "street_number": { // demanded attribute for the address to be correct, not saving
+                        values['geo-street_number'] = component.short_name || component.long_name;
+                        break;
+                    }
                 }
             }
 
             values['geo-postcode'] = postcode;
             values['geo-lat'] = place.geometry.location.lat();
             values['geo-long'] = place.geometry.location.lng();
+
+            const geo_zoom = $( '#'+prefix+'geo-zoom'+postfix ).val();
+            values['geo-zoom'] = geo_zoom ? geo_zoom : '17';
 
             apply_values();
 
