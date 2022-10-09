@@ -22,7 +22,7 @@ add_filter( 'login_headerurl', function() {
 });
 
 add_filter( 'login_headertext', function() {
-    return '<img src="/wp-content/themes/fct1/imgs/klinikerfahrungen-logo-4.png" />';
+    if ( function_exists( 'the_custom_logo' ) && has_custom_logo() ) { return get_custom_logo(); } else {  return; }
 });
 
 add_action( 'login_enqueue_scripts', function() {
@@ -31,11 +31,11 @@ add_action( 'login_enqueue_scripts', function() {
         :root {
             --main-color:#23667b;
         }
-        .login h1 a {
+        .login h1 a.custom-logo-link {
             background:none!important;
             text-indent:0!important;
         }
-        .login h1 a img {
+        .login h1 a.custom-logo-link img {
             height:100%;
             width:auto;
         }

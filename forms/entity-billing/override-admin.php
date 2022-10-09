@@ -18,9 +18,11 @@ $billing_posts = get_posts([
     'posts_per_page' => -1,
 ]);
 
+// ++can select billings by meta billing-company and author to set instead of no title
+
 $billings = [];
 foreach( $billing_posts as $v ){
-    $billings[ $v->ID ] = $v->post_title;
+    $billings[ $v->ID ] = $v->post_title ? $v->post_title : '('.__( 'no title' ).')';
 }
 
 if ( empty( $billings) ) {

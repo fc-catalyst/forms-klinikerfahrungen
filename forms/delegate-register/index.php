@@ -138,7 +138,7 @@ add_action( 'admin_init', function() {
 add_filter( 'pre_get_posts', function ($query) {
     if ( !is_admin() ) { return $query; }
     if ( !function_exists( 'get_current_screen' ) ) { return $query; }
-    if ( get_current_screen()->base != 'edit' ) { return $query; }
+    if ( get_current_screen() && get_current_screen()->base != 'edit' ) { return $query; }
     if ( !self::check_role( 'entity_delegate' ) ) { return $query; }
     
     $query->set( 'author', get_current_user_id() );
