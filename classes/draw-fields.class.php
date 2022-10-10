@@ -129,7 +129,7 @@ class FCP_Forms__Draw {
             type="hidden"
             name="<?php $this->e_field_name( $a->name ) ?>"
             id="<?php $this->e_field_id( $a->name ) ?>"
-            value="<?php echo esc_attr( isset( $a->savedValue ) ? $a->savedValue : ( isset( $a->value ) ? $a->value : '' ) ) ?>"
+            value="<?php echo esc_attr( isset( $a->savedValue ) && $a->savedValue ? $a->savedValue : ( isset( $a->value ) ? $a->value : '' ) ) ?>"
             <?php echo isset( $a->autofill ) ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
         />
         <?php
@@ -141,7 +141,7 @@ class FCP_Forms__Draw {
             $buttons = ['undo', 'redo', '|', 'formatselect', 'bold', 'italic', '|', 'link', 'unlink', '|', 'bullist', 'numlist'];
         
             wp_editor(
-                isset( $a->savedValue ) ? $a->savedValue : ( isset( $a->value ) ? $a->value : '' ),
+                isset( $a->savedValue ) && $a->savedValue ? $a->savedValue : ( isset( $a->value ) ? $a->value : '' ),
                 $this->__field_id( $a->name ),
                 [
                     'media_buttons' => 0,
@@ -167,7 +167,7 @@ class FCP_Forms__Draw {
             placeholder="<?php echo $a->placeholder ?>"
             class="<?php echo $a->warning ? 'fcp-f-invalid' : '' ?>"
             <?php echo $a->autofill ? 'data-fcp-autofill="'.$a->autofill.'"' : '' ?>
-        ><?php echo esc_textarea( $a->savedValue ? $a->savedValue : $a->value ) ?></textarea>
+        ><?php echo esc_textarea( isset( $a->savedValue ) && $a->savedValue ? $a->savedValue : $a->value ) ?></textarea>
         <?php
     }
 

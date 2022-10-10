@@ -53,6 +53,8 @@ if ( $_POST['entity-id'] ) {
         'post_status'      => 'any',
     ]);
 
+    // ++only if the entry doesn't have already assigned billing
+
     if ( $entity->have_posts() ) {
         update_post_meta( $entity->posts[0]->ID, 'entity-billing', $id );
     }
