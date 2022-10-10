@@ -22,7 +22,7 @@ $billing_posts = get_posts([
 
 $billings = [];
 foreach( $billing_posts as $v ){
-    $billings[ $v->ID ] = $v->post_title ? $v->post_title : '('.__( 'no title' ).')';
+    $billings[ $v->ID ] = $v->post_title ? $v->post_title : __( '(no title)' );
 }
 
 if ( empty( $billings) ) {

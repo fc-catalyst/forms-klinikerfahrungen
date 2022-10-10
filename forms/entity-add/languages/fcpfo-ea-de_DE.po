@@ -124,6 +124,9 @@ msgstr "Öffnungszeiten"
 msgid "Thank you for adding the entry. It will become visible to other visitors as soon as passes the moderation."
 msgstr "Vielen Dank für Ihre Eintragung. Der Eintrag ist für alle Besucher sichtbar, nachdem der Eintrag durch unser Team überprüft wurde."
 
+msgid "The address must have a street number"
+msgstr "Die Adresse muss eine Hausnummer haben"
+
 #. tags, actually
 msgid "Our range of treatments"
 msgstr "Angebotene Behandlungen"

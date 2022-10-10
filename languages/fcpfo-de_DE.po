@@ -137,6 +137,9 @@ msgstr "Seiten Optionen"
 msgid "Billing Details"
 msgstr "Rechnungsdaten"
 
+msgid "Add New Billing"
+msgstr "Rechnungsdaten hinzufügen"
+
 #. delegate
 msgid "Clinic / Doctor"
 msgstr "Klinik / Arzt"
