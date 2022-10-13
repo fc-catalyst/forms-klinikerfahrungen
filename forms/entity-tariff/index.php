@@ -27,6 +27,8 @@ new FCP_Add_Meta_Boxes( $json, (object) [
 
 // datepicker
 add_action( 'admin_enqueue_scripts', function() {
+    global $post;
+    if ( !in_array( $post->post_type, [ 'clinic', 'doctor' ] ) ) { return; }
 /*
     wp_enqueue_script('jquery-ui-datepicker');
     wp_enqueue_style('jquery-ui');
@@ -42,6 +44,8 @@ add_action( 'admin_enqueue_scripts', function() {
 });
 
 add_action( 'admin_footer', function() {
+    global $post;
+    if ( !in_array( $post->post_type, [ 'clinic', 'doctor' ] ) ) { return; }
     ?>
     <script type="text/javascript">
         jQuery( document ).ready( function($){
