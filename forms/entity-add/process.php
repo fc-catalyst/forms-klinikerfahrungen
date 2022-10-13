@@ -58,7 +58,7 @@ $id = wp_insert_post( [
     'post_status' => 'pending',
     'post_author' => wp_get_current_user()->ID,
     'post_type' => $_POST['entity-entity'], // clinic or doctor
-    'comment_status' => 'closed'
+    'comment_status' => 'open'
 ]);
 // meta boxes are filled automatically with save_post hooked
 

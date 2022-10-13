@@ -42,6 +42,7 @@ foreach ( $schedule_fields as $v ) {
     }
 }
 
+// ++open comments if new post
 
 if ( current_user_can( 'administrator' ) ) { return; } // admins don't have to notify a moderator
 
