@@ -271,7 +271,7 @@ function fcp_tariff_filter_text($text) {
 
 function fcp_tariff_get() {
     $free = 'kostenloser_eintrag';
-    $tariff = fct1_meta( 'entity-tariff' );
+    $tariff = fct1_meta( 'entity-tariff' ) ? fct1_meta( 'entity-tariff' ) : $free;
     $status = fct1_meta( 'entity-payment-status' );
     $payed = $tariff && $tariff !== $free && $status === 'payed';
 
