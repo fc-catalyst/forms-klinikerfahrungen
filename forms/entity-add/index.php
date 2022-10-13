@@ -396,6 +396,17 @@ add_action( 'transition_post_status', function($new_status, $old_status, $post) 
 }, 10, 3 );
 //*/
 
+// hide the ping-back checkbox from admins and all
+add_action( 'admin_footer', function() {
+    global $post;
+    if ( !in_array( $post->post_type, [ 'clinic', 'doctor' ] ) ) { return; }
+    ?>
+    <style>
+        label[for=comment_status] ~ * { display:none; }
+    </style>
+    <?php
+});
+
 // the cloudflare plugin clear by url, made for images, which remain even after hidding
 add_action( 'plugins_loaded', function() {
     if ( !is_admin() ) { return; }
