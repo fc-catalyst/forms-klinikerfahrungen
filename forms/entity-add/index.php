@@ -283,7 +283,7 @@ add_action( 'rest_api_init', function () { // it is in entity-add to easier incl
 
         },
         'permission_callback' => function() { // just a debugging rake
-            return true; //++--
+            //return true; //++--
             if ( empty( $_SERVER['HTTP_REFERER'] ) ) { return false; }
             if ( strtolower( parse_url( $_SERVER['HTTP_REFERER'], PHP_URL_HOST ) ) !== strtolower( $_SERVER['HTTP_HOST'] ) ) { return false; }
             return true;
