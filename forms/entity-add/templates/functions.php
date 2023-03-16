@@ -221,7 +221,7 @@ function entity_tile_print($footer = '') {
 ?>
     <article class="post-<?php the_ID() ?> <?php echo get_post_type() ?> type-<?php echo get_post_type() ?> status-<?php echo get_post_status() ?> entry" itemscope="" itemtype="https://schema.org/CreativeWork">
 
-        <a class="entry-link-cover" rel="bookmark" href="<?php the_permalink(); ?>" title="<?php the_title() ?>"></a>
+        <a class="entry-link-cover" href="<?php the_permalink(); ?>" title="<?php the_title() ?>"></a>
 
         <header class="entry-header">
         <?php
