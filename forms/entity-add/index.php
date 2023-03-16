@@ -261,7 +261,7 @@ add_action( 'rest_api_init', function () { // it is in entity-add to easier incl
                 while ( $wp_query->have_posts() ) {
                     $wp_query->the_post();
                     
-                    entity_tile_print( sprintf( 
+                    fcpf\eat\entity_tile_print( sprintf( 
                         __( 'Within %s km radius', 'fcpfo-ea' ),
                         $ranges[ get_the_ID() ]
                     ));
