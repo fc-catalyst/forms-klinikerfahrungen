@@ -1,5 +1,4 @@
 (()=>{
-    window.fcFoundInRadius = 'maybe';
 
     const $ = jQuery,
     _ = new URLSearchParams( window.location.search ),
@@ -8,6 +7,8 @@
 
     if ( plc === null || spc === null ) { return }
     if ( $holder.length === 0 || $holder.find( 'article' ).length > 6 ) { return }
+
+    setTimeout( ()=>{ window.fcFoundInRadius = 'probably' }, 3000 ); // fallback in case google is not available
 
     fcLoadScriptVariable(
     'https://maps.googleapis.com/maps/api/js?key='+fcGmapKey+'&libraries=places&language=de-DE',
@@ -33,6 +34,8 @@
                 address: plc
             },
             function(places, status) {
+                window.fcFoundInRadius = 'maybe';
+
                 if ( status !== 'OK' || !places[0] ) { return }
 
                 const [ lat, lng ] = [ places[0].geometry.location.lat(), places[0].geometry.location.lng() ];
@@ -40,7 +43,6 @@
 
                 $.get( '/wp-json/fcp-forms/v1/entities_around/' + [lat,lng,spc].join('/') + (pids[0] ? '/'+pids.join(',') : ''), function( data ) {
                     $holder.append( data.content );
-                    //$holder.children( 'h2' ).remove();
                 });
 
             }
