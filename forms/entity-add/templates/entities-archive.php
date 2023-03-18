@@ -7,7 +7,7 @@ use fcpf\eat as eat;
 
 get_header();
 
-
+// HEADER
 $the_query = new \WP_Query( [
     'post_type'        => 'fct-section',
     'name'        => 'entities-hero'
@@ -27,19 +27,7 @@ if ( $the_query->have_posts() ) {
 }
 
 
-$args = [
-    'post_type'        => ['clinic', 'doctor'],
-    'orderby'          => 'date',
-    'order'            => 'DESC',
-    'posts_per_page'   => '12',
-    'paged'            => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
-];
-
-$args['meta_query'] = archive_filters();
-
-$wp_query = new \WP_Query( $args );
-
-
+// SEARCH FORM
 ?>
     <div class="entry-content">
         <div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
@@ -54,6 +42,18 @@ $wp_query = new \WP_Query( $args );
 <?php
 
 
+// FOUND ENTRIES
+$args = [
+    'post_type'        => ['clinic', 'doctor'],
+    'orderby'          => 'date',
+    'order'            => 'DESC',
+    'posts_per_page'   => '12',
+    'paged'            => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
+    'meta_query'       => archive_filters(),
+];
+
+$wp_query = new \WP_Query( $args );
+
 if ( $wp_query->have_posts() ) {
     while ( $wp_query->have_posts() ) {
         $wp_query->the_post();
@@ -64,79 +64,20 @@ if ( $wp_query->have_posts() ) {
     get_template_part( 'template-parts/pagination' );
     ?></div><?php
 } else {
-    search_stats( '<h2 id="nothing-found-headline">', '</h2>' );
-    // delay the dramatic headline appearance as more results still can appear ++can do better ++can add loader
-    ?>
-<style>
-#nothing-found-headline {
-    text-align:center;
-    opacity:0;
-    animation:nothingFoundHeadline 0.4s ease-in 3s forwards;
-}
-@keyframes nothingFoundHeadline { to { opacity:1; } }
-</style>
-    <?php
+
+// NOT FOUND ENTRIES
+    search_stats( '<noscript><h2>', '</h2></noscript>' );
 }
 
-// load results async in a wider area, if not many found ++can place in a separate file
+
+// LOAD MORE IF NOT ENOUGH FOUND in 100 km radius and by common search results
 if ( $args['meta_query'] && $wp_query->post_count < 7 ) {
-?>
-<script>
-fcLoadScriptVariable(
-    '',
-    'jQuery',
-    function() {
-
-        const $ = jQuery,
-              _ = new URLSearchParams( window.location.search ),
-              [ plc, spc ] = [ _.get('place'), _.get('specialty') ],
-              $holder = $( '#main-content .wrap-width' );
-
-        if ( plc === null || spc === null ) { return }
-        if ( $holder.length === 0 || $holder.find( 'article' ).length > 6 ) { return }
-
-        fcLoadScriptVariable( // ++move outside?
-            'https://maps.googleapis.com/maps/api/js?key='+fcGmapKey+'&libraries=places&language=de-DE',
-            'google',
-            function() {
-
-                if ( !~location.hostname.indexOf('.') ) { return }
-
-                // get the already printed ids
-                const pids = [];
-
-                $holder.find( 'article' ).each( function() {
-                    const cls = $( this ).attr( 'class' );
-                    if ( !~cls.indexOf( 'post-' ) ) { return true }
-                    pids.push( cls.replace( /^.*post\-(\d+).*$/, "$1" ) );
-                });
-
-                // get the lat lng by address (state, postcode)
-                const geocoder = new google.maps.Geocoder();
-                geocoder.geocode(
-                    {
-                        componentRestrictions: { country: 'de' },
-                        address: plc
-                    },
-                    function(places, status) {
-                        if ( status !== 'OK' || !places[0] ) { return }
-
-                        const [ lat, lng ] = [ places[0].geometry.location.lat(), places[0].geometry.location.lng() ];
-                        if ( !lat || !lng ) { return }
-
-                        $.get( '/wp-json/fcp-forms/v1/entities_around/' + [lat,lng,spc].join('/') + (pids[0] ? '/'+pids.join(',') : ''), function( data ) {
-                            $holder.append( data.content );
-                            $holder.children( 'h2' ).remove();
-                        });
-
-                    }
-                );
-            }
-        );
-    }
-);
-</script>
-<?php
+    ?>
+    <script type="text/javascript">
+    fcLoadScriptVariable( '/wp-content/plugins/fcp-forms/forms/entity-add/templates/assets/load-in-radius.js', 'jQuery' );
+    fcLoadScriptVariable( '/wp-content/plugins/fcp-forms/forms/entity-add/templates/assets/load-in-search.js', 'fcFoundInRadius');
+    </script>
+    <?php
 }
 
 wp_reset_query();
@@ -144,9 +85,12 @@ wp_reset_query();
 ?>
 <div style="height:80px" aria-hidden="true" class="wp-block-spacer"></div>
 <?php
-//*/
+
 get_footer();
 
+
+
+// FUNCTIONS
 
 function archive_filters() {
     global $wpdb;
@@ -189,7 +133,7 @@ function archive_filters() {
         return $query_meta;
     }
     
-    return !empty( $query_meta[0] ) ? $query_meta[0] : '';
+    return !empty( $query_meta[0] ) ? $query_meta[0] : null;
 }
 
 function search_stats($before = '', $after = '') {

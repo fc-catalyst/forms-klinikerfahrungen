@@ -413,3 +413,128 @@ add_action( 'plugins_loaded', function() {
     if ( !class_exists( '\CF\WordPress\Hooks' ) ) { return; }
     require_once( __DIR__ . '/inc/cloudflare_extend.php' );
 });
+
+// common search results by the post type
+add_action( 'rest_api_init', function () {
+
+    $route_args = [
+        'methods'  => 'GET',
+        'callback' => function( \WP_REST_Request $request ) use ( $wp_query_args ) {
+
+            $wp_query_args = [
+                'post_type' => ['clinic', 'doctor'],
+                'post_status' => 'publish',
+                //'sentence' => true,
+                'posts_per_page' => 20,
+            ];
+
+            $wp_query_args['s'] = $request['search'];
+
+            $search = new \WP_Query( $wp_query_args );
+
+            if ( !$search->have_posts() ) {
+                new \WP_Error( 'nothing_found', 'No results found', [ 'status' => 404 ] );
+            }
+
+            if ( $search->have_posts() ) {
+
+                include_once ( __DIR__ . '/templates/functions.php' );
+
+                ob_start();
+                while ( $search->have_posts() ) {
+                    $search->the_post();
+                    fcpf\eat\entity_tile_print();
+                }
+                $content = ob_get_contents();
+                ob_end_clean();
+
+                //wp_reset_query();
+
+                return new WP_REST_Response( (object) [
+                    'content' => $content,
+                ], 200 );
+
+            } else {
+
+                return new WP_Error( 'no_data_found', 'No Data Found', [ 'status' => 404 ] );
+            }
+        },
+        'permission_callback' => function() {
+            if ( empty( $_SERVER['HTTP_REFERER'] ) ) { return false; }
+            if ( strtolower( parse_url( $_SERVER['HTTP_REFERER'], PHP_URL_HOST ) ) !== strtolower( $_SERVER['HTTP_HOST'] ) ) { return false; }
+            return true;
+        },
+        'args' => [
+            'search' => [
+                'description' => 'The search query',
+                'type'        => 'string',
+                'validate_callback' => function($param) {
+                    return trim( $param ) ? true : false;
+                },
+                'sanitize_settings' => function($param, $request, $key) {
+                    return sanitize_text_field( urldecode( $param ) ); // return htmlspecialchars( wp_unslash( urldecode( $param ) ) );
+                },
+            ],
+        ],
+    ];
+
+    register_rest_route( 'fcp-forms/v1', '/entities_search/(?P<search>.{1,90})', $route_args );
+});
+
+/* ++ turn it to the pages / posts search results when nothing at all found
+// ++!! OR print the pre-filled search form - easier
+add_action( 'rest_api_init', function () {
+
+    $route_args = [
+        'methods'  => 'GET',
+        'callback' => function( \WP_REST_Request $request ) use ( $wp_query_args ) {
+
+            $wp_query_args = [
+                'post_type' => ['clinic', 'doctor'],
+                'post_status' => 'publish',
+                //'sentence' => true,
+                'posts_per_page' => 20,
+            ];
+
+            $wp_query_args['s'] = $request['search'];
+
+            $search = new \WP_Query( $wp_query_args );
+
+            if ( !$search->have_posts() ) {
+                return new \WP_REST_Response( [], 200 ); // new \WP_Error( 'nothing_found', 'No results found', [ 'status' => 404 ] );
+            }
+
+            $result = [];
+            while ( $search->have_posts() ) {
+                $p = $search->next_post();
+                $result[] = print_r( $p, true ); // not using the id as the key to keep the order in json
+            }
+
+            $result = new \WP_REST_Response( $result, 200 );
+
+            //if ( FCPPBK_DEV ) { nocache_headers(); }
+
+            return $result;
+        },
+        'permission_callback' => function() {
+            //if ( empty( $_SERVER['HTTP_REFERER'] ) ) { return false; }
+            //if ( strtolower( parse_url( $_SERVER['HTTP_REFERER'], PHP_URL_HOST ) ) !== strtolower( $_SERVER['HTTP_HOST'] ) ) { return false; }
+            return true;
+        },
+        'args' => [
+            'search' => [
+                'description' => 'The search query',
+                'type'        => 'string',
+                'validate_callback' => function($param) {
+                    return trim( $param ) ? true : false;
+                },
+                'sanitize_settings' => function($param, $request, $key) {
+                    return sanitize_text_field( urldecode( $param ) ); // return htmlspecialchars( wp_unslash( urldecode( $param ) ) );
+                },
+            ],
+        ],
+    ];
+
+    register_rest_route( 'fcp-forms/v1', '/entities_search/(?P<search>.{1,90})', $route_args );
+});
+//*/
