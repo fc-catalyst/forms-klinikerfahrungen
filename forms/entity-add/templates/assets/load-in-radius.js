@@ -1,5 +1,7 @@
 (()=>{
 
+    setTimeout( ()=>{ window.fcFoundInRadius = 'probably' }, 3000 ); // fallback in case search is meant initially or google is absent
+
     const $ = jQuery,
     _ = new URLSearchParams( window.location.search ),
     [ plc, spc ] = [ _.get('place'), _.get('specialty') ],
@@ -8,9 +10,7 @@
     if ( plc === null || spc === null ) { return }
     if ( $holder.length === 0 || $holder.find( 'article' ).length > 6 ) { return }
 
-    setTimeout( ()=>{ window.fcFoundInRadius = 'probably' }, 3000 ); // fallback in case google is not available
-
-    fcLoadScriptVariable(
+    fcLoadScriptVariable( // ++ should use the local search!!!
     'https://maps.googleapis.com/maps/api/js?key='+fcGmapKey+'&libraries=places&language=de-DE',
     'google',
     function() {
@@ -43,6 +43,7 @@
 
                 $.get( '/wp-json/fcp-forms/v1/entities_around/' + [lat,lng,spc].join('/') + (pids[0] ? '/'+pids.join(',') : ''), function( data ) {
                     $holder.append( data.content );
+                    window.fcFoundInRadius = 'found';
                 });
 
             }
