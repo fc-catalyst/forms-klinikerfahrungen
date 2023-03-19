@@ -43,7 +43,7 @@ $wp_query = new \WP_Query( $args );
 ?>
     <div class="entry-content">
         <div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
-        <?php search_stats( '<p style="margin-top:-25px;opacity:0.45">', '.</p>' ) ?>
+        <?php search_stats( '<p style="margin-top:-25px;opacity:0.45">', '.</p>', true ) ?>
         <?php echo do_shortcode('[fcp-form dir="entity-search" notcontent]') ?>
         <div style="height:1px" aria-hidden="true" class="wp-block-spacer"></div>
     </div>
@@ -66,7 +66,7 @@ if ( $wp_query->have_posts() ) {
 } else {
 
 // NOT FOUND ENTRIES
-    search_stats( '<noscript><h2>', '</h2></noscript>' );
+    search_stats( '<noscript id="nothing-found"><h2>', '</h2></noscript>' );
 }
 
 ?></div><?php
@@ -138,19 +138,19 @@ function archive_filters() {
     return !empty( $query_meta[0] ) ? $query_meta[0] : null;
 }
 
-function search_stats($before = '', $after = '') {
+function search_stats($before = '', $after = '', $hide_empty = false ) {
     if ( empty( $_GET['specialty'] ) && empty( $_GET['place'] ) ) { return; }
     
     global $wp_query;
     if ( $wp_query->have_posts() ) {
-        if ( $wp_query->post_count === 1 ) {
+        if ( $wp_query->found_posts === 1 ) {
             $count = __( '1 result', 'fcpfo-ea' );
         } else {
-            $count = sprintf( __( '%s results', 'fcpfo-ea' ), $wp_query->post_count );
+            $count = sprintf( __( '%s results', 'fcpfo-ea' ), $wp_query->found_posts );
         }
     } else {
-        return;
-        //$count = __( 'Nothing', 'fcpfo-ea' );
+        if ( $hide_empty ) { return; }
+        $count = __( 'Nothing', 'fcpfo-ea' );
     }
     
     echo $before .

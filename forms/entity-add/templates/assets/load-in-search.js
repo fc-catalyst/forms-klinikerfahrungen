@@ -10,8 +10,7 @@
     const query = ( ( plc || '' ) + ' ' + ( spc || '' ) ).trim();
 
     // get the already printed ids
-    const pids = [];
-
+    const pids = []; // ++ !!works fine only on the first page
     $holder.find( 'article' ).each( function() {
         const cls = $( this ).attr( 'class' );
         if ( !~cls.indexOf( 'post-' ) ) { return true }
@@ -23,11 +22,15 @@
 
         const shadow = $( '#found-by-query' )[0];
         shadow.attachShadow( { mode: 'open' } );
-        shadow.shadowRoot.innerHTML = data.content;
+        shadow.shadowRoot.innerHTML  = '<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>';
+        shadow.shadowRoot.innerHTML += data.content;
 
         $.get( '/wp-content/themes/fct1/assets/styles/first-screen/search.css', function( data ) {
             shadow.shadowRoot.innerHTML += `<style type="text/css">${data}</style>`;
         });
+
+    }).fail( () => {
+        $( '#nothing-found' ).replaceWith( $( '#nothing-found' ).html() );
     });
 
 })();

@@ -24,7 +24,7 @@
         if ( !~location.hostname.indexOf('.') ) { return } // localhost
 
         // get the already printed ids
-        const pids = [];
+        const pids = []; // ++ !!works fine only on the first page
         $holder.find( 'article' ).each( function() {
             const cls = $( this ).attr( 'class' );
             if ( !~cls.indexOf( 'post-' ) ) { return true }
