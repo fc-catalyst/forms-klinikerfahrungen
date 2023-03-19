@@ -232,7 +232,7 @@ function entity_tile_print($footer = '') {
             <div class="entry-photo<?php echo !$photo ? ' entry-background' : '' ?>">
                 <?php
                     fct1_image_print(
-                        'entity/' . get_the_ID() . '/' . ( !$photo ? $backg : $photo ),
+                        'entity/' . get_the_ID() . '/' . ( $photo ?: $backg ),
                         [454, 210],
                         ['center', 'top'],
                         get_the_title()
