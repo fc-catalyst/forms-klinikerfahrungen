@@ -50,9 +50,9 @@ $wp_query = new \WP_Query( $args );
 
     <style>.entity-about .cr_stars_bar{width:50%;max-width:115px;margin-top:8px;}</style>
 
-    <div class="wrap-width">
 <?php
 
+?><div class="wrap-width"><?php
 
 // FOUND RESULTS
 if ( $wp_query->have_posts() ) {
@@ -63,13 +63,13 @@ if ( $wp_query->have_posts() ) {
         
     }
     get_template_part( 'template-parts/pagination' );
-    ?></div><?php
 } else {
 
 // NOT FOUND ENTRIES
     search_stats( '<noscript><h2>', '</h2></noscript>' );
 }
 
+?></div><?php
 
 // LOAD MORE IF NOT ENOUGH FOUND in 100 km radius and by common search results
 if ( $args['meta_query'] && $wp_query->post_count < 7 ) {
