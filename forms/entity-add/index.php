@@ -293,6 +293,40 @@ add_action( 'plugins_loaded', function() {
 });
 
 
+// combine the meta fields into the content
+function fcp_forms_ea_fill_in_the_content( $post_id ) {
+
+    $post_type = get_post_type( $post_id );
+    if ( !in_array( $post_type, ['clinic', 'doctor'] ) ) { return; }
+    if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) { return; }
+
+    remove_action( 'save_post', 'fcp_forms_ea_fill_in_the_content', 20 );
+
+    $meta_keys = array(
+        'entity-phone' => '',
+        'entity-address' => '',
+        'entity-specialty' => '',
+        'entity-tags' => '',
+        'entity-content' => '',
+    );
+
+    foreach ( $meta_keys as $meta_key => &$meta_value ) {
+        $meta_value = get_post_meta( $post_id, $meta_key, true );
+    }
+
+    $content = implode( "\n\n", $meta_keys );
+
+    wp_update_post( array(
+        'ID' => $post_id,
+        'post_content' => $content
+    ) );
+
+    add_action( 'save_post', 'fcp_forms_ea_fill_in_the_content', 20 );
+}
+add_action( 'save_post', 'fcp_forms_ea_fill_in_the_content', 20 );
+
+
+
 // find closest locations by provided coordinates
 add_action( 'rest_api_init', function () { // it is in entity-add to easier include the template functions.php
 
