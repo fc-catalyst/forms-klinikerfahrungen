@@ -9,7 +9,7 @@ get_header();
 
 if ( current_user_can( 'administrator' ) ) {
     $args = array(
-        'post_type' => array( 'post_type_1', 'post_type_2' ),
+        'post_type' => array( 'clinic', 'doctor' ),
         'posts_per_page' => -1,
     );
     
