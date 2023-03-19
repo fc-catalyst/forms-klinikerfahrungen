@@ -1,6 +1,6 @@
 (()=>{
 
-    setTimeout( ()=>{ window.fcFoundInRadius = 'probably' }, 3000 ); // fallback in case search is meant initially or google is absent
+    let fallback = setTimeout( ()=>{ window.fcFoundInRadius = 'probably' }, 2000 ); // fallback in case search is meant initially or google is absent
 
     const $ = jQuery,
     _ = new URLSearchParams( window.location.search ),
@@ -14,6 +14,9 @@
     'https://maps.googleapis.com/maps/api/js?key='+fcGmapKey+'&libraries=places&language=de-DE',
     'google',
     function() {
+
+        clearTimeout( fallback );
+        fallback = setTimeout( ()=>{ window.fcFoundInRadius = 'maybe' }, 1000 );
 
         if ( !~location.hostname.indexOf('.') ) { return }
 
@@ -34,7 +37,9 @@
                 address: plc
             },
             function(places, status) {
-                window.fcFoundInRadius = 'maybe';
+
+                clearTimeout( fallback );
+                fallback = setTimeout( ()=>{ window.fcFoundInRadius = 'almost' }, 500 );
 
                 if ( status !== 'OK' || !places[0] ) { return }
 
@@ -43,6 +48,7 @@
 
                 $.get( '/wp-json/fcp-forms/v1/entities_around/' + [lat,lng,spc].join('/') + (pids[0] ? '/'+pids.join(',') : ''), function( data ) {
                     $holder.append( data.content );
+                    clearTimeout( fallback );
                     window.fcFoundInRadius = 'found';
                 });
 

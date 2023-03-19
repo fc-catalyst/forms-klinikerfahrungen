@@ -422,11 +422,18 @@ add_action( 'rest_api_init', function () {
         'callback' => function( \WP_REST_Request $request ) use ( $wp_query_args ) {
 
             $wp_query_args = [
-                'post_type' => ['clinic', 'doctor'],
+                //'post_type' => ['clinic', 'doctor'],
                 'post_status' => 'publish',
                 //'sentence' => true,
                 'posts_per_page' => 20,
+                //'orderby' => 'relevance',
+                'orderby'=> ['type'=>'ASC', 'relevance'=>'ASC'],
+                //'order'   => 'ASC',
             ];
+            if ( !empty( $request['exclude_ips'] ) ) {
+                $exclude_ids = explode( ',', trim( $request['exclude_ips'], ',' ) );
+                $wp_query_args['post__not_in'] = $exclude_ids;
+            }
 
             $wp_query_args['s'] = $request['search'];
 
@@ -443,7 +450,9 @@ add_action( 'rest_api_init', function () {
                 ob_start();
                 while ( $search->have_posts() ) {
                     $search->the_post();
-                    fcpf\eat\entity_tile_print();
+                    //fcpf\eat\entity_tile_print();
+                    //echo get_the_ID() . ' ';
+                    get_template_part( 'template-parts/search', 'row' );
                 }
                 $content = ob_get_contents();
                 ob_end_clean();
@@ -458,63 +467,6 @@ add_action( 'rest_api_init', function () {
 
                 return new WP_Error( 'no_data_found', 'No Data Found', [ 'status' => 404 ] );
             }
-        },
-        'permission_callback' => function() {
-            if ( empty( $_SERVER['HTTP_REFERER'] ) ) { return false; }
-            if ( strtolower( parse_url( $_SERVER['HTTP_REFERER'], PHP_URL_HOST ) ) !== strtolower( $_SERVER['HTTP_HOST'] ) ) { return false; }
-            return true;
-        },
-        'args' => [
-            'search' => [
-                'description' => 'The search query',
-                'type'        => 'string',
-                'validate_callback' => function($param) {
-                    return trim( $param ) ? true : false;
-                },
-                'sanitize_settings' => function($param, $request, $key) {
-                    return sanitize_text_field( urldecode( $param ) ); // return htmlspecialchars( wp_unslash( urldecode( $param ) ) );
-                },
-            ],
-        ],
-    ];
-
-    register_rest_route( 'fcp-forms/v1', '/entities_search/(?P<search>.{1,90})', $route_args );
-});
-
-/* ++ turn it to the pages / posts search results when nothing at all found
-// ++!! OR print the pre-filled search form - easier
-add_action( 'rest_api_init', function () {
-
-    $route_args = [
-        'methods'  => 'GET',
-        'callback' => function( \WP_REST_Request $request ) use ( $wp_query_args ) {
-
-            $wp_query_args = [
-                'post_type' => ['clinic', 'doctor'],
-                'post_status' => 'publish',
-                //'sentence' => true,
-                'posts_per_page' => 20,
-            ];
-
-            $wp_query_args['s'] = $request['search'];
-
-            $search = new \WP_Query( $wp_query_args );
-
-            if ( !$search->have_posts() ) {
-                return new \WP_REST_Response( [], 200 ); // new \WP_Error( 'nothing_found', 'No results found', [ 'status' => 404 ] );
-            }
-
-            $result = [];
-            while ( $search->have_posts() ) {
-                $p = $search->next_post();
-                $result[] = print_r( $p, true ); // not using the id as the key to keep the order in json
-            }
-
-            $result = new \WP_REST_Response( $result, 200 );
-
-            //if ( FCPPBK_DEV ) { nocache_headers(); }
-
-            return $result;
         },
         'permission_callback' => function() {
             //if ( empty( $_SERVER['HTTP_REFERER'] ) ) { return false; }
@@ -535,6 +487,6 @@ add_action( 'rest_api_init', function () {
         ],
     ];
 
+    register_rest_route( 'fcp-forms/v1', '/entities_search/(?P<search>.{1,90})/(?P<exclude_ips>[\d\,]+)', $route_args );
     register_rest_route( 'fcp-forms/v1', '/entities_search/(?P<search>.{1,90})', $route_args );
 });
-//*/

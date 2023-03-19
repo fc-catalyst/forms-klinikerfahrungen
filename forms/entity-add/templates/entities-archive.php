@@ -27,6 +27,18 @@ if ( $the_query->have_posts() ) {
 }
 
 
+// SEARCH QUERY
+$args = [
+    'post_type'        => ['clinic', 'doctor'],
+    'orderby'          => 'date',
+    'order'            => 'DESC',
+    'posts_per_page'   => '12',
+    'paged'            => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
+    'meta_query'       => archive_filters(),
+];
+$wp_query = new \WP_Query( $args );
+
+
 // SEARCH FORM
 ?>
     <div class="entry-content">
@@ -42,18 +54,7 @@ if ( $the_query->have_posts() ) {
 <?php
 
 
-// FOUND ENTRIES
-$args = [
-    'post_type'        => ['clinic', 'doctor'],
-    'orderby'          => 'date',
-    'order'            => 'DESC',
-    'posts_per_page'   => '12',
-    'paged'            => get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1,
-    'meta_query'       => archive_filters(),
-];
-
-$wp_query = new \WP_Query( $args );
-
+// FOUND RESULTS
 if ( $wp_query->have_posts() ) {
     while ( $wp_query->have_posts() ) {
         $wp_query->the_post();
@@ -148,7 +149,8 @@ function search_stats($before = '', $after = '') {
             $count = sprintf( __( '%s results', 'fcpfo-ea' ), $wp_query->post_count );
         }
     } else {
-        $count = __( 'Nothing', 'fcpfo-ea' );
+        return;
+        //$count = __( 'Nothing', 'fcpfo-ea' );
     }
     
     echo $before .
