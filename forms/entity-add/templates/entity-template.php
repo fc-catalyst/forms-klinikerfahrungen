@@ -7,24 +7,6 @@ $imgs_dir = str_replace( ABSPATH, get_site_url() . '/', dirname( __DIR__ ) . '/t
 get_header();
 
 
-if ( current_user_can( 'administrator' ) ) {
-    $args = array(
-        'post_type' => array( 'clinic', 'doctor' ),
-        'posts_per_page' => -1,
-    );
-    
-    $query = new WP_Query( $args );
-    
-    if ( $query->have_posts() ) {
-        while ( $query->have_posts() ) {
-            $query->the_post();
-            wp_update_post( array( 'ID' => get_the_ID() ) );
-        }
-        wp_reset_postdata();
-    }
-}
-
-
 if ( have_posts() ) :
     while ( have_posts() ) :
         the_post();
@@ -203,8 +185,6 @@ fcLoadScriptVariable(
 <?php comments_template() ?>
 
 <div style="height:80px" aria-hidden="true" class="wp-block-spacer"></div>
-
-<?php if ( current_user_can('administrator') ) { the_content(); } ?>
 
 <?php
 
