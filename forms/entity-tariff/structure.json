@@ -92,6 +92,17 @@
             ]
         },
         {
+            "type" : "checkbox",
+            "name" : "entity-ignore-content-filters",
+            "meta_box" : true,
+            "options" : {
+                "1" : "<strong style='color:magenta'>Ignore the content filters (keep the links)</strong>"
+            },
+            "roles_edit" : [
+                "administrator"
+            ]
+        },
+        {
             "type" : "none",
             "title" : "<strong>The next tariff</strong>",
             "name" : "entity-tariff-next",
