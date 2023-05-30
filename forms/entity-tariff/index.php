@@ -234,7 +234,10 @@ function fcp_tariff_filter_text($text) {
     
     // remove shortcodes
     $text = preg_replace( '/\[[\w\/][\w\d\-_]*(.*?)\]/i', '', $text );
-    
+
+    // ignore filters if an admin says so
+    if ( fct1_meta( 'entity-ignore-content-filters' ) ) { return $text; }
+
     // filter links
     $tariff_running = fcp_tariff_get()->running;
 

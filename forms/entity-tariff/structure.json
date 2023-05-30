@@ -96,7 +96,7 @@
             "name" : "entity-ignore-content-filters",
             "meta_box" : true,
             "options" : {
-                "1" : "<strong style='color:magenta'>Ignore the content filters (keep the links)</strong>"
+                "1" : "<strong style='color:magenta'>Ignore the content filters</strong>"
             },
             "roles_edit" : [
                 "administrator"
