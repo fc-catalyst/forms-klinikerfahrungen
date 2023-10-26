@@ -3,7 +3,7 @@
 /*
 Plugin Name: FCP Forms Engine
 Description: JSON structured forms engine with pre-made forms examples.
-Version: 1.0.33
+Version: 1.0.34
 Requires at least: 4.7
 Requires PHP: 7.0.0
 Author: Firmcatalyst, Vadim Volkov
@@ -620,7 +620,7 @@ class FCP_Forms {
         return $unid;
     }
     public static function plugin_unid_path() {
-        return plugin_dir_path( __FILE__ ) . 'fcp-forms-unid.php'; // wp_get_upload_dir()['basedir'] . '/'
+        return wp_upload_dir()['basedir'] . '/fcp-forms-uniqueid.php';
     }
 
     public static function form_exists($dir = '') { // ++ can it be private?
