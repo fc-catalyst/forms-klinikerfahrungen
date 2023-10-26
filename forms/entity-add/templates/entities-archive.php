@@ -75,8 +75,8 @@ if ( $wp_query->have_posts() ) {
 if ( $args['meta_query'] && $wp_query->post_count < 7 ) {
     ?>
     <script type="text/javascript">
-    fcLoadScriptVariable( '/wp-content/plugins/fcp-forms/forms/entity-add/templates/assets/load-in-radius.js', 'fcFoundInRadius', () => {
-        fcLoadScriptVariable( '/wp-content/plugins/fcp-forms/forms/entity-add/templates/assets/load-in-search.js' );
+    fcLoadScriptVariable( '/wp-content/plugins/wp-fcp-forms/forms/entity-add/templates/assets/load-in-radius.js', 'fcFoundInRadius', () => {
+        fcLoadScriptVariable( '/wp-content/plugins/wp-fcp-forms/forms/entity-add/templates/assets/load-in-search.js' );
     }, ['jQuery'] );
     </script>
     <?php

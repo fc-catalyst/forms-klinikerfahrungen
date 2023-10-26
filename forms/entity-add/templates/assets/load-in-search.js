@@ -25,7 +25,7 @@
         shadow.shadowRoot.innerHTML  = '<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>';
         shadow.shadowRoot.innerHTML += data.content;
 
-        $.get( '/wp-content/themes/fct1/assets/styles/first-screen/search.css', function( data ) {
+        $.get( '/wp-content/themes/wp-fctheme-1/assets/styles/first-screen/search.css', function( data ) {
             shadow.shadowRoot.innerHTML += `<style type="text/css">${data}</style>`;
         });
 

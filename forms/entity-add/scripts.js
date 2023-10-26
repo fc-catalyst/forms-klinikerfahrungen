@@ -92,7 +92,7 @@ fcLoadScriptVariable(
             );
             
             fcLoadScriptVariable(
-                '/wp-content/themes/fct1/assets/smarts/gmap-view.js',
+                '/wp-content/themes/wp-fctheme-1/assets/smarts/gmap-view.js',
                 'fcAddGmapView',
                 function() {
 
@@ -101,7 +101,7 @@ fcLoadScriptVariable(
                     gmap = fcAddGmapView( $gmap_holder, false, getLatLngZoom() );
 
                     fcLoadScriptVariable(
-                        '/wp-content/themes/fct1/assets/smarts/gmap-pick.js',
+                        '/wp-content/themes/wp-fctheme-1/assets/smarts/gmap-pick.js',
                         'fcAddGmapPick',
                         function() {
                             marker = fcAddGmapPick( gmap, $gmap_holder[0] );

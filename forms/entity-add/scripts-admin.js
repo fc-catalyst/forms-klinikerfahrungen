@@ -6,12 +6,12 @@ fcLoadScriptVariable(
 );
 
 fcLoadScriptVariable(
-    '/wp-content/themes/fct1/assets/smarts/gmap-view.js',
+    '/wp-content/themes/wp-fctheme-1/assets/smarts/gmap-view.js',
     'fcAddGmapView'
 );
 
 fcLoadScriptVariable(
-    '/wp-content/themes/fct1/assets/smarts/gmap-pick.js',
+    '/wp-content/themes/wp-fctheme-1/assets/smarts/gmap-pick.js',
     'fcAddGmapPick'
 );
 
