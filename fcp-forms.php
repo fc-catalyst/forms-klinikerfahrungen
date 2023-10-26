@@ -12,6 +12,7 @@ License: GPL v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: fcpfo
 Domain Path: /languages
+GitHub Plugin URI: https://github.com/VVolkov833/wp-fcp-forms
 */
 
 defined( 'ABSPATH' ) || exit;
