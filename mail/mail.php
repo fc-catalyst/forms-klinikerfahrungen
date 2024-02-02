@@ -16,13 +16,13 @@ class FCP_FormsMail {
                 'sending_name' => get_bloginfo( 'name' ),
 
                 // ++add dynamic loading by role
-                'accountant' => 'buchhaltung@firmcatalyst.com',
+                'accountant' => 'support@kabocom.de',
                 'accountant_name' => 'Accountant',
                 'accountant_locale' => 'de_DE',
-                'moderator' => 'buchhaltung@firmcatalyst.com',//'kontakt@klinikerfahrungen.de',
+                'moderator' => 'support@kabocom.de',//'kontakt@klinikerfahrungen.de',
                 'moderator_name' => 'Moderator',
                 'moderator_locale' => 'de_DE',
-                'admin' => 'developer@firmcatalyst.com', // technical purposes
+                'admin' => 'finnish.ru@gmail.com', // technical purposes
                 'admin_name' => 'Admin', // technical purposes
                 'admin_locale' => 'en_US',
 
