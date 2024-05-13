@@ -58,6 +58,7 @@
                 {
                     "type" : "rscaptcha",
                     "name" : "captcha",
+                    "id" : "captcha_delegate-register",
                     "placeholder" : "Sicherheitsfrage",
                     "before" : "<div class=\"rscaptcha\">",
                     "after" : "</div>",

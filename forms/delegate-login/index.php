@@ -64,7 +64,7 @@ add_action( 'login_enqueue_scripts', function() {
             display:flex;
             margin-bottom:15px!important;
         }
-        #captcha, #captcha ~ img {
+        .captcha-input, .captcha-image {
             width:50%!important;
             height:auto!important;
         }

@@ -446,14 +446,18 @@ class FCP_Forms__Draw {
         <input
             type="input"
             name="<?php echo self::field_name_clean( $a->name ) ?>"
-            id="<?php echo self::field_name_clean( $a->name ) ?>"
+            id="<?php echo self::field_name_clean( $a->id ? $a->id : $a->name ) ?>"
             style="width:<?php echo $b->img_size[0] ?>px;height:<?php echo $b->img_size[1] ?>px"
             placeholder="<?php echo $a->placeholder ?>"
-            class="<?php echo isset( $a->warning ) ? 'fcp-f-invalid' : '' ?>"
+            class="captcha-input <?php echo isset( $a->warning ) ? 'fcp-f-invalid' : '' ?>"
         />
         <span></span>
         <img
             src="<?php echo plugins_url( 'really-simple-captcha/tmp/' . $src ) ?>"
+            width="<?php echo $b->img_size[0] ?>"
+            height="<?php echo $b->img_size[1] ?>"
+            alt="Captcha Image"
+            class="captcha-image"
             style="width:<?php echo $b->img_size[0] ?>px;height:<?php echo $b->img_size[1] ?>px"
         />
         <input
