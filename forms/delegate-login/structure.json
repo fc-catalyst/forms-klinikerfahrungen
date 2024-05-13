@@ -34,7 +34,6 @@
                 {
                     "type" : "rscaptcha",
                     "name" : "captcha",
-                    "id" : "captcha_delegate-login",
                     "placeholder" : "Sicherheitsfrage",
                     "before" : "<div class=\"rscaptcha\">",
                     "after" : "</div>",
