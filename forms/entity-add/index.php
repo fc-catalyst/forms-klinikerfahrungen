@@ -453,7 +453,7 @@ add_action( 'rest_api_init', function () {
 
     $route_args = [
         'methods'  => 'GET',
-        'callback' => function( \WP_REST_Request $request ) use ( $wp_query_args ) {
+        'callback' => function( \WP_REST_Request $request ) {
 
             $wp_query_args = [
                 //'post_type' => ['clinic', 'doctor'],

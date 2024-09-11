@@ -27,6 +27,17 @@ class FCP_Forms {
                   
     private $forms = [],
             $form_tab = [];
+
+    private $self_url,
+            $self_path,
+            $self_path_file,
+            $forms_url,
+            $forms_path,
+            $assets,
+            $css_ver,
+            $js_ver,
+            $css_adm_ver,
+            $js_adm_ver;
 	
 	private function plugin_setup() {
 
