@@ -91,15 +91,21 @@ function print_contact_button($meta_name, $name, $itemprop = '') {
         $attrs = ' target="_blank"';
 
         $tariff_running = fcp_tariff_get()->running;
-        switch ( $tariff_running ) {
-            case 'standardeintrag':
-                $attrs .= ' rel="nofollow noopener noreferrer"';
-                break;
-            case 'premiumeintrag':
-                $attrs .= ' rel="noopener"';
-                break;
-            default:
-                $attrs .= ' rel="nofollow noopener noreferrer"';
+        $ignore_content_filters = fct1_meta( 'entity-ignore-content-filters' );
+
+        if ( $ignore_content_filters ) {
+            $attrs .= ' rel="noopener"';
+        } else {
+            switch ( $tariff_running ) {
+                case 'standardeintrag':
+                    $attrs .= ' rel="nofollow noopener noreferrer"';
+                    break;
+                case 'premiumeintrag':
+                    $attrs .= ' rel="noopener"';
+                    break;
+                default:
+                    $attrs .= ' rel="nofollow noopener noreferrer"';
+            }
         }
     }
 //++ fix the imgs url again
